@@ -105,7 +105,7 @@ public class TsingTuans extends Controller {
         
         if (ecoupon.expireAt.before(new Date())) {
             //过期
-            sendSmsToConsumer("【清团】您的券号" + coupon + "已过期，无法进行消费。如有疑问请致电：4006262166", ecoupon.orderItems.phone, ecoupon.replyCode);
+            sendSmsToConsumer("【清团】您的券号" + coupon + "已过期，无法进行消费。如有疑问请致电：4006865151", ecoupon.orderItems.phone, ecoupon.replyCode);
             renderText("3|已过有效期");
         } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
             String couponLastCode = ecoupon.getLastCode(4);
@@ -128,7 +128,7 @@ public class TsingTuans extends Controller {
             
             // 发给消费者
             sendSmsToConsumer("您尾号" + couponLastCode + "券于" + dateTime
-                    + "成功消费。客服4006262166", ecoupon.orderItems.phone, ecoupon.replyCode);
+                    + "成功消费。客服4006865151", ecoupon.orderItems.phone, ecoupon.replyCode);
             renderText("0|成功");
         } else if (ecoupon.status == ECouponStatus.CONSUMED) {
             String couponLastCode = ecoupon.getLastCode(4);

@@ -180,6 +180,6 @@ public class SupplierVerifyECoupons extends Controller {
 
         // 发给消费者
         SMSUtil.send2("您的券" + StringUtils.join(availableECouponSNs, ",") + "(共" + eCoupons.size() + "张面值" + sumFaceValue.setScale(2, BigDecimal.ROUND_HALF_UP) + "元)于" + dateTime
-                + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166", eCoupon.orderItems.phone, eCoupon.replyCode);
+                + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151", eCoupon.orderItems.phone, eCoupon.replyCode);
     }
 }

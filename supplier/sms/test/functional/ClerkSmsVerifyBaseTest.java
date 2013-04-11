@@ -148,13 +148,13 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         // 消费者短信
         SMSMessage msg = getLastConsumerSMSMessage();
-        assertSMSContentMatch("您尾号" + getLastString(ecoupon.eCouponSn, 4) + "券于\\d+月\\d+日\\d+时\\d+分成功消费，门店：" + kfcShop.name + "。客服4006262166",
+        assertSMSContentMatch("您尾号" + getLastString(ecoupon.eCouponSn, 4) + "券于\\d+月\\d+日\\d+时\\d+分成功消费，门店：" + kfcShop.name + "。客服4006865151",
                 msg.getContent());
         // 店员短信
         msg = getLastClerkSMSMessage();
         assertSMSContentMatch(getBeginString(ecoupon.orderItems.phone, 3) + "\\*\\*\\*\\*\\*" +
                 getLastString(ecoupon.orderItems.phone, 3) + "尾号" + getLastString(ecoupon.eCouponSn, 4) + "券（面值" +
-                ecoupon.faceValue + "元）于\\d+月\\d+日\\d+时\\d+分在" + kfcShop.name + "验证成功。客服4006262166", msg.getContent());
+                ecoupon.faceValue + "元）于\\d+月\\d+日\\d+时\\d+分在" + kfcShop.name + "验证成功。客服4006865151", msg.getContent());
     }
 
 
@@ -188,7 +188,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         day = kfcECoupon.getWeek();
         // 消费者短信
         SMSMessage msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + kfcGoods.useBeginTime + "~" + kfcGoods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
+        assertSMSContentMatch("对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + kfcGoods.useBeginTime + "~" + kfcGoods.useEndTime + "时间内使用！如有疑问请致电：4006865151", msg.getContent());
 
         Goods goods = Goods.findById(kfcGoods.id);
         ca = Calendar.getInstance();
@@ -204,7 +204,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         day = kfcECoupon.getWeek();
         assertStatus(200, response);
         msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~次日" + goods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
+        assertSMSContentMatch("对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~次日" + goods.useEndTime + "时间内使用！如有疑问请致电：4006865151", msg.getContent());
 
 
         goods = Goods.findById(kfcGoods.id);
@@ -218,7 +218,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         assertStatus(200, response);
         msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("对不起，该券只能在每天的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
+        assertSMSContentMatch("对不起，该券只能在每天的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用！如有疑问请致电：4006865151", msg.getContent());
     }
 
     private int getWeek(int w) {
@@ -243,7 +243,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         Http.Response response = messageSender.doMessageSend("abc");
         assertEquals("Unsupport Message", response.out.toString());
         SMSMessage msg = getLastConsumerSMSMessage();
-        assertSMSContentMatch("券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：4006262166",
+        assertSMSContentMatch("券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：4006865151",
                 msg.getContent());
     }
 
@@ -260,7 +260,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         SMSMessage msg = getLastClerkSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("该券已被冻结,如有疑问请致电：4006262166【一百券】", msg.getContent());
+        assertEquals("该券已被冻结,如有疑问请致电：4006865151【一百券】", msg.getContent());
     }
 
     /**
@@ -277,7 +277,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         assertContentEquals("您输入的券号" + couponNumber + "不存在，请确认！", response);
 
         SMSMessage msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("您输入的券号" + couponNumber + "不存在，请与顾客确认，如有疑问请致电：4006262166",
+        assertSMSContentMatch("您输入的券号" + couponNumber + "不存在，请与顾客确认，如有疑问请致电：4006865151",
                 msg.getContent());
     }
 
@@ -294,7 +294,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         assertContentEquals(kfc.fullName + "未在一百券登记使用", response);
 
         SMSMessage msg = getLastClerkSMSMessage();
-        assertSMSContentMatch(kfc.fullName + "未在一百券登记使用，如有疑问请致电：4006262166",
+        assertSMSContentMatch(kfc.fullName + "未在一百券登记使用，如有疑问请致电：4006865151",
                 msg.getContent());
     }
 
@@ -310,7 +310,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         assertContentEquals( kfc.fullName + "已被一百券锁定", response);
 
         SMSMessage msg = getLastClerkSMSMessage();
-        assertSMSContentMatch(kfc.fullName + "已被一百券锁定，如有疑问请致电：4006262166",
+        assertSMSContentMatch(kfc.fullName + "已被一百券锁定，如有疑问请致电：4006865151",
                 msg.getContent());
     }
 
@@ -326,7 +326,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         SMSMessage msg = getLastConsumerSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("请确认券号" + kfcECoupon.eCouponSn + "(" + kfc.fullName + ")是否本店商品，或店号手机号是否已在一百券登记。如有疑问请致电：4006262166【一百券】", msg.getContent());
+        assertEquals("请确认券号" + kfcECoupon.eCouponSn + "(" + kfc.fullName + ")是否本店商品，或店号手机号是否已在一百券登记。如有疑问请致电：4006865151【一百券】", msg.getContent());
     }
 
     /**
@@ -358,7 +358,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         SMSMessage msg = getLastClerkSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("请确认券号" + kfcECoupon.eCouponSn + "(" + kfc.fullName + ")是否本店商品，或店号手机号是否已在一百券登记。如有疑问请致电：4006262166【一百券】", msg.getContent());
+        assertEquals("请确认券号" + kfcECoupon.eCouponSn + "(" + kfc.fullName + ")是否本店商品，或店号手机号是否已在一百券登记。如有疑问请致电：4006865151【一百券】", msg.getContent());
     }
 
     /**
@@ -395,7 +395,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         SMSMessage msg = getLastClerkSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("券号" + kfcECoupon.eCouponSn + "已过期，无法进行消费。如有疑问请致电：4006262166【一百券】", msg.getContent());
+        assertEquals("券号" + kfcECoupon.eCouponSn + "已过期，无法进行消费。如有疑问请致电：4006865151【一百券】", msg.getContent());
     }
 
 

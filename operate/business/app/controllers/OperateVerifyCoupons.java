@@ -128,7 +128,7 @@ public class OperateVerifyCoupons extends Controller {
             String dateTime = DateUtil.getNowTime();
             String coupon = ecoupon.getLastCode(4);
             SMSUtil.send("您尾号" + coupon + "券于" + dateTime
-                    + "成功消费，门店：" + shop.name + "。客服4006262166", ecoupon.orderItems.phone, ecoupon.replyCode);
+                    + "成功消费，门店：" + shop.name + "。客服4006865151", ecoupon.orderItems.phone, ecoupon.replyCode);
         }
         render("OperateVerifyCoupons/index.html");
     }

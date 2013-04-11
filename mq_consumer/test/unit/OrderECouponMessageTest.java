@@ -79,7 +79,7 @@ public class OrderECouponMessageTest extends UnitTest {
     @Test
     public void 无密码单张券发送短信() {
         createNoPasswordCoupons(2);
-        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",截止" + dateFormat.format(couponList.get(0).expireAt) + "一百券客服4006262166",
+        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",截止" + dateFormat.format(couponList.get(0).expireAt) + "一百券客服4006865151",
                 OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
     }
 
@@ -88,7 +88,7 @@ public class OrderECouponMessageTest extends UnitTest {
         createNoPasswordCoupons(2);
         String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
         Logger.info(smsMessages[0]);
-        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",券号" + couponList.get(1).eCouponSn + "[共2张],截止" + dateFormat.format(couponList.get(0).expireAt) + "一百券客服4006262166",
+        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",券号" + couponList.get(1).eCouponSn + "[共2张],截止" + dateFormat.format(couponList.get(0).expireAt) + "一百券客服4006865151",
                 smsMessages[0]);
     }
 
@@ -124,7 +124,7 @@ public class OrderECouponMessageTest extends UnitTest {
         createWithPasswordCoupons(2);
         assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + "密码"
                 + couponList.get(0).eCouponPassword + ",截止" +
-                dateFormat.format(couponList.get(1).expireAt) + "一百券客服4006262166",
+                dateFormat.format(couponList.get(1).expireAt) + "一百券客服4006865151",
                 OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
     }
 
@@ -136,7 +136,7 @@ public class OrderECouponMessageTest extends UnitTest {
         assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + "密码"
                 + couponList.get(0).eCouponPassword + ",券号" + couponList.get(1).eCouponSn + "密码" +
                 couponList.get(1).eCouponPassword + "[共2张],截止" +
-                dateFormat.format(couponList.get(1).expireAt) + "一百券客服4006262166",
+                dateFormat.format(couponList.get(1).expireAt) + "一百券客服4006865151",
                 smsMessages[0]);
     }
 

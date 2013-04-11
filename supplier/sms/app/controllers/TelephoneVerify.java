@@ -165,12 +165,12 @@ public class TelephoneVerify extends Controller {
                             + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(2, BigDecimal.ROUND_HALF_UP) + "元)于"
                             + DateUtil.getNowTime() + "已成功消费，使用门店：" + supplierUser.shop.name + "。您还有" + availableECouponSNs.size() + "张券（"
                             + StringUtils.join(availableECouponSNs, "/")
-                            + "总面值" + availableAmount.setScale(2, BigDecimal.ROUND_HALF_UP) + "元）未消费。如有疑问请致电：4006262166",
+                            + "总面值" + availableAmount.setScale(2, BigDecimal.ROUND_HALF_UP) + "元）未消费。如有疑问请致电：4006865151",
                             ecoupon.orderItems.phone, ecoupon.replyCode);
                 } else {
                     SMSUtil.send2("您尾号" + ecoupon.getLastCode(4)
                             + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(2, BigDecimal.ROUND_HALF_UP) + "元)于"
-                            + DateUtil.getNowTime() + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：4006262166",
+                            + DateUtil.getNowTime() + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：4006865151",
                             ecoupon.orderItems.phone, ecoupon.replyCode);
                 }
                 Logger.info("telephone verify: batch coupon success");
@@ -235,7 +235,7 @@ public class TelephoneVerify extends Controller {
         // 发给消费者
         if (Play.mode.isProd()) {
             SMSUtil.send("您尾号" + eCouponNumber + "的券号于" + dateTime
-                    + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：4006262166", ecoupon.orderItems.phone, ecoupon.replyCode);
+                    + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：4006865151", ecoupon.orderItems.phone, ecoupon.replyCode);
         }
         ecoupon.verifyType = VerifyCouponType.TELEPHONE;
         ecoupon.verifyTel = caller;

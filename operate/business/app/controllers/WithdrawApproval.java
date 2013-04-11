@@ -207,7 +207,7 @@ public class WithdrawApproval extends Controller {
                 } else if (StringUtils.isNotBlank(user.loginName)) {
                     title = user.loginName;
                 }
-                sendContent += ".如有疑问请致电4006262166";
+                sendContent += ".如有疑问请致电4006865151";
                 break;
             case RESALER:
                 Resaler resaler = Resaler.findById(bill.account.uid);
@@ -216,7 +216,7 @@ public class WithdrawApproval extends Controller {
                 }
                 mobile = resaler.mobile;
                 title = bill.applier;
-                sendContent += ".如有疑问请致电4006262166";
+                sendContent += ".如有疑问请致电4006865151";
                 break;
         }
         if (StringUtils.isBlank(mobile) || StringUtils.isBlank(title)) {

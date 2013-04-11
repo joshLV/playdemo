@@ -1162,7 +1162,7 @@ public class ECoupon extends Model {
             phone = eCoupon.orderItems.phone;
         }
         SMSUtil.send((StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
-                "截止" + dateFormat.format(eCoupon.expireAt) + ",客服：4006262166", phone, eCoupon.replyCode);
+                "截止" + dateFormat.format(eCoupon.expireAt) + ",客服：4006865151", phone, eCoupon.replyCode);
     }
 
     /**
@@ -1193,7 +1193,7 @@ public class ECoupon extends Model {
 
         SMSUtil.send((StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号"
                 + eCoupon.eCouponSn + "," +
-                "截止" + dateFormat.format(eCoupon.expireAt) + content + "客服：4006262166", phone, eCoupon.replyCode);
+                "截止" + dateFormat.format(eCoupon.expireAt) + content + "客服：4006865151", phone, eCoupon.replyCode);
     }
 
     public static void sendUserMessageInfoWithoutCheck(String phone, ECoupon eCoupon, String couponshopsId) {

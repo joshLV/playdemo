@@ -123,7 +123,7 @@ public class SupplierVerifySingleCoupons extends Controller {
             String ecouponSNLast4Code = ecoupon.getLastCode(4);
             // 发给消费者
             SMSUtil.send2("您尾号" + ecouponSNLast4Code + "的券号于" + dateTime
-                    + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166", ecoupon.orderItems.phone, ecoupon.replyCode);
+                    + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151", ecoupon.orderItems.phone, ecoupon.replyCode);
             // 标识为验证成功
             renderArgs.put("success_info", "true");
         }

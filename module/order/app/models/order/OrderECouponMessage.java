@@ -38,7 +38,7 @@ public class OrderECouponMessage implements Serializable {
                         .append(ctx.couponInfo)
                         .append(ctx.notes)
                         .append("截止").append(ctx.expiredDate)
-                        .append("一百券客服4006262166");
+                        .append("一百券客服4006865151");
                 ctx.setSmsContent(sb.toString());
             }
             return ExtensionResult.SUCCESS;

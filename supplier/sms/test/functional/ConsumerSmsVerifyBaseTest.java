@@ -157,7 +157,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
 
         // 消费者短信
         SMSMessage msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
+        assertSMSContentMatch("对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用！如有疑问请致电：4006865151", msg.getContent());
 
         goods = Goods.findById(kfcGoods.id);
         ca = Calendar.getInstance();
@@ -178,7 +178,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         day = ecoupon.getWeek();
         // 消费者短信
         msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~次日" + goods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
+        assertSMSContentMatch("对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~次日" + goods.useEndTime + "时间内使用！如有疑问请致电：4006865151", msg.getContent());
 
         goods = Goods.findById(kfcGoods.id);
         goods.useWeekDay = "1,2,3,4,5,6,7";
@@ -195,7 +195,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         assertEquals(ECouponStatus.UNCONSUMED, ecoupon.status);
         // 消费者短信
         msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("对不起，该券只能在每天的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
+        assertSMSContentMatch("对不起，该券只能在每天的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用！如有疑问请致电：4006865151", msg.getContent());
     }
 
     /**
@@ -215,13 +215,13 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
 
         // 消费者短信
         SMSMessage msg = getLastConsumerSMSMessage();
-        assertSMSContentMatch("您尾号" + getLastString(kfcECoupon.eCouponSn, 4) + "券于\\d+月\\d+日\\d+时\\d+分成功消费，门店：" + kfcShop.name + "。客服4006262166",
+        assertSMSContentMatch("您尾号" + getLastString(kfcECoupon.eCouponSn, 4) + "券于\\d+月\\d+日\\d+时\\d+分成功消费，门店：" + kfcShop.name + "。客服4006865151",
                 msg.getContent());
         // 店员短信
         SMSMessage msg2 = getLastClerkSMSMessage();
         assertSMSContentMatch( getBeginString(kfcECoupon.orderItems.phone, 3) + "\\*\\*\\*\\*\\*" +
                 getLastString(kfcECoupon.orderItems.phone, 3) + "尾号" + getLastString(kfcECoupon.eCouponSn, 4) + "券（面值" +
-                kfcECoupon.faceValue + "元）于\\d+月\\d+日\\d+时\\d+分在" + kfcShop.name + "验证成功。客服4006262166", msg2.getContent());
+                kfcECoupon.faceValue + "元）于\\d+月\\d+日\\d+时\\d+分在" + kfcShop.name + "验证成功。客服4006865151", msg2.getContent());
 
         ECoupon ecoupon = ECoupon.findById(kfcECoupon.id);
         ecoupon.refresh();
@@ -254,7 +254,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
 
         // 消费者短信
         SMSMessage msg = getLastConsumerSMSMessage();
-        assertSMSContentMatch("店员工号无效，请核实工号是否正确或是否是" + kfc.fullName + "门店。如有疑问请致电：4006262166",
+        assertSMSContentMatch("店员工号无效，请核实工号是否正确或是否是" + kfc.fullName + "门店。如有疑问请致电：4006865151",
                 msg.getContent());
 
         ECoupon ecoupon = ECoupon.findById(kfcECoupon.id);
@@ -275,7 +275,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         assertContentEquals( kfc.fullName + "未在一百券登记使用", response);
 
         SMSMessage msg = getLastConsumerSMSMessage();
-        assertSMSContentMatch( kfc.fullName + "未在一百券登记使用，请致电4006262166咨询",
+        assertSMSContentMatch( kfc.fullName + "未在一百券登记使用，请致电4006865151咨询",
                 msg.getContent());
     }
 
@@ -291,7 +291,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         assertContentEquals( kfc.fullName + "已被一百券锁定", response);
 
         SMSMessage msg = getLastConsumerSMSMessage();
-        assertSMSContentMatch( kfc.fullName + "已被一百券锁定，请致电4006262166咨询",
+        assertSMSContentMatch( kfc.fullName + "已被一百券锁定，请致电4006865151咨询",
                 msg.getContent());
     }
 
@@ -324,7 +324,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         assertContentEquals("店员工号无效，请核实工号是否正确或是否是" + kfc.fullName + "门店", response);
         SMSMessage msg = getLastConsumerSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("店员工号无效，请核实工号是否正确或是否是" + kfc.fullName + "门店。如有疑问请致电：4006262166【一百券】", msg.getContent());
+        assertEquals("店员工号无效，请核实工号是否正确或是否是" + kfc.fullName + "门店。如有疑问请致电：4006865151【一百券】", msg.getContent());
     }
 
     /**
@@ -340,7 +340,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         assertStatus(200, response);
 
         SimpleDateFormat df = new SimpleDateFormat("MM-dd HH:mm");
-        assertContentEquals("您的券号已消费，无法再次消费。如有疑问请致电：4006262166", response);
+        assertContentEquals("您的券号已消费，无法再次消费。如有疑问请致电：4006865151", response);
 
         SMSMessage msg = getLastClerkSMSMessage();
         assertSMSContentLength(msg.getContent());
@@ -366,7 +366,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
 
         SMSMessage msg = getLastClerkSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("该券已被冻结,如有疑问请致电：4006262166【一百券】", msg.getContent());
+        assertEquals("该券已被冻结,如有疑问请致电：4006865151【一百券】", msg.getContent());
     }
 
     /**
@@ -379,11 +379,11 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         assertEquals(ECouponStatus.UNCONSUMED, kfcECoupon.status);
         Http.Response response = messageSender.doMessageSend(kfcECoupon, kfcClerk.jobNumber, null);
 
-        assertContentEquals("您的券号已过期，无法进行消费。如有疑问请致电：4006262166", response);
+        assertContentEquals("您的券号已过期，无法进行消费。如有疑问请致电：4006865151", response);
 
         SMSMessage msg = getLastConsumerSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("您的券号已过期，无法进行消费。如有疑问请致电：4006262166【一百券】", msg.getContent());
+        assertEquals("您的券号已过期，无法进行消费。如有疑问请致电：4006865151【一百券】", msg.getContent());
     }
 
     /**

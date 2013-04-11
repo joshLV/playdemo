@@ -155,7 +155,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         assertSMSContentEquals("您尾号" + coupon1.getLastCode(4)
                 + "共3张券(总面值250.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有2张券（"
                 + StringUtils.join(availableECouponSNs, "/")
-                + "总面值100.00元）未消费。如有疑问请致电：4006262166",
+                + "总面值100.00元）未消费。如有疑问请致电：4006865151",
                 msg.getContent());
     }
 
@@ -174,7 +174,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + coupon1.getLastCode(4)
-                + "共5张券(总面值350.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
+                + "共5张券(总面值350.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
                 msg.getContent());
     }
 
@@ -193,7 +193,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + coupon1.getLastCode(4)
-                + "共5张券(总面值350.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
+                + "共5张券(总面值350.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
                 msg.getContent());
     }
 
@@ -233,7 +233,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         assertSMSContentEquals("您尾号" + singleCoupon1.getLastCode(4)
                 + "共2张券(总面值150.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有1张券（"
                 + StringUtils.join(availableECouponSNs, "/")
-                + "总面值75.00元）未消费。如有疑问请致电：4006262166",
+                + "总面值75.00元）未消费。如有疑问请致电：4006865151",
                 msg.getContent());
     }
 
@@ -252,7 +252,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + singleCoupon1.getLastCode(4)
-                + "共3张券(总面值225.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
+                + "共3张券(总面值225.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
                 msg.getContent());
     }
 
@@ -271,7 +271,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + singleCoupon1.getLastCode(4)
-                + "共3张券(总面值225.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
+                + "共3张券(总面值225.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
                 msg.getContent());
     }
 

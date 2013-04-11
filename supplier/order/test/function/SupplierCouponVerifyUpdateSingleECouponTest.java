@@ -70,7 +70,7 @@ public class SupplierCouponVerifyUpdateSingleECouponTest extends FunctionalTest 
         assertContentMatch("0", response);
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentMatch("您尾号" + coupon.getLastCode(4)
-                + "的券号于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166",
+                + "的券号于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
                 msg.getContent());
 
     }

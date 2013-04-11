@@ -129,9 +129,9 @@ public class WeixinVerifyECouponInvocation extends WeixinInvocation {
 
                         // 发给消费者
                         sendSmsToConsumer("您尾号" + coupon + "券于" + dateTime
-                                + "成功消费，门店：" + shopName + "。客服4006262166", consumerPhone, ecoupon.replyCode);
+                                + "成功消费，门店：" + shopName + "。客服4006865151", consumerPhone, ecoupon.replyCode);
                         return ("尾号" + coupon + "的券号于" + dateTime
-                                + "成功消费，门店：" + shopName + "。客服4006262166");
+                                + "成功消费，门店：" + shopName + "。客服4006865151");
                     } else if (ecoupon.status == ECouponStatus.CONSUMED) {
                         return ("券号" + couponNumber + "已消费，无法再次消费");
                     }

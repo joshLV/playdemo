@@ -184,12 +184,12 @@ public class SupplierVerifyMultiCoupons extends Controller {
                         + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(2,BigDecimal.ROUND_HALF_UP) + "元)于"
                         + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有" + availableECouponSNs.size() + "张券（"
                         + StringUtils.join(availableECouponSNs, "/")
-                        + "总面值" + availableAmount.setScale(2, BigDecimal.ROUND_HALF_UP) + "元）未消费。如有疑问请致电：4006262166",
+                        + "总面值" + availableAmount.setScale(2, BigDecimal.ROUND_HALF_UP) + "元）未消费。如有疑问请致电：4006865151",
                         ecoupon.orderItems.phone, ecoupon.replyCode);
             } else {
                 SMSUtil.send2("您尾号" + ecouponSNLast4Code
                         + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(2, BigDecimal.ROUND_HALF_UP) + "元)于"
-                        + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
+                        + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
                         ecoupon.orderItems.phone, ecoupon.replyCode);
             }
 
