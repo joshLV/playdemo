@@ -57,33 +57,40 @@
         %{
             sellECoupon=currentUser?.supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON);
             canSaleReal=currentUser?.supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL);
+            ktvSupplier=currentUser?.supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER);
             }%
+
         #{if sellECoupon}
             #{if navigation.ContextedPermission.hasPermission("COUPON_MULTI_VERIFY") }
-                <li><a #{if "verify".equals(menu)}class="curr"#{/if} href="/verify">券&nbsp;&nbsp;验&nbsp;&nbsp;证</a>
+                <li><a
+                    #{if "verify".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/verify')}">券&nbsp;&nbsp;验&nbsp;&nbsp;证</a>
                 </li>#{/if}
             #{if navigation.ContextedPermission.hasPermission("COUPON_INDEX")}
-                <li><a #{if "coupons".equals(menu)}class="curr"#{/if} href="/coupons">券号列表</a></li>#{/if}
+                <li><a #{if "coupons".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/coupons')}">券号列表</a></li>#{/if}
             #{if navigation.ContextedPermission.hasPermission("ACCOUNT_REPORT")}
-                <li><a #{if "sequences".equals(menu)}class="curr"#{/if} href="/sequences">财务明细</a></li>#{/if}
+                <li><a #{if "sequences".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/sequences')}">财务明细</a></li>#{/if}
             #{if navigation.ContextedPermission.hasPermission("ACCOUNT_WITHDRAW")}
-                <li><a #{if "withdraws".equals(menu)}class="curr"#{/if} href="/withdraws">提现管理</a></li>#{/if}
+                <li><a #{if "withdraws".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/withdraws')}">提现管理</a></li>#{/if}
             #{if navigation.ContextedPermission.hasPermission("REPORT")}
-                <li><a #{if "reports".equals(menu)}class="curr"#{/if} href="/reports">报表一览</a></li>#{/if}
+                <li><a #{if "reports".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/reports')}">报表一览</a></li>#{/if}
             #{if navigation.ContextedPermission.hasPermission("SHOPS")}
-                <li><a #{if "shops".equals(menu)}class="curr"#{/if} href="/shops">我的门店</a></li>#{/if}
+                <li><a #{if "shops".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/shops')}">我的门店</a></li>#{/if}
             #{if navigation.ContextedPermission.hasPermission("ACCOUNT")}
-                <li><a #{if "users".equals(menu)}class="curr"#{/if} href="/users">账号管理</a></li>#{/if}
+                <li><a #{if "users".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/users')}">账号管理</a></li>#{/if}
         #{/if}
         #{if navigation.ContextedPermission.hasPermission("DOWNLOAD_ORDER_SHIPPING") && canSaleReal}
-            <li><a #{if "download-order-shipping".equals(menu)}class="curr"#{/if} href="/real/download-order-shipping">下载发货单</a>
+            <li><a #{if "download-order-shipping".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/real/download-order-shipping')}">下载发货单</a>
             </li>
 
             <li><a #{if "upload-order-shipping".equals(menu)  }class="curr"#{/if}
-                   href="/real/upload-order-shipping">上传发货单</a></li>
+                   href="${helper.SupplierLink.getHomeLink('/real/upload-order-shipping')}">上传发货单</a></li>
         #{/if}
         #{if navigation.ContextedPermission.hasPermission("ACCOUNT")  && canSaleReal}
-            <li><a #{if "return-goods".equals(menu)}class="curr"#{/if} href="/real/return-entries">退货管理</a></li>
+            <li><a #{if "return-goods".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/real/return-entries')}">退货管理</a></li>
+        #{/if}
+        #{if sellECoupon}
+            #{if navigation.ContextedPermission.hasPermission("KTV")}
+                <li><a #{if "ktv_room".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/room-type')}">包厢类型</a></li>#{/if}
         #{/if}
         </ul>
         <div class="sbox">

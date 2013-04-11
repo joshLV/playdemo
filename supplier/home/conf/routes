@@ -64,8 +64,6 @@ GET     /how-to-manage-users                    SupplierHelps.manageUsers
 GET     /how-to-change-password                 SupplierHelps.changePassword
 
 
-
-
 # [v2] 资金帐户明细
 GET     /sequences                              SupplierAccountSequences.index
 
