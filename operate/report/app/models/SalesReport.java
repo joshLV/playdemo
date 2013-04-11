@@ -3,6 +3,7 @@ package models;
 import models.operator.OperateUser;
 import models.order.ECouponStatus;
 import models.sales.Goods;
+import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
 
 import javax.persistence.Query;
@@ -700,18 +701,36 @@ public class SalesReport implements Comparable<SalesReport> {
     }
 
 
-    public static List<SalesReport> queryNoContributionPeopleEffectData(SalesReportCondition condition) {
+    public static List<SalesReport> queryNoContributionPeopleEffectData(SalesReportCondition condition,Boolean hasSeeReportProfitRight) {
 
         String sql = "select new models.SalesReport(o)" +
-                " from OrderItems r,Supplier s,OperateUser o" +
-                "  where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and r.goods.isLottery=false ";
+                " from Goods g,Supplier s,OperateUser o" +
+                "  where g.supplierId =s.id and s.deleted=0 and s.salesId=o.id and g.isLottery=false ";
+
+         Map<String, Object> params = new HashMap<>();
+        if (StringUtils.isNotBlank(condition.jobNumber)) {
+            sql=sql.concat("and o.jobNumber=:jobNumber");
+            params.put("jobNumber",condition.jobNumber);
+        }
+        if (!hasSeeReportProfitRight) {
+            sql=sql.concat("and o.id = :salesId");
+            params.put("salesId",condition.salesId);
+        }
+        if (StringUtils.isNotBlank(condition.userName)) {
+            sql=sql.concat("and o.userName like :userName" );
+            params.put("userName","%"+condition.userName.trim()+"%");
+        }
+
+
         String groupBy = " group by s.salesId";
+
         Query query = JPA.em()
                 .createQuery(sql + groupBy);
-
+        for (String param : params.keySet()) {
+            query.setParameter(param, params.get(param));
+        }
 
         List<SalesReport> resultList = query.getResultList();
-
 
         return resultList;
     }
