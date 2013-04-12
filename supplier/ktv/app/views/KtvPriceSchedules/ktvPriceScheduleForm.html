@@ -1,0 +1,57 @@
+<div class="field-group">
+    <label>适用门店</label>
+#{list items:shops,as:'shop'}
+    <input type="checkbox" name="shop" value=""/>${shop.name}&nbsp;&nbsp;
+#{/list}
+</div>
+<div class="field-group">
+    <label>可预订日期</label>
+    <input type="text" class="time" name="priceSchedule.startDay" onfocus="WdatePicker({readOnly:true})"
+           value="${condition?.consumedAtBegin?.format()}">
+    <span>到</span>
+    <input type="text" class="time"
+           name="priceSchedule.endDay"
+           onfocus="WdatePicker({readOnly:true})" value="${condition?.consumedAtEnd?.format()}">
+</div>
+
+<div class="field-group">
+    <label>筛选日期</label>
+%{
+    useWeekNames=["一","二","三","四","五","六","日"];
+    }%
+#{list items:1..7, as:'i'}
+    <input type="checkbox" name="useWeekDays" class="input-medium"
+           value="${i}" #{if priceSchedule?.useWeekDay?.contains(String.valueOf(i))}checked#{/if}/>
+    星期${useWeekNames[i-1]}
+#{/list}
+    <span class="error">#{error 'priceSchedules.useWeekDayAll' /}</span>
+</div>
+
+<div class="field-group">
+    <label>适用时段</label>
+    <select name="priceSchedule.startTime" style="width: auto">
+        <option value="08:00">08:00</option>
+        <option value="09:00">09:00</option>
+        <option value="10:00">10:00</option>
+    </select>
+    <span>到</span>
+    <select name="priceSchedule.endTime" style="width: auto">
+        <option value="08:00">08:00</option>
+        <option value="09:00">09:00</option>
+        <option value="10:00">10:00</option>
+    </select>
+</div>
+<div class="field-group">
+    <label>适用包厢</label>
+#{list items:roomTypeList,as:'roomType'}
+    <input type="radio" name="priceSchedule.roomType" value=""/>${roomType.name}&nbsp;&nbsp;
+#{/list}
+</div>
+
+<div class="field-group">
+    <label>包厢价格</label>
+    <input type="text" name="priceSchedule.price" value="${priceSchedule?.price}"/>
+</div>
+<div class="field-group">
+    <input type="submit" class="btn" value="确定"/> <a href="/ktv/room-type">取消</a>
+</div>

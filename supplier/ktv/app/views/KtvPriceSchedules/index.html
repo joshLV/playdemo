@@ -1,0 +1,33 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'设置价格' /}
+#{set menu:"ktv_room" /}
+<div class="body">
+#{form @KtvPriceSchedules.index() , id:'creationForm',class:"form-horizontal" }
+#{/form}
+<div class="bd">
+    <h2>${title}</h2>
+
+    <div class="wk-ktvwrapper" id="wk-ktvwrapper"> </div>
+
+</div>
+</div>
+
+#{set 'moreStyles'}
+<link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/ktv.css'}">
+#{/set}
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/xdate.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/ktvweek.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    $(function () {
+        var ktvWeek = KTVWeek({
+            wrapperId:"wk-ktvwrapper",
+            dataUrl:"/ktv/price-schedule/json-search",
+            addLink:"@{KtvPriceSchedules.add()}",
+            startDay:new Date()
+        });
+    });
+</script>
+#{/set}
+
