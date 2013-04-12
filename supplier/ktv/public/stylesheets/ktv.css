@@ -92,6 +92,9 @@
     z-index: 10;
     cursor: pointer;
 }
+.wk-pricecell a {
+    color:#fff;
+}
 .wk-pricecell-carrot{
     background-color: #e67e22;
 }
@@ -126,7 +129,7 @@
     color: #444;
     cursor: pointer;
 
-    padding: 6px 8px;
+    padding: 4px 8px;
     outline: none;
     font-size: 14px;
     text-align: center;
@@ -147,5 +150,9 @@ a.wk-button {
 .wk-button-next {
     margin-left: -1px;
     width: 25px;
+}
+.wk-show-range {
+    font-size:20px;
+    padding-left:20px;
 }
 
