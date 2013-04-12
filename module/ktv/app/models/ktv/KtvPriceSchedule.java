@@ -1,5 +1,6 @@
 package models.ktv;
 
+import com.google.gson.annotations.Expose;
 import models.sales.Shop;
 import play.db.jpa.Model;
 
@@ -37,12 +38,14 @@ public class KtvPriceSchedule extends Model {
      * 开始日期
      */
     @Column(name = "start_day")
+    @Expose
     public Date startDay;
 
     /**
      * 结束日期
      */
     @Column(name = "end_day")
+    @Expose
     public Date endDay;
 
     /**
@@ -51,6 +54,7 @@ public class KtvPriceSchedule extends Model {
      * 默认为1,2,3,4,5,6,7
      */
     @Column(name = "use_week_day")
+    @Expose
     public String useWeekDay;
 
 
@@ -58,16 +62,19 @@ public class KtvPriceSchedule extends Model {
      * 开始时间，如： 09:00
      */
     @Column(name = "start_time")
+    @Expose
     public String startTime;
 
     /**
      * 结束时间，如: 12:00
      */
     @Column(name="end_time")
+    @Expose
     public String endTime;
 
     /**
      * 每间每小时的价格
      */
+    @Expose
     public BigDecimal price;
 }
