@@ -19,13 +19,13 @@ public class KtvRoom extends Model {
     @JoinColumn(name = "room_type_id", nullable = false)
     public KtvRoomType roomType;
 
-    public KtvRoom(KtvRoomType type) {
-        this.roomType = type;
-    }
-
     /**
      * 包厢房间名称.
      */
     public String name;
+
+    public KtvRoom(KtvRoomType type) {
+        this.roomType = type;
+    }
 
 }
