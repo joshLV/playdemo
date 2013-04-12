@@ -140,6 +140,9 @@ public class SuppliersTest extends FunctionalTest {
         params.put("admin.loginName", "sujie");
         params.put("admin.mobile", "13212341234");
         params.put("admin.jobNumber", "123456");
+        params.put("canSaleReal", "1");
+        params.put("sellECoupon", "0");
+        params.put("ktvSupplier", "0");
         VirtualFile vfImage = VirtualFile.fromRelativePath("test/creative.jpg");
         Map<String, File> fileParams = new HashMap<>();
         fileParams.put("image", vfImage.getRealFile());
@@ -165,6 +168,9 @@ public class SuppliersTest extends FunctionalTest {
         params.put("admin.loginName", "sujie");
         params.put("admin.mobile", "13212341234");
         params.put("admin.jobNumber", "12345678");
+        params.put("canSaleReal", "1");
+        params.put("sellECoupon", "0");
+        params.put("ktvSupplier", "0");
         VirtualFile vfImage = VirtualFile.fromRelativePath("test/creative.jpg");
         Map<String, File> fileParams = new HashMap<>();
         fileParams.put("image", vfImage.getRealFile());

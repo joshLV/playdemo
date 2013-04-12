@@ -305,6 +305,9 @@ public class Supplier extends Model {
 
     @Transient
     public String getProperty(String propertyName) {
+        if (this.id == null) {
+            return "0";
+        }
         SupplierProperty supplierProperty = SupplierProperty.find("supplier=? and name=?", this, propertyName).first();
         if (supplierProperty == null) {
             return "0";

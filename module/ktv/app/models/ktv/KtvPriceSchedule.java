@@ -20,13 +20,13 @@ import java.util.Set;
  * KTV价格策略.
  */
 @Entity
-@Table(name = "ktv_price_schedues")
-public class KtvPriceSchedue extends Model {
+@Table(name = "ktv_price_schedules")
+public class KtvPriceSchedule extends Model {
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "ktv_price_schedues_shops",
+    @JoinTable(name = "ktv_price_schedule_shops",
             inverseJoinColumns = @JoinColumn(name = "shop_id"),
-            joinColumns = @JoinColumn(name = "ktv_price_schedue_id"))
+            joinColumns = @JoinColumn(name = "ktv_price_schedule_id"))
     public Set<Shop> shops;
 
     @ManyToOne(fetch = FetchType.LAZY)
