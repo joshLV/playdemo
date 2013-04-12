@@ -55,25 +55,45 @@ public class KtvPriceSchedules extends Controller {
     }
 
     public static void add() {
+        initParams();
+        render();
+    }
+
+    private static void initParams() {
         Supplier supplier = SupplierRbac.currentUser().supplier;
         List<Shop> shops = Shop.findShopBySupplier(supplier.id);
 
         List<KtvRoomType> roomTypeList = KtvRoomType.findRoomTypeList(supplier);
-        render(shops, roomTypeList);
+        renderArgs.put("shops", shops);
+        renderArgs.put("roomTypeList", roomTypeList);
     }
 
     public static void create(@Valid KtvPriceSchedule priceSchedule, List<String> useWeekDays) {
         priceSchedule.useWeekDay = StringUtils.join(useWeekDays, ",");
+        priceSchedule.createdAt = new Date();
         priceSchedule.save();
         index();
     }
 
     public static void edit(Long id) {
-        render();
+        initParams();
+        KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(id);
+        if (priceSchedule==null){
+            error("没有该时间段的价格信息！请确认!");
+            return;
+        }
+        String shopIds = ",";
+        if (priceSchedule.shops != null && priceSchedule.shops.size() > 0) {
+            for (Shop shop : priceSchedule.shops) {
+                shopIds += shop.id + ",";
+            }
+        }
+        render(priceSchedule, shopIds);
     }
 
     public static void update(Long id, KtvPriceSchedule priceSchedule) {
-        render();
+        KtvPriceSchedule.update(id,priceSchedule);
+        index();
     }
 
     public static void delete(Long id) {

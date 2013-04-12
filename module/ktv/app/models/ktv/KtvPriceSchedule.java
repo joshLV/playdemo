@@ -23,10 +23,10 @@ import java.util.Set;
 @Table(name = "ktv_price_schedules")
 public class KtvPriceSchedule extends Model {
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "ktv_price_schedule_shops",
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @JoinTable(name = "ktv_price_schedules_shops",
             inverseJoinColumns = @JoinColumn(name = "shop_id"),
-            joinColumns = @JoinColumn(name = "ktv_price_schedule_id"))
+            joinColumns = @JoinColumn(name = "ktv_price_schedules_id"))
     public Set<Shop> shops;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -63,11 +63,27 @@ public class KtvPriceSchedule extends Model {
     /**
      * 结束时间，如: 12:00
      */
-    @Column(name="end_time")
+    @Column(name = "end_time")
     public String endTime;
 
     /**
      * 每间每小时的价格
      */
     public BigDecimal price;
+
+    @Column(name = "created_at")
+    public Date createdAt;
+
+
+    public static void update(Long id, KtvPriceSchedule schedule) {
+        KtvPriceSchedule updPriceSchedule = KtvPriceSchedule.findById(id);
+        updPriceSchedule.useWeekDay=schedule.useWeekDay;
+        updPriceSchedule.startDay = schedule.startDay;
+        updPriceSchedule.endDay = schedule.endDay;
+        updPriceSchedule.startTime = schedule.startTime;
+        updPriceSchedule.endTime = schedule.endTime;
+        updPriceSchedule.price = schedule.price;
+        updPriceSchedule.save();
+
+    }
 }

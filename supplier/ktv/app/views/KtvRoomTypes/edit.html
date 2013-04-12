@@ -2,7 +2,7 @@
 #{set title:'添加包厢' /}
 #{set menu:"ktv_room" /}
 <div class="body">
-#{form @KtvRoomTypes.update() , id:'creationForm',class:"form-horizontal" }
+#{form @KtvRoomTypes.update(ktvRoomType.id) , id:'creationForm',class:"form-horizontal" }
     <div class="bd">
         <h2>${title}</h2>
         #{set action:"edit"/}
