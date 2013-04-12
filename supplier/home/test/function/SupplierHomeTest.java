@@ -4,6 +4,7 @@ import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
 import models.admin.SupplierUser;
 import models.supplier.Supplier;
+import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
@@ -18,7 +19,8 @@ import play.test.FunctionalTest;
 public class SupplierHomeTest extends FunctionalTest {
     SupplierUser supplierUser;
     Supplier supplier;
-    @org.junit.Before
+
+    @Before
     public void setup() {
         FactoryBoy.lazyDelete();
 
@@ -29,22 +31,33 @@ public class SupplierHomeTest extends FunctionalTest {
     }
 
     @Test
-    public void testIndex_ForECoupon() {
-
-        supplierUser.save();
-
-        Http.Response response = GET("/");
-        assertIsOk(response);
-    }
-
-    @Test
-    public void testIndex_v2() {
-        supplierUser.defaultUiVersion = "v2";
-        supplierUser.save();
+    public void testIndexForDefault() {
+        supplier.setProperty(Supplier.SELL_ECOUPON, "1");
+        supplier.setProperty(Supplier.CAN_SALE_REAL, "1");
 
         Http.Response response = GET("/");
         assertStatus(302, response);
-        assertEquals("/ui-version/to/v2", response.getHeader("Location"));
+        assertEquals("/verify", response.getHeader("Location"));
+    }
+
+    @Test
+    public void testIndexForECoupon() {
+        supplier.setProperty(Supplier.SELL_ECOUPON, "1");
+        supplier.setProperty(Supplier.CAN_SALE_REAL, "1");
+
+        Http.Response response = GET("/");
+        assertStatus(302, response);
+        assertEquals("/verify", response.getHeader("Location"));
+    }
+
+    @Test
+    public void testIndexForReal() {
+        supplier.setProperty(Supplier.SELL_ECOUPON, "0");
+        supplier.setProperty(Supplier.CAN_SALE_REAL, "1");
+
+        Http.Response response = GET("/");
+        assertStatus(302, response);
+        assertEquals("/real/download-order-shipping", response.getHeader("Location"));
     }
 
 }

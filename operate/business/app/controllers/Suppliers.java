@@ -13,7 +13,6 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierCategory;
-import models.supplier.SupplierProperty;
 import models.supplier.SupplierStatus;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
@@ -121,9 +120,6 @@ public class Suppliers extends Controller {
         comment = comment.replace("username", admin.loginName);
         comment = comment.replace("password", password);
         SMSUtil.send(comment, admin.mobile, "0000");
-        supplier.setProperty(Supplier.CAN_SALE_REAL, params.get("XX"));
-        supplier.setProperty(Supplier.CAN_SALE_REAL, params.get("XX"));
-        supplier.setProperty(Supplier.CAN_SALE_REAL, params.get("XX"));
         index(null, null, null, null);
     }
 

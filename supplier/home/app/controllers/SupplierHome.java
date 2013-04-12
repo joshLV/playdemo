@@ -9,7 +9,6 @@ import play.mvc.With;
 /**
  * 1.0版，只做维护
  */
-@Deprecated
 @With(SupplierRbac.class)
 public class SupplierHome extends Controller {
 
@@ -18,16 +17,18 @@ public class SupplierHome extends Controller {
 
         SupplierUser supplierUser = SupplierRbac.currentUser();
 
-        if (supplierUser.supplier.getProperty(Supplier.SELL_ECOUPON)) {
-
+        // 有电子券销售
+        if ("1".equals(supplierUser.supplier.getProperty(Supplier.SELL_ECOUPON))) {
+            redirect("/verify");
         }
 
-        // 如果跳转过新验证界面，使用之
-        if ("v2".equals(supplierUser.defaultUiVersion)) {
-            redirect("/ui-version/to/v2");
+        // 只有实物类
+        if ("1".equals(supplierUser.supplier.getProperty(Supplier.CAN_SALE_REAL))) {
+            redirect("/real/download-order-shipping");
         }
 
-        render();
+        // 考虑兼容性，默认到电子券首页
+        redirect("/verify");
     }
 
 }
