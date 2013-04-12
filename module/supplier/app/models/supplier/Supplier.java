@@ -13,7 +13,6 @@ import models.sales.Brand;
 import models.sales.Goods;
 import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
 import play.Play;
 import play.data.validation.Email;
 import play.data.validation.Match;
@@ -38,7 +37,11 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import java.beans.Transient;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 供应商（商户）

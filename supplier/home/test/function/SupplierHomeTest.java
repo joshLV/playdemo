@@ -3,6 +3,7 @@ package function;
 import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
 import models.admin.SupplierUser;
+import models.supplier.Supplier;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
@@ -16,18 +17,20 @@ import play.test.FunctionalTest;
  */
 public class SupplierHomeTest extends FunctionalTest {
     SupplierUser supplierUser;
+    Supplier supplier;
     @org.junit.Before
     public void setup() {
         FactoryBoy.lazyDelete();
 
+        supplier = FactoryBoy.create(Supplier.class);
         supplierUser = FactoryBoy.create(SupplierUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUser.loginName);
     }
 
     @Test
-    public void testIndex_v1() {
-        supplierUser.defaultUiVersion="v1";
+    public void testIndex_ForECoupon() {
+
         supplierUser.save();
 
         Http.Response response = GET("/");
@@ -45,4 +48,3 @@ public class SupplierHomeTest extends FunctionalTest {
     }
 
 }
-    

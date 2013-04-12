@@ -1,6 +1,7 @@
 package controllers;
 
 import models.admin.SupplierUser;
+import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -16,6 +17,10 @@ public class SupplierHome extends Controller {
     public static void index() {
 
         SupplierUser supplierUser = SupplierRbac.currentUser();
+
+        if (supplierUser.supplier.getProperty(Supplier.SELL_ECOUPON)) {
+
+        }
 
         // 如果跳转过新验证界面，使用之
         if ("v2".equals(supplierUser.defaultUiVersion)) {
