@@ -1,17 +1,23 @@
 <div class="field-group">
     <label>适用门店</label>
-#{list items:shops,as:'shop'}
-    <input type="checkbox" name="shop" value=""/>${shop.name}&nbsp;&nbsp;
-#{/list}
+#{if "add".equals(action)}
+    #{list items:shops,as:'shop'}
+        <input type="checkbox" name="priceSchedule.shops.id" value="${shop?.id}"
+               #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}/>${shop.name}&nbsp;&nbsp;
+    #{/list}
+#{/if}
+#{else}
+${priceSchedule.shops.name}
+#{/else}
 </div>
 <div class="field-group">
     <label>可预订日期</label>
     <input type="text" class="time" name="priceSchedule.startDay" onfocus="WdatePicker({readOnly:true})"
-           value="${condition?.consumedAtBegin?.format()}">
+           value="${priceSchedule?.startDay?.format()}">
     <span>到</span>
     <input type="text" class="time"
            name="priceSchedule.endDay"
-           onfocus="WdatePicker({readOnly:true})" value="${condition?.consumedAtEnd?.format()}">
+           onfocus="WdatePicker({readOnly:true})" value="${priceSchedule?.endDay?.format()}">
 </div>
 
 <div class="field-group">
@@ -29,23 +35,30 @@
 
 <div class="field-group">
     <label>适用时段</label>
-    <select name="priceSchedule.startTime" style="width: auto">
+    <select name="priceSchedule.startTime" id="startTime" style="width: auto">
         <option value="08:00">08:00</option>
         <option value="09:00">09:00</option>
         <option value="10:00">10:00</option>
+        <option value="23:00">23:00</option>
     </select>
     <span>到</span>
-    <select name="priceSchedule.endTime" style="width: auto">
-        <option value="08:00">08:00</option>
+    <select name="priceSchedule.endTime" id="endTime" style="width: auto">
         <option value="09:00">09:00</option>
         <option value="10:00">10:00</option>
+        <option value="24:00">24:00</option>
     </select>
 </div>
 <div class="field-group">
     <label>适用包厢</label>
-#{list items:roomTypeList,as:'roomType'}
-    <input type="radio" name="priceSchedule.roomType" value=""/>${roomType.name}&nbsp;&nbsp;
-#{/list}
+#{if "add".equals(action)}
+    #{list items:roomTypeList,as:'roomType'}
+        <input type="radio" name="priceSchedule.roomType.id"
+               value="${roomType.id}" ${priceSchedule?roomType?.id==roomType.id?:'checked':''}/>${roomType.name}&nbsp;&nbsp;
+    #{/list}
+#{/if}
+#{else}
+${priceSchedule.roomType.name}
+#{/else}
 </div>
 
 <div class="field-group">
@@ -55,3 +68,8 @@
 <div class="field-group">
     <input type="submit" class="btn" value="确定"/> <a href="/ktv/room-type">取消</a>
 </div>
+
+<script type="text/javascript">
+    $("#startTime").val("${priceSchedule?.startTime}")
+    $("#endTime").val("${priceSchedule?.endTime}")
+</script>

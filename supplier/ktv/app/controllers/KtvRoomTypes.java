@@ -40,7 +40,7 @@ public class KtvRoomTypes extends Controller {
         KtvRoomType kt = KtvRoomType.findById(id);
         kt.name = ktvRoomType.name;
         kt.save();
-        render();
+        index();
     }
 
     public static void delete(Long id) {

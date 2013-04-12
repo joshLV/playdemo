@@ -4,6 +4,7 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvRoomType;
@@ -31,35 +32,61 @@ public class KtvPriceSchedules extends Controller {
     public static void jsonSearch(Date startDay, Date endDay) {
         List<KtvPriceSchedule> schedules =
                 KtvPriceSchedule.find("startDay <= ? and endDay >= ? or ( startDay <= ? and endDay >= ?  )",
-                startDay, startDay, endDay, endDay).fetch();
+                        startDay, startDay, endDay, endDay).fetch();
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("yyyy-MM-dd").create();
         renderJSON(gson.toJson(schedules));
     }
 
     public static void add() {
+        initParams();
+        render();
+    }
+
+    private static void initParams() {
         Supplier supplier = SupplierRbac.currentUser().supplier;
         List<Shop> shops = Shop.findShopBySupplier(supplier.id);
 
         List<KtvRoomType> roomTypeList = KtvRoomType.findRoomTypeList(supplier);
-        render(shops, roomTypeList);
+        renderArgs.put("shops", shops);
+        renderArgs.put("roomTypeList", roomTypeList);
     }
 
     public static void create(@Valid KtvPriceSchedule priceSchedule, List<String> useWeekDays) {
         priceSchedule.useWeekDay = StringUtils.join(useWeekDays, ",");
+        priceSchedule.createdAt = new Date();
+        priceSchedule.deleted = DeletedStatus.UN_DELETED;
         priceSchedule.save();
         index();
     }
 
     public static void edit(Long id) {
-        render();
+        initParams();
+        KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(id);
+        if (priceSchedule == null) {
+            error("没有该时间段的价格信息！请确认!");
+            return;
+        }
+        String shopIds = ",";
+        if (priceSchedule.shops != null && priceSchedule.shops.size() > 0) {
+            for (Shop shop : priceSchedule.shops) {
+                shopIds += shop.id + ",";
+            }
+        }
+        render(priceSchedule, shopIds);
     }
 
     public static void update(Long id, KtvPriceSchedule priceSchedule) {
-        render();
+        KtvPriceSchedule.update(id, priceSchedule);
+        index();
     }
 
     public static void delete(Long id) {
-        index();
+        KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(id);
+        if (priceSchedule == null) {
+            index();
+            return;
+        }
+        priceSchedule.delete();
 
     }
 }
