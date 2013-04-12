@@ -1,5 +1,9 @@
 package controllers;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import controllers.supplier.SupplierInjector;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvRoomType;
@@ -25,36 +29,11 @@ public class KtvPriceSchedules extends Controller {
     }
 
     public static void jsonSearch(Date startDay, Date endDay) {
-        renderJSON("[\n" +
-                "    {\n" +
-                "        \"startDay\":\"2013-04-11\"," +
-                "        \"endDay\":\"2013-04-16\",\n" +
-                "        \"weekday\":\"1,3,4,5\",\n" +
-                "        \"startTime\":\"10:00\",\n" +
-                "        \"endTime\":\"12:00\",\n" +
-                "        \"id\":\"3\",\n" +
-                "        \"price\":\"30.00\"\n" +
-                "    },\n" +
-                "    {\n" +
-                "        \"startDay\":\"2013-04-08\",\n" +
-                "        \"endDay\":\"2013-04-16\",\n" +
-                "        \"weekday\":\"1,2,3,5\",\n" +
-                "        \"startTime\":\"14:00\",\n" +
-                "        \"endTime\":\"16:00\",\n" +
-                "        \"id\":\"5\",\n" +
-                "        \"price\":\"50.00\"\n" +
-                "    },\n" +
-                "    {\n" +
-                "        \"startDay\":\"2013-04-10\",\n" +
-                "        \"endDay\":\"2013-04-11\",\n" +
-                "        \"weekday\":\"1,2,3,4,5\",\n" +
-                "        \"startTime\":\"18:00\",\n" +
-                "        \"endTime\":\"22:00\",\n" +
-                "        \"id\":\"6\",\n" +
-                "        \"price\":\"60.00\"\n" +
-                "    }\n" +
-                "]");
-
+        List<KtvPriceSchedule> schedules =
+                KtvPriceSchedule.find("startDay <= ? and endDay >= ? or ( startDay <= ? and endDay >= ?  )",
+                startDay, startDay, endDay, endDay).fetch();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("yyyy-MM-dd").create();
+        renderJSON(gson.toJson(schedules));
     }
 
     public static void add() {

@@ -82,7 +82,7 @@ var KTVWeek = (function  () {
             var startDay = new XDate(data[i].startDay);
             var endDay = new XDate(data[i].endDay);
             var diffDays = startDay.diffDays(endDay);
-            var weekdays = data[i].weekday.split(",");
+            var weekdays = data[i].useWeekDay.split(",");
 
             var starTime = Number(data[i].startTime.substring(0, data[i].startTime.indexOf(":")));
             var endTime = Number(data[i].endTime.substring(0, data[i].endTime.indexOf(":")));
@@ -100,7 +100,7 @@ var KTVWeek = (function  () {
                 };
                 //遍历设置中的时间
                 for (var k = starTime; k < endTime; k++) {
-                    var top = (k-9)*40 + 5;
+                    var top = (k-8)*40 + 5;
                     var left = (dayStartsWithMonday(day.getDay())-1)*100 + 5;
                     pricecellsEle.append($("<div>",{
                         "class":"wk-pricecell wk-pricecell-" + color,
