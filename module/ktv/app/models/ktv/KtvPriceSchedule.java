@@ -1,17 +1,11 @@
 package models.ktv;
 
+import com.google.gson.annotations.Expose;
+import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Shop;
 import play.db.jpa.Model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
@@ -37,12 +31,14 @@ public class KtvPriceSchedule extends Model {
      * 开始日期
      */
     @Column(name = "start_day")
+    @Expose
     public Date startDay;
 
     /**
      * 结束日期
      */
     @Column(name = "end_day")
+    @Expose
     public Date endDay;
 
     /**
@@ -51,6 +47,7 @@ public class KtvPriceSchedule extends Model {
      * 默认为1,2,3,4,5,6,7
      */
     @Column(name = "use_week_day")
+    @Expose
     public String useWeekDay;
 
 
@@ -58,17 +55,23 @@ public class KtvPriceSchedule extends Model {
      * 开始时间，如： 09:00
      */
     @Column(name = "start_time")
+    @Expose
     public String startTime;
 
     /**
      * 结束时间，如: 12:00
      */
     @Column(name = "end_time")
+    @Expose
     public String endTime;
+
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
 
     /**
      * 每间每小时的价格
      */
+    @Expose
     public BigDecimal price;
 
     @Column(name = "created_at")
@@ -77,7 +80,7 @@ public class KtvPriceSchedule extends Model {
 
     public static void update(Long id, KtvPriceSchedule schedule) {
         KtvPriceSchedule updPriceSchedule = KtvPriceSchedule.findById(id);
-        updPriceSchedule.useWeekDay=schedule.useWeekDay;
+        updPriceSchedule.useWeekDay = schedule.useWeekDay;
         updPriceSchedule.startDay = schedule.startDay;
         updPriceSchedule.endDay = schedule.endDay;
         updPriceSchedule.startTime = schedule.startTime;

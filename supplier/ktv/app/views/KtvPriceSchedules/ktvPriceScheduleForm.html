@@ -27,7 +27,7 @@ ${priceSchedule.shops.name}
     }%
 #{list items:1..7, as:'i'}
     <input type="checkbox" name="useWeekDays" class="input-medium"
-           value="${i}" #{if priceSchedule?.useWeekDay?.contains(String.valueOf(i))}checked#{/if}/>
+           value="${i}" #{if priceSchedule?.useWeekDay?.contains(String.valueOf(i)) || priceSchedule==null}checked#{/if}/>
     星期${useWeekNames[i-1]}
 #{/list}
     <span class="error">#{error 'priceSchedules.useWeekDayAll' /}</span>
@@ -35,14 +35,14 @@ ${priceSchedule.shops.name}
 
 <div class="field-group">
     <label>适用时段</label>
-    <select name="priceSchedule.startTime" style="width: auto">
+    <select name="priceSchedule.startTime" id="startTime" style="width: auto">
         <option value="08:00">08:00</option>
         <option value="09:00">09:00</option>
         <option value="10:00">10:00</option>
         <option value="23:00">23:00</option>
     </select>
     <span>到</span>
-    <select name="priceSchedule.endTime" style="width: auto">
+    <select name="priceSchedule.endTime" id="endTime" style="width: auto">
         <option value="09:00">09:00</option>
         <option value="10:00">10:00</option>
         <option value="24:00">24:00</option>
@@ -70,4 +70,6 @@ ${priceSchedule.roomType.name}
 </div>
 
 <script type="text/javascript">
+    $("#startTime").val("${priceSchedule?.startTime}")
+    $("#endTime").val("${priceSchedule?.endTime}")
 </script>
