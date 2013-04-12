@@ -44,6 +44,8 @@
                         permissions="SALES_REPORT"/>
             <navigation key="consumer_flow_reports" action="OperationReports.showConsumerFlowReport" text="客流报表"
                         permissions="OPERATION_REPORT"/>
+            <navigation key="channel_sales_daily_reports" action="OperationReports.showChannelSalesDailyReport" text="渠道销售日报表"
+                        permissions="OPERATION_REPORT"/>
         </navigation>
     </navigation>
 

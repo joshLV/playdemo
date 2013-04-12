@@ -1,15 +1,16 @@
 package utils;
 
+import play.Logger;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import play.Logger;
 
 public class CrossTableUtil {
     public static final String KEY_COLUMN = "RowKey";
-    
+
     public static <T, V> List<Map<String, Object>> generateCrossTable(List<T> list, CrossTableConverter<T, V> converter) {
         List<Map<String, Object>> resultMapList = new ArrayList<>();
         LinkedHashMap<String, Map<String, Object>> mappedCrossTable = generateMappedCrossTable(
