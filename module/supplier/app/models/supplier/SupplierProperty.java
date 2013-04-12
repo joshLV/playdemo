@@ -22,25 +22,25 @@ public class SupplierProperty extends Model {
     /**
      * 关键字
      */
-    @Column(name="supplier_key")
-    public String key;
+    @Column(name = "property_name")
+    public String name;
 
     /**
      * 值
      */
-    @Column(name = "supplier_value")
-    public boolean value = false;
+    @Column(name = "property_value")
+    public String value;
 
-    public SupplierProperty(Supplier supplier, String key, boolean value) {
+    public SupplierProperty(Supplier supplier, String name, String value) {
         this.supplier = supplier;
-        this.key = key;
+        this.name = name;
         this.value = value;
     }
 
     /**
      * 取得指定商户的菜单控制信息
      */
-    public static SupplierProperty findByKey(Long id, String key) {
-        return SupplierProperty.find("supplier.id=? and key=?", id, key).first();
+    public static SupplierProperty findProperty(Supplier supplier, String propertyName) {
+        return SupplierProperty.find("supplier=? and name=?", supplier, propertyName).first();
     }
 }

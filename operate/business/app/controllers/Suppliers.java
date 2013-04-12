@@ -131,20 +131,10 @@ public class Suppliers extends Controller {
      */
     private static void setSupplierProperty(Long id) {
         Supplier supplier = Supplier.findById(id);
-        List<String> keys = new ArrayList<>();
-        keys.add(Supplier.CAN_SALE_REAL);
-        keys.add(Supplier.SELL_ECOUPON);
-        keys.add(Supplier.KTV_SUPPLIER);
-        for (String key : keys) {
-            String value = request.params.get(key);
-            SupplierProperty menuSetting = SupplierProperty.findByKey(id, key);
-            if (menuSetting == null) {
-                new SupplierProperty(supplier, key, Boolean.valueOf(value)).save();
-            } else {
-                menuSetting.value = Boolean.valueOf(value);
-                menuSetting.save();
-            }
-        }
+        supplier.setProperty(Supplier.CAN_SALE_REAL,request.params.get(Supplier.CAN_SALE_REAL));
+        supplier.setProperty(Supplier.SELL_ECOUPON,request.params.get(Supplier.SELL_ECOUPON));
+        supplier.setProperty(Supplier.KTV_SUPPLIER,request.params.get(Supplier.KTV_SUPPLIER));
+
     }
 
     private static void redirectUrl(int page) {

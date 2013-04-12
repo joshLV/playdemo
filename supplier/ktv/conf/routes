@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                                      KtvRoomTypes.index
+GET     /                                           KtvRoomTypes.index
 
 # [v2]ktvRoom
 GET     /ktv/room-type                              KtvRoomTypes.index
