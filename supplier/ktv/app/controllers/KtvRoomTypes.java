@@ -22,14 +22,12 @@ public class KtvRoomTypes extends Controller {
     }
 
     public static void add() {
-
         render();
     }
 
     public static void create(KtvRoomType ktvRoomType) {
         ktvRoomType.supplier = SupplierRbac.currentUser().supplier;
         ktvRoomType.save();
-        new KtvRoom(ktvRoomType).save();
         index();
     }
 
@@ -50,8 +48,6 @@ public class KtvRoomTypes extends Controller {
         if (ktvRoomType == null) {
             return;
         }
-        KtvRoom ktvRoom = KtvRoom.findById(ktvRoomType.id);
-        ktvRoom.delete();
         ktvRoomType.delete();
         index();
 

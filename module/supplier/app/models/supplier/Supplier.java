@@ -301,12 +301,24 @@ public class Supplier extends Model {
     }
 
     @Transient
-    public boolean getProperty(String key) {
-        SupplierProperty supplierProperty = SupplierProperty.find("supplier.id=? and key=?", this.id, key).first();
+    public String getProperty(String propertyName) {
+        SupplierProperty supplierProperty = SupplierProperty.find("supplier=? and name=?", this, propertyName).first();
         if (supplierProperty == null) {
-            return false;
+            return "0";
         }
         return supplierProperty.value;
+    }
+
+    @Transient
+    public void setProperty(String propertyName, String value) {
+        SupplierProperty property = SupplierProperty.findProperty(this, propertyName);
+        if (property == null) {
+            new SupplierProperty(this, propertyName, value).save();
+        } else {
+            property.value = value;
+            property.save();
+        }
+
     }
 
     /**
@@ -383,8 +395,8 @@ public class Supplier extends Model {
         sp.email = supplier.email;
         sp.accountLeaderMobile = supplier.accountLeaderMobile;
 //        sp.salesEmail = supplier.salesEmail;
-        sp.canSaleReal = supplier.canSaleReal;
-        sp.sellECoupon = supplier.sellECoupon;
+//        sp.canSaleReal = supplier.canSaleReal;
+//        sp.sellECoupon = supplier.sellECoupon;
         sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
@@ -627,4 +639,5 @@ public class Supplier extends Model {
         }
         return SHIHUI;
     }
+
 }

@@ -2,10 +2,12 @@
 #{set title:'新增门店' /}
 #{set menu:"shops" /}
 #{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/shops-add.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <div class="bd">
     <h2>${title}</h2>
+
     <form class="form-horizontal" id="shopForm" action="@{SupplierShops.create()}" method="post">
     #{include '/SupplierShops/shopForm.html' /}
     </form>

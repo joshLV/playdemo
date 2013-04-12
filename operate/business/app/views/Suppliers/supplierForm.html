@@ -64,18 +64,18 @@ error:'supplier.operator'}
 
 <div class="control-group">
     <label class="control-label">商户菜单控制</label>
-  %{
-    sellECoupon=supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON)?:'false';
-    canSaleReal=supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL)?:'false';
-    ktvSupplier=supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER)?:'false';
+%{
+    sellECoupon=supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON)?:'0';
+    canSaleReal=supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL)?:'0';
+    ktvSupplier=supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER)?:'0';
     }%
     <div class="controls">
         <input type="checkbox" name="sellECoupon" id="supplier_sellECoupon"
-               value="${sellECoupon}"${sellECoupon==true?'checked':''}/>&{'supplier.sellECoupon'}&nbsp;&nbsp;
+               value="${sellECoupon}"${"1".equals(sellECoupon)?'checked':''}/>&{'supplier.sellECoupon'}&nbsp;&nbsp;
         <input type="checkbox" name="canSaleReal" id="supplier_canSaleReal"
-               value="${canSaleReal}" ${canSaleReal==true?'checked':''}/> &{'supplier.canSaleReal'}&nbsp;&nbsp;
+               value="${canSaleReal}" ${"1".equals(canSaleReal)?'checked':''}/> &{'supplier.canSaleReal'}&nbsp;&nbsp;
         <input type="checkbox" name="ktvSupplier" id="supplier_ktvSupplier"
-               value="${ktvSupplier}" ${ktvSupplier==true?'checked':''}/>&{'supplier.ktvSupplier'}
+               value="${ktvSupplier}" ${"1".equals(ktvSupplier)?'checked':''}/>&{'supplier.ktvSupplier'}
     </div>
 </div>
 #{layout_operate.radio2Field name:'supplier.showSellingState', value:supplier?.showSellingState?:false, value1:true, value2:false/}
@@ -98,23 +98,23 @@ error:'supplier.operator'}
     $(function () {
         $("#supplier_sellECoupon").click(function () {
             if (this.checked) {
-                $("#supplier_sellECoupon").val(true)
+                $("#supplier_sellECoupon").val("1")
             } else {
-                $("#supplier_sellECoupon").val(false)
+                $("#supplier_sellECoupon").val("0")
             }
         });
         $("#supplier_canSaleReal").click(function () {
             if (this.checked) {
-                $("#supplier_canSaleReal").val(true)
+                $("#supplier_canSaleReal").val("1")
             } else {
-                $("#supplier_canSaleReal").val(false)
+                $("#supplier_canSaleReal").val("0")
             }
         });
         $("#supplier_ktvSupplier").click(function () {
             if (this.checked) {
-                $("#supplier_ktvSupplier").val(true)
+                $("#supplier_ktvSupplier").val("1")
             } else {
-                $("#supplier_ktvSupplier").val(false)
+                $("#supplier_ktvSupplier").val("0")
             }
         });
     });

@@ -316,4 +316,6 @@ public class Shop extends Model {
     public static List<Shop> getIndependentShops(Long supplierId) {
         return find("supplierId=? and independentClearing=?", supplierId, true).fetch();
     }
+
+
 }

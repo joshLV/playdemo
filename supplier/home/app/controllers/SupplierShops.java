@@ -2,10 +2,14 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
+import models.ktv.KtvRoom;
+import models.ktv.KtvRoomType;
 import models.sales.Area;
 import models.sales.Shop;
+import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.data.binding.As;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
@@ -41,7 +45,7 @@ public class SupplierShops extends Controller {
      *
      * @param shop 门店对象
      */
-    public static void create(@Valid Shop shop) {
+    public static void create(@Valid Shop shop, List<Long> roomTypeIds) {
         if (Validation.hasErrors()) {
             renderParams(shop);
             render("SupplierShops/add.html", shop);
@@ -50,6 +54,12 @@ public class SupplierShops extends Controller {
         shop.deleted = DeletedStatus.UN_DELETED;
         shop.createdAt = new Date();
         shop.create();
+        Supplier supplier = SupplierRbac.currentUser().supplier;
+        //有ktv属性才可以编辑
+        if ("1".equals(supplier.getProperty(Supplier.KTV_SUPPLIER))) {
+            //添加ktv包厢数量
+            addKtvRooms(roomTypeIds, shop);
+        }
         index(null);
     }
 
@@ -63,6 +73,12 @@ public class SupplierShops extends Controller {
     }
 
     private static void renderParams(Shop shop) {
+
+        Supplier supplier = SupplierRbac.currentUser().supplier;
+        List<KtvRoomType> ktvRoomTypeList = KtvRoomType.findRoomTypeList(supplier);
+        renderArgs.put("ktvRoomTypeList", ktvRoomTypeList);
+        renderArgs.put("supplier", supplier);
+
         Area district = Area.findParent(shop.areaId);
         if (StringUtils.isEmpty(shop.areaId) || district == null) {
             //城市列表
@@ -88,6 +104,7 @@ public class SupplierShops extends Controller {
         if (shop.areaId == null && areas != null && areas.size() > 0 && areas.get(0) != null) {
             shop.areaId = areas.get(0).id;
         }
+
         renderArgs.put("districts", districts);
         renderArgs.put("areas", areas);
         renderArgs.put("cities", cities);
@@ -109,7 +126,7 @@ public class SupplierShops extends Controller {
      * @param id   门店标识
      * @param shop 修改后的门店
      */
-    public static void update(long id, @Valid Shop shop) {
+    public static void update(long id, @Valid Shop shop, List<Long> roomTypeIds) {
         Shop sp = Shop.findById(id);
         if (Validation.hasErrors()) {
             shop.id = id;
@@ -126,7 +143,32 @@ public class SupplierShops extends Controller {
         sp.phone = shop.phone;
         sp.updatedAt = new Date();
         sp.save();
+
+        Supplier supplier = SupplierRbac.currentUser().supplier;
+        //有ktv属性才可以编辑
+        if ("1".equals(supplier.getProperty(Supplier.KTV_SUPPLIER))) {
+            addKtvRooms(roomTypeIds, sp);
+        }
+
         index(null);
+    }
+
+    /**
+     * 添加或修改ktv包厢数量
+     */
+    private static void addKtvRooms(List<Long> roomTypeIds, Shop sp) {
+        for (Long roomTypeId : roomTypeIds) {
+            KtvRoomType ktvRoomType = KtvRoomType.findById(roomTypeId);
+            int number = Integer.parseInt(params.get("roomTypeNumber" + roomTypeId));
+            for (int i = 0; i < number; i++) {
+//                KtvRoom ktvRoom = KtvRoom.findKtvRoom(ktvRoomType, sp);
+//                if (ktvRoom == null) {
+                    new KtvRoom(ktvRoomType, sp).save();
+//                } else {
+//                    ktvRoom.delete();
+//                }
+            }
+        }
     }
 
     /**
