@@ -75,7 +75,8 @@ public class KtvPriceSchedules extends Controller {
         render(priceSchedule, shopIds);
     }
 
-    public static void update(Long id, KtvPriceSchedule priceSchedule) {
+    public static void update(Long id, KtvPriceSchedule priceSchedule, List<String> useWeekDays) {
+        priceSchedule.useWeekDay = StringUtils.join(useWeekDays, ",");
         KtvPriceSchedule.update(id, priceSchedule);
         index();
     }

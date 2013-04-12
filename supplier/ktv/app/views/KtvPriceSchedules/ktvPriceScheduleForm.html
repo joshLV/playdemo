@@ -27,7 +27,7 @@ ${priceSchedule.shops.name}
     }%
 #{list items:1..7, as:'i'}
     <input type="checkbox" name="useWeekDays" class="input-medium"
-           value="${i}" #{if priceSchedule?.useWeekDay?.contains(String.valueOf(i))}checked#{/if}/>
+           value="${i}" #{if priceSchedule?.useWeekDay?.contains(String.valueOf(i)) || priceSchedule==null}checked#{/if}/>
     星期${useWeekNames[i-1]}
 #{/list}
     <span class="error">#{error 'priceSchedules.useWeekDayAll' /}</span>
@@ -72,4 +72,5 @@ ${priceSchedule.roomType.name}
 <script type="text/javascript">
     $("#startTime").val("${priceSchedule?.startTime}")
     $("#endTime").val("${priceSchedule?.endTime}")
+
 </script>
