@@ -32,6 +32,7 @@ public class KtvPriceSchedules extends Controller {
                 "        \"weekday\":\"1,3,4,5\",\n" +
                 "        \"startTime\":\"10:00\",\n" +
                 "        \"endTime\":\"12:00\",\n" +
+                "        \"id\":\"3\",\n" +
                 "        \"price\":\"30.00\"\n" +
                 "    },\n" +
                 "    {\n" +
@@ -40,6 +41,7 @@ public class KtvPriceSchedules extends Controller {
                 "        \"weekday\":\"1,2,3,5\",\n" +
                 "        \"startTime\":\"14:00\",\n" +
                 "        \"endTime\":\"16:00\",\n" +
+                "        \"id\":\"5\",\n" +
                 "        \"price\":\"50.00\"\n" +
                 "    },\n" +
                 "    {\n" +
@@ -48,6 +50,7 @@ public class KtvPriceSchedules extends Controller {
                 "        \"weekday\":\"1,2,3,4,5\",\n" +
                 "        \"startTime\":\"18:00\",\n" +
                 "        \"endTime\":\"22:00\",\n" +
+                "        \"id\":\"6\",\n" +
                 "        \"price\":\"60.00\"\n" +
                 "    }\n" +
                 "]");
