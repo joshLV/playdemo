@@ -5,6 +5,7 @@ import models.order.Order;
 import models.order.OrderItems;
 import models.order.Vendor;
 import models.supplier.Supplier;
+import play.Logger;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -18,7 +19,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import java.beans.Transient;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -121,20 +121,21 @@ public class InventoryStock extends Model {
     /**
      * 统计未出库实物订单的Sku出库数量.
      *
-     * @param takeoutSkuMap     待出库sku及数量
-     * @param deficientOrderMap 因缺货而无法发货的待发货订单
+     * @param preparingTakeoutSkuMap    总的待出库货品及数量
+     * @param deficientOrders      因缺货而无法发货的待发货订单
      * @return
      */
     public static Map<Sku, Long> statisticOutCount(Map<Sku, Long> preparingTakeoutSkuMap, List<Order> deficientOrders) {
         Map<Sku, Long> takeoutSkuMap = new HashMap<>();
         for (Sku sku : preparingTakeoutSkuMap.keySet()) {
+            Logger.info("统计未出库实物订单的Sku出库数量 - SKU:" + sku.name + ", 数量:" + preparingTakeoutSkuMap.get(sku));
             takeoutSkuMap.put(sku, preparingTakeoutSkuMap.get(sku));
         }
         for (Order deficientOrder : deficientOrders) {
             //减少出库数量
             for (OrderItems orderItem : deficientOrder.orderItems) {
                 Long count = takeoutSkuMap.get(orderItem.goods.sku);
-
+                Logger.info("商品:" + orderItem.goods.shortName + " 待出库数量:" + count);
                 if (count == null) {
                     continue;
                 }
@@ -149,9 +150,7 @@ public class InventoryStock extends Model {
     /**
      * 根据缺货商品数，返回相应的因缺货而无法发货的待发货订单.
      *
-     * @param takeoutSkuMap          待出库sku及数量
      * @param deficientOrderItemList 缺货货品对应的订单项
-     * @param toDate                 截止时间
      * @return
      */
     public static Map<Sku, List<Order>> getDeficientOrders(List<OrderItems> deficientOrderItemList) {
@@ -192,8 +191,13 @@ public class InventoryStock extends Model {
         if (deficientCountMap.size() == 0) {
             return new ArrayList<>();
         }
+
+        for (Sku sku : deficientCountMap.keySet()) {
+            Logger.info("getDeficientOrderItemList -  SKU:" + sku.name + ", count:" + deficientCountMap.get(sku));
+        }
+
         //提取缺货货品对应的所有需发货的订单项
-        return OrderItems.findPaid(deficientCountMap, toDate);
+        return OrderItems.findDeficientOrderItemList(deficientCountMap, toDate);
     }
 
     public static List<Order> getOrderListByItem(List<OrderItems> orderItems) {

@@ -18,6 +18,7 @@ import models.sales.Sku;
 import models.supplier.Supplier;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.solr.Solr;
@@ -40,6 +41,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -412,7 +414,7 @@ public class OrderItems extends Model {
      * @param toDate
      * @return
      */
-    public static List<OrderItems> findPaid(Map<Sku, Long> deficientCountMap, Date toDate) {
+    public static List<OrderItems> findDeficientOrderItemList(Map<Sku, Long> deficientCountMap, Date toDate) {
         //获取缺货货品的相关的所有的订单项
         List<OrderItems> allOrderItems = getAllPaidOrderItemListInSkus(deficientCountMap.keySet(), toDate);
 
@@ -427,6 +429,8 @@ public class OrderItems extends Model {
                 continue;
             }
             addedCount = (addedCount == null) ? 0L : addedCount;
+
+            Logger.info("OrderItems.findDeficientOrderItemList sku:" + sku.name + ", addedCount:" + addedCount);
 
             ArrayList<OrderItems> deficientItemSet = deficientOrderItemMap.get(sku);
             ArrayList<OrderItems> items = null;
@@ -470,9 +474,9 @@ public class OrderItems extends Model {
     }
 
     /**
-     * 获取指定货品的付款状态的订单项.
+     * 获取视惠指定货品的付款状态的订单项.
      *
-     * @param skuMap
+     * @param skus
      * @param toDate
      * @return
      */
@@ -490,8 +494,9 @@ public class OrderItems extends Model {
         query.setParameter("supplierId", Supplier.getShihui().id);
         query.setParameter("materialType", MaterialType.REAL);
         query.setParameter("toDate", toDate);
+        Iterator<Sku> iterator = skus.iterator();
         for (int i = 0; i < skus.size(); i++) {
-            query.setParameter("sku" + i, skus.iterator().next());
+            query.setParameter("sku" + i, iterator.next());
         }
         return query.getResultList();
     }

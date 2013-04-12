@@ -8,9 +8,12 @@ import models.resale.Resaler;
 import models.sales.Brand;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class OrdersCondition {
     public Map<String, Object> paramsMap = new HashMap<>();
@@ -123,7 +126,7 @@ public class OrdersCondition {
             paramsMap.put("payMethod", payMethod);
         }
         if (brandId != 0 && brandId != -1) {
-            sql.append("and o.id in (select o.id from o.orderItems oi where oi.goods.brand =:brand)");
+            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.brand =:brand)");
             Brand brand = new Brand();
             brand.id = brandId;
             paramsMap.put("brand", brand);

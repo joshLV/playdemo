@@ -76,9 +76,9 @@ public class OperateReportsTest extends FunctionalTest {
         platformIncomingAccount.amount = new BigDecimal(100);
         platformIncomingAccount.save();
 
-        OperateUser user = FactoryBoy.create(OperateUser.class);
+        OperateUser operateUser = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
-        Security.setLoginUserForTest(user.loginName);
+        Security.setLoginUserForTest(operateUser.loginName);
     }
 
     @After
