@@ -1,0 +1,48 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'渠道销售汇总日报表' /}
+#{include '/share/nav.html' /}
+
+<form class="well form-inline" action="@{OperationReports.showChannelSalesDailyReport()}" method="GET" id="search_form"
+      name="search_form" xmlns="http://www.w3.org/1999/html">
+    起止日期
+    <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+        <input class="input-small" id="condition_begin" name="condition.beginAt" size="16" type="text"
+               value="${condition?.beginAt?.format()}">
+        <span class="add-on"><i class="icon-th"></i></span>
+    </div>
+    -
+    <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+        <input class="input-small" id="condition_end" name="condition.endAt" size="16" type="text"
+               value="${condition?.endAt?.format()}">
+        <span class="add-on"><i class="icon-th"></i></span>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary" id="search">搜索</button>
+</form>
+
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <th width="10px">日期</th>
+    <th width="10px">一号店</th>
+    <th width="10px">当当</th>
+    <th width="10px">京东</th>
+    <th width="10px">聚划算</th>
+    <th width="10px">58</th>
+    <th width="10px">一百券</th>
+    </thead>
+
+#{paginate.list items:reportPage, as:'report'}
+    <tr>
+        <td>
+
+        </td>
+    </tr>
+#{/paginate.list}
+</table>
+<div class="pagination">
+    <ul>
+    #{paginate.controls items:reportPage /}
+    </ul>
+</div>
+

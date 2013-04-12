@@ -33,8 +33,17 @@ public class OperationReports extends Controller {
     }
 
     @ActiveNavigation("channel_sales_daily_reports")
-    public static void showChannelSalesDailyReport() {
+    public static void showChannelSalesDailyReport(ChannelSalesDailyReportCondition condition) {
+
         int pageNumber = getPageNumber();
+        if (condition == null) {
+            condition = new ChannelSalesDailyReportCondition();
+        }
+        System.out.println(condition.beginAt + "《=========condition.beginAt:");
+        System.out.println(condition.endAt + "《=========condition.endAt:");
+        List<ChannelSalesDailyReport> resultList = ChannelSalesDailyReport.query(condition);
+        System.out.println(resultList.size() + "《=========resultList.size():");
+
         render();
     }
 
