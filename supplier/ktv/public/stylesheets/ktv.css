@@ -1,0 +1,151 @@
+.wk-ktvwrapper {
+    font-size: 12px;
+    font-family: Arial,sans-serif;
+    color: #555;
+    font-weight: normal !important;
+    width: 760px;
+    background-color: #fff;
+}
+.wk-ktvwrapper-template {
+    display: none;
+}
+.wk-border {
+    border-bottom: 1px solid #ddd;
+    margin-right: 16px;
+}
+.wk-mainwrapper, .wk-topwrapper {
+    position: relative;
+}
+.wk-topwrapper {
+    z-index: 1;
+    background-color: #fff;
+}
+.wk-dayname {
+    font-weight: normal;
+    padding: 4px;
+}
+.wk-weektop {
+    table-layout: fixed;
+    height: 40px;
+    width: 100%;
+}
+.wk-timeprices {
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    table-layout: fixed;
+    height: 640px;
+    width: 100%;
+    margin-top: -1px;
+}
+.wk-spanningwrapper{
+    margin: 1px 0 0 1px;
+    position: relative;
+}
+.wk-hourmarkers {
+    position: absolute;
+    width: 100%;
+}
+.wk-markercell {
+    height: 40px;
+}
+.wk-dualmarker {
+    border-top: 1px solid #ddd;
+    font-size: 1px;
+    height: 19px;
+    margin-bottom: 19px;
+}
+.wk-times-pri {
+    border-left: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+}
+.wk-time-pri {
+    height:39px;
+    border-bottom:1px solid #ddd;
+    padding-right:2px;
+    text-align: right;
+}
+.wk-time-pri-last {
+    border-bottom:none;
+}
+.wk-col {
+    border-left: 1px solid #ddd;
+    vertical-align: top;
+}
+.wk-col-pricewrapper {
+    position: relative;
+    cursor: default;
+    height:640px;
+    margin-bottom:-640px;
+}
+.wk-pricecells {
+    position: absolute;
+    top: 0;
+    left: 60px;
+}
+.wk-pricecell {
+    position: absolute;
+    width: 90px;
+    height: 30px;
+    line-height: 30px;
+    color: #fff;
+    text-align: center;
+    z-index: 10;
+    cursor: pointer;
+}
+.wk-pricecell-carrot{
+    background-color: #e67e22;
+}
+.wk-pricecell-alizarin {
+    background-color: #e74c3c;
+}
+.wk-pricecell-emerland {
+    background-color: #2ecc71;
+}
+.wk-pricecell-amethyst{
+    background-color: #9b59b6;
+}
+
+.wk-pagination {
+    position: relative;
+    height: 30px;
+    border-bottom: 1px solid #ddd;
+    padding: 7px 0;
+}
+.wk-topLeftNav {
+    position: absolute;
+    left: 0;
+}
+.wk-topRightNav {
+    position: absolute;
+    right: 0;
+}
+.wk-button {
+    background-color: #f3f3f3;
+    border: 1px solid #dcdcdc;
+    border: 1px solid rgba(0,0,0,0.1);
+    color: #444;
+    cursor: pointer;
+
+    padding: 6px 8px;
+    outline: none;
+    font-size: 14px;
+    text-align: center;
+    display: inline-block;
+}
+a.wk-button {
+    text-decoration: none;
+}
+.wk-button-disabled {
+    background: #f2f2f2;
+    color: #b8b8b8;
+    border-color:#f3f3f3;
+}
+.wk-button-previous {
+    margin-left: 7px;
+    width: 25px;
+}
+.wk-button-next {
+    margin-left: -1px;
+    width: 25px;
+}
+
