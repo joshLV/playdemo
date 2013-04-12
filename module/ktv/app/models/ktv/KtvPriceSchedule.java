@@ -2,17 +2,10 @@ package models.ktv;
 
 import com.google.gson.annotations.Expose;
 import models.sales.Shop;
+import play.db.jpa.GenericModel;
 import play.db.jpa.Model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
@@ -22,7 +15,20 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "ktv_price_schedules")
-public class KtvPriceSchedule extends Model {
+public class KtvPriceSchedule extends GenericModel {
+    @Id
+    @GeneratedValue
+    @Expose
+    public Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public Object _key() {
+        return getId();
+    }
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "ktv_price_schedule_shops",
