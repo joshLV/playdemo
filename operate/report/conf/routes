@@ -64,6 +64,7 @@ GET     /consumer_flow_report_excel                     OperationReports.consume
 
 #渠道销售汇总日报表
 GET     /channel_sales_daily_report                           OperationReports.showChannelSalesDailyReport
+GET     /channel-sales-daily-report-excel                           OperationReports.channelSalesDailyReportExcelOut
 
 
 

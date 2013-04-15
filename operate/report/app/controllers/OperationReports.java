@@ -1059,7 +1059,7 @@ public class OperationReports extends Controller {
         }
 
         if (hasRight) {
-            render("OperationReports/peopleEffectReportWithPrivilegeExcelOut.xls", peopleEffectReportList);
+            render("30OperationReports/peopleEffectReportWithPrivilegeExcelOut.xls", peopleEffectReportList);
         }
 
         render(peopleEffectReportList);
@@ -1095,6 +1095,75 @@ public class OperationReports extends Controller {
         render(peopleEffectReportList);
     }
 
+    public static void channelSalesDailyReportExcelOut(ChannelSalesDailyReportCondition condition) {
+        int pageNumber = getPageNumber();
+        if (condition == null) {
+            condition = new ChannelSalesDailyReportCondition();
+        }
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "渠道销售汇总日报表_" + System.currentTimeMillis() + ".xls");
+        List<ChannelSalesDailyReport> resultList = ChannelSalesDailyReport.query(condition);
+        Collections.sort(resultList);
+        List<Map<String, Object>> reportPage = CrossTableUtil.generateCrossTable(resultList, converter);
+        ReportPartner[] partners = ReportPartner.values();
+
+        List<ChartDataForChannelSalesDailyReport> chartList = new LinkedList<>();
+        ChartDataForChannelSalesDailyReport tempChartReport;
+        for (Map<String, Object> r : reportPage) {
+            tempChartReport = new ChartDataForChannelSalesDailyReport();
+            for (ReportPartner p : partners) {
+                ChannelSalesDailyReport tempReport = (ChannelSalesDailyReport) r.get(p.loginName);
+                String date = (String) r.get("RowKey");
+                tempChartReport.date = date;
+                if (tempReport != null) {
+                    switch (p.codeName()) {
+                        case "DD":
+                            tempChartReport.DDNetSalesAmount = tempReport.netSalesAmount.setScale(2, BigDecimal.ROUND_HALF_UP);
+                            break;
+                        case "JD":
+                            tempChartReport.JDNetSalesAmount = tempReport.netSalesAmount.setScale(2, BigDecimal.ROUND_HALF_UP);
+                            break;
+                        case "TB":
+                            tempChartReport.TBNetSalesAmount = tempReport.netSalesAmount.setScale(2, BigDecimal.ROUND_HALF_UP);
+                            break;
+                        case "WB":
+                            tempChartReport.WBNetSalesAmount = tempReport.netSalesAmount.setScale(2, BigDecimal.ROUND_HALF_UP);
+                            break;
+                        case "YHD":
+                            tempChartReport.YHDNetSalesAmount = tempReport.netSalesAmount.setScale(2, BigDecimal.ROUND_HALF_UP);
+                            break;
+                        case "YBQ":
+                            tempChartReport.YBQNetSalesAmount = tempReport.netSalesAmount.setScale(2, BigDecimal.ROUND_HALF_UP);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            chartList.add(tempChartReport);
+        }
+        for (ChartDataForChannelSalesDailyReport r : chartList) {
+            if (r.YHDNetSalesAmount == null) {
+                r.YHDNetSalesAmount = BigDecimal.ZERO;
+            }
+            if (r.WBNetSalesAmount == null) {
+                r.WBNetSalesAmount = BigDecimal.ZERO;
+            }
+            if (r.TBNetSalesAmount == null) {
+                r.TBNetSalesAmount = BigDecimal.ZERO;
+            }
+            if (r.JDNetSalesAmount == null) {
+                r.JDNetSalesAmount = BigDecimal.ZERO;
+            }
+            if (r.YBQNetSalesAmount == null) {
+                r.YBQNetSalesAmount = BigDecimal.ZERO;
+            }
+            if (r.DDNetSalesAmount == null) {
+                r.DDNetSalesAmount = BigDecimal.ZERO;
+            }
+        }
+        render(chartList);
+    }
 
     public static void netSalesReportExcelOut(SalesOrderItemReportCondition condition, String desc) {
         if (condition == null) {
