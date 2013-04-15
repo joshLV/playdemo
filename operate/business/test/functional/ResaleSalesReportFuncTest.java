@@ -4,7 +4,6 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.OperateResaleSalesReport;
-import models.accounts.AccountType;
 import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.Order;
@@ -63,7 +62,6 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
                 target.status = OrderStatus.PAID;
                 target.paidAt = new Date();
                 target.userId = FactoryBoy.lastOrCreate(Resaler.class).id;
-                target.userType = AccountType.RESALER;
             }
         });
         FactoryBoy.create(ECoupon.class);
@@ -134,7 +132,6 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
                 target.status = OrderStatus.PAID;
                 target.paidAt = new Date();
                 target.userId = FactoryBoy.lastOrCreate(Resaler.class).id;
-                target.userType = AccountType.RESALER;
             }
         });
         FactoryBoy.create(ECoupon.class);

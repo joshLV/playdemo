@@ -308,9 +308,7 @@ public class Order extends Model {
      * @param userType
      */
     private Order(Long userId, AccountType userType) {
-        this.userId = userId;
-        this.userType = userType;
-
+        // FIXME: 检查一下新浪微博钱包 是调用哪个接口
         if (userType == AccountType.CONSUMER) {
             User user = User.findById(userId);
             UserInfo userInfo = UserInfo.findByUser(user);
@@ -318,6 +316,11 @@ public class Order extends Model {
                 this.buyerPhone = userInfo.phone;
             }
             this.buyerMobile = user.mobile;
+            // 网站类型
+            this.consumerId = userId;
+            this.userId = Resaler.getYibaiquan().id;
+        } else {
+            this.userId = userId;   //分销商
         }
 
         this.status = OrderStatus.UNPAID;
@@ -531,10 +534,19 @@ public class Order extends Model {
         this.freight = FREIGHT;
     }
 
-
+    /**
+     * 这个方法只被测试使用
+     *
+     * @param userId
+     * @param accountType
+     */
     public void setUser(long userId, AccountType accountType) {
-        this.userId = userId;
-        this.userType = accountType;
+        if (accountType == AccountType.CONSUMER) {
+            this.consumerId = userId;
+            this.userId = Resaler.getYibaiquan().id;
+        } else {
+            this.userId = userId;
+        }
         this.save();
     }
 

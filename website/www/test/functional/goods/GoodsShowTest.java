@@ -1,30 +1,28 @@
 package functional.goods;
 
-import models.accounts.AccountType;
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
+import factory.resale.ResalerFactory;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.Order;
+import models.resale.Resaler;
 import models.sales.Brand;
 import models.sales.Goods;
 import models.sales.GoodsStatus;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import util.DateHelper;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-
 public class GoodsShowTest extends FunctionalTest {
     Goods goods;
     Brand brand;
+    Resaler yibaiquanResaler;
 
     @Before
     public void setup() {
@@ -35,6 +33,7 @@ public class GoodsShowTest extends FunctionalTest {
         goods.beginOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(goods.effectiveAt, 5));
         goods.endOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(goods.expireAt, 5));
         goods.save();
+        yibaiquanResaler = ResalerFactory.getYibaiquanResaler();
     }
 
     @Ignore
@@ -97,8 +96,8 @@ public class GoodsShowTest extends FunctionalTest {
         FactoryBoy.create(Order.class, new BuildCallback<Order>() {
             @Override
             public void build(Order o) {
-                o.userType = AccountType.CONSUMER;
-                o.userId = user.id;
+                o.consumerId = user.id;
+                o.userId = yibaiquanResaler.id;
             }
         });
         FactoryBoy.create(ECoupon.class);

@@ -3,7 +3,6 @@ package unit;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
-import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -143,7 +142,6 @@ public class OrderECouponMessageTest extends UnitTest {
     @Test
     public void 无密码58团单张券() {
         createNoPasswordCoupons(2);
-        order.userType = AccountType.RESALER;
         order.userId = wuba.id;
         order.save();
         StringBuilder sb = new StringBuilder();
@@ -158,7 +156,6 @@ public class OrderECouponMessageTest extends UnitTest {
     @Test
     public void 有密码58团多张券() {
         createWithPasswordCoupons(2);
-        orderItems.order.userType = AccountType.RESALER;
         orderItems.order.userId = wuba.id;
         orderItems.order.save();
 

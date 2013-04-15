@@ -3,10 +3,13 @@ package functional;
 import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.accounts.AccountType;
 import models.dangdang.groupbuy.DDErrorCode;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.Order;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
@@ -49,7 +52,6 @@ public class DDSendMsgApiTest extends FunctionalTest {
             @Override
             public void build(Order target) {
                 target.userId = resaler.id;
-                target.userType = AccountType.RESALER;
             }
         });
         product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {

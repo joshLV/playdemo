@@ -154,7 +154,6 @@ public class ECouponUnitTest extends UnitTest {
         eCoupon.refresh();
         eCoupon.status = ECouponStatus.UNCONSUMED;
         eCoupon.order.userId = resaler.id;
-        eCoupon.order.userType = AccountType.RESALER;
         eCoupon.refundPrice = BigDecimal.ZERO;
         eCoupon.order.refundedAmount = BigDecimal.ZERO;
         eCoupon.order.save();

@@ -4,13 +4,14 @@ import controllers.modules.website.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
-import models.accounts.AccountType;
+import factory.resale.ResalerFactory;
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
+import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.SecKillGoods;
@@ -40,6 +41,7 @@ public class SecKillOrdersTest extends FunctionalTest {
     Address address;
     Goods goods;
     SecKillGoodsItem item;
+    Resaler yibaiquanResaler;
 
     @Before
     public void setUp() {
@@ -55,6 +57,7 @@ public class SecKillOrdersTest extends FunctionalTest {
             }
         });
         FactoryBoy.create(Supplier.class);
+        yibaiquanResaler = ResalerFactory.getYibaiquanResaler();
     }
 
     // ===================== Preview Order  =========================
@@ -134,8 +137,8 @@ public class SecKillOrdersTest extends FunctionalTest {
         final Order order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
             @Override
             public void build(Order o) {
-                o.userId = user.id;
-                o.userType = AccountType.CONSUMER;
+                o.consumerId = user.id;
+                o.userId = yibaiquanResaler.id;
             }
         });
         FactoryBoy.batchCreate(2, OrderItems.class,
@@ -272,8 +275,8 @@ public class SecKillOrdersTest extends FunctionalTest {
         final Order order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
             @Override
             public void build(Order o) {
-                o.userId = user.id;
-                o.userType = AccountType.CONSUMER;
+                o.consumerId = user.id;
+                o.userId = yibaiquanResaler.id;
             }
         });
         FactoryBoy.batchCreate(2, OrderItems.class,

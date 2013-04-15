@@ -3,6 +3,7 @@ package unit;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
+import factory.resale.ResalerFactory;
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.CouponsCondition;
@@ -11,6 +12,7 @@ import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
+import models.resale.Resaler;
 import models.sales.Goods;
 import models.supplier.Supplier;
 import org.junit.Before;
@@ -29,20 +31,22 @@ public class CouponsUnitTest extends UnitTest {
     Goods goods;
     Order order;
     ECoupon ecoupon;
+    Resaler yibaiquanResaler;
 
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
         MockMQ.clear();
 
+        yibaiquanResaler = ResalerFactory.getYibaiquanResaler();
         supplier = FactoryBoy.create(Supplier.class);
         user = FactoryBoy.create(User.class);
         goods = FactoryBoy.create(Goods.class);
         order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
             @Override
             public void build(Order o) {
-                o.userId = user.id;
-                o.userType = AccountType.CONSUMER;
+                o.consumerId = user.id;
+                o.userId = yibaiquanResaler.id;
                 o.paidAt = DateHelper.beforeDays(1);
                 o.createdAt = DateHelper.beforeDays(3);
             }

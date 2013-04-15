@@ -39,7 +39,6 @@ public class SinaVouchersConsumerTest extends FunctionalTest {
         order = FactoryBoy.create(Order.class);
         order.userId = resaler.id;
         order.consumerId = user.id;
-        order.userType = AccountType.RESALER;
         order.save();
 
         orderItems = FactoryBoy.create(OrderItems.class);

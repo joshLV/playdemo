@@ -5,7 +5,6 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import models.accounts.Account;
-import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -51,7 +50,6 @@ public class ResalerOrdersTest extends FunctionalTest {
         FactoryBoy.batchCreate(5, Order.class, new BuildCallback<Order>() {
             @Override
             public void build(Order o) {
-                o.userType = AccountType.RESALER;
                 o.userId = resaler.id;
                 o.createdAt = DateHelper.beforeDays(1);
             }
@@ -60,7 +58,6 @@ public class ResalerOrdersTest extends FunctionalTest {
         order = FactoryBoy.create(Order.class);
         order.orderNumber = "123456";
         order.userId = resaler.id;
-        order.userType = AccountType.RESALER;
         order.save();
 
         orderItems = FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {

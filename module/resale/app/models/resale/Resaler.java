@@ -313,6 +313,7 @@ public class Resaler extends Model {
      * 得到一百券分销帐号，用于代替之前的CONSUMER检查.
      */
     private static Resaler _yibaiquan;
+    private static Resaler _sina;
 
     public static Resaler getYibaiquan() {
         if (_yibaiquan == null) {
@@ -322,5 +323,14 @@ public class Resaler extends Model {
             }
         }
         return _yibaiquan;
+    }
+    public static Resaler getSina() {
+        if (_sina == null) {
+            _sina = findOneByLoginName(SINA_LOGIN_NAME);
+            if (_sina == null) {
+                throw new RuntimeException("必须存在新浪分销帐号(loginName:" + SINA_LOGIN_NAME + ")!");
+            }
+        }
+        return _sina;
     }
 }

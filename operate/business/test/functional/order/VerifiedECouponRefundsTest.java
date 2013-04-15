@@ -4,6 +4,7 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.operator.OperateUserFactory;
 import factory.callback.BuildCallback;
+import factory.resale.ResalerFactory;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
@@ -38,6 +39,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
     ECoupon ecoupon;
     Account supplierAccount;
     Account platformCommissionAccount;
+    Resaler yibaiquanResaler;
 
     @Before
     public void setup() {
@@ -46,6 +48,8 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
+
+        yibaiquanResaler = ResalerFactory.getYibaiquanResaler();
 
         // only sales role.
         operateUser = FactoryBoy.create(OperateUser.class, new BuildCallback<OperateUser>() {
@@ -130,22 +134,10 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
     }
 
     @Test
-    public void 输入不支持的券类别() throws Exception {
-        // 分销商
-        order.userType = AccountType.SUPPLIER;
-        order.save();
-
-        Response response = POST("/verified-ecoupon-do-refund", getECouponSnParams(ecoupon.eCouponSn));
-        assertIsOk(response);
-        assertContentMatch("不支持的券类别，请检查", response);
-        assertNotNull(renderArgs("ecoupon"));
-    }
-
-    @Test
     public void 输入已验证的一百券券号并完成退款() throws Exception {
         User user = FactoryBoy.create(User.class);
-        order.userType = AccountType.CONSUMER;
-        order.userId = user.id;
+        order.consumerId = user.id;
+        order.userId = yibaiquanResaler.id;
         order.accountPay = ecoupon.salePrice;
         order.save();
 
@@ -174,7 +166,6 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
     public void 输入已验证的分销券号并完成退款() throws Exception {
         // 分销商
         Resaler resaler = FactoryBoy.create(Resaler.class);
-        order.userType = AccountType.RESALER;
         order.userId = resaler.id;
         order.accountPay = new BigDecimal("8.5");
         order.save();

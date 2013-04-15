@@ -3,22 +3,21 @@ package functional;
 import controllers.modules.website.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.accounts.AccountType;
+import factory.resale.ResalerFactory;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.Order;
 import models.order.OuterOrderPartner;
+import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import org.junit.Before;
 import org.junit.Test;
-import play.Logger;
+import play.data.validation.Error;
 import play.mvc.Http;
 import play.mvc.Router;
 import play.test.FunctionalTest;
-
-import play.data.validation.Error;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +32,7 @@ public class WebSinaVouchersTest extends FunctionalTest {
 
     ResalerProduct product;
     User user;
+    Resaler sinaResaler;
 
     @Before
     public void setup() {
@@ -51,6 +51,7 @@ public class WebSinaVouchersTest extends FunctionalTest {
 
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
+        sinaResaler = ResalerFactory.getSinaResaler();
     }
 
     @Test
@@ -113,8 +114,7 @@ public class WebSinaVouchersTest extends FunctionalTest {
     public void testShowCoupon() {
         final Order order = FactoryBoy.create(Order.class);
         order.consumerId = user.id;
-        order.userType = AccountType.RESALER;
-        order.userId = user.id;
+        order.userId = sinaResaler.id;
         order.save();
         FactoryBoy.batchCreate(10, ECoupon.class, new BuildCallback<ECoupon>() {
             @Override
@@ -134,8 +134,7 @@ public class WebSinaVouchersTest extends FunctionalTest {
     public void testShowMoreCoupon() {
         final Order order = FactoryBoy.create(Order.class);
         order.consumerId = user.id;
-        order.userType = AccountType.RESALER;
-        order.userId = 1l;
+        order.userId = sinaResaler.id;
         order.save();
         FactoryBoy.batchCreate(10, ECoupon.class, new BuildCallback<ECoupon>() {
             @Override
@@ -155,8 +154,7 @@ public class WebSinaVouchersTest extends FunctionalTest {
     public void testShowDetail() {
         final Order order = FactoryBoy.create(Order.class);
         order.consumerId = user.id;
-        order.userType = AccountType.RESALER;
-        order.userId = 1l;
+        order.userId = sinaResaler.id;
         order.save();
         ECoupon coupon1=FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
             @Override

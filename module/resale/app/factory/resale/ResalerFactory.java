@@ -61,11 +61,22 @@ public class ResalerFactory extends ModelFactory<Resaler> {
         return resaler;
     }
 
-    public static Resaler getYibaiquan() {
+    public static Resaler getYibaiquanResaler() {
         Resaler yibaiquan = Resaler.findOneByLoginName(Resaler.YIBAIQUAN_NAME);
         if (yibaiquan == null) {
             yibaiquan = FactoryBoy.create(Resaler.class);
             yibaiquan.loginName = Resaler.YIBAIQUAN_NAME;
+            yibaiquan.save();
+        }
+        return yibaiquan;
+    }
+
+
+    public static Resaler getSinaResaler() {
+        Resaler yibaiquan = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
+        if (yibaiquan == null) {
+            yibaiquan = FactoryBoy.create(Resaler.class);
+            yibaiquan.loginName = Resaler.SINA_LOGIN_NAME;
             yibaiquan.save();
         }
         return yibaiquan;

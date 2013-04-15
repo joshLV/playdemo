@@ -3,7 +3,6 @@ package function;
 import controllers.modules.resale.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.accounts.AccountType;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -35,7 +34,6 @@ public class ResaleCouponTest extends FunctionalTest {
         FactoryBoy.create(Order.class, new BuildCallback<Order>() {
             @Override
             public void build(Order o) {
-                o.userType = AccountType.RESALER;
                 o.userId = resaler.id;
                 o.paidAt = DateHelper.beforeDays(1);
             }

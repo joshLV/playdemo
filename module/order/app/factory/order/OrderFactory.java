@@ -26,7 +26,7 @@ public class OrderFactory extends ModelFactory<Order> {
     public Order define() {
         Order order = new Order();
         order.consumerId = FactoryBoy.lastOrCreate(User.class).id;
-        Resaler yibaiquan = ResalerFactory.getYibaiquan();
+        Resaler yibaiquan = ResalerFactory.getYibaiquanResaler();
         order.userId = yibaiquan.id;
         order.orderNumber = "abc"+FactoryBoy.sequence(Order.class);
         order.accountEmail = "test@test.com";
