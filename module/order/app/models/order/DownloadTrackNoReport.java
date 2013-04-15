@@ -72,7 +72,7 @@ public class DownloadTrackNoReport {
         return resultList;
     }
 
-    public static List<OrderItems> queryOrderItems(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, Boolean unDownloaded, String outerGoodsNo) {
+    public static List<OrderItems> queryOrderItems(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, String outerGoodsNo) {
         StringBuilder sql = new StringBuilder("shippingInfo.expressNumber is not null and order.userType=? and order.userId=?");
         List<Object> params = new ArrayList();
         params.add(AccountType.RESALER);
@@ -83,11 +83,11 @@ public class DownloadTrackNoReport {
         }
 
         if (paidBeginAt != null) {
-            sql.append(" and shippingInfo.paidAt= ?");
+            sql.append(" and shippingInfo.paidAt>= ?");
             params.add(paidBeginAt);
         }
         if (paidEndAt != null) {
-            sql.append(" and shippingInfo.paidAt= ?");
+            sql.append(" and shippingInfo.paidAt<= ?");
             params.add(com.uhuila.common.util.DateUtil.getEndOfDay(paidEndAt));
         }
 
@@ -99,9 +99,7 @@ public class DownloadTrackNoReport {
             sql.append(" and sendAt <= ?)");
             params.add(com.uhuila.common.util.DateUtil.getEndOfDay(sentEndAt));
         }
-        if (unDownloaded) {
-            sql.append(" and shippingInfo.uploadedAt is not null");
-        }
+
         return OrderItems.find(sql.toString(), params.toArray()).fetch();
 
     }

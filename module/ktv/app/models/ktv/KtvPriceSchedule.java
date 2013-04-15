@@ -3,6 +3,7 @@ package models.ktv;
 import com.google.gson.annotations.Expose;
 import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Shop;
+import play.db.jpa.GenericModel;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
@@ -15,7 +16,20 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "ktv_price_schedules")
-public class KtvPriceSchedule extends Model {
+public class KtvPriceSchedule extends GenericModel {
+    @Id
+    @GeneratedValue
+    @Expose
+    public Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public Object _key() {
+        return getId();
+    }
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinTable(name = "ktv_price_schedules_shops",

@@ -1,7 +1,26 @@
 package controllers;
 
-import models.*;
+import models.CategorySalesReport;
+import models.CategorySalesReportCondition;
+import models.ChannelCategoryReport;
+import models.ChannelCategoryReportCondition;
+import models.ChannelGoodsReport;
+import models.ChannelGoodsReportCondition;
+import models.ChannelSalesDailyReport;
+import models.ChannelSalesDailyReportCondition;
+import models.ChartDataForChannelSalesDailyReport;
+import models.ConsumerFlowReport;
+import models.ConsumerFlowReportCondition;
+import models.PeopleEffectCategoryReport;
+import models.PeopleEffectCategoryReportCondition;
+import models.ResaleSalesReport;
+import models.ResaleSalesReportCondition;
+import models.SalesOrderItemReport;
+import models.SalesOrderItemReportCondition;
+import models.SalesReport;
+import models.SalesReportCondition;
 import models.operator.OperateUser;
+import models.order.ReportPartner;
 import models.supplier.Supplier;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
@@ -9,12 +28,19 @@ import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+import utils.CrossTableConverter;
+import utils.CrossTableUtil;
 import utils.PaginateUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 运营报表
@@ -31,6 +57,61 @@ public class OperationReports extends Controller {
     public static void index() {
         render();
     }
+
+    @ActiveNavigation("channel_sales_daily_reports")
+    public static void showChannelSalesDailyReport(ChannelSalesDailyReportCondition condition) {
+
+        int pageNumber = getPageNumber();
+        if (condition == null) {
+            condition = new ChannelSalesDailyReportCondition();
+        }
+        List<ChannelSalesDailyReport> resultList = ChannelSalesDailyReport.query(condition);
+        Collections.sort(resultList);
+        List<Map<String, Object>> reportPage = CrossTableUtil.generateCrossTable(resultList, converter);
+        ReportPartner[] partners = ReportPartner.values();
+
+        List<ChartDataForChannelSalesDailyReport> chartList = new LinkedList<>();
+        ChartDataForChannelSalesDailyReport tempChartReport;
+        for (Map<String, Object> r : reportPage) {
+            tempChartReport = new ChartDataForChannelSalesDailyReport();
+            for (ReportPartner p : partners) {
+                ChannelSalesDailyReport tempReport = (ChannelSalesDailyReport) r.get(p.loginName);
+                String date = (String) r.get("RowKey");
+                tempChartReport.date = date;
+                if (tempReport != null) {
+                    switch (p.codeName()) {
+                        case "DD":
+                            tempChartReport.DDNetSalesAmount = tempReport.netSalesAmount;
+                            break;
+                        case "JD":
+                            tempChartReport.JDNetSalesAmount = tempReport.netSalesAmount;
+                            break;
+                        case "TB":
+                            tempChartReport.TBNetSalesAmount = tempReport.netSalesAmount;
+                            break;
+                        case "WB":
+                            tempChartReport.WBNetSalesAmount = tempReport.netSalesAmount;
+                            break;
+                        case "YHD":
+                            tempChartReport.YHDNetSalesAmount = tempReport.netSalesAmount;
+                            break;
+                        case "YBQ":
+                            tempChartReport.YBQNetSalesAmount = tempReport.netSalesAmount;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            chartList.add(tempChartReport);
+        }
+        List<String> dateList = ChannelSalesDailyReport.generateDateList(condition);
+        List<ChartDataForChannelSalesDailyReport> chartsMap = ChartDataForChannelSalesDailyReport.mapTrendsCharts(chartList, dateList);
+        renderArgs.put("dateList", dateList);
+        renderArgs.put("chartsMap", chartsMap);
+        render(reportPage, partners, condition);
+    }
+
 
     @ActiveNavigation("sales_reports")
     public static void showSalesReport(SalesReportCondition condition, String desc) {
@@ -207,7 +288,7 @@ public class OperationReports extends Controller {
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
 //        if (flagWithCondition) {
 
-        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition,hasSeeReportProfitRight);
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition, hasSeeReportProfitRight);
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
 
@@ -943,14 +1024,13 @@ public class OperationReports extends Controller {
         condition.setDescFields();
 
 
-
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "人效报表_" + System.currentTimeMillis() + ".xls");
 
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
-        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition,hasSeeReportProfitRight);
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition, hasSeeReportProfitRight);
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
 
@@ -984,8 +1064,6 @@ public class OperationReports extends Controller {
 
         render(peopleEffectReportList);
     }
-
-
 
 
     /**
@@ -1378,5 +1456,32 @@ public class OperationReports extends Controller {
     private static OperateUser getReportKeyOfPeopleEffect(SalesReport item) {
         return item.operateUser;
     }
+
+    private static CrossTableConverter<ChannelSalesDailyReport, ChannelSalesDailyReport> converter =
+            new CrossTableConverter<ChannelSalesDailyReport, ChannelSalesDailyReport>() {
+                @Override
+                public String getRowKey(ChannelSalesDailyReport target) {
+                    return target.date;
+                }
+
+                @Override
+                public String getColumnKey(ChannelSalesDailyReport target) {
+                    return target.loginName;
+                }
+
+                @Override
+                public ChannelSalesDailyReport addValue(ChannelSalesDailyReport target, ChannelSalesDailyReport oldValue) {
+                    if (target == null) {
+                        return oldValue;
+                    }
+                    if (oldValue == null) {
+                        return target;
+                    }
+
+
+                    return target;
+                }
+            };
+
 
 }

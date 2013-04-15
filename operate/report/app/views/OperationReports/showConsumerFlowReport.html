@@ -1,7 +1,11 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'客流报表' /}
 #{include '/share/nav.html' /}
-
+<script src="@{'/public/javascripts/DateRangePicker/date.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/DateRangePicker/daterangepicker.js'}" type="text/javascript"
+        charset="UTF-8"></script>
+<link rel="stylesheet" href="/public/stylesheets/daterangepicker.css"
+      type="text/css" media="screen"/>
 #{set 'moreStyles'}
 <style type="text/css">
     .rank {
@@ -102,18 +106,20 @@
 
 <form class="well form-inline" action="@{OperationReports.showConsumerFlowReport()}" method="GET" id="form"
       name="form">
-    起止日期
-    <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
-        <input class="input-small" id="condition_begin" name="condition.beginAt" size="16" type="text"
-               value="${condition.beginAt?.format()}">
-        <span class="add-on"><i class="icon-th"></i></span>
-    </div>
-    -
-    <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
-        <input class="input-small" id="condition_end" name="condition.endAt" size="16" type="text"
-               value="${condition.endAt?.format()}">
-        <span class="add-on"><i class="icon-th"></i></span>
-    </div>
+#{layout_operate.dateRangePickerField  name:'日期',begin:'condition.beginAt',end:'condition.endAt',
+beginValue:condition?.beginAt?.format(), endValue:condition?.endAt?.format()/}
+    *{起止日期}*
+    *{<div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">}*
+        *{<input class="input-small" id="condition_begin" name="condition.beginAt" size="16" type="text"}*
+               *{value="${condition.beginAt?.format()}">}*
+        *{<span class="add-on"><i class="icon-th"></i></span>}*
+    *{</div>}*
+    *{-}*
+    *{<div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">}*
+        *{<input class="input-small" id="condition_end" name="condition.endAt" size="16" type="text"}*
+               *{value="${condition.endAt?.format()}">}*
+        *{<span class="add-on"><i class="icon-th"></i></span>}*
+    *{</div>}*
 
     <button type="submit" class="btn btn-large btn-primary" id="search" onclick="consumerFlowReport()">搜索</button>
     <div style="float:right">
@@ -123,14 +129,14 @@
         </button>
     #{/if}
     </div>
-    <ul class="nav nav-pills">
-        <li #{if condition.interval=='-1d'} class="active" #{/if}  ><a start="-1d" href="#">今天</a></li>
+    *{<ul class="nav nav-pills">}*
+        *{<li #{if condition.interval=='-1d'} class="active" #{/if}  ><a start="-1d" href="#">今天</a></li>}*
     *{<li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">昨天</a></li>}*
-        <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
-        <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
-        <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
-        <li #{if condition.interval=='0'} class="active" #{/if}  ><a start="0" href="#">全部</a></li>
-    </ul>
+        *{<li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>}*
+        *{<li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>}*
+        *{<li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>}*
+        *{<li #{if condition.interval=='0'} class="active" #{/if}  ><a start="0" href="#">全部</a></li>}*
+    *{</ul>}*
     <input type="hidden" id="condition_interval" name="condition.interval"/>
     <input type="hidden" id="J_rank" name="desc" value="${desc}"/>
 </form>

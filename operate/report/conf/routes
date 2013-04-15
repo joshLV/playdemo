@@ -62,6 +62,10 @@ GET     /consumer_flow_report                           OperationReports.showCon
 GET     /consumer_flow_report_with_privilege_excel      OperationReports.consumerFlowReportWithPrivilegeExcelOut
 GET     /consumer_flow_report_excel                     OperationReports.consumerFlowReportExcelOut
 
+#渠道销售汇总日报表
+GET     /channel_sales_daily_report                           OperationReports.showChannelSalesDailyReport
+
+
 
 #渠道大类报表
 GET     /channel_category_report                           OperationReports.showChannelCategoryReport
