@@ -98,11 +98,15 @@ public class Order extends Model {
      */
     @Transient
     public boolean isWebsiteOrder() {
-        return Resaler.getYibaiquan().id.equals(this.userId);
+        //FIXME: 优化一下
+        Resaler sinaResaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
+        return (sinaResaler != null && this.userId.equals(sinaResaler.id))
+                || Resaler.getYibaiquan().id.equals(this.userId);
     }
 
     /**
      * 得到此订单的付款者现金账户.
+     *
      * @return 如果是网站订单，返回消费者账户；否则返回分销账户.
      */
     @Transient
@@ -729,13 +733,7 @@ public class Order extends Model {
             }
         }
 
-        Resaler sinaResaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
-        Account account;
-        if (sinaResaler !=null && this.userId.equals(sinaResaler.id)) {
-            account = AccountUtil.getAccount(this.consumerId, AccountType.CONSUMER);
-        } else {
-            account = AccountUtil.getAccount(this.userId, this.userType);
-        }
+        Account account = this.getBuyerAccount();
         PaymentSource paymentSource = PaymentSource.find("byCode", this.payMethod).first();
 
         //先将用户银行支付的钱充值到自己账户上
@@ -784,7 +782,7 @@ public class Order extends Model {
         }
         String operator = null;
         Date expireAt = null;
-        if (AccountType.RESALER.equals(this.userType)) {
+        if (!isWebsiteOrder()) {
             String loginName = this.getResaler().loginName;
             operator = "分销商：" + loginName;
             //使用淘宝传过来的截止日期
@@ -825,7 +823,7 @@ public class Order extends Model {
                     }
 
                     //在新浪微博购买产生券，更新partner
-                    if (sinaResaler !=null && this.userId.equals(sinaResaler.id)) {
+                    if (sinaResaler != null && this.userId.equals(sinaResaler.id)) {
                         eCoupon.partner = ECouponPartner.SINA;
                         eCoupon.save();
                     }
@@ -851,7 +849,7 @@ public class Order extends Model {
         }
         MailMessage mail = new MailMessage();
         //只有消费者才发邮件
-        if (AccountType.CONSUMER.equals(orderItem.order.userType)) {
+        if (orderItem.order.isWebsiteOrder()) {
             String email = orderItem.order.getUser().loginName;
             if (StringUtils.isNotBlank(email)) {
                 //消费者
@@ -953,8 +951,6 @@ public class Order extends Model {
         if (user == null) {
             if (consumerId != null) {
                 user = User.findById(consumerId);
-            } else if (userType == AccountType.CONSUMER) {
-                user = User.findById(userId);
             }
         }
         return user;
@@ -1129,7 +1125,7 @@ public class Order extends Model {
                     //平台的佣金等于分销商成本价减成本价
                     platformCommission = orderItem.resalerPrice.subtract(orderItem.originalPrice);
                     //如果是在一百券网站下的单，还要给一百券佣金
-                    if (order.userType == AccountType.CONSUMER) {
+                    if (order.isWebsiteOrder()) {
                         TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(
                                 AccountUtil.getUhuilaAccount(),
                                 orderItem.salePrice.subtract(orderItem.resalerPrice).multiply(new BigDecimal(orderItem.buyNumber)),

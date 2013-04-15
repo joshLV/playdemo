@@ -1,5 +1,6 @@
 package factory.resale;
 
+import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.resale.AccountType;
@@ -60,9 +61,16 @@ public class ResalerFactory extends ModelFactory<Resaler> {
         return resaler;
     }
 
-    @Factory(name = "wuba")
-    public Resaler defineWuba(Resaler resaler) {
-        resaler.loginName = "wuba";
-        return resaler;
+    public static Resaler getYibaiquan() {
+        Resaler yibaiquan = Resaler.findOneByLoginName(Resaler.YIBAIQUAN_NAME);
+        if (yibaiquan == null) {
+            yibaiquan = FactoryBoy.create(Resaler.class);
+            yibaiquan.loginName = Resaler.YIBAIQUAN_NAME;
+            yibaiquan.save();
+        }
+        return yibaiquan;
     }
+
+
+
 }

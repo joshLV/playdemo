@@ -37,7 +37,7 @@ public class ResaleCouponTest extends FunctionalTest {
             public void build(Order o) {
                 o.userType = AccountType.RESALER;
                 o.userId = resaler.id;
-		o.paidAt = DateHelper.beforeDays(1);
+                o.paidAt = DateHelper.beforeDays(1);
             }
         });
 

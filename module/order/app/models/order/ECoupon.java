@@ -352,11 +352,12 @@ public class ECoupon extends Model {
         this.lockVersion = 0;
         this.autoConsumed = DeletedStatus.UN_DELETED;
 
-        if (USE_PRODUCT_SERIAL_REPLYCODE) {
-            this.replyCode = generateAvailableReplayCode(order.userId, order.userType, goods);
-        } else {
-            this.replyCode = generateAvailableReplayCode(order.userId, order.userType);
-        }
+        // 为避免分销商生成replyCode重复，不再检查是否重复，而只是随机生成.
+        //if (USE_PRODUCT_SERIAL_REPLYCODE) {
+        //    this.replyCode = generateAvailableReplayCode(order.userId, order.userType, goods);
+        //} else {
+            this.replyCode = generateAvailableReplayCode(order.userId);
+        //}
     }
 
 
@@ -394,14 +395,13 @@ public class ECoupon extends Model {
      * 生成当前用户唯一的ReplyCode，用于发送短信.
      *
      * @param userId
-     * @param userType
      * @return
      */
-    private String generateAvailableReplayCode(long userId, AccountType userType) {
+    private String generateAvailableReplayCode(long userId) {
         String randomNumber;
-        do {
+        //do {
             randomNumber = RandomNumberUtil.generateSerialNumber(4);
-        } while (isNotUniqueReplyCode(randomNumber, userId, userType));
+        //} while (isNotUniqueReplyCode(randomNumber, userId, userType));
         return randomNumber;
     }
 
@@ -436,31 +436,30 @@ public class ECoupon extends Model {
      * 生成当前用户相对于商户某一系列商品的ReplyCode，用于发送短信. 即用户在一个商户购买的同一系列商品都在一个短信下.
      *
      * @param userId
-     * @param userType
      * @param goods    商品，通过供应商和系列号分配，如果无系列号，使用商品ID，这样同一个商品会使用相同的replyCode
      * @return
      */
-    private String generateAvailableReplayCode(long userId, AccountType userType, Goods goods) {
-        ECoupon ecoupon = getLastECoupon(userId, userType, goods);
+    private String generateAvailableReplayCode(long userId, Goods goods) {
+        ECoupon ecoupon = getLastECoupon(userId, goods);
         if (ecoupon != null) {
             return ecoupon.replyCode;
         }
 
         // 似乎不需要锁 ~ by TangLiqun
         synchronized (ECoupon.class) {
-            ecoupon = getLastECoupon(userId, userType, goods);
+            ecoupon = getLastECoupon(userId, goods);
             if (ecoupon != null) {
                 return ecoupon.replyCode;
             }
-            return generateAvailableReplayCode(userId, userType);
+            return generateAvailableReplayCode(userId);
         }
     }
 
-    private ECoupon getLastECoupon(long userId, AccountType userType, Goods goods) {
+    private ECoupon getLastECoupon(long userId, Goods goods) {
         if (goods.groupCode != null) {
-            return ECoupon.find("from ECoupon where order.userId=? and order.userType=? and goods.groupCode=?", userId, userType, goods.groupCode).first();
+            return ECoupon.find("from ECoupon where order.userId=? and goods.groupCode=?", userId, goods.groupCode).first();
         }
-        return ECoupon.find("from ECoupon where order.userId=? and order.userType=? and goods.id=?", userId, userType, goods.id).first();
+        return ECoupon.find("from ECoupon where order.userId=? and goods.id=?", userId, goods.id).first();
     }
 
     /**
@@ -640,7 +639,7 @@ public class ECoupon extends Model {
             // 平台的佣金等于分销商成本价减成本价
             platformCommission = resalerPrice.subtract(originalPrice);
             // 如果是在一百券网站下的单，还要给一百券佣金
-            if (order.userType == AccountType.CONSUMER) {
+            if (order.isWebsiteOrder()) {
                 TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(AccountUtil.getUhuilaAccount(), salePrice.subtract(resalerPrice), eCouponSn, order.getId());
 
                 TradeUtil.success(uhuilaCommissionTrade, order.description);
