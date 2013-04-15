@@ -63,7 +63,7 @@ public class ResalerOrders extends Controller {
         }
         List<ECoupon> eCoupons = ECoupon.findByUserAndIds(couponIds, resaler.getId(), AccountType.RESALER);
         for (ECoupon eCoupon : eCoupons) {
-            ECoupon.applyRefund(eCoupon, resaler.getId(), AccountType.RESALER);
+            ECoupon.applyRefund(eCoupon);
         }
         show(orderNumber);
     }

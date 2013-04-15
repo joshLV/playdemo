@@ -1,12 +1,15 @@
 package models;
 
-import models.accounts.AccountType;
 import models.order.ECouponStatus;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: wangjia
@@ -32,11 +35,10 @@ public class ChannelGoodsReportCondition {
 
     Map<String, BigDecimal> comparedMap = new HashMap<>();
 
-    public String getFilter(AccountType type) {
+    public String getFilter() {
 //               +  " and r.order.userType = models.accounts.AccountType.RESALER "
         StringBuilder condBuilder = new StringBuilder(" (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
-                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and r.order.userType = :userType ");
-        paramMap.put("userType", type);
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED ");
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
@@ -74,12 +76,11 @@ public class ChannelGoodsReportCondition {
         return condBuilder.toString();
     }
 
-    public String getFilterCheatedOrderResaler(AccountType type) {
+    public String getFilterCheatedOrderResaler() {
         StringBuilder condBuilder = new StringBuilder("  r.order.status='PAID' and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
-                " and e.isCheatedOrder = true and r.order.userType=models.accounts.AccountType.RESALER and r.order=o and o.userId=b.id" +
-                " and r.order.userType = :userType ");
-        paramMap.put("userType", type);
+                " and e.isCheatedOrder = true  and r.order=o and o.userId=b.id" +
+                " ");
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
@@ -119,13 +120,12 @@ public class ChannelGoodsReportCondition {
         return condBuilder.toString();
     }
 
-    public String getFilterRefundResaler(AccountType type) {
+    public String getFilterRefundResaler() {
         StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.status=:status and e.goods.isLottery=false" +
                 " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
-                " and r.order.userType=models.accounts.AccountType.RESALER and r.order=o and o.userId=b.id " +
-                " and r.order.userType = :userType ");
+                "  and r.order=o and o.userId=b.id " +
+                " ");
         paramMap1.put("status", ECouponStatus.REFUND);
-        paramMap1.put("userType", type);
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and e.goods.shortName like :shortName");
             paramMap1.put("shortName", "%" + shortName + "%");
@@ -165,12 +165,11 @@ public class ChannelGoodsReportCondition {
         return condBuilder.toString();
     }
 
-    public String getFilterConsumedAt(AccountType type) {
+    public String getFilterConsumedAt() {
         StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' " +
                 " and r.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED" +
                 " and  r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
-                " and r.order.userType = :userType ");
-        paramMap.put("userType", type);
+                " ");
 
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
@@ -210,12 +209,10 @@ public class ChannelGoodsReportCondition {
         return condBuilder.toString();
     }
 
-    public String getFilterCheatedOrder(AccountType type) {
+    public String getFilterCheatedOrder() {
         StringBuilder condBuilder = new StringBuilder(" r.order.status='PAID' and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
-                " and r.order.userType = :userType " +
                 " and e.isCheatedOrder = true ");
-        paramMap.put("userType", type);
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
@@ -255,12 +252,11 @@ public class ChannelGoodsReportCondition {
     }
 
 
-    public String getResalerFilter(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder("  r.order.userType=models.accounts.AccountType.RESALER " +
-                " and (r.order.status='PAID' or r.order.status='SENT')" +
+    public String getResalerFilter() {
+        StringBuilder condBuilder = new StringBuilder("  " +
+                "  (r.order.status='PAID' or r.order.status='SENT')" +
                 " and r.goods.isLottery=false and r.order=o and o.userId=b.id" +
-                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and r.order.userType = :userType ");
-        paramMap.put("userType", type);
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED  ");
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
@@ -298,11 +294,10 @@ public class ChannelGoodsReportCondition {
         return condBuilder.toString();
     }
 
-    public String getRefundFilter(AccountType type) {
+    public String getRefundFilter() {
         StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false" +
-                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and e.order.userType = :userType ");
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED ");
         paramMap1.put("status", ECouponStatus.REFUND);
-        paramMap1.put("userType", type);
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and e.goods.shortName like :shortName");
             paramMap1.put("shortName", "%" + shortName + "%");

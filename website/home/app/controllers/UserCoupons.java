@@ -65,7 +65,7 @@ public class UserCoupons extends Controller {
             error(404, "no coupon!");
             return;
         }
-        String returnFlg = ECoupon.applyRefund(eCoupon, user.getId(), AccountType.CONSUMER);
+        String returnFlg = ECoupon.applyRefund(eCoupon);
         renderJSON(returnFlg);
     }
 

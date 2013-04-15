@@ -41,7 +41,7 @@ public class Coupons extends Controller {
     public static void refund(Long id) {
         Resaler user = SecureCAS.getResaler();
         ECoupon eCoupon = ECoupon.findById(id);
-        ECoupon.applyRefund(eCoupon, user.getId(), AccountType.RESALER);
+        ECoupon.applyRefund(eCoupon);
         index(null);
     }
 

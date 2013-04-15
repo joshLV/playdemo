@@ -1,6 +1,5 @@
 package controllers;
 
-import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
@@ -117,15 +116,15 @@ public class OperateOrders extends Controller {
         List<OrderItems> orderItems = orders.orderItems;
         //收货信息
         String loginName = "";
-        if (orders.userType == AccountType.RESALER) {
+        if (orders.isWebsiteOrder()) {
+            User user = User.findById(orders.consumerId);
+            if (user != null) {
+                loginName = user.loginName;
+            }
+        } else {
             Resaler resaler = Resaler.findById(orders.userId);
             if (resaler != null) {
                 loginName = resaler.loginName;
-            }
-        } else if (orders.userType == AccountType.CONSUMER) {
-            User user = User.findById(orders.userId);
-            if (user != null) {
-                loginName = user.loginName;
             }
         }
 
@@ -157,9 +156,9 @@ public class OperateOrders extends Controller {
                 order.outerOrderNumber = "";
             }
 
-            if (order.userType == AccountType.CONSUMER) {
+            if (order.isWebsiteOrder()) {
                 order.accountEmail = order.getUser().loginName;
-            } else if (order.userType == AccountType.RESALER) {
+            } else {
                 order.accountEmail = order.getResaler().loginName;
             }
         }

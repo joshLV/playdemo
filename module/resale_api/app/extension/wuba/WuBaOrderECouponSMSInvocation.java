@@ -2,7 +2,6 @@ package extension.wuba;
 
 import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
-import models.accounts.AccountType;
 import models.resale.Resaler;
 import org.apache.commons.lang.StringUtils;
 import util.extension.ExtensionResult;
@@ -13,6 +12,7 @@ import util.extension.ExtensionResult;
 public class WuBaOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
     /**
      * 基于context的内容，生成短信内容，并通过context.setSmsContent()方法把短信内容传出.
+     *
      * @param context
      * @return
      */
@@ -32,12 +32,12 @@ public class WuBaOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
 
     /**
      * 检查是否是58团生成的订单.
+     *
      * @param context
      * @return
      */
     @Override
     public boolean match(OrderECouponSMSContext context) {
-        return (AccountType.RESALER.equals(context.order.userType) && context.order.getResaler().loginName.equals
-                (Resaler.WUBA_LOGIN_NAME));
+        return context.order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME);
     }
 }

@@ -308,7 +308,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o where r.order=o and ";
         String groupBy = " group by  r.order.userId, r.goods.id ";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilter(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -340,7 +340,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o,Resaler b where ";
         groupBy = " group by r.order.userId,r.goods.id,b ";
         query = JPA.em()
-                .createQuery(sql + condition.getResalerFilter(AccountType.RESALER) + groupBy + " order by sum(r.buyNumber) desc ");
+                .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.buyNumber) desc ");
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -356,7 +356,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r, ECoupon e where e.orderItems=r and ";
         groupBy = " group by r.order.userId, r.goods.id";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterCheatedOrder(AccountType.RESALER) + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterCheatedOrder() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -368,7 +368,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o,Resaler b, ECoupon e where e.orderItems=r and";
         groupBy = " group by r.order.userId, r.goods.id,b ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterCheatedOrderResaler(AccountType.RESALER) + groupBy + " order by sum(r.buyNumber) desc ");
+                .createQuery(sql + condition.getFilterCheatedOrderResaler() + groupBy + " order by sum(r.buyNumber) desc ");
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
@@ -383,7 +383,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         groupBy = " group by e.order.userId, e.orderItems.goods.id";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter(AccountType.RESALER) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -399,7 +399,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         groupBy = " group by e.orderItems.goods.id,b";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResaler(AccountType.RESALER) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.refundPrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -413,7 +413,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r, ECoupon e where e.orderItems=r";
         groupBy = " group by e.order.userId, e.orderItems.goods.id";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -549,7 +549,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o where r.order=o and ";
         String totalGroupBy = " group by  r.order.userId";
         Query totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilter(AccountType.RESALER) + totalGroupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+                .createQuery(totalSql + condition.getFilter() + totalGroupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -565,7 +565,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o,Resaler b where ";
         totalGroupBy = " group by r.order.userId,b ";
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getResalerFilter(AccountType.RESALER) + totalGroupBy + " order by sum(r.buyNumber) desc ");
+                .createQuery(totalSql + condition.getResalerFilter() + totalGroupBy + " order by sum(r.buyNumber) desc ");
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -581,7 +581,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r, ECoupon e where e.orderItems=r and ";
         totalGroupBy = " group by r.order.userId ";
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterCheatedOrder(AccountType.RESALER) + totalGroupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+                .createQuery(totalSql + condition.getFilterCheatedOrder() + totalGroupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
         for (String param : condition.getParamMap().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
         }
@@ -593,7 +593,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o,Resaler b, ECoupon e where e.orderItems=r and";
         totalGroupBy = " group by r.order.userId,b ";
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterCheatedOrderResaler(AccountType.RESALER) + totalGroupBy + " order by sum(r.buyNumber) desc ");
+                .createQuery(totalSql + condition.getFilterCheatedOrderResaler() + totalGroupBy + " order by sum(r.buyNumber) desc ");
 
         for (String param : condition.getParamMap().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
@@ -608,7 +608,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         totalGroupBy = " group by e.order.userId ";
 
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getRefundFilter(AccountType.RESALER) + totalGroupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(totalSql + condition.getRefundFilter() + totalGroupBy + " order by sum(e.refundPrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap1().get(param));
@@ -624,7 +624,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         totalGroupBy = " group by b ";
 
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterRefundResaler(AccountType.RESALER) + totalGroupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(totalSql + condition.getFilterRefundResaler() + totalGroupBy + " order by sum(e.refundPrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap1().get(param));
@@ -638,7 +638,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r, ECoupon e where e.orderItems=r";
         totalGroupBy = " group by e.order.userId ";
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterConsumedAt(AccountType.RESALER) + totalGroupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+                .createQuery(totalSql + condition.getFilterConsumedAt() + totalGroupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
         }
@@ -843,7 +843,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o where r.order=o and ";
         String groupBy = " group by  r.order.userId";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilter(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -860,7 +860,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
 //                " from OrderItems r,Order o,Resaler b where r.order=o and  ";
 //        groupBy = " group by r.order.userId, r.goods.id";
 //        query = JPA.em()
-//                .createQuery(sql + condition.getResalerFilter(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+//                .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
 //
 //
 //        for (String param : condition.getParamMap().keySet()) {
@@ -875,7 +875,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o,Resaler b where ";
         groupBy = " group by r.order.userId,b ";
         query = JPA.em()
-                .createQuery(sql + condition.getResalerFilter(AccountType.RESALER) + groupBy + " order by sum(r.buyNumber) desc ");
+                .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.buyNumber) desc ");
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -891,7 +891,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r, ECoupon e where e.orderItems=r and ";
         groupBy = " group by r.order.userId ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterCheatedOrder(AccountType.RESALER) + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterCheatedOrder() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -903,7 +903,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o,Resaler b, ECoupon e where e.orderItems=r and";
         groupBy = " group by r.order.userId,b ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterCheatedOrderResaler(AccountType.RESALER) + groupBy + " order by sum(r.buyNumber) desc ");
+                .createQuery(sql + condition.getFilterCheatedOrderResaler() + groupBy + " order by sum(r.buyNumber) desc ");
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
@@ -918,7 +918,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         groupBy = " group by e.order.userId ";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter(AccountType.RESALER) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -934,7 +934,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         groupBy = " group by b ";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResaler(AccountType.RESALER) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.refundPrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -948,7 +948,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r, ECoupon e where e.orderItems=r";
         groupBy = " group by e.order.userId ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -1101,7 +1101,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o where r.order=o and ";
         String groupBy = " group by  r.goods.id ";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilter(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
@@ -1116,7 +1116,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r, ECoupon e where e.orderItems=r and ";
         groupBy = " group by r.goods.id";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterCheatedOrder(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterCheatedOrder() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -1129,7 +1129,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o,Resaler b where r.order=o and  ";
         groupBy = " group by  r.goods.id";
         query = JPA.em()
-                .createQuery(sql + condition.getResalerFilter(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+                .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -1144,7 +1144,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         groupBy = " group by e.orderItems.goods.id";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter(AccountType.CONSUMER) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -1157,7 +1157,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r, ECoupon e where e.orderItems=r";
         groupBy = " group by e.orderItems.goods.id";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -1244,7 +1244,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o where r.order=o and ";
         String totalQroupBy = " group by  r.order.userType ";
         Query totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilter(AccountType.CONSUMER) + totalQroupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+                .createQuery(totalSql + condition.getFilter() + totalQroupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
 
         for (String param : condition.getParamMap().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
@@ -1258,7 +1258,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r, ECoupon e where e.orderItems=r and ";
         totalQroupBy = " group by r.order.userType ";
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterCheatedOrder(AccountType.CONSUMER) + totalQroupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+                .createQuery(totalSql + condition.getFilterCheatedOrder() + totalQroupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
         for (String param : condition.getParamMap().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
         }
@@ -1271,7 +1271,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o,Resaler b where r.order=o and  ";
         totalQroupBy = " group by  r.order.userType ";
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getResalerFilter(AccountType.CONSUMER) + totalQroupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+                .createQuery(totalSql + condition.getResalerFilter() + totalQroupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -1286,7 +1286,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         totalQroupBy = " group by e.orderItems.order.userType ";
 
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getRefundFilter(AccountType.CONSUMER) + totalQroupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(totalSql + condition.getRefundFilter() + totalQroupBy + " order by sum(e.refundPrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap1().get(param));
@@ -1299,7 +1299,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r, ECoupon e where e.orderItems=r";
         totalQroupBy = " group by e.orderItems.order.userType ";
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterConsumedAt(AccountType.CONSUMER) + totalQroupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+                .createQuery(totalSql + condition.getFilterConsumedAt() + totalQroupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
         }
@@ -1476,7 +1476,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o where r.order=o and ";
         String groupBy = " group by  r.order.userType ";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilter(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
@@ -1491,7 +1491,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r, ECoupon e where e.orderItems=r and ";
         groupBy = " group by r.order.userType ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterCheatedOrder(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterCheatedOrder() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -1504,7 +1504,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r,Order o,Resaler b where r.order=o and  ";
         groupBy = " group by  r.order.userType ";
         query = JPA.em()
-                .createQuery(sql + condition.getResalerFilter(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+                .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -1519,7 +1519,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         groupBy = " group by e.orderItems.order.userType ";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter(AccountType.CONSUMER) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -1532,7 +1532,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 " from OrderItems r, ECoupon e where e.orderItems=r";
         groupBy = " group by e.orderItems.order.userType ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }

@@ -125,7 +125,7 @@ public class TaobaoCouponAPI extends Controller {
         }
         List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         for (ECoupon coupon : eCoupons) {
-            final String errInfo = ECoupon.applyRefund(coupon, coupon.order.userId, coupon.order.userType);
+            final String errInfo = ECoupon.applyRefund(coupon);
             if (!errInfo.equals(ECoupon.ECOUPON_REFUND_OK)) {
                 Logger.error("taobao refund error !!!!!!!! coupon id: %s. %s", coupon.id, errInfo);
             }

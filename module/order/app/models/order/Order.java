@@ -31,7 +31,6 @@ import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.hibernate.usertype.UserType;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -93,6 +92,26 @@ public class Order extends Model {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     public List<ECoupon> eCoupons;
+
+    /**
+     * 检查是否是一百券网站的订单.
+     */
+    @Transient
+    public boolean isWebsiteOrder() {
+        return Resaler.getYibaiquan().id.equals(this.userId);
+    }
+
+    /**
+     * 得到此订单的付款者现金账户.
+     * @return 如果是网站订单，返回消费者账户；否则返回分销账户.
+     */
+    @Transient
+    public Account getBuyerAccount() {
+        if (isWebsiteOrder()) {
+            return AccountUtil.getConsumerAccount(this.consumerId);
+        }
+        return AccountUtil.getResalerAccount(this.userId);
+    }
 
     /**
      * 订单号
@@ -943,7 +962,7 @@ public class Order extends Model {
 
     @Transient
     public Resaler getResaler() {
-        if (resaler == null && userId != null && userType == AccountType.RESALER) {
+        if (resaler == null && userId != null) {
             resaler = Resaler.findById(userId);
         }
         return resaler;
