@@ -944,7 +944,7 @@ public class Order extends Model {
 
     @Transient
     public Resaler getResaler() {
-        if (resaler == null && userId != null && userType == AccountType.RESALER) {
+        if (resaler == null && userId != null) {
             resaler = Resaler.findById(userId);
         }
         return resaler;

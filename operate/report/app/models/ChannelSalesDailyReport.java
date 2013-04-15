@@ -45,7 +45,7 @@ public class ChannelSalesDailyReport implements Comparable<ChannelSalesDailyRepo
     }
 
     //paidAt
-    public ChannelSalesDailyReport(String date, Order order, OrderItems orderItems, BigDecimal netSalesAmount) {
+    public ChannelSalesDailyReport(String date, Order order, BigDecimal netSalesAmount) {
         this.date = date;
         this.salesAmount = netSalesAmount;
         this.netSalesAmount = netSalesAmount;
@@ -75,9 +75,9 @@ public class ChannelSalesDailyReport implements Comparable<ChannelSalesDailyRepo
      */
     public static List<ChannelSalesDailyReport> query(
             ChannelSalesDailyReportCondition condition) {
-        //paidAt  (ecoupon without real)
-        String sql = "select new models.ChannelSalesDailyReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),min(o),min(r),sum(r.salePrice-r.rebateValue/r.buyNumber)" +
-                ") from OrderItems r,Order o,Resaler b,Supplier s ,ECoupon e where r.order=o and o.userId=b.id and r.goods.supplierId = s and e.orderItems=r ";
+        //算出券和实物销售额 paidAt  (ecoupon + real)
+        String sql = "select new models.ChannelSalesDailyReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),min(o),sum(r.salePrice-r.rebateValue/r.buyNumber))" +
+                " from OrderItems r,Order o where r.order=o ";
         String groupBy = " group by TO_DAYS(r.order.paidAt), r.order.userId";
         Query query = JPA.em()
                 .createQuery(sql + condition.getPaidAtFilter() + groupBy);
@@ -87,7 +87,7 @@ public class ChannelSalesDailyReport implements Comparable<ChannelSalesDailyRepo
         List<ChannelSalesDailyReport> paidResultList = query.getResultList();
 
 
-        //refundAt
+        //算出券退款金额  refundAt (ecoupon)
         sql = "select new models.ChannelSalesDailyReport(str(year(e.refundAt))||'-'||str(month(e.refundAt))||'-'||str(day(e.refundAt)),e.order,sum(e.refundPrice),e.goods " +
                 ") from ECoupon e ";
         groupBy = " group by  TO_DAYS(e.refundAt),e.order.userId ";
@@ -101,7 +101,7 @@ public class ChannelSalesDailyReport implements Comparable<ChannelSalesDailyRepo
 
         List<ChannelSalesDailyReport> refundResultList = query.getResultList();
 
-        //cheatedOrder
+        //算出券的刷单金额 cheatedOrder
         sql = "select new models.ChannelSalesDailyReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),sum(r.salePrice-r.rebateValue/r.buyNumber),r.order,r" +
                 ") " +
                 " from OrderItems r, ECoupon e where e.orderItems=r and ";

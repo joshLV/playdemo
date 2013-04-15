@@ -1,13 +1,16 @@
 package models;
 
-import models.accounts.AccountType;
 import models.order.Order;
 import play.db.jpa.JPA;
 
 import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 客流报表
@@ -121,6 +124,11 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
      */
     public BigDecimal channelCost;
 
+    /*
+        退款成本
+     */
+    public BigDecimal refundCost;
+
     /**
      * 净利润
      */
@@ -156,12 +164,12 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         this.orderNum = orderNum;
         this.perOrderPrice = perOrderPrice;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
-                this.loginName = order.getResaler().loginName;
-                this.userName = order.getResaler().userName;
-            }
+//            if (order.userType == AccountType.CONSUMER) {
+//                this.loginName = "一百券";
+//            } else {
+            this.loginName = order.getResaler().loginName;
+            this.userName = order.getResaler().userName;
+//            }
         }
         if (salePrice != null) {
             this.salePrice = salePrice;
@@ -196,12 +204,12 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         this.orderNum = orderNum;
         this.perOrderPrice = perOrderPrice;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
-                this.loginName = order.getResaler().loginName;
-                this.userName = order.getResaler().userName;
-            }
+//            if (order.userType == AccountType.CONSUMER) {
+//                this.loginName = "一百券";
+//            } else {
+            this.loginName = order.getResaler().loginName;
+            this.userName = order.getResaler().userName;
+//            }
         }
 
         this.realSalePrice = salePrice;
@@ -218,11 +226,13 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         this.consumedNumber = consumedNumber;
     }
 
-    public ConsumerFlowReport(Long orderNum, String date, BigDecimal refundPrice, Long refundNumber) {
+    //refundAt
+    public ConsumerFlowReport(Long orderNum, String date, BigDecimal refundPrice, Long refundNumber, BigDecimal refundCost) {
         this.date = date;
         this.orderNum = orderNum;
         this.refundPrice = refundPrice;
         this.refundNumber = refundNumber;
+        this.refundCost = refundCost;
     }
 
     public ConsumerFlowReport(String date, Long refundNumber, BigDecimal refundPrice, Long orderNum) {
@@ -283,7 +293,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
     public static List<ConsumerFlowReport> query(
             ConsumerFlowReportCondition condition, String orderBy) {
 
-        //paidAt ecoupon  resaler
+        //算出售出券金额  paidAt ecoupon
         String sql = "select new models.ConsumerFlowReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.order.id)" +
                 " ,sum(r.salePrice-r.rebateValue/r.buyNumber)/count(r.order.id), sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
                 ",sum(r.originalPrice),sum((r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio)/100" +
@@ -293,27 +303,27 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 " and r.goods.supplierId = s ";
         String groupBy = " group by str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)) ";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilterPaidAt(AccountType.RESALER) + groupBy + " order by r.order.paidAt desc");
+                .createQuery(sql + condition.getFilterPaidAt() + groupBy + " order by r.order.paidAt desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ConsumerFlowReport> paidResalerResultList = query.getResultList();
 
 
-        //paidAt ecoupon  consumer  (order not necessary but for not tuple)
-        sql = "select new models.ConsumerFlowReport(r.order,sum(r.salePrice-r.rebateValue/r.buyNumber), count(r.order.id)," +
-                " sum(r.salePrice-r.rebateValue/r.buyNumber)/count(r.order.id),str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.buyNumber)" +
-                ",sum(r.originalPrice)" +
-                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
-                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice)" +
-                ") from OrderItems r, ECoupon e,Order o where e.orderItems=r and r.order=o  ";
-
-        query = JPA.em()
-                .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER) + groupBy + " order by r.order.paidAt desc");
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
-        List<ConsumerFlowReport> paidConsumerResultList = query.getResultList();
+//        //paidAt ecoupon  consumer  (order not necessary but for not tuple)
+//        sql = "select new models.ConsumerFlowReport(r.order,sum(r.salePrice-r.rebateValue/r.buyNumber), count(r.order.id)," +
+//                " sum(r.salePrice-r.rebateValue/r.buyNumber)/count(r.order.id),str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.buyNumber)" +
+//                ",sum(r.originalPrice)" +
+//                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
+//                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice)" +
+//                ") from OrderItems r, ECoupon e,Order o where e.orderItems=r and r.order=o  ";
+//
+//        query = JPA.em()
+//                .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER) + groupBy + " order by r.order.paidAt desc");
+//        for (String param : condition.getParamMap().keySet()) {
+//            query.setParameter(param, condition.getParamMap().get(param));
+//        }
+//        List<ConsumerFlowReport> paidConsumerResultList = query.getResultList();
 
 
         //sendAt real resaler
@@ -325,25 +335,25 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 ") from OrderItems r,Order o,Resaler b where r.order=o and o.userId=b.id and ";
         groupBy = " group by str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt))  ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRealSendAt(AccountType.RESALER) + groupBy + " order by r.order.paidAt desc");
+                .createQuery(sql + condition.getFilterRealSendAt() + groupBy + " order by r.order.paidAt desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ConsumerFlowReport> sentResalerRealResultList = query.getResultList();
 
-        //sendAt real consumer  (order not necessary)
-        sql = "select new models.ConsumerFlowReport(r.order,str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.order.id)," +
-                " sum(r.salePrice*r.buyNumber-r.rebateValue)/count(r.order.id),sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.originalPrice*r.buyNumber)" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
-                ") from OrderItems r where ";
-        query = JPA.em()
-                .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
-        List<ConsumerFlowReport> sentConsumerRealResultList = query.getResultList();
+//        //sendAt real consumer  (order not necessary)
+//        sql = "select new models.ConsumerFlowReport(r.order,str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.order.id)," +
+//                " sum(r.salePrice*r.buyNumber-r.rebateValue)/count(r.order.id),sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+//                ",sum(r.originalPrice*r.buyNumber)" +
+//                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
+//                ") from OrderItems r where ";
+//        query = JPA.em()
+//                .createQuery(sql + condition.getFilterRealSendAt() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+//        for (String param : condition.getParamMap().keySet()) {
+//            query.setParameter(param, condition.getParamMap().get(param));
+//        }
+//        List<ConsumerFlowReport> sentConsumerRealResultList = query.getResultList();
 
 
         //consumedAt ecoupon
@@ -358,7 +368,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         List<ConsumerFlowReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ConsumerFlowReport(sum(r.order.id),str(year(e.refundAt))||'-'||str(month(e.refundAt))||'-'||str(day(e.refundAt)),sum(e.refundPrice),count(e))" +
+        sql = "select new models.ConsumerFlowReport(sum(r.order.id),str(year(e.refundAt))||'-'||str(month(e.refundAt))||'-'||str(day(e.refundAt)),sum(e.refundPrice),count(e),sum(e.orderItems.originalPrice))" +
                 " from OrderItems r, ECoupon e where e.orderItems=r";
         groupBy = " group by str(year(e.refundAt))||'-'||str(month(e.refundAt))||'-'||str(day(e.refundAt))  ";
         query = JPA.em()
@@ -378,30 +388,30 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
             map.put(getReportKey(paidItem), paidItem);
         }
 
-        for (ConsumerFlowReport paidItem : paidConsumerResultList) {
-            ConsumerFlowReport item = map.get(getReportKey(paidItem));
-            if (item == null) {
-                map.put(getReportKey(paidItem), paidItem);
-            } else {
-                item.salePrice = item.salePrice.add(paidItem.salePrice);
-                item.buyNumber = item.buyNumber + paidItem.buyNumber;
-                item.realSalePrice = item.realSalePrice.add(paidItem.realSalePrice);
-                item.realBuyNumber = item.realBuyNumber + paidItem.realBuyNumber;
-                item.refundPrice = item.refundPrice.add(paidItem.refundPrice);
-                item.refundNumber = item.refundNumber + paidItem.refundNumber;
-                item.consumedPrice = item.consumedPrice.add(paidItem.consumedPrice);
-                item.consumedNumber = item.consumedNumber + paidItem.consumedNumber;
-                item.totalCost = item.totalCost.add(paidItem.totalCost);
-                item.orderNum = item.orderNum + paidItem.orderNum;
-                item.perOrderPrice = item.salePrice.divide(BigDecimal.valueOf(item.orderNum), 2, RoundingMode.HALF_UP);
-
-                item.grossMargin = item.salePrice.subtract(item.totalCost).divide(item.salePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
-
-                item.channelCost = item.channelCost.add(paidItem.channelCost == null ? BigDecimal.ZERO : paidItem.channelCost);
-                item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(item.channelCost);
-            }
-        }
+//        for (ConsumerFlowReport paidItem : paidConsumerResultList) {
+//            ConsumerFlowReport item = map.get(getReportKey(paidItem));
+//            if (item == null) {
+//                map.put(getReportKey(paidItem), paidItem);
+//            } else {
+//                item.salePrice = item.salePrice.add(paidItem.salePrice);
+//                item.buyNumber = item.buyNumber + paidItem.buyNumber;
+//                item.realSalePrice = item.realSalePrice.add(paidItem.realSalePrice);
+//                item.realBuyNumber = item.realBuyNumber + paidItem.realBuyNumber;
+//                item.refundPrice = item.refundPrice.add(paidItem.refundPrice);
+//                item.refundNumber = item.refundNumber + paidItem.refundNumber;
+//                item.consumedPrice = item.consumedPrice.add(paidItem.consumedPrice);
+//                item.consumedNumber = item.consumedNumber + paidItem.consumedNumber;
+//                item.totalCost = item.totalCost.add(paidItem.totalCost);
+//                item.orderNum = item.orderNum + paidItem.orderNum;
+//                item.perOrderPrice = item.salePrice.divide(BigDecimal.valueOf(item.orderNum), 2, RoundingMode.HALF_UP);
+//
+//                item.grossMargin = item.salePrice.subtract(item.totalCost).divide(item.salePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+//
+//                item.channelCost = item.channelCost.add(paidItem.channelCost == null ? BigDecimal.ZERO : paidItem.channelCost);
+//                item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(item.channelCost);
+//            }
+//        }
 
         for (ConsumerFlowReport paidItem : sentResalerRealResultList) {
             ConsumerFlowReport item = map.get(getReportKey(paidItem));
@@ -429,31 +439,31 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
             }
         }
 
-        for (ConsumerFlowReport paidItem : sentConsumerRealResultList) {
-            ConsumerFlowReport item = map.get(getReportKey(paidItem));
-            if (item == null) {
-                map.put(getReportKey(paidItem), paidItem);
-            } else {
-                item.realSalePrice = item.realSalePrice.add(paidItem.realSalePrice);
-                item.realBuyNumber = item.realBuyNumber + paidItem.realBuyNumber;
-                BigDecimal totalSalesPrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice);
-                BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
-
-                BigDecimal totalSalePrice = item.salePrice.add(paidItem.realSalePrice).add(item.realSalePrice);
-                item.orderNum = item.orderNum + paidItem.orderNum;
-                item.perOrderPrice = totalSalePrice.divide(BigDecimal.valueOf(item.orderNum), 2, RoundingMode.HALF_UP);
-
-                if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
-                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
-                }
-
-                item.channelCost = item.channelCost.add(paidItem.channelCost == null ? BigDecimal.ZERO : paidItem.channelCost);
-                item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost).subtract(item.channelCost);
-
-                item.totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
-            }
-        }
+//        for (ConsumerFlowReport paidItem : sentConsumerRealResultList) {
+//            ConsumerFlowReport item = map.get(getReportKey(paidItem));
+//            if (item == null) {
+//                map.put(getReportKey(paidItem), paidItem);
+//            } else {
+//                item.realSalePrice = item.realSalePrice.add(paidItem.realSalePrice);
+//                item.realBuyNumber = item.realBuyNumber + paidItem.realBuyNumber;
+//                BigDecimal totalSalesPrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice);
+//                BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+//
+//                BigDecimal totalSalePrice = item.salePrice.add(paidItem.realSalePrice).add(item.realSalePrice);
+//                item.orderNum = item.orderNum + paidItem.orderNum;
+//                item.perOrderPrice = totalSalePrice.divide(BigDecimal.valueOf(item.orderNum), 2, RoundingMode.HALF_UP);
+//
+//                if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
+//                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+//                }
+//
+//                item.channelCost = item.channelCost.add(paidItem.channelCost == null ? BigDecimal.ZERO : paidItem.channelCost);
+//                item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost).subtract(item.channelCost);
+//
+//                item.totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+//            }
+//        }
 
         //merge other 2
         for (ConsumerFlowReport consumedItem : consumedResultList) {

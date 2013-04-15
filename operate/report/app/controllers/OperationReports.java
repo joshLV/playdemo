@@ -199,12 +199,12 @@ public class OperationReports extends Controller {
         List<ResaleSalesReport> resultList = null;
         condition.accountType = null;
         resultList = ResaleSalesReport.query(condition);
-        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
+//        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
 
         // 查询出所有结果
-        for (ResaleSalesReport resaleSalesReport : consumerList) {
-            resultList.add(resaleSalesReport);
-        }
+//        for (ResaleSalesReport resaleSalesReport : consumerList) {
+//            resultList.add(resaleSalesReport);
+//        }
 
         // 分页
         ValuePaginator<ResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
@@ -396,11 +396,11 @@ public class OperationReports extends Controller {
         channelCondition.endAt = condition.endAt;
         condition.accountType = null;
         channelPage = ResaleSalesReport.query(channelCondition);
-        List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
+//        List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
         // 查询出所有结果
-        for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
-            channelPage.add(resaleSalesReport);
-        }
+//        for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
+//            channelPage.add(resaleSalesReport);
+//        }
 
         // 分页
 //        ValuePaginator<ResaleSalesReport> channelPage = PaginateUtil.wrapValuePaginator(channelList, pageNumber, PAGE_SIZE);
@@ -450,22 +450,22 @@ public class OperationReports extends Controller {
         condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
         condition.operatorId = OperateRbac.currentUser().id;
         List<ChannelGoodsReport> resultList = ChannelGoodsReport.query(condition);
-        List<ChannelGoodsReport> consumerList = ChannelGoodsReport.queryConsumer(condition);
+//        List<ChannelGoodsReport> consumerList = ChannelGoodsReport.queryConsumer(condition);
         // 查询出所有结果
-        for (ChannelGoodsReport c : consumerList) {
-            if (c != null) {
-                resultList.add(c);
-            }
-        }
+//        for (ChannelGoodsReport c : consumerList) {
+//            if (c != null) {
+//                resultList.add(c);
+//            }
+//        }
         Collections.sort(resultList);
         //total
         List<ChannelGoodsReport> totalResultList = ChannelGoodsReport.queryTotal(condition);
-        List<ChannelGoodsReport> totalConsumerResultList = ChannelGoodsReport.queryConsumerTotal(condition);
+//        List<ChannelGoodsReport> totalConsumerResultList = ChannelGoodsReport.queryConsumerTotal(condition);
 
         // 查询出所有结果
-        for (ChannelGoodsReport c : totalConsumerResultList) {
-            totalResultList.add(c);
-        }
+//        for (ChannelGoodsReport c : totalConsumerResultList) {
+//            totalResultList.add(c);
+//        }
 
         // 分页
         ValuePaginator<ChannelGoodsReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);

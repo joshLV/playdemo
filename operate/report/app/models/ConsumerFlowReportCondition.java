@@ -1,9 +1,12 @@
 package models;
 
-import models.accounts.AccountType;
 import models.supplier.Supplier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 客流报表
@@ -21,13 +24,11 @@ public class ConsumerFlowReportCondition {
     public Boolean hasSeeReportProfitRight;
     public Long operatorId;
 
-    public String getFilterPaidAt(AccountType type) {
+    public String getFilterPaidAt() {
         StringBuilder condBuilder = new StringBuilder("and (r.order.status='PAID' or r.order.status='SENT') " +
-                " and r.order.userType = :userType " +
                 " and r.goods.isLottery=false and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED "
         );
 
-        paramMap.put("userType", type);
 
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
@@ -54,14 +55,12 @@ public class ConsumerFlowReportCondition {
         return condBuilder.toString();
     }
 
-    public String getFilterRealSendAt(AccountType type) {
+    public String getFilterRealSendAt() {
         StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT')  " +
                 "and r.goods.isLottery=false and r.goods.materialType=models.sales.MaterialType.REAL" +
-                " and r.order.userType = :userType " +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and r.order.deliveryType=models.order.DeliveryType.LOGISTICS");
 
-        paramMap.put("userType", type);
 
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
