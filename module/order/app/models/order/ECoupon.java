@@ -14,6 +14,7 @@ import models.accounts.util.TradeUtil;
 import models.admin.SupplierUser;
 import models.consumer.User;
 import models.operator.OperateUser;
+import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsCouponType;
 import models.sales.Shop;
@@ -802,28 +803,17 @@ public class ECoupon extends Model {
             eCoupon.order.promotionBalancePay = BigDecimal.ZERO;
         }
 
-        Account account = null;
-        if (eCoupon.order.isWebsiteOrder()) {
-            account = AccountUtil.getConsumerAccount(eCoupon.order.consumerId);
-            if (StringUtils.isBlank(userName)) {
+        Account account = eCoupon.order.getBuyerAccount();
+
+        if (StringUtils.isBlank(userName)) {
+            if (eCoupon.order.isWebsiteOrder()) {
                 User user = User.findById(eCoupon.order.consumerId);
                 userName = "消费者:" + user.getShowName();
-            }
-        } else {
-            account = AccountUtil.getResalerAccount(eCoupon.order.userId);
-            if (StringUtils.isBlank(userName)) {
-                User user = User.findById(eCoupon.order.userId);
-                userName = "消费者:" + user.getShowName();
+            } else {
+                Resaler resaler = Resaler.findById(eCoupon.order.userId);
+                userName = "分销商:" + resaler.userName;
             }
         }
-
-        /*
-        System.out.println("===coupon.salePrice" + eCoupon.salePrice);
-        System.out.println("===coupon.rebate" + eCoupon.rebateValue);
-        System.out.println("===order.account" + eCoupon.order.accountPay);
-        System.out.println("===order.disaccount" + eCoupon.order.discountPay);
-        System.out.println("===order.promotion" + eCoupon.order.promotionBalancePay);
-        */
 
         //先计算已消费的金额
         BigDecimal consumedAmount = BigDecimal.ZERO;
@@ -875,13 +865,15 @@ public class ECoupon extends Model {
         // 创建退款交易
         TradeBill tradeBill = TradeUtil.createRefundTrade(account, refundCashAmount, refundPromotionAmount, eCoupon.order.getId(), eCoupon.eCouponSn);
 
-        if (!TradeUtil.success(tradeBill, "退款成功.券号:" + eCoupon.getMaskedEcouponSn() + ",商品:" + eCoupon.goods.shortName)) {
+        if (!TradeUtil.success(tradeBill, "退款成功.券号:" + eCoupon.getMaskedEcouponSn() + "," +
+                "商品:" + eCoupon.goods.shortName)) {
             returnFlg = "{\"error\":\"refound failed\"}";
             return returnFlg;
         }
 
         // 更新已退款的活动金金额
         eCoupon.order.refundedAmount = eCoupon.order.refundedAmount.add(refundCashAmount).add(refundPromotionAmount);
+
         eCoupon.order.save();
 
         //记录券历史信息
@@ -895,6 +887,7 @@ public class ECoupon extends Model {
         // 更改订单状态
         eCoupon.status = ECouponStatus.REFUND;
         eCoupon.refundAt = new Date();
+
         eCoupon.refundPrice = refundCashAmount.add(refundPromotionAmount);
         eCoupon.save();
 

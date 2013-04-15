@@ -98,7 +98,19 @@ public class Order extends Model {
      */
     @Transient
     public boolean isWebsiteOrder() {
-        return this.userId == Resaler.getYibaiquan().id;
+        return Resaler.getYibaiquan().id.equals(this.userId);
+    }
+
+    /**
+     * 得到此订单的付款者现金账户.
+     * @return 如果是网站订单，返回消费者账户；否则返回分销账户.
+     */
+    @Transient
+    public Account getBuyerAccount() {
+        if (isWebsiteOrder()) {
+            return AccountUtil.getConsumerAccount(this.consumerId);
+        }
+        return AccountUtil.getResalerAccount(this.userId);
     }
 
     /**
@@ -950,7 +962,7 @@ public class Order extends Model {
 
     @Transient
     public Resaler getResaler() {
-        if (resaler == null && userId != null && userType == AccountType.RESALER) {
+        if (resaler == null && userId != null) {
             resaler = Resaler.findById(userId);
         }
         return resaler;

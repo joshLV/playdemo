@@ -1,7 +1,6 @@
 package models.job;
 
 import com.uhuila.common.util.DateUtil;
-import models.accounts.AccountType;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.SentCouponMessage;
@@ -40,7 +39,8 @@ public class ExpiredCouponNotice extends Job {
         String goodsName = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (ECoupon coupon : expiredCoupons) {
-            if (coupon.order.userType != AccountType.CONSUMER) {
+            if (coupon.order.isWebsiteOrder()) {
+                // 一百券网站订单不需要处理
                 break;
             }
             mobile = coupon.orderItems.phone;

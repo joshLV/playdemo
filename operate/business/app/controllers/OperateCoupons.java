@@ -1,8 +1,15 @@
 package controllers;
 
-import models.accounts.AccountType;
 import models.operator.OperateUser;
-import models.order.*;
+import models.order.CouponHistory;
+import models.order.CouponsCondition;
+import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
+import models.order.ECouponStatus;
+import models.order.OrderECouponMessage;
+import models.order.OrderItems;
+import models.order.OuterOrder;
+import models.order.VerifyCouponType;
 import models.sales.Brand;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
@@ -134,7 +141,7 @@ public class OperateCoupons extends Controller {
             render("OperateCoupons/refund.html", action, couponNoRefund, coupon, couponId, refundComment);
         }
         String returnFlg = "";
-        if (ecoupon.status == ECouponStatus.UNCONSUMED && (ecoupon.order.userType == AccountType.CONSUMER || ecoupon.order.userType == AccountType.RESALER)) {
+        if (ecoupon.status == ECouponStatus.UNCONSUMED) {
             returnFlg = ECoupon.applyRefund(ecoupon, OperateRbac.currentUser().userName, refundComment);
         }
         String message = "";
