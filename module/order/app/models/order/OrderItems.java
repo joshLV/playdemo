@@ -635,7 +635,7 @@ public class OrderItems extends Model {
         BigDecimal average = BigDecimal.ZERO;
         for (Sku sku : amountMap.keySet()) {
             final BigDecimal skuAmount = amountMap.get(sku);
-            if (takeoutSkuMap.get(sku) != null) {
+            if ((takeoutSkuMap.get(sku) != null) && (takeoutSkuMap.get(sku) > 0l)) {
                 average = skuAmount.divide(BigDecimal.valueOf(takeoutSkuMap.get(sku)), 2, BigDecimal.ROUND_HALF_UP);
                 averagePriceMap.put(sku, average);
             }
@@ -719,6 +719,8 @@ public class OrderItems extends Model {
 
         // 创建退款交易
         Account account = AccountUtil.getAccount(orderItems.order.userId, orderItems.order.userType);
+        Logger.info("account=" + account.id + ", refundCashAmount=" + refundCashAmount + ", " +
+                "refundPromotionAmount=" + refundPromotionAmount);
         TradeBill tradeBill = TradeUtil.createRefundTrade(account, refundCashAmount, refundPromotionAmount, orderItems.order.getId(), null);
 
         if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {

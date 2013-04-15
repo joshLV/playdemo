@@ -160,6 +160,8 @@
         <navigation key="inventory_management" text="库存管理">
             <navigation key="sku_takeouts_index" action="SkuTakeouts.index" text="根据订单出库"
                         permissions="INVENTORY"/>
+            <navigation key="return_entries_index" action="ReturnEntries.index" text="退货单管理"
+                        permissions="INVENTORY"/>
             <navigation key="inventory_details" action="InventoryStocks.index" text="库存变动明细"
                         permissions="INVENTORY"/>
             <navigation key="inventory_stockIn" action="InventoryStocks.stockIn" text="添加入库记录" permissions="INVENTORY"/>

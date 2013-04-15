@@ -17,7 +17,6 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 退货单管理.
@@ -28,7 +27,7 @@ import java.util.List;
  */
 
 @With(OperateRbac.class)
-@ActiveNavigation("order_index")
+@ActiveNavigation("return_entries_index")
 public class ReturnEntries extends Controller {
     public static int PAGE_SIZE = 15;
 
@@ -49,11 +48,10 @@ public class ReturnEntries extends Controller {
         if (condition == null) {
             condition = new RealGoodsReturnEntryCondition(Supplier.getShihui().id, RealGoodsReturnStatus.RETURNING);
         }
+        condition.supplierId = Supplier.getShihui().id;
         final int page = getPage();
         JPAExtPaginator<RealGoodsReturnEntry> entryPage = RealGoodsReturnEntry.getPage(condition, page, PAGE_SIZE);
-        List<Supplier> supplierList = Supplier.findUnDeleted();
-
-        render(entryPage, supplierList, condition);
+        render(entryPage, condition);
     }
 
     /**

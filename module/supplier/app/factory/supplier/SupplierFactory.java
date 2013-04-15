@@ -45,6 +45,7 @@ public class SupplierFactory extends ModelFactory<Supplier> {
 
     @Factory(name = "seewi")
     public void defineSeewi(Supplier supplier) {
+        Supplier.clearShihuiSupplier(); //清除缓存
         supplier.fullName = "上海视惠信息科技有限公司";
     }
 
