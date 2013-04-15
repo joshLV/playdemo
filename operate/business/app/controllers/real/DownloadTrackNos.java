@@ -1,21 +1,24 @@
 package controllers.real;
 
-import cache.CacheCallBack;
 import cache.CacheHelper;
+import com.uhuila.common.util.DateUtil;
 import controllers.OperateRbac;
-import models.accounts.AccountType;
-import models.order.*;
-import models.resale.Resaler;
+import models.order.DownloadTrackNoCondition;
+import models.order.DownloadTrackNoReport;
+import models.order.OrderItems;
+import models.order.OrderStatus;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.With;
-import util.DateHelper;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 下载带运单号的跟踪表文件，供上传到不同.
@@ -39,7 +42,7 @@ public class DownloadTrackNos extends Controller {
         int pageNumber = getPage();
         if (condition == null) {
             condition = new DownloadTrackNoCondition();
-            condition.sentBeginAt = DateHelper.beforeDays(3);
+            condition.sentBeginAt = new Date();
             condition.sentEndAt = new Date();
         }
         List<DownloadTrackNoReport> resultList = DownloadTrackNoReport.query(condition);
@@ -59,10 +62,15 @@ public class DownloadTrackNos extends Controller {
         return pageNumber;
     }
 
-    private static void jdShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, Boolean unDownloaded, String outerGoodsNo) {
-        List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+    private static void jdShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, String outerGoodsNo, String singleDownload) {
+        List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, outerGoodsNo);
         request.format = "xls";
-        renderArgs.put("__FILE_NAME__", "京东发货单导出_" + System.currentTimeMillis() + ".xls");
+        System.out.println(singleDownload.trim() + "《=========singleDownload:");
+        if (singleDownload.trim().equals("1")) {
+            renderArgs.put("__FILE_NAME__", "京东发货单导出_" + orderItemsList.get(0).outerGoodsNo+DateUtil.getNowTime() + ".xls");
+        } else {
+            renderArgs.put("__FILE_NAME__", "京东发货单导出_" + DateUtil.getNowTime() + ".xls");
+        }
         Map<String, String> channelExpressMap = models.order.ExpressCompany.findChannelExpress();
 
         //更新orderItems的状态为：已上传
@@ -84,8 +92,8 @@ public class DownloadTrackNos extends Controller {
         render("real/DownloadTrackNos/jdShippingExcelOut.xls", orderItemsList);
     }
 
-    public static void yhdShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, Boolean unDownloaded, String outerGoodsNo) {
-        List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+    public static void yhdShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, String outerGoodsNo) {
+        List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, outerGoodsNo);
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "一号店发货单导出_" + System.currentTimeMillis() + ".xls");
         Map<String, String> channelExpressMap = models.order.ExpressCompany.findChannelExpress();
@@ -113,8 +121,8 @@ public class DownloadTrackNos extends Controller {
     }
 
 
-    public static void wbShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, Boolean unDownloaded, String outerGoodsNo) {
-        List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+    public static void wbShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, String outerGoodsNo) {
+        List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, outerGoodsNo);
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "58发货单导出_" + System.currentTimeMillis() + ".xls");
         Map<String, String> channelExpressMap = models.order.ExpressCompany.findChannelExpress();
@@ -139,8 +147,8 @@ public class DownloadTrackNos extends Controller {
         render("real/DownloadTrackNos/wbShippingExcelOut.xls", orderItemsList);
     }
 
-    public static void tbShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, Boolean unDownloaded, String outerGoodsNo) {
-        List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+    public static void tbShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, String outerGoodsNo) {
+        List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, outerGoodsNo);
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "淘宝发货单导出_" + System.currentTimeMillis() + ".xls");
         Map<String, String> channelExpressMap = models.order.ExpressCompany.findChannelExpress();
@@ -174,22 +182,21 @@ public class DownloadTrackNos extends Controller {
      * @param paidEndAt
      * @param sentBeginAt
      * @param sentEndAt
-     * @param unDownloaded
      * @param outerGoodsNo
      */
-    public static void download(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, Boolean unDownloaded, String outerGoodsNo) {
+    public static void download(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, String outerGoodsNo, String singleDownload) {
         switch (partner) {
             case JD:
-                jdShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+                jdShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, outerGoodsNo, singleDownload);
                 break;
             case YHD:
-                yhdShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+                yhdShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, outerGoodsNo);
                 break;
             case WB:
-                wbShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+                wbShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, outerGoodsNo);
                 break;
             case TB:
-                tbShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+                tbShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, outerGoodsNo);
                 break;
             default:
                 renderText("不支持类型");
