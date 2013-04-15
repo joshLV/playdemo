@@ -2,6 +2,8 @@ package functional.real;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
+import models.accounts.Account;
+import models.accounts.util.AccountUtil;
 import models.operator.OperateUser;
 import models.order.OrderItems;
 import models.order.OrderStatus;
@@ -14,6 +16,7 @@ import models.sales.MaterialType;
 import models.sales.Sku;
 import models.supplier.Supplier;
 import org.junit.Test;
+import play.Logger;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
 import play.mvc.Router;
@@ -36,6 +39,7 @@ public class ReturnEntriesTest extends FunctionalTest {
     OrderItems orderItems;
     InventoryStockItem stockItem;
     RealGoodsReturnEntry entry;
+    Account platformIncomingAccount;
 
     @org.junit.Before
     public void setup() {
@@ -70,10 +74,16 @@ public class ReturnEntriesTest extends FunctionalTest {
         orderItems.order.orderType = OrderType.CONSUME;
         orderItems.order.paidAt = new Date();
         orderItems.order.refundedAmount = BigDecimal.ZERO;
+        orderItems.order.amount = orderItems.getAmount();
+        orderItems.order.needPay = orderItems.getAmount();
         orderItems.order.promotionBalancePay = BigDecimal.ZERO;
         orderItems.order.save();
 
         entry = FactoryBoy.create(RealGoodsReturnEntry.class);
+
+        platformIncomingAccount = AccountUtil.getPlatformIncomingAccount();
+        platformIncomingAccount.amount = new BigDecimal(1000l);
+        platformIncomingAccount.save();
     }
 
 
@@ -87,6 +97,8 @@ public class ReturnEntriesTest extends FunctionalTest {
 
     @Test
     public void testReceived() throws Exception {
+        BigDecimal oldPlatformAmount = platformIncomingAccount.amount;
+        assertEquals(new BigDecimal("8.5"), orderItems.getAmount());
         Map<String, Object> urlParams = new HashMap<>();
         urlParams.put("id", entry.id);
         Http.Response response = PUT(Router.reverse("real.ReturnEntries.received", urlParams).url,
@@ -95,6 +107,9 @@ public class ReturnEntriesTest extends FunctionalTest {
 
         entry.refresh();
         assertEquals(RealGoodsReturnStatus.RETURNED, entry.status);
+
+        platformIncomingAccount.refresh();
+        assertEquals(oldPlatformAmount.subtract(orderItems.order.amount).setScale(2), platformIncomingAccount.amount);
     }
 
     @Test
@@ -110,7 +125,41 @@ public class ReturnEntriesTest extends FunctionalTest {
     }
 
     @Test
-    public void testReturnGoods() throws Exception {
+    public void testReturnGoodsForPaidOrder() throws Exception {
+        RealGoodsReturnEntry.deleteAll();
+        orderItems.status = OrderStatus.PAID;
+        orderItems.save();
 
+        Logger.info("orderItem.id=" +  orderItems.id + " of PAID:" + orderItems.status);
+        Map<String, String> params = new HashMap<>();
+        params.put("entry.orderItems.id", orderItems.id.toString());
+        params.put("entry.returnedCount", "1");
+        params.put("entry.reason", "for test");
+        Http.Response response = POST(Router.reverse("real.ReturnEntries.returnGoods").url, params);
+        assertIsOk(response);
+
+        entry = RealGoodsReturnEntry.find("order by id desc").first();
+        assertEquals(RealGoodsReturnStatus.RETURNED, entry.status);
+        assertEquals("for test", entry.reason);
+    }
+
+    @Test
+    public void testReturnGoodsForPREPAREDOrder() throws Exception {
+        RealGoodsReturnEntry.deleteAll();
+        orderItems.status = OrderStatus.PREPARED;
+        orderItems.save();
+
+        Map<String, String> params = new HashMap<>();
+        params.put("entry.orderItems.id", orderItems.id.toString());
+        params.put("entry.returnedCount", "1");
+        params.put("entry.reason", "for test");
+        Http.Response response = POST(Router.reverse("real.ReturnEntries.returnGoods").url, params);
+        assertIsOk(response);
+
+        orderItems.refresh();
+        entry = RealGoodsReturnEntry.find("order by id desc").first();
+        assertEquals(RealGoodsReturnStatus.RETURNING, entry.status);
+        assertEquals(OrderStatus.RETURNING, orderItems.status);
+        assertEquals("for test", entry.reason);
     }
 }

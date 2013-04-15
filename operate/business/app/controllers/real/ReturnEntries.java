@@ -12,6 +12,7 @@ import models.sales.StockActionType;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -120,10 +121,12 @@ public class ReturnEntries extends Controller {
         Long orderId = null;
         if (entry.orderItems != null && entry.orderItems.id != null && entry.orderItems.id != 0L) {
             OrderItems orderItems = OrderItems.findById(entry.orderItems.id);
+            Logger.info("orderItems.status=" + orderItems.status + ", id=" + entry.orderItems.id);
             orderId = orderItems.order.id;
             switch (orderItems.status) {
                 case PAID:
                     //todo 退款处理，有待测试
+                    Logger.info("do PAID status");
                     String result = OrderItems.handleRefund(orderItems, entry.returnedCount);
 
                     if (!result.equals("")) {
