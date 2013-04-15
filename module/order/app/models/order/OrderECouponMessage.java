@@ -3,7 +3,6 @@ package models.order;
 import com.google.common.collect.Lists;
 import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
-import models.accounts.AccountType;
 import models.resale.Resaler;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -139,8 +138,7 @@ public class OrderECouponMessage implements Serializable {
         }
 
         //京东的不发短信邮件等提示，因为等会儿京东会再次主动通知我们发短信
-        if (AccountType.RESALER.equals(orderItems.order.userType)
-                && orderItems.order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)) {
+        if (orderItems.order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)) {
             // do nothing. NOW!
         }
 

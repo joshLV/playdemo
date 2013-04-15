@@ -6,7 +6,6 @@ import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
-import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.consumer.User;
 import models.sales.Goods;
@@ -671,17 +670,17 @@ public class OrderItems extends Model {
         //先计算已消费的金额
         BigDecimal consumedAmount = BigDecimal.ZERO;
         Order order = orderItems.order;
-        if (order.userType == AccountType.RESALER) {
-            consumedAmount = orderItems.resalerPrice.multiply(new BigDecimal(returnedCount));
-        } else if (order.userType == AccountType.CONSUMER) {
+        if (order.isWebsiteOrder()) {
             consumedAmount = orderItems.salePrice.multiply(new BigDecimal(returnedCount));
+        } else {
+            consumedAmount = orderItems.resalerPrice.multiply(new BigDecimal(returnedCount));
         }
 
         //最后我们来看看最终能退多少
         BigDecimal refundPromotionAmount = BigDecimal.ZERO;
 
         // 创建退款交易
-        Account account = AccountUtil.getAccount(orderItems.order.userId, orderItems.order.userType);
+        Account account = orderItems.order.getBuyerAccount();
         Logger.info("account=" + account.id + ", refundCashAmount=" + consumedAmount + ", " +
                 "refundPromotionAmount=" + refundPromotionAmount);
         TradeBill tradeBill = TradeUtil.createRefundTrade(account, consumedAmount, refundPromotionAmount, orderItems.order.getId(), null);

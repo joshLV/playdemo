@@ -1,20 +1,19 @@
 package factory.order;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
-import models.accounts.AccountType;
+import com.uhuila.common.constants.DeletedStatus;
+import factory.FactoryBoy;
+import factory.ModelFactory;
+import factory.annotation.Factory;
+import factory.resale.ResalerFactory;
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderStatus;
 import models.order.OrderType;
-
-import com.uhuila.common.constants.DeletedStatus;
-
-import factory.FactoryBoy;
-import factory.ModelFactory;
-import factory.annotation.Factory;
+import models.resale.Resaler;
 import util.DateHelper;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 public class OrderFactory extends ModelFactory<Order> {
 
@@ -26,8 +25,9 @@ public class OrderFactory extends ModelFactory<Order> {
     @Override
     public Order define() {
         Order order = new Order();
-        order.userId = FactoryBoy.lastOrCreate(User.class).id;
-        order.userType = AccountType.CONSUMER;
+        order.consumerId = FactoryBoy.lastOrCreate(User.class).id;
+        Resaler yibaiquan = ResalerFactory.getYibaiquan();
+        order.userId = yibaiquan.id;
         order.orderNumber = "abc"+FactoryBoy.sequence(Order.class);
         order.accountEmail = "test@test.com";
         order.accountPay = BigDecimal.ZERO;

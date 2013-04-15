@@ -163,14 +163,13 @@
         </tr>
         <tr>
             <td>付款账号详情：
-            #{if orders.userType == models.accounts.AccountType.CONSUMER}
+            #{if orders.isWebsiteOrder()}
                 <a href="http://cms.${play.Play.configuration.getProperty("application.baseDomain")}/consumers/${orders.userId}"
-                   target="_blank">&{'account.type.'+
-                    orders.userType}:${loginName}</a>
+                   target="_blank">&{'account.type.'+orders.getBuyerAccount().accountType}:${loginName}</a>
             #{/if}
-            #{if orders.userType == models.accounts.AccountType.RESALER}
+            #{if !orders.isWebsiteOrder()}
                 <a href="/resalers/${orders.userId}/view?flag=1" target="_blank">&{'account.type.'+
-                    orders.userType}:${loginName}</a>
+                    orders.getBuyerAccount().accountType}:${loginName}</a>
             #{/if}
             </td>
             <td>
