@@ -1,4 +1,11 @@
-# You can specialize this file for each language.
-# For example, for French create a messages.fr file
-#
-ktvRoomType.name=��������
+validation.required=请输入%s!
+validation.future=%s必须填写未来的时间!
+
+ktvRoomType.name=包厢类型
+priceSchedule.shop=门店
+priceSchedule.day=可预订日
+priceSchedule.startDay=可预订日期-开始时间
+priceSchedule.endDay=可预订日期-结束时间
+priceSchedule.roomType=包厢类型
+priceSchedule.price=价格
+priceSchedule.useTime=适用时段

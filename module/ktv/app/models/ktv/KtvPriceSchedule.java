@@ -3,6 +3,7 @@ package models.ktv;
 import com.google.gson.annotations.Expose;
 import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Shop;
+import play.data.validation.Required;
 import play.db.jpa.GenericModel;
 import play.db.jpa.Model;
 
@@ -37,6 +38,7 @@ public class KtvPriceSchedule extends GenericModel {
             joinColumns = @JoinColumn(name = "ktv_price_schedules_id"))
     public Set<Shop> shops;
 
+    @Required
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_type_id", nullable = true)
     public KtvRoomType roomType;
@@ -44,6 +46,7 @@ public class KtvPriceSchedule extends GenericModel {
     /**
      * 开始日期
      */
+    @Required
     @Column(name = "start_day")
     @Expose
     public Date startDay;
@@ -51,6 +54,7 @@ public class KtvPriceSchedule extends GenericModel {
     /**
      * 结束日期
      */
+    @Required
     @Column(name = "end_day")
     @Expose
     public Date endDay;
@@ -86,6 +90,7 @@ public class KtvPriceSchedule extends GenericModel {
      * 每间每小时的价格
      */
     @Expose
+    @Required
     public BigDecimal price;
 
     @Column(name = "created_at")

@@ -59,4 +59,7 @@ public class KtvRoom extends Model {
         Object result = q.getSingleResult();
         return result == null ? 0 : (Long) result;
     }
+
+    public KtvRoom() {
+    }
 }
