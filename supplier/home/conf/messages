@@ -92,3 +92,14 @@ entry.HANDLING=退货中
 entry.RETURNED=已退货
 entry.UNRETURNED=未收到退货
 
+validation.required=请输入%s!
+validation.future=%s必须填写未来的时间!
+
+ktvRoomType.name=包厢类型
+priceSchedule.shop=门店
+priceSchedule.day=可预订日期
+priceSchedule.startDay=可预订日期
+priceSchedule.endDay=可预订日期
+priceSchedule.roomType=包厢类型
+priceSchedule.price=价格
+priceSchedule.useTime=适用时段

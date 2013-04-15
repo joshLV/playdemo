@@ -1,17 +1,29 @@
 <div class="field-group">
     <label>适用门店</label>
-#{list items:shops,as:'shop'}
-    <input type="checkbox" name="shop" value=""/>${shop.name}&nbsp;&nbsp;
-#{/list}
+#{if "add".equals(action)}
+    #{list items:shops,as:'shop'}
+        <input type="checkbox" name="priceSchedule.shops.id" value="${shop?.id}"
+               #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}/>${shop.name}&nbsp;&nbsp;
+    #{/list}
+    <span class="error">#{error 'priceSchedule.shop' /}</span>
+#{/if}
+#{else}
+${priceSchedule.shops.name}
+    #{list items:priceSchedule.shops,as:'shop'}
+        <input type="hidden" name="shop.id" value="${shop.id}"/>
+    #{/list}
+#{/else}
 </div>
 <div class="field-group">
     <label>可预订日期</label>
     <input type="text" class="time" name="priceSchedule.startDay" onfocus="WdatePicker({readOnly:true})"
-           value="${condition?.consumedAtBegin?.format()}">
-    <span>到</span>
+           value="${priceSchedule?.startDay?.format()}"><span>到</span>
+    <span class="error">#{error 'priceSchedule.startDay' /}</span>
     <input type="text" class="time"
            name="priceSchedule.endDay"
-           onfocus="WdatePicker({readOnly:true})" value="${condition?.consumedAtEnd?.format()}">
+           onfocus="WdatePicker({readOnly:true})" value="${priceSchedule?.endDay?.format()}">
+    <span class="error">#{error 'priceSchedule.endDay' /}</span>
+    <span class="error">#{error 'priceSchedule.day' /}</span>
 </div>
 
 <div class="field-group">
@@ -21,37 +33,79 @@
     }%
 #{list items:1..7, as:'i'}
     <input type="checkbox" name="useWeekDays" class="input-medium"
-           value="${i}" #{if priceSchedule?.useWeekDay?.contains(String.valueOf(i))}checked#{/if}/>
+           value="${i}"
+           #{if priceSchedule?.useWeekDay?.contains(String.valueOf(i)) || priceSchedule==null}checked#{/if}/>
     星期${useWeekNames[i-1]}
 #{/list}
-    <span class="error">#{error 'priceSchedules.useWeekDayAll' /}</span>
 </div>
 
 <div class="field-group">
     <label>适用时段</label>
-    <select name="priceSchedule.startTime" style="width: auto">
+    <select name="priceSchedule.startTime" id="startTime" style="width: auto">
         <option value="08:00">08:00</option>
         <option value="09:00">09:00</option>
         <option value="10:00">10:00</option>
+        <option value="11:00">11:00</option>
+        <option value="12:00">12:00</option>
+        <option value="13:00">13:00</option>
+        <option value="14:00">14:00</option>
+        <option value="15:00">15:00</option>
+        <option value="16:00">16:00</option>
+        <option value="17:00">17:00</option>
+        <option value="18:00">18:00</option>
+        <option value="19:00">19:00</option>
+        <option value="20:00">20:00</option>
+        <option value="21:00">21:00</option>
+        <option value="22:00">22:00</option>
+        <option value="23:00">23:00</option>
     </select>
     <span>到</span>
-    <select name="priceSchedule.endTime" style="width: auto">
-        <option value="08:00">08:00</option>
+    <select name="priceSchedule.endTime" id="endTime" style="width: auto">
         <option value="09:00">09:00</option>
         <option value="10:00">10:00</option>
+        <option value="11:00">11:00</option>
+        <option value="12:00">12:00</option>
+        <option value="13:00">13:00</option>
+        <option value="14:00">14:00</option>
+        <option value="15:00">15:00</option>
+        <option value="16:00">16:00</option>
+        <option value="17:00">17:00</option>
+        <option value="18:00">18:00</option>
+        <option value="19:00">19:00</option>
+        <option value="20:00">20:00</option>
+        <option value="21:00">21:00</option>
+        <option value="22:00">22:00</option>
+        <option value="23:00">23:00</option>
+        <option value="24:00">24:00</option>
     </select>
+    <span class="error">#{error 'priceSchedule.useTime' /}</span>
 </div>
 <div class="field-group">
     <label>适用包厢</label>
-#{list items:roomTypeList,as:'roomType'}
-    <input type="radio" name="priceSchedule.roomType" value=""/>${roomType.name}&nbsp;&nbsp;
-#{/list}
+#{if "add".equals(action)}
+    #{list items:roomTypeList,as:'roomType'}
+        <input type="radio" name="priceSchedule.roomType.id"
+               value="${roomType.id}" ${(priceSchedule?.roomType?.id==roomType.id) ?'checked':''}/>${roomType.name}
+        &nbsp;&nbsp;
+    #{/list}
+    <span class="error">#{error 'priceSchedule.roomType' /}</span>
+#{/if}
+#{else}
+${priceSchedule.roomType.name}
+    <input type="hidden" name="priceSchedule.roomType.id" value="${priceSchedule.roomType.id}"/>
+#{/else}
 </div>
 
 <div class="field-group">
     <label>包厢价格</label>
     <input type="text" name="priceSchedule.price" value="${priceSchedule?.price}"/>
+    <span class="error">#{error 'priceSchedule.price' /}</span>
 </div>
 <div class="field-group">
     <input type="submit" class="btn" value="确定"/> <a href="/ktv/room-type">取消</a>
 </div>
+
+<script type="text/javascript">
+    $("#startTime").val("${priceSchedule?.startTime}")
+    $("#endTime").val("${priceSchedule?.endTime}")
+</script>
