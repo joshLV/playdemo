@@ -14,7 +14,6 @@ import models.accounts.util.TradeUtil;
 import models.admin.SupplierUser;
 import models.consumer.User;
 import models.operator.OperateUser;
-import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsCouponType;
 import models.sales.Shop;
@@ -36,7 +35,18 @@ import util.extension.ExtensionResult;
 import util.transaction.RemoteCallback;
 import util.transaction.RemoteRecallCheck;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -754,22 +764,26 @@ public class ECoupon extends Model {
         return couponsPage;
     }
 
-    public static String applyRefund(ECoupon eCoupon, Long userId, AccountType accountType) {
-        return applyRefund(eCoupon, userId, accountType, null, null);
+    public static String applyRefund(ECoupon eCoupon) {
+        return applyRefund(eCoupon, null, null);
     }
 
     /**
      * 退款
      *
      * @param eCoupon 券信息
-     * @param userId  用户信息
      * @return
      */
-    public static String applyRefund(ECoupon eCoupon, Long userId, AccountType accountType, String userName, String refundComment) {
+    public static String applyRefund(ECoupon eCoupon, String userName, String refundComment) {
         String returnFlg = ECOUPON_REFUND_OK;
 
-        if (eCoupon == null || eCoupon.order == null || eCoupon.order.userId == null || !eCoupon.order.userId.equals(userId) || eCoupon.order.userType != accountType) {
+        if (eCoupon == null || eCoupon.order == null || eCoupon.order.userId == null) {
             returnFlg = "{\"error\":\"no such eCoupon\"}";
+            return returnFlg;
+        }
+        if (eCoupon.order.isWebsiteOrder() && eCoupon.order.consumerId == null) {
+            Logger.error("网站订单的consumerId不能为空！ orderId=" + eCoupon.order.id);
+            returnFlg = "{\"error\":\"eCoupon consumerId must NOT null! order.id=" + eCoupon.order.id + "\"}";
             return returnFlg;
         }
         //刷单的不可退款
@@ -788,7 +802,20 @@ public class ECoupon extends Model {
             eCoupon.order.promotionBalancePay = BigDecimal.ZERO;
         }
 
-        Account account = AccountUtil.getAccount(userId, accountType);
+        Account account = null;
+        if (eCoupon.order.isWebsiteOrder()) {
+            account = AccountUtil.getConsumerAccount(eCoupon.order.consumerId);
+            if (StringUtils.isBlank(userName)) {
+                User user = User.findById(eCoupon.order.consumerId);
+                userName = "消费者:" + user.getShowName();
+            }
+        } else {
+            account = AccountUtil.getResalerAccount(eCoupon.order.userId);
+            if (StringUtils.isBlank(userName)) {
+                User user = User.findById(eCoupon.order.userId);
+                userName = "消费者:" + user.getShowName();
+            }
+        }
 
         /*
         System.out.println("===coupon.salePrice" + eCoupon.salePrice);
@@ -857,16 +884,6 @@ public class ECoupon extends Model {
         eCoupon.order.refundedAmount = eCoupon.order.refundedAmount.add(refundCashAmount).add(refundPromotionAmount);
         eCoupon.order.save();
 
-        if (StringUtils.isBlank(userName)) {
-            if (AccountType.RESALER == accountType) {
-                Resaler resaler = Resaler.findById(userId);
-                userName = "分销商:" + (resaler != null ? resaler.loginName : "");
-            }
-            if (AccountType.CONSUMER == accountType) {
-                User user = User.findById(userId);
-                userName = "消费者:" + user.getShowName();
-            }
-        }
         //记录券历史信息
         if (refundComment == null) {
             ECouponHistoryMessage.with(eCoupon).operator(userName).remark("未消费券退款").toStatus(ECouponStatus.REFUND).sendToMQ();

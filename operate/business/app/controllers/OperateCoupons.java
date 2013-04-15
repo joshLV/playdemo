@@ -135,7 +135,7 @@ public class OperateCoupons extends Controller {
         }
         String returnFlg = "";
         if (ecoupon.status == ECouponStatus.UNCONSUMED && (ecoupon.order.userType == AccountType.CONSUMER || ecoupon.order.userType == AccountType.RESALER)) {
-            returnFlg = ECoupon.applyRefund(ecoupon, ecoupon.order.userId, ecoupon.order.userType, OperateRbac.currentUser().userName, refundComment);
+            returnFlg = ECoupon.applyRefund(ecoupon, OperateRbac.currentUser().userName, refundComment);
         }
         String message = "";
         if (returnFlg == "{\"error\":\"ok\"}") {

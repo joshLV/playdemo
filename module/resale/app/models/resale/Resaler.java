@@ -40,6 +40,8 @@ public class Resaler extends Model {
     public static final String TAOBAO_LOGIN_NAME = "taobao";
     public static final String SINA_LOGIN_NAME = "sina";
 
+    public static final String YIBAIQUAN_NAME = "yibaiquan";
+
     /**
      * 分销商账户类型
      */
@@ -305,5 +307,20 @@ public class Resaler extends Model {
         }
         updResaler.salesId = resaler.salesId;
         updResaler.save();
+    }
+
+    /**
+     * 得到一百券分销帐号，用于代替之前的CONSUMER检查.
+     */
+    private static Resaler _yibaiquan;
+
+    public static Resaler getYibaiquan() {
+        if (_yibaiquan == null) {
+            _yibaiquan = findOneByLoginName(YIBAIQUAN_NAME);
+            if (_yibaiquan == null) {
+                throw new RuntimeException("必须存在一百券分销帐号(loginName:" + YIBAIQUAN_NAME + ")!");
+            }
+        }
+        return _yibaiquan;
     }
 }
