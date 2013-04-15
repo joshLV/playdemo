@@ -73,23 +73,25 @@ public class KtvPriceSchedules extends Controller {
         Set<Shop> shops = priceSchedule.shops;
 
         Validation.required("priceSchedule.shop", shops);
-        List<KtvPriceSchedule> scheduleList = KtvPriceSchedule.find("roomType=?", priceSchedule.roomType).fetch();
-        for (KtvPriceSchedule schedule : scheduleList) {
-            for (Shop shop : shops) {
-                for (Shop existedShop : schedule.shops) {
-                    if (!shop.id.equals(existedShop.id)) {
-                        continue;
-                    }
-                    if (!schedule.useWeekDay.contains(priceSchedule.useWeekDay)) {
-                        continue;
-                    }
-                    if (priceSchedule.startDay.after(schedule.startDay) && priceSchedule.endDay.before(schedule.endDay)) {
-                        Validation.addError("priceSchedule.day", "该日期范围有交叉，请确认！");
-                        break;
-                    }
-                    if ((priceSchedule.startTime.compareTo(schedule.startTime) >= 0 && priceSchedule.startTime.compareTo(schedule.endTime) <= 0) || priceSchedule.startTime.compareTo(schedule.endTime) <= 0) {
-                        Validation.addError("priceSchedule.useTime", "该时间段有交叉，请确认！");
-                        break;
+        if (shops != null && shops.size()>0) {
+            List<KtvPriceSchedule> scheduleList = KtvPriceSchedule.find("roomType=?", priceSchedule.roomType).fetch();
+            for (KtvPriceSchedule schedule : scheduleList) {
+                for (Shop shop : shops) {
+                    for (Shop existedShop : schedule.shops) {
+                        if (!shop.id.equals(existedShop.id)) {
+                            continue;
+                        }
+                        if (!schedule.useWeekDay.contains(priceSchedule.useWeekDay)) {
+                            continue;
+                        }
+                        if (priceSchedule.startDay.after(schedule.startDay) && priceSchedule.endDay.before(schedule.endDay)) {
+                            Validation.addError("priceSchedule.day", "该日期范围有交叉，请确认！");
+                            break;
+                        }
+                        if ((priceSchedule.startTime.compareTo(schedule.startTime) >= 0 && priceSchedule.startTime.compareTo(schedule.endTime) <= 0) || priceSchedule.startTime.compareTo(schedule.endTime) <= 0) {
+                            Validation.addError("priceSchedule.useTime", "该时间段有交叉，请确认！");
+                            break;
+                        }
                     }
                 }
             }
@@ -124,10 +126,11 @@ public class KtvPriceSchedules extends Controller {
         checkTime(priceSchedule);
         if (Validation.hasErrors()) {
             initParams(priceSchedule);
+            System.out.println(Validation.errors().get(0));
             render("KtvPriceSchedules/edit.html", priceSchedule);
         }
         KtvPriceSchedule.update(id, priceSchedule);
-        index();
+       redirect("/ktv/price-schedule");
     }
 
     public static void delete(Long id) {

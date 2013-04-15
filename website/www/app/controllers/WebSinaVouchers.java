@@ -9,14 +9,20 @@ import controllers.modules.website.cas.annotations.TargetOAuth;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.consumer.User;
+import models.ktv.KtvPriceSchedule;
+import models.ktv.KtvRoom;
+import models.ktv.KtvRoomOrderInfo;
+import models.ktv.KtvRoomType;
 import models.order.*;
 import models.payment.PaymentFlow;
 import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
 import models.resale.Resaler;
 import models.sales.Goods;
+import models.sales.GoodsStatus;
 import models.sales.ResalerProduct;
 import models.sales.Shop;
+import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.classloading.enhancers.LocalvariablesNamesEnhancer;
@@ -28,6 +34,7 @@ import play.mvc.With;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,6 +56,7 @@ public class WebSinaVouchers extends Controller {
         Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
         Collection<Shop> shops = goods.getShopList();
 
+
         String templatePath = "WebSinaVouchers/showProduct" + StringUtils.capitalize(StringUtils.trimToEmpty(source)) + ".html";
         renderTemplate(templatePath, goods, shops, productId);
     }
@@ -61,17 +69,85 @@ public class WebSinaVouchers extends Controller {
      */
     public static void showOrder(String productId) {
         Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
-        if (goods == null) {
-            notFound();
+        if (goods == null || goods.status != GoodsStatus.ONSALE) {
+            error("no goods!");
         }
+        List<KtvRoomType> roomTypeList = KtvRoomType.findRoomTypeList(goods.getSupplier());
         User user = SecureCAS.getUser();
-        render(goods, productId, user);
+        render(goods, productId, user, roomTypeList);
     }
 
     /**
      * 创建订单
      */
-    public static void order(String productId, Long buyCount, String phone, String source) {
+    public static void order(String productId, Long buyCount, String phone, Date useDate, List<String> useTime, Long roomTypeId, Long shopId, String source) {
+        User user = SecureCAS.getUser();
+        Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
+        Validation.required("phone", phone);
+        Validation.match("phone", phone, "^1\\d{10}$");
+
+        Validation.required("buyCount", buyCount);
+        if (Validation.hasErrors()) {
+            render("WebSinaVouchers/showOrder.html", goods, productId, phone);
+        }
+        Resaler resaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
+        if (resaler == null) {
+            error("not found this resaler!");
+        }
+        //创建订单
+        Order order = Order.createConsumeOrder(user, resaler).save();
+        OrderItems orderItems = null;
+        try {
+            if ("1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
+//                Shop shop = Shop.findById(shopId);
+//                KtvRoomType ktvRoomType = KtvRoomType.findById(roomTypeId);
+//                List<KtvRoom> ktvRoomList = KtvRoom.findKtvRoom(ktvRoomType, shop);
+//                orderItems = order.addOrderItem(goods, Long.valueOf("1"), phone, goods.getResalePrice(), goods.getResalePrice());
+//                for (String time : useTime) {
+//                    new KtvRoomOrderInfo(goods, orderItems, ktvRoomList.get(0), ktvRoomType, useDate, time).save();
+//                }
+
+            } else {
+                orderItems = order.addOrderItem(goods, buyCount, phone, goods.getResalePrice(), goods.getResalePrice());
+            }
+            orderItems.outerGoodsNo = productId;
+            orderItems.save();
+
+        } catch (NotEnoughInventoryException e) {
+            Logger.info("inventory is not enough!");
+            error("库存不足！goodsId=" + goods.id);
+        }
+
+        order.deliveryType = DeliveryType.SMS;
+        order.generateOrderDescription();
+        order.discountPay = order.needPay;
+        order.accountPay = BigDecimal.ZERO;
+        order.save();
+
+        user.updateMobile(phone);
+
+        PaymentSource paymentSource = PaymentSource.findByCode("sina");
+        PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(paymentSource.paymentCode);
+
+        String form = paymentFlow.getRequestForm(order.orderNumber, order.description,
+                order.discountPay, paymentSource.subPaymentCode, request.remoteAddress, source);
+
+        PaymentJournal.savePayRequestJournal(
+                order.orderNumber,
+                order.description,
+                order.discountPay.toString(),
+                paymentSource.paymentCode,
+                paymentSource.subPaymentCode,
+                request.remoteAddress,
+                form);
+        render(form);
+
+    }
+
+    /**
+     * 创建订单
+     */
+    public static void order1(String productId, Long buyCount, String phone, String source) {
         User user = SecureCAS.getUser();
         Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
         Validation.required("phone", phone);

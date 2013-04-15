@@ -47,10 +47,7 @@
             #{list items:takeoutSkuMap.keySet(), as:'sku'}
             <tr>
                 <td align="center">${++i}</td>
-                <td>${sku?.name}
-                  | 待出库数量=${preparingTakeoutSkuMap.get(sku)},
-                    应该出库数量=${takeoutSkuMap.get(sku)}, 可出库数量=${sku?.remainCount}
-                </td>
+                <td>${sku?.name}</td>
                 <td>${skuAveragePriceMap.get(sku)}</td>
                 <td>${sku?.remainCount}</td>
                 <td>${takeoutSkuMap.get(sku)}</td>

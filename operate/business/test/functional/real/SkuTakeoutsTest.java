@@ -35,6 +35,7 @@ import java.util.Map;
  * Time: 9:14 AM
  */
 public class SkuTakeoutsTest extends FunctionalTest {
+
     Sku sku;
     OrderItems orderItems;
     InventoryStockItem stockItem;
@@ -42,11 +43,11 @@ public class SkuTakeoutsTest extends FunctionalTest {
     @org.junit.Before
     public void setup() {
         FactoryBoy.deleteAll();
-        Supplier.clearShihuiSupplier();
-        Supplier shihui = FactoryBoy.create(Supplier.class);
-        shihui.fullName = "上海视惠信息科技有限公司";
-        shihui.save();
-        shihui.refresh();
+
+        OperateUser user = FactoryBoy.create(OperateUser.class);
+        // 设置测试登录的用户名
+        Security.setLoginUserForTest(user.loginName);
+        Supplier shihui = FactoryBoy.create(Supplier.class, "seewi");
 
         //创建货品
         sku = FactoryBoy.create(Sku.class);
@@ -57,10 +58,6 @@ public class SkuTakeoutsTest extends FunctionalTest {
         goods.skuCount = 2;
         goods.supplierId = Supplier.getShihui().id;
         goods.save();
-
-        OperateUser user = FactoryBoy.create(OperateUser.class);
-        // 设置测试登录的用户名
-        Security.setLoginUserForTest(user.loginName);
 
         //添加库存
         stockItem = FactoryBoy.create(InventoryStockItem.class);
@@ -186,4 +183,3 @@ public class SkuTakeoutsTest extends FunctionalTest {
     }
 
 }
-    

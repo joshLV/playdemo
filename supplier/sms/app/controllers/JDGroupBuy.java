@@ -260,7 +260,7 @@ public class JDGroupBuy extends Controller {
             ECoupon eCoupon = ECoupon.find("byOrderAndPartnerAndPartnerCouponId",
                     order, ECouponPartner.JD, coupon.getTextContent()).first();
             if (eCoupon != null) {
-                String ret = ECoupon.applyRefund(eCoupon, resaler.getId(), AccountType.RESALER);
+                String ret = ECoupon.applyRefund(eCoupon);
                 if (ret.equals(ECoupon.ECOUPON_REFUND_OK)) {
                     Logger.info("jingdong refund ok, ybq couponId: %s", eCoupon.getId());
                     refundedCoupons.add(eCoupon.partnerCouponId);

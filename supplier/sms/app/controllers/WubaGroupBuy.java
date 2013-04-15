@@ -216,7 +216,7 @@ public class WubaGroupBuy extends Controller {
             return;
         }
 
-        String ret = ECoupon.applyRefund(coupon, resaler.getId(), AccountType.RESALER);
+        String ret = ECoupon.applyRefund(coupon);
         if (!ret.equals(ECoupon.ECOUPON_REFUND_OK)) {
             putStatusAndMsg(result, "10100", "退款失败");
             finish(result);

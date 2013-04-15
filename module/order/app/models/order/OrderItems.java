@@ -635,7 +635,7 @@ public class OrderItems extends Model {
         BigDecimal average = BigDecimal.ZERO;
         for (Sku sku : amountMap.keySet()) {
             final BigDecimal skuAmount = amountMap.get(sku);
-            if (takeoutSkuMap.get(sku) != null) {
+            if ((takeoutSkuMap.get(sku) != null) && (takeoutSkuMap.get(sku) > 0l)) {
                 average = skuAmount.divide(BigDecimal.valueOf(takeoutSkuMap.get(sku)), 2, BigDecimal.ROUND_HALF_UP);
                 averagePriceMap.put(sku, average);
             }
@@ -676,50 +676,15 @@ public class OrderItems extends Model {
         } else if (order.userType == AccountType.CONSUMER) {
             consumedAmount = orderItems.salePrice.multiply(new BigDecimal(returnedCount));
         }
-        //        System.out.println("===consumedAmount" + consumedAmount);
-
-        //已消费的金额加上已退款的金额作为垫底
-        BigDecimal onTheBottom = consumedAmount.add(order.refundedAmount);
-        //        System.out.println("===onTheBottom" + onTheBottom);
-
-        //再来看看去掉垫底的资金后，此订单还能退多少活动金和可提现余额
-        BigDecimal refundOrderTotalCashAmount = order.accountPay.add(order.discountPay);
-        BigDecimal refundOrderTotalPromotionAmount = order.promotionBalancePay;
-        if (refundOrderTotalPromotionAmount.compareTo(onTheBottom) > 0) {
-            //如果该订单的活动金大于垫底资金
-            refundOrderTotalPromotionAmount = refundOrderTotalPromotionAmount.subtract(onTheBottom);
-        } else {
-            refundOrderTotalCashAmount = refundOrderTotalCashAmount.add(refundOrderTotalPromotionAmount).subtract(onTheBottom);
-            refundOrderTotalPromotionAmount = BigDecimal.ZERO;
-            if (refundOrderTotalCashAmount.compareTo(BigDecimal.ZERO) < 0) {
-                refundOrderTotalCashAmount = BigDecimal.ZERO;
-            }
-        }
-        //        System.out.println("===refundOrderTotalCashAmount" + refundOrderTotalCashAmount);
-        //        System.out.println("===refundOrderTotalPromotionAmount" + refundOrderTotalPromotionAmount);
-
-        //用户为此券实际支付的金额,也就是从用户为该券付的钱来看，最多能退多少
-        BigDecimal refundAtMostCouponAmount = consumedAmount;
-        //        System.out.println("===refundAtMostCouponAmount" + refundAtMostCouponAmount);
 
         //最后我们来看看最终能退多少
         BigDecimal refundPromotionAmount = BigDecimal.ZERO;
-        BigDecimal refundCashAmount = BigDecimal.ZERO;
-
-        if (refundOrderTotalPromotionAmount.compareTo(refundAtMostCouponAmount) > 0) {
-            refundPromotionAmount = refundOrderTotalPromotionAmount.subtract(refundAtMostCouponAmount);
-        } else {
-            refundPromotionAmount = refundOrderTotalPromotionAmount;
-            refundCashAmount = refundAtMostCouponAmount.subtract(refundPromotionAmount);
-            refundCashAmount = refundCashAmount.min(refundOrderTotalCashAmount);
-        }
-        //        System.out.println("===refundCashAmount" + refundCashAmount);
-        //        System.out.println("===refundPromotionAmount" + refundPromotionAmount);
-
 
         // 创建退款交易
         Account account = AccountUtil.getAccount(orderItems.order.userId, orderItems.order.userType);
-        TradeBill tradeBill = TradeUtil.createRefundTrade(account, refundCashAmount, refundPromotionAmount, orderItems.order.getId(), null);
+        Logger.info("account=" + account.id + ", refundCashAmount=" + consumedAmount + ", " +
+                "refundPromotionAmount=" + refundPromotionAmount);
+        TradeBill tradeBill = TradeUtil.createRefundTrade(account, consumedAmount, refundPromotionAmount, orderItems.order.getId(), null);
 
         if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
             returnFlg = "{\"error\":\"refound failed\"}";
@@ -727,7 +692,7 @@ public class OrderItems extends Model {
         }
 
         // 更新已退款的活动金金额
-        order.refundedAmount = order.refundedAmount.add(refundCashAmount).add(refundPromotionAmount);
+        order.refundedAmount = order.refundedAmount.add(consumedAmount).add(refundPromotionAmount);
         order.save();
 
         orderItems.returnCount += returnedCount;

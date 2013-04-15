@@ -38,7 +38,8 @@ public class CancelUnPaidOrderJob extends Job {
             if (order.status == OrderStatus.UNPAID) {
                 //取消订单并且增加库存和减少销量
                 order.cancelAndUpdateOrder();
-                new CancelUnpaidOrders(order.orderNumber, order.userType, order.userId).save();
+                new CancelUnpaidOrders(order.orderNumber, order.getBuyerAccount().accountType,
+                        order.getBuyerAccount().uid).save();
             }
         }
     }

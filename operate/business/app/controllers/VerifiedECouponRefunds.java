@@ -1,7 +1,6 @@
 package controllers;
 
 import models.accounts.Account;
-import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
@@ -74,12 +73,6 @@ public class VerifiedECouponRefunds extends Controller {
      * @return
      */
     private static String applyRefund(ECoupon eCoupon, String refundComment) {
-        AccountType accountType = eCoupon.order.userType;
-        Long userId = eCoupon.order.userId;
-
-        if (accountType != AccountType.CONSUMER && accountType != AccountType.RESALER) {
-            return "不支持的券类别，请检查";
-        }
         if (eCoupon.order.refundedAmount == null) {
             eCoupon.order.refundedAmount = BigDecimal.ZERO;
         }
@@ -88,7 +81,8 @@ public class VerifiedECouponRefunds extends Controller {
         }
 
         // 查找原订单信息 可能是分销账户，也可能是消费者账户
-        Account userAccount = AccountUtil.getAccount(userId, accountType);
+
+        Account userAccount = eCoupon.order.getBuyerAccount();
 
 //        System.out.println("===coupon.salePrice" + eCoupon.salePrice);
 //        System.out.println("===coupon.rebate" + eCoupon.rebateValue);
@@ -203,13 +197,8 @@ public class VerifiedECouponRefunds extends Controller {
      * @return
      */
     private static String applyUnConsumed(ECoupon eCoupon, String refundComment) {
-        AccountType accountType = eCoupon.order.userType;
         if (eCoupon.status != ECouponStatus.CONSUMED) {
             return "必须是已经消费的券";
-        }
-
-        if (accountType != AccountType.CONSUMER && accountType != AccountType.RESALER) {
-            return "不支持的券类别，请检查";
         }
 
         if (eCoupon.partner == ECouponPartner.TB) {
@@ -240,7 +229,7 @@ public class VerifiedECouponRefunds extends Controller {
             // 平台的佣金等于分销商成本价减成本价
             platformCommission = eCoupon.resalerPrice.subtract(eCoupon.originalPrice);
             // 如果是在一百券网站下的单，还要给一百券佣金
-            if (eCoupon.order.userType == AccountType.CONSUMER) {
+            if (eCoupon.order.isWebsiteOrder()) {
                 TradeBill uhuilaCommissionTrade = TradeUtil
                         .createCommissionTrade(
                                 AccountUtil.getUhuilaAccount(),
@@ -281,7 +270,7 @@ public class VerifiedECouponRefunds extends Controller {
             TradeUtil.success(rabateTrade, "已消费退款：" + refundComment + "。低价销售补贴" + detaPrice);
         }
         /**
-         * 后面还有推荐返利的暂时不弄
+         * FIXME: 后面还有推荐返利的暂时不弄
          */
 
 

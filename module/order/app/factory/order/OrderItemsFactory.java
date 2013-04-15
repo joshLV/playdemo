@@ -1,14 +1,15 @@
 package factory.order;
 
-import java.math.BigDecimal;
-
+import factory.FactoryBoy;
+import factory.ModelFactory;
+import factory.annotation.Factory;
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
-import factory.FactoryBoy;
-import factory.ModelFactory;
-import factory.annotation.Factory;
+import models.sales.MaterialType;
+
+import java.math.BigDecimal;
 
 public class OrderItemsFactory extends ModelFactory<OrderItems> {
 
@@ -29,6 +30,8 @@ public class OrderItemsFactory extends ModelFactory<OrderItems> {
         orderItem.originalPrice = BigDecimal.valueOf(8);
         orderItem.resalerPrice = BigDecimal.valueOf(10);
         orderItem.salePrice = BigDecimal.valueOf(15);
+        orderItem.goods.materialType = MaterialType.REAL;
+        orderItem.goods.save();
         return orderItem;
     }
 

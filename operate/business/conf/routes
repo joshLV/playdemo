@@ -483,12 +483,6 @@ GET     /purchase-orders/{id}/stock-in            real.purchaseOrders.createStoc
 DELETE  /purchase-orders/{id}                      real.purchaseOrders.delete
 
 
-
-
-
-
-
-
 #导入渠道订单
 GET     /import-partner-orders                    ImportPartnerOrders.index
 GET     /download-partner-orders                  ImportPartnerOrders.download

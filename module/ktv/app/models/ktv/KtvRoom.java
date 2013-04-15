@@ -43,6 +43,10 @@ public class KtvRoom extends Model {
         return KtvRoom.find("roomType=? and shop=? and deleted=? order by id", type, shop, DeletedStatus.UN_DELETED).fetch();
     }
 
+    public static List<KtvRoom> findKtvRoomByShop(Shop shop) {
+        return KtvRoom.find("shop=? and deleted=? group  by roomType order by id", shop, DeletedStatus.UN_DELETED).fetch();
+    }
+
     /**
      * 取得各门店相应包厢数量
      */

@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * User: tanglq
@@ -16,7 +17,7 @@ import javax.persistence.Table;
  * Time: 上午11:57
  */
 @Entity
-@Table(name="ktv_room_order_info")
+@Table(name = "ktv_room_order_info")
 public class KtvRoomOrderInfo extends Model {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,4 +35,15 @@ public class KtvRoomOrderInfo extends Model {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ktv_room_type_id", nullable = false)
     public KtvRoomType ktvRoomType;
+
+
+    public KtvRoomOrderInfo(Goods goods, OrderItems orderItem, KtvRoom ktvRoom, KtvRoomType ktvRoomType) {
+        this.goods = goods;
+        this.orderItem = orderItem;
+        this.ktvRoom = ktvRoom;
+        this.ktvRoomType = ktvRoomType;
+//        this.useDate=useDate;
+//        this.useTime=useTime;
+
+    }
 }

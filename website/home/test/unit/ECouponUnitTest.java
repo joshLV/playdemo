@@ -118,7 +118,7 @@ public class ECouponUnitTest extends UnitTest {
      */
     @Test
     public void applyRefund() {
-        String ret = ECoupon.applyRefund(null, user.id, AccountType.CONSUMER);
+        String ret = ECoupon.applyRefund(null);
         assertEquals("{\"error\":\"no such eCoupon\"}", ret);
         eCoupon.order.userId = user.id;
         eCoupon.save();
@@ -129,7 +129,7 @@ public class ECouponUnitTest extends UnitTest {
         eCoupon.refresh();
         eCoupon.status = ECouponStatus.CONSUMED;
         eCoupon.save();
-        ret = ECoupon.applyRefund(eCoupon, user.id, AccountType.CONSUMER);
+        ret = ECoupon.applyRefund(eCoupon);
         assertEquals("{\"error\":\"can not apply refund with this goods\"}", ret);
 
         eCoupon.status = ECouponStatus.UNCONSUMED;
@@ -141,7 +141,7 @@ public class ECouponUnitTest extends UnitTest {
         eCoupon.order.accountPay = new BigDecimal("8.50");
         eCoupon.order.save();
 
-        ret = ECoupon.applyRefund(eCoupon, user.id, AccountType.CONSUMER);
+        ret = ECoupon.applyRefund(eCoupon);
         assertEquals("{\"error\":\"ok\"}", ret);
         assertEquals(ECouponStatus.REFUND, eCoupon.status);
         assertEquals(new BigDecimal("8.50"), eCoupon.refundPrice);
@@ -160,7 +160,7 @@ public class ECouponUnitTest extends UnitTest {
         eCoupon.order.save();
         eCoupon.save();
         assertEquals(BigDecimal.ZERO, eCoupon.refundPrice);
-        ret = ECoupon.applyRefund(eCoupon, resaler.id, AccountType.RESALER);
+        ret = ECoupon.applyRefund(eCoupon);
         assertEquals("{\"error\":\"ok\"}", ret);
         assertEquals(ECouponStatus.REFUND, eCoupon.status);
         assertEquals(new BigDecimal("8.50"), eCoupon.refundPrice);

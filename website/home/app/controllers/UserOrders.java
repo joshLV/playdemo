@@ -102,7 +102,7 @@ public class UserOrders extends Controller {
 
         List<ECoupon> eCoupons = ECoupon.findByUserAndIds(couponIds, user.getId(), AccountType.CONSUMER);
         for (ECoupon eCoupon : eCoupons) {
-            ECoupon.applyRefund(eCoupon, user.getId(), AccountType.CONSUMER);
+            ECoupon.applyRefund(eCoupon);
         }
         refund(orderNumber);
     }

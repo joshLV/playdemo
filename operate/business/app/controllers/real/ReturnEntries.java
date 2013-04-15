@@ -12,12 +12,12 @@ import models.sales.StockActionType;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 退货单管理.
@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 @With(OperateRbac.class)
-@ActiveNavigation("order_index")
+@ActiveNavigation("return_entries_index")
 public class ReturnEntries extends Controller {
     public static int PAGE_SIZE = 15;
 
@@ -49,11 +49,10 @@ public class ReturnEntries extends Controller {
         if (condition == null) {
             condition = new RealGoodsReturnEntryCondition(Supplier.getShihui().id, RealGoodsReturnStatus.RETURNING);
         }
+        condition.supplierId = Supplier.getShihui().id;
         final int page = getPage();
         JPAExtPaginator<RealGoodsReturnEntry> entryPage = RealGoodsReturnEntry.getPage(condition, page, PAGE_SIZE);
-        List<Supplier> supplierList = Supplier.findUnDeleted();
-
-        render(entryPage, supplierList, condition);
+        render(entryPage, condition);
     }
 
     /**
@@ -122,10 +121,12 @@ public class ReturnEntries extends Controller {
         Long orderId = null;
         if (entry.orderItems != null && entry.orderItems.id != null && entry.orderItems.id != 0L) {
             OrderItems orderItems = OrderItems.findById(entry.orderItems.id);
+            Logger.info("orderItems.status=" + orderItems.status + ", id=" + entry.orderItems.id);
             orderId = orderItems.order.id;
             switch (orderItems.status) {
                 case PAID:
                     //todo 退款处理，有待测试
+                    Logger.info("do PAID status");
                     String result = OrderItems.handleRefund(orderItems, entry.returnedCount);
 
                     if (!result.equals("")) {
