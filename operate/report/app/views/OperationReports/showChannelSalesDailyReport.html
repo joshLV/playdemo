@@ -77,6 +77,19 @@
         #{/if}
 
     });
+
+    function channelSalesDailyReportExcel() {
+        $("#search_form").attr("action", "/channel-sales-daily-report-excel");
+        $("#search_form").attr("method", "get");
+        $("#search_form").submit();
+    }
+
+    function channelSalesDailyReport() {
+        $("#search_form").attr("action", "@{OperationReports.showChannelSalesDailyReport()}");
+        $("#search_form").attr("method", "get");
+        $("#search_form").submit();
+    }
+
 </script>
 #{/set}
 
@@ -90,7 +103,9 @@
 beginValue:condition?.beginAt?.format(), endValue:condition?.endAt?.format()/}
 
 
-    <button type="submit" class="btn btn-primary" id="search">搜索</button>
+    <button type="submit" class="btn btn-primary" id="search" onclick="channelSalesDailyReport()">搜索</button>
+    <button class="btn btn-info" id="searchbtn" onclick="channelSalesDailyReportExcel()">导出报表</button>
+
 </form>
 <ul class="nav nav-tabs">
     <li class="active"><a href="#tab1" data-toggle="tab">数据</a></li>
