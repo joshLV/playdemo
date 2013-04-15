@@ -8,9 +8,9 @@
     <span class="error">#{error 'priceSchedule.shop' /}</span>
 #{/if}
 #{else}
-${priceSchedule.shops.name}
+${priceSchedule?.shops?.name}
     #{list items:priceSchedule.shops,as:'shop'}
-        <input type="hidden" name="shop.id" value="${shop.id}"/>
+        <input type="hidden" name="priceSchedule.shops.id" value="${shop.id}"/>
     #{/list}
 #{/else}
 </div>

@@ -712,7 +712,6 @@ public class Order extends Model {
 
         Resaler sinaResaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
         Account account;
-        System.out.println(this.userId+"))))))))))))))))))))))))");
         if (sinaResaler !=null && this.userId.equals(sinaResaler.id)) {
             account = AccountUtil.getAccount(this.consumerId, AccountType.CONSUMER);
         } else {

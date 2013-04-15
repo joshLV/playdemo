@@ -40,7 +40,7 @@
         <div class="product-go">
             <div class="left">
                 <span class="current-price"><i>￥</i>${goods.getResalePrice()}</span>
-                *{<span class="origin-price">￥${goods.faceValue}</span>}*
+            *{<span class="origin-price">￥${goods.faceValue}</span>}*
             </div>
             <div class="right">
             #{if goods.status==models.sales.GoodsStatus.OFFSALE}该商品已下架！#{/if}
@@ -74,7 +74,7 @@
     <div class="product-go">
         <div class="left">
             <span class="current-price"><i>￥</i>${goods.getResalePrice()}</span>
-            *{<span class="origin-price">${goods.faceValue}元</span>}*
+        *{<span class="origin-price">${goods.faceValue}元</span>}*
         </div>
         <div class="right">
         #{if goods.status==models.sales.GoodsStatus.OFFSALE}该商品已下架！#{/if}
