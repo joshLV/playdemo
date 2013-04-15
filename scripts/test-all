@@ -21,6 +21,7 @@ app_dirs = [
             'supplier/order',
             'supplier/home',
             'supplier/admin',
+            'supplier/ktv',
             'supplier/sms',
             'supplier/report',
             'cdn/image-server',
