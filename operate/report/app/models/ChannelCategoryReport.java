@@ -740,6 +740,7 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
         }
         List<ChannelCategoryReport> sentRealResultList = query.getResultList();
 
+
         //consumedAt ecoupon
         sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue/r.buyNumber),s.supplierCategory.id,r.order,count(e))" +
                 " from OrderItems r, ECoupon e,Supplier s  where e.orderItems=r and r.goods.supplierId = s.id ";

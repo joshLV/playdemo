@@ -288,7 +288,7 @@ public class OperationReports extends Controller {
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
 //        if (flagWithCondition) {
 
-        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition);
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition,hasSeeReportProfitRight);
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
 
@@ -642,12 +642,12 @@ public class OperationReports extends Controller {
         List<ResaleSalesReport> resultList = null;
         condition.accountType = null;
         resultList = ResaleSalesReport.query(condition);
-        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
+//        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
 
         // 查询出所有结果
-        for (ResaleSalesReport resaleSalesReport : consumerList) {
-            resultList.add(resaleSalesReport);
-        }
+//        for (ResaleSalesReport resaleSalesReport : consumerList) {
+//            resultList.add(resaleSalesReport);
+//        }
 
         ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
 
@@ -698,12 +698,12 @@ public class OperationReports extends Controller {
         List<ResaleSalesReport> resultList = null;
         condition.accountType = null;
         resultList = ResaleSalesReport.query(condition);
-        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
+//        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
 
         // 查询出所有结果
-        for (ResaleSalesReport resaleSalesReport : consumerList) {
-            resultList.add(resaleSalesReport);
-        }
+//        for (ResaleSalesReport resaleSalesReport : consumerList) {
+//            resultList.add(resaleSalesReport);
+//        }
 
         ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
 
@@ -721,6 +721,9 @@ public class OperationReports extends Controller {
             }
             if (report.consumedPrice == null) {
                 report.consumedPrice = BigDecimal.ZERO;
+            }
+            if(report.profit==null){
+                report.profit=BigDecimal.ZERO;
             }
 
         }
@@ -742,12 +745,12 @@ public class OperationReports extends Controller {
         List<ChannelCategoryReport> resultList = null;
         condition.accountType = null;
         resultList = ChannelCategoryReport.excelQuery(condition);
-        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.excelQueryConsumer(condition);
+//        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.excelQueryConsumer(condition);
 
         // 查询出所有结果
-        for (ChannelCategoryReport resaleSalesReport : consumerList) {
-            resultList.add(resaleSalesReport);
-        }
+//        for (ChannelCategoryReport resaleSalesReport : consumerList) {
+//            resultList.add(resaleSalesReport);
+//        }
 
         ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
         channelCondition.beginAt = condition.beginAt;
@@ -756,11 +759,11 @@ public class OperationReports extends Controller {
 
         List<ResaleSalesReport> channelPage = null;
         channelPage = ResaleSalesReport.query(channelCondition);
-        List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
-        // 查询出所有结果
-        for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
-            channelPage.add(resaleSalesReport);
-        }
+//        List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
+//        查询出所有结果
+//        for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
+//            channelPage.add(resaleSalesReport);
+//        }
 
         ResaleSalesReport channelSummary = ResaleSalesReport.summary(channelPage);
 
@@ -812,7 +815,7 @@ public class OperationReports extends Controller {
         List<ChannelCategoryReport> resultList = null;
         condition.accountType = null;
         resultList = ChannelCategoryReport.excelQuery(condition);
-        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.excelQueryConsumer(condition);
+//        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.excelQueryConsumer(condition);
 
         ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
         channelCondition.beginAt = condition.beginAt;
@@ -821,18 +824,18 @@ public class OperationReports extends Controller {
 
         List<ResaleSalesReport> channelPage = null;
         channelPage = ResaleSalesReport.query(channelCondition);
-        List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
+//        List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
         // 查询出所有结果
-        for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
-            channelPage.add(resaleSalesReport);
-        }
+//        for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
+//            channelPage.add(resaleSalesReport);
+//        }
 
         ResaleSalesReport channelSummary = ResaleSalesReport.summary(channelPage);
 
         // 查询出所有结果
-        for (ChannelCategoryReport resaleSalesReport : consumerList) {
-            resultList.add(resaleSalesReport);
-        }
+//        for (ChannelCategoryReport resaleSalesReport : consumerList) {
+//            resultList.add(resaleSalesReport);
+//        }
 
 
         for (ChannelCategoryReport report : resultList) {
@@ -1030,7 +1033,7 @@ public class OperationReports extends Controller {
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
-        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition);
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition,hasSeeReportProfitRight);
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
 
