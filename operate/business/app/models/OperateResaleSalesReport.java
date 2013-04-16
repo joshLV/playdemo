@@ -138,12 +138,8 @@ public class OperateResaleSalesReport {
             , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
         if (salePrice != null) {
             this.salePrice = salePrice;
@@ -164,12 +160,8 @@ public class OperateResaleSalesReport {
             , BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
         if (salePrice != null) {
             this.salePrice = salePrice;
@@ -188,12 +180,8 @@ public class OperateResaleSalesReport {
             , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.realSalePrice = salePrice;
@@ -209,12 +197,8 @@ public class OperateResaleSalesReport {
             , BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.realSalePrice = salePrice;
@@ -228,12 +212,8 @@ public class OperateResaleSalesReport {
     public OperateResaleSalesReport(BigDecimal virtualVerifyPrice, Long virtualVerifyNumber, Order order, boolean virtualVerify) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.virtualVerifyNumber = virtualVerifyNumber;
@@ -243,12 +223,8 @@ public class OperateResaleSalesReport {
     public OperateResaleSalesReport(BigDecimal refundPrice, Long refundNumber, Order order) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.refundPrice = refundPrice;
@@ -258,12 +234,8 @@ public class OperateResaleSalesReport {
     public OperateResaleSalesReport(BigDecimal consumedPrice, Order order, Long consumedNumber) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.consumedPrice = consumedPrice;
@@ -273,12 +245,8 @@ public class OperateResaleSalesReport {
     public OperateResaleSalesReport(Long refundNumber, BigDecimal refundPrice, Order order) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.realRefundPrice = refundPrice;

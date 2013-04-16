@@ -1,6 +1,5 @@
 package models;
 
-import models.accounts.AccountType;
 import models.order.Order;
 import models.sales.Goods;
 import play.db.jpa.JPA;
@@ -8,7 +7,11 @@ import play.db.jpa.JPA;
 import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 渠道商品报表
@@ -119,12 +122,8 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
             , BigDecimal totalCost) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.goods = goods;
@@ -145,12 +144,8 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
     public ChannelGoodsReport(Order order, Goods goods, BigDecimal totalAmount, BigDecimal totalCost, BigDecimal profit, BigDecimal ratio) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.goods = goods;
@@ -164,12 +159,8 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
     public ChannelGoodsReport(Order order, BigDecimal refundAmount, Goods goods, BigDecimal refundCost) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.refundAmount = refundAmount;
@@ -181,12 +172,8 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
     public ChannelGoodsReport(Order order, Goods goods, BigDecimal cheatedOrderAmount, Long cheatedOrderNum, BigDecimal cheatedOrderCost) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
         this.goods = goods;
         this.cheatedOrderAmount = cheatedOrderAmount;
@@ -198,12 +185,8 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
     public ChannelGoodsReport(Order order, Goods goods, BigDecimal consumedAmount) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
         this.goods = goods;
         this.consumedAmount = consumedAmount;
@@ -213,12 +196,8 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
     public ChannelGoodsReport(Order order, Goods goods, BigDecimal totalAmountCommissionAmount, BigDecimal ratio, BigDecimal totalCost) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
         this.ratio = ratio;
         this.goods = goods;
@@ -230,12 +209,8 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
     public ChannelGoodsReport(Order order, BigDecimal cheatedOrderCommissionAmount, BigDecimal ratio, Goods goods, BigDecimal cheatedOrderCost) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
         this.ratio = ratio;
         this.goods = goods;
@@ -247,12 +222,8 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
     public ChannelGoodsReport(Order order, BigDecimal refundCommissionAmount, Goods goods, BigDecimal ratio, Long refundNum, BigDecimal refundCost) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
         this.ratio = ratio;
         this.goods = goods;
@@ -264,12 +235,8 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
     public ChannelGoodsReport(Order order, Long buyNumber, BigDecimal originalAmount) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.buyNumber = buyNumber;
@@ -1082,546 +1049,546 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
     }
 
 
-    /**
-     * 取得按商品统计的销售记录     consumer
-     *
-     * @param condition
-     * @return
-     */
-    public static List<ChannelGoodsReport> queryConsumer(ChannelGoodsReportCondition condition) {
-        //paidAt
-        String sql = "select new models.ChannelGoodsReport(r.order, r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.originalPrice*r.buyNumber) " +
-                ")" +
-                " from OrderItems r,Order o where r.order=o and ";
-        String groupBy = " group by  r.goods.id ";
-        Query query = JPA.em()
-                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+//    /**
+//     * 取得按商品统计的销售记录     consumer
+//     *
+//     * @param condition
+//     * @return
+//     */
+//    public static List<ChannelGoodsReport> queryConsumer(ChannelGoodsReportCondition condition) {
+//        //paidAt
+//        String sql = "select new models.ChannelGoodsReport(r.order, r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
+//                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+//                ",sum(r.originalPrice*r.buyNumber) " +
+//                ")" +
+//                " from OrderItems r,Order o where r.order=o and ";
+//        String groupBy = " group by  r.goods.id ";
+//        Query query = JPA.em()
+//                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+//
+//        for (String param : condition.getParamMap().keySet()) {
+//            query.setParameter(param, condition.getParamMap().get(param));
+//        }
+//
+//        List<ChannelGoodsReport> paidResultList = query.getResultList();
+//
+//
+//        //cheated order
+//        sql = "select new models.ChannelGoodsReport(r.order,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
+//                " ,sum(r.originalPrice)) " +
+//                " from OrderItems r, ECoupon e where e.orderItems=r and ";
+//        groupBy = " group by r.goods.id";
+//        query = JPA.em()
+//                .createQuery(sql + condition.getFilterCheatedOrder() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+//        for (String param : condition.getParamMap().keySet()) {
+//            query.setParameter(param, condition.getParamMap().get(param));
+//        }
+//        List<ChannelGoodsReport> cheatedOrderResultList = query.getResultList();
+//
+//        //from resaler
+//        sql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
+//                ",b.commissionRatio)" +
+//                " from OrderItems r,Order o,Resaler b where r.order=o and  ";
+//        groupBy = " group by  r.goods.id";
+//        query = JPA.em()
+//                .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+//
+//
+//        for (String param : condition.getParamMap().keySet()) {
+//            query.setParameter(param, condition.getParamMap().get(param));
+//        }
+//
+//        List<ChannelGoodsReport> paidResalerResultList = query.getResultList();
+//
+//        //取得退款的数据 ecoupon
+//        sql = "select new models.ChannelGoodsReport(e.order, sum(e.refundPrice),e.orderItems.goods,sum(e.orderItems.originalPrice)) " +
+//                " from ECoupon e ";
+//        groupBy = " group by e.orderItems.goods.id";
+//
+//        query = JPA.em()
+//                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
+//
+//        for (String param : condition.getParamMap1().keySet()) {
+//            query.setParameter(param, condition.getParamMap1().get(param));
+//        }
+//
+//        List<ChannelGoodsReport> refundList = query.getResultList();
+//
+//        //consumedAt
+//        sql = "select new models.ChannelGoodsReport(e.order,e.orderItems.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
+//                " from OrderItems r, ECoupon e where e.orderItems=r";
+//        groupBy = " group by e.orderItems.goods.id";
+//        query = JPA.em()
+//                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+//        for (String param : condition.getParamMap().keySet()) {
+//            query.setParameter(param, condition.getParamMap().get(param));
+//        }
+//        List<ChannelGoodsReport> consumedResultList = query.getResultList();
+//
+//        Map<String, ChannelGoodsReport> map = new HashMap<>();
+//
+//        //merge
+//        for (ChannelGoodsReport paidItem : paidResultList) {
+//            map.put(getConsumerReportKey(paidItem), paidItem);
+//        }
+//
+//        for (ChannelGoodsReport cheatedItem : cheatedOrderResultList) {
+//            ChannelGoodsReport item = map.get(getConsumerReportKey(cheatedItem));
+//            if (item == null) {
+//                Goods goods = Goods.findById(cheatedItem.goods.id);
+//                cheatedItem.originalPrice = goods.originalPrice;
+//                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
+//                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+//                cheatedItem.netCost = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
+//                map.put(getConsumerReportKey(cheatedItem), cheatedItem);
+//            } else {
+//                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
+//                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
+//                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount);
+//                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
+//                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+//            }
+//        }
+//
+//        for (ChannelGoodsReport refundItem : refundList) {
+//            ChannelGoodsReport item = map.get(getConsumerReportKey(refundItem));
+//            if (item == null) {
+//                Goods goods = Goods.findById(refundItem.goods.id);
+//                refundItem.originalPrice = goods.originalPrice;
+//                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
+//                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost);
+//                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost);
+//                map.put(getConsumerReportKey(refundItem), refundItem);
+//            } else {
+//                item.refundAmount = refundItem.refundAmount;
+//                item.refundCost = refundItem.refundCost;
+//                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
+//                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+//                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).subtract(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
+//            }
+//        }
+//
+//        for (ChannelGoodsReport consumedItem : consumedResultList) {
+//            ChannelGoodsReport item = map.get(getConsumerReportKey(consumedItem));
+//            if (item == null) {
+//                Goods goods = Goods.findById(consumedItem.goods.id);
+//                consumedItem.originalPrice = goods.originalPrice;
+//                map.put(getConsumerReportKey(consumedItem), consumedItem);
+//            } else {
+//                item.consumedAmount = consumedItem.consumedAmount;
+//            }
+//        }
+//
+//        //merge from resaler if commissionRatio
+//        for (ChannelGoodsReport resalerItem : paidResalerResultList) {
+//            ChannelGoodsReport item = map.get(getConsumerReportKey(resalerItem));
+//            if (item == null) {
+//                map.put(getConsumerReportKey(resalerItem), resalerItem);
+//            } else {
+//                item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
+//                        .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
+//                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.totalCost);
+//            }
+//        }
+//
+//        //total
+//        //paidAt
+//        String totalSql = "select new models.ChannelGoodsReport(r.order, r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
+//                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+//                ",sum(r.originalPrice*r.buyNumber) " +
+//                ")" +
+//                " from OrderItems r,Order o where r.order=o and ";
+//        String totalQroupBy = " group by  r.order.userType ";
+//        Query totalQuery = JPA.em()
+//                .createQuery(totalSql + condition.getFilter() + totalQroupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+//
+//        for (String param : condition.getParamMap().keySet()) {
+//            totalQuery.setParameter(param, condition.getParamMap().get(param));
+//        }
+//
+//        List<ChannelGoodsReport> totalPaidResultList = totalQuery.getResultList();
+//
+//        //cheated order
+//        totalSql = "select new models.ChannelGoodsReport(r.order,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
+//                " ,sum(r.originalPrice)) " +
+//                " from OrderItems r, ECoupon e where e.orderItems=r and ";
+//        totalQroupBy = " group by r.order.userType ";
+//        totalQuery = JPA.em()
+//                .createQuery(totalSql + condition.getFilterCheatedOrder() + totalQroupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+//        for (String param : condition.getParamMap().keySet()) {
+//            totalQuery.setParameter(param, condition.getParamMap().get(param));
+//        }
+//        List<ChannelGoodsReport> totalCheatedOrderResultList = totalQuery.getResultList();
+//
+//        //from resaler
+//        totalSql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
+//                ",b.commissionRatio)" +
+//                " from OrderItems r,Order o,Resaler b where r.order=o and  ";
+//        totalQroupBy = " group by  r.order.userType ";
+//        totalQuery = JPA.em()
+//                .createQuery(totalSql + condition.getResalerFilter() + totalQroupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+//
+//
+//        for (String param : condition.getParamMap().keySet()) {
+//            totalQuery.setParameter(param, condition.getParamMap().get(param));
+//        }
+//
+//        List<ChannelGoodsReport> totalPaidResalerResultList = totalQuery.getResultList();
+//
+//        //取得退款的数据 ecoupon
+//        totalSql = "select new models.ChannelGoodsReport(e.order, sum(e.refundPrice),e.orderItems.goods,sum(e.orderItems.originalPrice)) " +
+//                " from ECoupon e ";
+//        totalQroupBy = " group by e.orderItems.order.userType ";
+//
+//        totalQuery = JPA.em()
+//                .createQuery(totalSql + condition.getRefundFilter() + totalQroupBy + " order by sum(e.refundPrice) desc");
+//
+//        for (String param : condition.getParamMap1().keySet()) {
+//            totalQuery.setParameter(param, condition.getParamMap1().get(param));
+//        }
+//
+//        List<ChannelGoodsReport> totalRefundList = totalQuery.getResultList();
+//
+//        //consumedAt
+//        totalSql = "select new models.ChannelGoodsReport(e.order,e.orderItems.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
+//                " from OrderItems r, ECoupon e where e.orderItems=r";
+//        totalQroupBy = " group by e.orderItems.order.userType ";
+//        totalQuery = JPA.em()
+//                .createQuery(totalSql + condition.getFilterConsumedAt() + totalQroupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+//        for (String param : condition.getParamMap().keySet()) {
+//            totalQuery.setParameter(param, condition.getParamMap().get(param));
+//        }
+//        List<ChannelGoodsReport> totalConsumedResultList = totalQuery.getResultList();
+//
+//        Map<String, ChannelGoodsReport> totalMap = new HashMap<>();
+//
+//        //merge
+//        for (ChannelGoodsReport paidItem : totalPaidResultList) {
+//            paidItem.code = "999";
+//            totalMap.put(getConsumerTotalReportKey(paidItem), paidItem);
+//        }
+//
+//        for (ChannelGoodsReport cheatedItem : totalCheatedOrderResultList) {
+//            ChannelGoodsReport item = totalMap.get(getConsumerTotalReportKey(cheatedItem));
+//            if (item == null) {
+//                Goods goods = Goods.findById(cheatedItem.goods.id);
+//                cheatedItem.code = "999";
+//                cheatedItem.originalPrice = goods.originalPrice;
+//                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
+//                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+//                cheatedItem.netCost = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
+//                totalMap.put(getConsumerTotalReportKey(cheatedItem), cheatedItem);
+//            } else {
+//                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
+//                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
+//                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount);
+//
+//                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
+//                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+//            }
+//        }
+//
+//        for (ChannelGoodsReport refundItem : totalRefundList) {
+//            ChannelGoodsReport item = totalMap.get(getConsumerTotalReportKey(refundItem));
+//            if (item == null) {
+//                Goods goods = Goods.findById(refundItem.goods.id);
+//                refundItem.code = "999";
+//                refundItem.originalPrice = goods.originalPrice;
+//                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
+//                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost);
+//                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost);
+//                totalMap.put(getConsumerTotalReportKey(refundItem), refundItem);
+//            } else {
+//                item.refundAmount = refundItem.refundAmount;
+//                item.refundCost = refundItem.refundCost;
+//                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
+//                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+//                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).subtract(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
+//            }
+//        }
+//
+//        for (ChannelGoodsReport consumedItem : totalConsumedResultList) {
+//            ChannelGoodsReport item = totalMap.get(getConsumerTotalReportKey(consumedItem));
+//            if (item == null) {
+//                Goods goods = Goods.findById(consumedItem.goods.id);
+//                consumedItem.code = "999";
+//                consumedItem.originalPrice = goods.originalPrice;
+//                totalMap.put(getConsumerTotalReportKey(consumedItem), consumedItem);
+//            } else {
+//                item.consumedAmount = consumedItem.consumedAmount;
+//            }
+//        }
+//
+//        //merge from resaler if commissionRatio
+//        for (ChannelGoodsReport resalerItem : totalPaidResalerResultList) {
+//            ChannelGoodsReport item = totalMap.get(getConsumerTotalReportKey(resalerItem));
+//            if (item == null) {
+//                resalerItem.code = "999";
+//                totalMap.put(getConsumerTotalReportKey(resalerItem), resalerItem);
+//            } else {
+//                item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
+//                        .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
+//                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.totalCost);
+//            }
+//        }
+//
+//
+//        List<ChannelGoodsReport> totalResultList = new ArrayList();
+//        for (String key : totalMap.keySet()) {
+//            totalResultList.add(totalMap.get(key));
+//        }
+//
+//        for (int i = 0; i < totalResultList.size(); i++) {
+//            switch (totalResultList.get(i).orderByFields[condition.orderByIndex]) {
+//                case "buyNumber":
+//                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (BigDecimal.valueOf(totalResultList.get(i).buyNumber) == null ? BigDecimal.ZERO : BigDecimal.valueOf(totalResultList.get(i).buyNumber)));
+//                    break;
+//                case "totalAmount":
+//                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).totalAmount == null ? BigDecimal.ZERO : totalResultList.get(i).totalAmount));
+//                    break;
+//                case "cheatedOrderAmount":
+//                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).cheatedOrderAmount == null ? BigDecimal.ZERO : totalResultList.get(i).cheatedOrderAmount));
+//                    break;
+//                case "refundAmount":
+//                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).refundAmount == null ? BigDecimal.ZERO : totalResultList.get(i).refundAmount));
+//                    break;
+//                case "consumedAmount":
+//                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).consumedAmount == null ? BigDecimal.ZERO : totalResultList.get(i).consumedAmount));
+//                    break;
+//                case "netSalesAmount":
+//                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).netSalesAmount == null ? BigDecimal.ZERO : totalResultList.get(i).netSalesAmount));
+//                    break;
+//                case "netCost":
+//                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).netCost == null ? BigDecimal.ZERO : totalResultList.get(i).netCost));
+//                    break;
+//                case "grossMargin":
+//                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).grossMargin == null ? BigDecimal.ZERO : totalResultList.get(i).grossMargin));
+//                    break;
+//                case "profit":
+//                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).profit == null ? BigDecimal.ZERO : totalResultList.get(i).profit));
+//                    break;
+//            }
+//            totalMap.put(getTotalReportKey(totalResultList.get(i)), totalResultList.get(i));
+//        }
+//
+//        List<ChannelGoodsReport> resultList = new ArrayList();
+//
+//        List<String> tempString = new ArrayList<>();
+//        for (String s : map.keySet()) {
+//            if (s != null) {
+//                tempString.add(s);
+//            }
+//        }
+//        for (String s : totalMap.keySet()) {
+//            if (s.trim().equals("999999999CONSUMER")) {
+//                tempString.add(s);
+//            }
+//        }
+//        if (tempString.size() > 0) {
+//            Collections.sort(tempString);
+//        }
+//        for (String key : tempString) {
+////            resultList.add(map.get(key));
+//            if (map.get(key) != null) {
+//                resultList.add(map.get(key));
+//            } else {
+//                resultList.add(totalMap.get(key));
+//            }
+//        }
+//
+////        resultList.add(totalResultList.get(0));
+//
+//        for (ChannelGoodsReport c : resultList) {
+//            if (c != null) {
+//                c.comparedValue = condition.comparedMap.get(c.loginName);
+//                c.orderByType = condition.orderByType;
+//                c.loginName = "一百券";
+//            }
+//        }
+//
+//
+////        List resultList = new ArrayList();
+////        for (String key : map.keySet()) {
+////            resultList.add(map.get(key));
+////        }
+//
+//        return resultList;
+//    }
 
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
 
-        List<ChannelGoodsReport> paidResultList = query.getResultList();
-
-
-        //cheated order
-        sql = "select new models.ChannelGoodsReport(r.order,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
-                " ,sum(r.originalPrice)) " +
-                " from OrderItems r, ECoupon e where e.orderItems=r and ";
-        groupBy = " group by r.goods.id";
-        query = JPA.em()
-                .createQuery(sql + condition.getFilterCheatedOrder() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
-        List<ChannelGoodsReport> cheatedOrderResultList = query.getResultList();
-
-        //from resaler
-        sql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
-                ",b.commissionRatio)" +
-                " from OrderItems r,Order o,Resaler b where r.order=o and  ";
-        groupBy = " group by  r.goods.id";
-        query = JPA.em()
-                .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
-
-
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
-
-        List<ChannelGoodsReport> paidResalerResultList = query.getResultList();
-
-        //取得退款的数据 ecoupon
-        sql = "select new models.ChannelGoodsReport(e.order, sum(e.refundPrice),e.orderItems.goods,sum(e.orderItems.originalPrice)) " +
-                " from ECoupon e ";
-        groupBy = " group by e.orderItems.goods.id";
-
-        query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
-
-        for (String param : condition.getParamMap1().keySet()) {
-            query.setParameter(param, condition.getParamMap1().get(param));
-        }
-
-        List<ChannelGoodsReport> refundList = query.getResultList();
-
-        //consumedAt
-        sql = "select new models.ChannelGoodsReport(e.order,e.orderItems.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
-                " from OrderItems r, ECoupon e where e.orderItems=r";
-        groupBy = " group by e.orderItems.goods.id";
-        query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
-        List<ChannelGoodsReport> consumedResultList = query.getResultList();
-
-        Map<String, ChannelGoodsReport> map = new HashMap<>();
-
-        //merge
-        for (ChannelGoodsReport paidItem : paidResultList) {
-            map.put(getConsumerReportKey(paidItem), paidItem);
-        }
-
-        for (ChannelGoodsReport cheatedItem : cheatedOrderResultList) {
-            ChannelGoodsReport item = map.get(getConsumerReportKey(cheatedItem));
-            if (item == null) {
-                Goods goods = Goods.findById(cheatedItem.goods.id);
-                cheatedItem.originalPrice = goods.originalPrice;
-                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
-                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
-                cheatedItem.netCost = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
-                map.put(getConsumerReportKey(cheatedItem), cheatedItem);
-            } else {
-                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
-                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
-                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount);
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
-                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-            }
-        }
-
-        for (ChannelGoodsReport refundItem : refundList) {
-            ChannelGoodsReport item = map.get(getConsumerReportKey(refundItem));
-            if (item == null) {
-                Goods goods = Goods.findById(refundItem.goods.id);
-                refundItem.originalPrice = goods.originalPrice;
-                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
-                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost);
-                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost);
-                map.put(getConsumerReportKey(refundItem), refundItem);
-            } else {
-                item.refundAmount = refundItem.refundAmount;
-                item.refundCost = refundItem.refundCost;
-                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).subtract(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
-            }
-        }
-
-        for (ChannelGoodsReport consumedItem : consumedResultList) {
-            ChannelGoodsReport item = map.get(getConsumerReportKey(consumedItem));
-            if (item == null) {
-                Goods goods = Goods.findById(consumedItem.goods.id);
-                consumedItem.originalPrice = goods.originalPrice;
-                map.put(getConsumerReportKey(consumedItem), consumedItem);
-            } else {
-                item.consumedAmount = consumedItem.consumedAmount;
-            }
-        }
-
-        //merge from resaler if commissionRatio
-        for (ChannelGoodsReport resalerItem : paidResalerResultList) {
-            ChannelGoodsReport item = map.get(getConsumerReportKey(resalerItem));
-            if (item == null) {
-                map.put(getConsumerReportKey(resalerItem), resalerItem);
-            } else {
-                item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
-                        .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
-                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.totalCost);
-            }
-        }
-
-        //total
-        //paidAt
-        String totalSql = "select new models.ChannelGoodsReport(r.order, r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.originalPrice*r.buyNumber) " +
-                ")" +
-                " from OrderItems r,Order o where r.order=o and ";
-        String totalQroupBy = " group by  r.order.userType ";
-        Query totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilter() + totalQroupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
-
-        for (String param : condition.getParamMap().keySet()) {
-            totalQuery.setParameter(param, condition.getParamMap().get(param));
-        }
-
-        List<ChannelGoodsReport> totalPaidResultList = totalQuery.getResultList();
-
-        //cheated order
-        totalSql = "select new models.ChannelGoodsReport(r.order,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
-                " ,sum(r.originalPrice)) " +
-                " from OrderItems r, ECoupon e where e.orderItems=r and ";
-        totalQroupBy = " group by r.order.userType ";
-        totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterCheatedOrder() + totalQroupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
-        for (String param : condition.getParamMap().keySet()) {
-            totalQuery.setParameter(param, condition.getParamMap().get(param));
-        }
-        List<ChannelGoodsReport> totalCheatedOrderResultList = totalQuery.getResultList();
-
-        //from resaler
-        totalSql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
-                ",b.commissionRatio)" +
-                " from OrderItems r,Order o,Resaler b where r.order=o and  ";
-        totalQroupBy = " group by  r.order.userType ";
-        totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getResalerFilter() + totalQroupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
-
-
-        for (String param : condition.getParamMap().keySet()) {
-            totalQuery.setParameter(param, condition.getParamMap().get(param));
-        }
-
-        List<ChannelGoodsReport> totalPaidResalerResultList = totalQuery.getResultList();
-
-        //取得退款的数据 ecoupon
-        totalSql = "select new models.ChannelGoodsReport(e.order, sum(e.refundPrice),e.orderItems.goods,sum(e.orderItems.originalPrice)) " +
-                " from ECoupon e ";
-        totalQroupBy = " group by e.orderItems.order.userType ";
-
-        totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getRefundFilter() + totalQroupBy + " order by sum(e.refundPrice) desc");
-
-        for (String param : condition.getParamMap1().keySet()) {
-            totalQuery.setParameter(param, condition.getParamMap1().get(param));
-        }
-
-        List<ChannelGoodsReport> totalRefundList = totalQuery.getResultList();
-
-        //consumedAt
-        totalSql = "select new models.ChannelGoodsReport(e.order,e.orderItems.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
-                " from OrderItems r, ECoupon e where e.orderItems=r";
-        totalQroupBy = " group by e.orderItems.order.userType ";
-        totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterConsumedAt() + totalQroupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
-        for (String param : condition.getParamMap().keySet()) {
-            totalQuery.setParameter(param, condition.getParamMap().get(param));
-        }
-        List<ChannelGoodsReport> totalConsumedResultList = totalQuery.getResultList();
-
-        Map<String, ChannelGoodsReport> totalMap = new HashMap<>();
-
-        //merge
-        for (ChannelGoodsReport paidItem : totalPaidResultList) {
-            paidItem.code = "999";
-            totalMap.put(getConsumerTotalReportKey(paidItem), paidItem);
-        }
-
-        for (ChannelGoodsReport cheatedItem : totalCheatedOrderResultList) {
-            ChannelGoodsReport item = totalMap.get(getConsumerTotalReportKey(cheatedItem));
-            if (item == null) {
-                Goods goods = Goods.findById(cheatedItem.goods.id);
-                cheatedItem.code = "999";
-                cheatedItem.originalPrice = goods.originalPrice;
-                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
-                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
-                cheatedItem.netCost = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
-                totalMap.put(getConsumerTotalReportKey(cheatedItem), cheatedItem);
-            } else {
-                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
-                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
-                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount);
-
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
-                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-            }
-        }
-
-        for (ChannelGoodsReport refundItem : totalRefundList) {
-            ChannelGoodsReport item = totalMap.get(getConsumerTotalReportKey(refundItem));
-            if (item == null) {
-                Goods goods = Goods.findById(refundItem.goods.id);
-                refundItem.code = "999";
-                refundItem.originalPrice = goods.originalPrice;
-                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
-                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost);
-                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost);
-                totalMap.put(getConsumerTotalReportKey(refundItem), refundItem);
-            } else {
-                item.refundAmount = refundItem.refundAmount;
-                item.refundCost = refundItem.refundCost;
-                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).subtract(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
-            }
-        }
-
-        for (ChannelGoodsReport consumedItem : totalConsumedResultList) {
-            ChannelGoodsReport item = totalMap.get(getConsumerTotalReportKey(consumedItem));
-            if (item == null) {
-                Goods goods = Goods.findById(consumedItem.goods.id);
-                consumedItem.code = "999";
-                consumedItem.originalPrice = goods.originalPrice;
-                totalMap.put(getConsumerTotalReportKey(consumedItem), consumedItem);
-            } else {
-                item.consumedAmount = consumedItem.consumedAmount;
-            }
-        }
-
-        //merge from resaler if commissionRatio
-        for (ChannelGoodsReport resalerItem : totalPaidResalerResultList) {
-            ChannelGoodsReport item = totalMap.get(getConsumerTotalReportKey(resalerItem));
-            if (item == null) {
-                resalerItem.code = "999";
-                totalMap.put(getConsumerTotalReportKey(resalerItem), resalerItem);
-            } else {
-                item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
-                        .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
-                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.totalCost);
-            }
-        }
-
-
-        List<ChannelGoodsReport> totalResultList = new ArrayList();
-        for (String key : totalMap.keySet()) {
-            totalResultList.add(totalMap.get(key));
-        }
-
-        for (int i = 0; i < totalResultList.size(); i++) {
-            switch (totalResultList.get(i).orderByFields[condition.orderByIndex]) {
-                case "buyNumber":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (BigDecimal.valueOf(totalResultList.get(i).buyNumber) == null ? BigDecimal.ZERO : BigDecimal.valueOf(totalResultList.get(i).buyNumber)));
-                    break;
-                case "totalAmount":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).totalAmount == null ? BigDecimal.ZERO : totalResultList.get(i).totalAmount));
-                    break;
-                case "cheatedOrderAmount":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).cheatedOrderAmount == null ? BigDecimal.ZERO : totalResultList.get(i).cheatedOrderAmount));
-                    break;
-                case "refundAmount":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).refundAmount == null ? BigDecimal.ZERO : totalResultList.get(i).refundAmount));
-                    break;
-                case "consumedAmount":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).consumedAmount == null ? BigDecimal.ZERO : totalResultList.get(i).consumedAmount));
-                    break;
-                case "netSalesAmount":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).netSalesAmount == null ? BigDecimal.ZERO : totalResultList.get(i).netSalesAmount));
-                    break;
-                case "netCost":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).netCost == null ? BigDecimal.ZERO : totalResultList.get(i).netCost));
-                    break;
-                case "grossMargin":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).grossMargin == null ? BigDecimal.ZERO : totalResultList.get(i).grossMargin));
-                    break;
-                case "profit":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).profit == null ? BigDecimal.ZERO : totalResultList.get(i).profit));
-                    break;
-            }
-            totalMap.put(getTotalReportKey(totalResultList.get(i)), totalResultList.get(i));
-        }
-
-        List<ChannelGoodsReport> resultList = new ArrayList();
-
-        List<String> tempString = new ArrayList<>();
-        for (String s : map.keySet()) {
-            if (s != null) {
-                tempString.add(s);
-            }
-        }
-        for (String s : totalMap.keySet()) {
-            if (s.trim().equals("999999999CONSUMER")) {
-                tempString.add(s);
-            }
-        }
-        if (tempString.size() > 0) {
-            Collections.sort(tempString);
-        }
-        for (String key : tempString) {
-//            resultList.add(map.get(key));
-            if (map.get(key) != null) {
-                resultList.add(map.get(key));
-            } else {
-                resultList.add(totalMap.get(key));
-            }
-        }
-
-//        resultList.add(totalResultList.get(0));
-
-        for (ChannelGoodsReport c : resultList) {
-            if (c != null) {
-                c.comparedValue = condition.comparedMap.get(c.loginName);
-                c.orderByType = condition.orderByType;
-                c.loginName = "一百券";
-            }
-        }
-
-
+//    public static List<ChannelGoodsReport> queryConsumerTotal(ChannelGoodsReportCondition condition) {
+//        //paidAt
+//        String sql = "select new models.ChannelGoodsReport(r.order, r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
+//                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+//                ",sum(r.originalPrice*r.buyNumber) " +
+//                ")" +
+//                " from OrderItems r,Order o where r.order=o and ";
+//        String groupBy = " group by  r.order.userType ";
+//        Query query = JPA.em()
+//                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+//
+//        for (String param : condition.getParamMap().keySet()) {
+//            query.setParameter(param, condition.getParamMap().get(param));
+//        }
+//
+//        List<ChannelGoodsReport> paidResultList = query.getResultList();
+//
+//
+//        //cheated order
+//        sql = "select new models.ChannelGoodsReport(r.order,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
+//                " ,sum(r.originalPrice)) " +
+//                " from OrderItems r, ECoupon e where e.orderItems=r and ";
+//        groupBy = " group by r.order.userType ";
+//        query = JPA.em()
+//                .createQuery(sql + condition.getFilterCheatedOrder() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+//        for (String param : condition.getParamMap().keySet()) {
+//            query.setParameter(param, condition.getParamMap().get(param));
+//        }
+//        List<ChannelGoodsReport> cheatedOrderResultList = query.getResultList();
+//
+//        //from resaler
+//        sql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
+//                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
+//                ",b.commissionRatio)" +
+//                " from OrderItems r,Order o,Resaler b where r.order=o and  ";
+//        groupBy = " group by  r.order.userType ";
+//        query = JPA.em()
+//                .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+//
+//
+//        for (String param : condition.getParamMap().keySet()) {
+//            query.setParameter(param, condition.getParamMap().get(param));
+//        }
+//
+//        List<ChannelGoodsReport> paidResalerResultList = query.getResultList();
+//
+//        //取得退款的数据 ecoupon
+//        sql = "select new models.ChannelGoodsReport(e.order, sum(e.refundPrice),e.orderItems.goods,sum(e.orderItems.originalPrice)) " +
+//                " from ECoupon e ";
+//        groupBy = " group by e.orderItems.order.userType ";
+//
+//        query = JPA.em()
+//                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
+//
+//        for (String param : condition.getParamMap1().keySet()) {
+//            query.setParameter(param, condition.getParamMap1().get(param));
+//        }
+//
+//        List<ChannelGoodsReport> refundList = query.getResultList();
+//
+//        //consumedAt
+//        sql = "select new models.ChannelGoodsReport(e.order,e.orderItems.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
+//                " from OrderItems r, ECoupon e where e.orderItems=r";
+//        groupBy = " group by e.orderItems.order.userType ";
+//        query = JPA.em()
+//                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+//        for (String param : condition.getParamMap().keySet()) {
+//            query.setParameter(param, condition.getParamMap().get(param));
+//        }
+//        List<ChannelGoodsReport> consumedResultList = query.getResultList();
+//
+//        Map<String, ChannelGoodsReport> map = new HashMap<>();
+//
+//        //merge
+//        for (ChannelGoodsReport paidItem : paidResultList) {
+//            paidItem.code = "999";
+//            map.put(getConsumerTotalReportKey(paidItem), paidItem);
+//        }
+//
+//        for (ChannelGoodsReport cheatedItem : cheatedOrderResultList) {
+//            ChannelGoodsReport item = map.get(getConsumerTotalReportKey(cheatedItem));
+//            if (item == null) {
+//                Goods goods = Goods.findById(cheatedItem.goods.id);
+//                cheatedItem.code = "999";
+//                cheatedItem.originalPrice = goods.originalPrice;
+//                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
+//                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+//                cheatedItem.netCost = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
+//                map.put(getConsumerTotalReportKey(cheatedItem), cheatedItem);
+//            } else {
+//                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
+//                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
+//                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount);
+//
+//                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
+//                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+//
+//
+//            }
+//        }
+//
+//        for (ChannelGoodsReport refundItem : refundList) {
+//            ChannelGoodsReport item = map.get(getConsumerTotalReportKey(refundItem));
+//            if (item == null) {
+//                Goods goods = Goods.findById(refundItem.goods.id);
+//                refundItem.code = "999";
+//                refundItem.originalPrice = goods.originalPrice;
+//                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
+//                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost);
+//                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost);
+//                map.put(getConsumerTotalReportKey(refundItem), refundItem);
+//            } else {
+//                item.refundAmount = refundItem.refundAmount;
+//                item.refundCost = refundItem.refundCost;
+//                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
+//                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+//                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).subtract(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
+//            }
+//        }
+//
+//        for (ChannelGoodsReport consumedItem : consumedResultList) {
+//            ChannelGoodsReport item = map.get(getConsumerTotalReportKey(consumedItem));
+//            if (item == null) {
+//                Goods goods = Goods.findById(consumedItem.goods.id);
+//                consumedItem.code = "999";
+//                consumedItem.originalPrice = goods.originalPrice;
+//                map.put(getConsumerTotalReportKey(consumedItem), consumedItem);
+//            } else {
+//                item.consumedAmount = consumedItem.consumedAmount;
+//            }
+//        }
+//
+//        //merge from resaler if commissionRatio
+//        for (ChannelGoodsReport resalerItem : paidResalerResultList) {
+//            ChannelGoodsReport item = map.get(getConsumerTotalReportKey(resalerItem));
+//            if (item == null) {
+//                resalerItem.code = "999";
+//                map.put(getConsumerTotalReportKey(resalerItem), resalerItem);
+//            } else {
+//                item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
+//                        .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
+//                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.totalCost);
+//            }
+//        }
+//
+//
 //        List resultList = new ArrayList();
 //        for (String key : map.keySet()) {
 //            resultList.add(map.get(key));
 //        }
-
-        return resultList;
-    }
-
-
-    public static List<ChannelGoodsReport> queryConsumerTotal(ChannelGoodsReportCondition condition) {
-        //paidAt
-        String sql = "select new models.ChannelGoodsReport(r.order, r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.originalPrice*r.buyNumber) " +
-                ")" +
-                " from OrderItems r,Order o where r.order=o and ";
-        String groupBy = " group by  r.order.userType ";
-        Query query = JPA.em()
-                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
-
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
-
-        List<ChannelGoodsReport> paidResultList = query.getResultList();
-
-
-        //cheated order
-        sql = "select new models.ChannelGoodsReport(r.order,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
-                " ,sum(r.originalPrice)) " +
-                " from OrderItems r, ECoupon e where e.orderItems=r and ";
-        groupBy = " group by r.order.userType ";
-        query = JPA.em()
-                .createQuery(sql + condition.getFilterCheatedOrder() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
-        List<ChannelGoodsReport> cheatedOrderResultList = query.getResultList();
-
-        //from resaler
-        sql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
-                ",b.commissionRatio)" +
-                " from OrderItems r,Order o,Resaler b where r.order=o and  ";
-        groupBy = " group by  r.order.userType ";
-        query = JPA.em()
-                .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
-
-
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
-
-        List<ChannelGoodsReport> paidResalerResultList = query.getResultList();
-
-        //取得退款的数据 ecoupon
-        sql = "select new models.ChannelGoodsReport(e.order, sum(e.refundPrice),e.orderItems.goods,sum(e.orderItems.originalPrice)) " +
-                " from ECoupon e ";
-        groupBy = " group by e.orderItems.order.userType ";
-
-        query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
-
-        for (String param : condition.getParamMap1().keySet()) {
-            query.setParameter(param, condition.getParamMap1().get(param));
-        }
-
-        List<ChannelGoodsReport> refundList = query.getResultList();
-
-        //consumedAt
-        sql = "select new models.ChannelGoodsReport(e.order,e.orderItems.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
-                " from OrderItems r, ECoupon e where e.orderItems=r";
-        groupBy = " group by e.orderItems.order.userType ";
-        query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
-        List<ChannelGoodsReport> consumedResultList = query.getResultList();
-
-        Map<String, ChannelGoodsReport> map = new HashMap<>();
-
-        //merge
-        for (ChannelGoodsReport paidItem : paidResultList) {
-            paidItem.code = "999";
-            map.put(getConsumerTotalReportKey(paidItem), paidItem);
-        }
-
-        for (ChannelGoodsReport cheatedItem : cheatedOrderResultList) {
-            ChannelGoodsReport item = map.get(getConsumerTotalReportKey(cheatedItem));
-            if (item == null) {
-                Goods goods = Goods.findById(cheatedItem.goods.id);
-                cheatedItem.code = "999";
-                cheatedItem.originalPrice = goods.originalPrice;
-                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
-                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
-                cheatedItem.netCost = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
-                map.put(getConsumerTotalReportKey(cheatedItem), cheatedItem);
-            } else {
-                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
-                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
-                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount);
-
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
-                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-
-
-            }
-        }
-
-        for (ChannelGoodsReport refundItem : refundList) {
-            ChannelGoodsReport item = map.get(getConsumerTotalReportKey(refundItem));
-            if (item == null) {
-                Goods goods = Goods.findById(refundItem.goods.id);
-                refundItem.code = "999";
-                refundItem.originalPrice = goods.originalPrice;
-                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
-                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost);
-                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost);
-                map.put(getConsumerTotalReportKey(refundItem), refundItem);
-            } else {
-                item.refundAmount = refundItem.refundAmount;
-                item.refundCost = refundItem.refundCost;
-                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).subtract(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
-            }
-        }
-
-        for (ChannelGoodsReport consumedItem : consumedResultList) {
-            ChannelGoodsReport item = map.get(getConsumerTotalReportKey(consumedItem));
-            if (item == null) {
-                Goods goods = Goods.findById(consumedItem.goods.id);
-                consumedItem.code = "999";
-                consumedItem.originalPrice = goods.originalPrice;
-                map.put(getConsumerTotalReportKey(consumedItem), consumedItem);
-            } else {
-                item.consumedAmount = consumedItem.consumedAmount;
-            }
-        }
-
-        //merge from resaler if commissionRatio
-        for (ChannelGoodsReport resalerItem : paidResalerResultList) {
-            ChannelGoodsReport item = map.get(getConsumerTotalReportKey(resalerItem));
-            if (item == null) {
-                resalerItem.code = "999";
-                map.put(getConsumerTotalReportKey(resalerItem), resalerItem);
-            } else {
-                item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
-                        .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
-                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.totalCost);
-            }
-        }
-
-
-        List resultList = new ArrayList();
-        for (String key : map.keySet()) {
-            resultList.add(map.get(key));
-        }
-
-        return resultList;
-    }
+//
+//        return resultList;
+//    }
 
     /**
      * 取得净销售的总计
@@ -1684,13 +1651,13 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         }
     }
 
-    public static String getConsumerReportKey(ChannelGoodsReport refoundItem) {
-        return String.valueOf(refoundItem.goods.id);
-    }
-
-    public static String getConsumerTotalReportKey(ChannelGoodsReport refoundItem) {
-        return "999999999" + String.valueOf(refoundItem.order.userType);
-    }
+//    public static String getConsumerReportKey(ChannelGoodsReport refoundItem) {
+//        return String.valueOf(refoundItem.goods.id);
+//    }
+//
+//    public static String getConsumerTotalReportKey(ChannelGoodsReport refoundItem) {
+//        return "999999999" + String.valueOf(refoundItem.order.userType);
+//    }
 
     @Override
     public int compareTo(ChannelGoodsReport arg) {

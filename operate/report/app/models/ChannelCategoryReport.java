@@ -129,12 +129,8 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
             , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
         if (supplierCategoryId != null) {
             SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
@@ -162,12 +158,8 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
             , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.code = "999";
@@ -193,12 +185,8 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
             , BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         if (supplierCategoryId != null) {
@@ -226,12 +214,10 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
             , BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
+
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
+
         }
 
         this.code = "999";
@@ -254,12 +240,8 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
             , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
         if (supplierCategoryId != null) {
             SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
@@ -280,12 +262,8 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
             , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
         this.code = "999";
         this.name = "小计";
@@ -304,12 +282,8 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
             , BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
         if (supplierCategoryId != null) {
             SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
@@ -329,12 +303,8 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
             , BigDecimal grossMargin, BigDecimal profit, Long buyNumber) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
         this.code = "999";
         this.name = "小计";
@@ -350,12 +320,8 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
     public ChannelCategoryReport(BigDecimal consumedPrice, Long supplierCategoryId, Order order, Long consumedNumber) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         if (supplierCategoryId != null) {
@@ -372,12 +338,8 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
     public ChannelCategoryReport(BigDecimal consumedPrice, Order order, Long consumedNumber) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.code = "999";
@@ -390,12 +352,8 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
     public ChannelCategoryReport(BigDecimal refundPrice, Long supplierCategoryId, Long refundNumber, Order order) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         if (supplierCategoryId != null) {
@@ -412,12 +370,8 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
     public ChannelCategoryReport(BigDecimal refundPrice, Long refundNumber, Order order) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
-                this.loginName = order.getResaler().loginName;
+            this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.code = "999";
@@ -431,12 +385,8 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
     public ChannelCategoryReport(Long refundNumber, BigDecimal refundPrice, Order order) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
                 this.loginName = order.getResaler().loginName;
                 this.userName = order.getResaler().userName;
-            }
         }
 
         this.realRefundPrice = refundPrice;
