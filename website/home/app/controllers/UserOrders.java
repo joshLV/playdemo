@@ -56,7 +56,7 @@ public class UserOrders extends Controller {
         User user = SecureCAS.getUser();
 
         //加载订单信息
-        Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+        Order order = Order.findOneByUser(orderNumber, user);
         if (order == null) {
             error(404, "no order!");
             return;
@@ -77,7 +77,7 @@ public class UserOrders extends Controller {
         User user = SecureCAS.getUser();
 
         //加载订单信息
-        Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+        Order order = Order.findOneByUser(orderNumber, user);
         if (order == null) {
             error(404, "no order!");
             return;
@@ -114,7 +114,7 @@ public class UserOrders extends Controller {
         //加载用户账户信息
         User user = SecureCAS.getUser();
         //加载订单信息
-        Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+        Order order = Order.findOneByUser(orderNumber, user);
         if (order == null) {
             error(404, "no order!");
             return;

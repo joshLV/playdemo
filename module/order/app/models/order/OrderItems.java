@@ -265,10 +265,9 @@ public class OrderItems extends Model {
     public static long itemsNumber(User user, Long goodsId) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and " +
-                "order.userId=:userId and order.userType=:userType");
+                "order.consumerId=:consumerId");
         q.setParameter("goodsId", goodsId);
-        q.setParameter("userId", user.id);
-        q.setParameter("userType", AccountType.CONSUMER);
+        q.setParameter("consumerId", user.id);
         Object result = q.getSingleResult();
         return result == null ? 0 : (Long) result;
     }
@@ -292,10 +291,9 @@ public class OrderItems extends Model {
     public static long getBoughtNumberOfSecKillGoods(User user, Long goodsId, Long secKillGoodsId) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and " +
-                "order.userId=:userId and order.userType=:userType and secKillGoods.id = :secKillGoodsId");
+                "order.consumerId=:consumerId and secKillGoods.id = :secKillGoodsId");
         q.setParameter("goodsId", goodsId);
-        q.setParameter("userId", user.id);
-        q.setParameter("userType", AccountType.CONSUMER);
+        q.setParameter("consumerId", user.id);
         q.setParameter("secKillGoodsId", secKillGoodsId);
         Object result = q.getSingleResult();
 
@@ -346,9 +344,8 @@ public class OrderItems extends Model {
      * @return
      */
     public static List<String> getMobiles(User user) {
-        Query query = play.db.jpa.JPA.em().createQuery("select o.phone from OrderItems o where o.order.userId = :userId and o.order.userType =:userType group by o.phone order by o.order desc ");
-        query.setParameter("userId", user.id);
-        query.setParameter("userType", AccountType.CONSUMER);
+        Query query = play.db.jpa.JPA.em().createQuery("select o.phone from OrderItems o where o.order.consumerId = :consumerId group by o.phone order by o.order desc ");
+        query.setParameter("consumerId", user.id);
         query.setFirstResult(0);
         query.setMaxResults(10);
         return query.getResultList();
@@ -388,12 +385,11 @@ public class OrderItems extends Model {
     /**
      * 获取未付款笔数
      */
-    public static long getUnpaidOrderCount(Long userId, AccountType userType) {
-        Query query = OrderItems.em().createQuery("select o from OrderItems o where o.order.userId=:userId " +
-                "and o.order.userType=:userType and o.status=:status group by o.order");
+    public static long getUnpaidOrderCount(User user) {
+        Query query = OrderItems.em().createQuery("select o from OrderItems o where o.order.consumerId=:consumerId " +
+                "and o.status=:status group by o.order");
 
-        query.setParameter("userId", userId);
-        query.setParameter("userType", userType);
+        query.setParameter("consumerId", user.id);
         query.setParameter("status", OrderStatus.UNPAID);
         List result = query.getResultList();
         return (result == null || result.isEmpty()) ? 0l : result.size();

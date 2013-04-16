@@ -34,7 +34,7 @@ public class PaymentInfo extends Controller {
         Account account = AccountUtil.getConsumerAccount(user.getId());
 
         //加载订单信息
-        Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+        Order order = Order.findOneByUser(orderNumber, user);
 
         if (order == null) {
             error("order not found");return;
@@ -79,7 +79,7 @@ public class PaymentInfo extends Controller {
      */
     public static void confirm(String orderNumber, boolean useBalance, String paymentSourceCode, Long[] voucherIds) {
         User user = SecureCAS.getUser();
-        Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+        Order order = Order.findOneByUser(orderNumber, user);
         if (order == null) {
             error(500, "no such order");
         }
@@ -124,7 +124,7 @@ public class PaymentInfo extends Controller {
      */
     public static void payIt(String orderNumber, String paymentCode) {
         User user = SecureCAS.getUser();
-        Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+        Order order = Order.findOneByUser(orderNumber, user);
         PaymentSource paymentSource = PaymentSource.findByCode(paymentCode);
 
         if (order == null || paymentSource == null) {

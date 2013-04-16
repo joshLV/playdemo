@@ -2,7 +2,6 @@ package controllers;
 
 import controllers.modules.resale.cas.SecureCAS;
 import models.accounts.Account;
-import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.accounts.util.AccountUtil;
 import models.order.Order;
@@ -32,7 +31,7 @@ public class ResalePaymentInfo extends Controller {
         Account account = AccountUtil.getResalerAccount(user.getId());
 
         //加载订单信息
-        Order order = Order.findOneByResaler(orderNumber, user.getId(), AccountType.RESALER);
+        Order order = Order.findOneByResaler(orderNumber, user);
         long goodsNumber = OrderItems.itemsNumber(order);
 
         List<PaymentSource> paymentSources = PaymentSource.findAll();
@@ -50,7 +49,7 @@ public class ResalePaymentInfo extends Controller {
      */
     public static void confirm(String orderNumber, boolean useBalance, String paymentSourceCode) {
         Resaler resaler = SecureCAS.getResaler();
-        Order order = Order.findOneByResaler(orderNumber, resaler.getId(), AccountType.RESALER);
+        Order order = Order.findOneByResaler(orderNumber, resaler);
         if (order == null) {
             error(500, "no such order");
         }
@@ -75,7 +74,7 @@ public class ResalePaymentInfo extends Controller {
      */
     public static void payIt(String orderNumber, String paymentCode) {
         Resaler resaler = SecureCAS.getResaler();
-        Order order = Order.findOneByResaler(orderNumber, resaler.getId(), AccountType.RESALER);
+        Order order = Order.findOneByResaler(orderNumber, resaler);
 
         PaymentSource paymentSource = PaymentSource.findByCode(paymentCode);
 

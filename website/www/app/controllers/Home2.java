@@ -141,11 +141,11 @@ public class Home2 extends Controller {
 
         if (user != null) {
             //待消费
-            long unconsumedCount = ECoupon.getUnConsumedCount(user.getId(), AccountType.CONSUMER);
+            long unconsumedCount = ECoupon.getUnConsumedCount(user);
             //待付款
-            long unpaidCount = OrderItems.getUnpaidOrderCount(user.getId(), AccountType.CONSUMER);
+            long unpaidCount = OrderItems.getUnpaidOrderCount(user);
             //已节省
-            BigDecimal savedMoney = ECoupon.getSavedMoney(user.getId(), AccountType.CONSUMER);
+            BigDecimal savedMoney = ECoupon.getSavedMoney(user);
 
             renderArgs.put("unconsumedCount", unconsumedCount);
             renderArgs.put("unpaidCount", unpaidCount);

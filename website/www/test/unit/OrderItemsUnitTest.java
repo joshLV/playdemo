@@ -61,7 +61,7 @@ public class OrderItemsUnitTest extends UnitTest {
         orderItems.order = order;
         orderItems.save();
 
-        long count = OrderItems.getUnpaidOrderCount(user.id, AccountType.CONSUMER);
+        long count = OrderItems.getUnpaidOrderCount(user);
         assertEquals(2, count);
     }
 

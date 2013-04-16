@@ -1384,17 +1384,15 @@ public class ECoupon extends Model {
     /**
      * 用户已节省的总金额.
      *
-     * @param userId
-     * @param userType
+     * @param user
      * @return
      */
-    public static BigDecimal getSavedMoney(Long userId, AccountType userType) {
+    public static BigDecimal getSavedMoney(User user) {
         Query q = JPA.em().createQuery("select sum(e.faceValue)-(e.salePrice) from ECoupon e " +
-                "where e.order.userId = :userId and e.order.userType = :userType and e.goods.isLottery = :isLottery " +
+                "where e.order.consumerId = :consumerId and e.goods.isLottery = :isLottery " +
                 "and (e.status = :unconsumed or e.status = :consumed)");
         q.setParameter("isLottery", false);
-        q.setParameter("userId", userId);
-        q.setParameter("userType", userType);
+        q.setParameter("consumerId", user.id);
         q.setParameter("unconsumed", ECouponStatus.UNCONSUMED);
         q.setParameter("consumed", ECouponStatus.CONSUMED);
         BigDecimal savedMoney = (BigDecimal) q.getSingleResult();
@@ -1407,12 +1405,12 @@ public class ECoupon extends Model {
     /**
      * 获取待消费笔数.
      *
-     * @param userId
-     * @param userType
+     * @param user
      * @return
      */
-    public static long getUnConsumedCount(Long userId, AccountType userType) {
-        return ECoupon.count("order.userId = ? and order.userType = ? and status = ? and goods.isLottery=?", userId, userType, ECouponStatus.UNCONSUMED, false);
+    public static Long getUnConsumedCount(User user) {
+        return ECoupon.count("order.consumerId = ? and status = ? and goods.isLottery=?", user.id,
+                        ECouponStatus.UNCONSUMED, Boolean.FALSE);
     }
 
     /**

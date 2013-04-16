@@ -60,7 +60,7 @@ public class OrderResult extends Controller {
         User user = SecureCAS.getUser();
         PaymentJournal.saveUrlReturnJournal(orderNumber, params.all(), result, success);
         
-        Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+        Order order = Order.findOneByUser(orderNumber, user);
 
         if (shihui_partner.equals(PaymentUtil.PARTNER_CODE_SINA)) {
             String[] ext = allParams.get("source");

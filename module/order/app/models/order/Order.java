@@ -1191,12 +1191,12 @@ public class Order extends Model {
         }
     }
 
-    public static Order findOneByResaler(String orderNumber, Long resalerId, AccountType accountType) {
-        return Order.find("byOrderNumberAndUserIdAndUserType", orderNumber, resalerId, accountType).first();
+    public static Order findOneByResaler(String orderNumber, Resaler resaler) {
+        return Order.find("byOrderNumberAndUserId", orderNumber, resaler.id).first();
     }
 
-    public static Order findOneByUser(String orderNumber, Long userId, AccountType accountType) {
-        return Order.find("byOrderNumberAndConsumerIdAndUserType", orderNumber, userId, accountType).first();
+    public static Order findOneByUser(String orderNumber, User user) {
+        return Order.find("byOrderNumberAndConsumerId", orderNumber, user.id).first();
     }
 
     public static boolean verifyAndPay(String orderNumber, String fee, String paymentCode) {
