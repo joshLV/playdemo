@@ -1,7 +1,6 @@
 package models;
 
 
-import models.accounts.AccountType;
 import models.order.Order;
 import play.db.jpa.JPA;
 
@@ -122,6 +121,36 @@ public class ResaleSalesReport {
      */
     public BigDecimal contribution;
 
+    /**
+     * 退款的佣金
+     */
+    public BigDecimal refundCommissionAmount;
+
+    /**
+     * 实物销售的佣金
+     */
+    public BigDecimal realCommissionAmount;
+
+    /**
+     * 退款的成本
+     */
+    public BigDecimal refundCost;
+
+    /**
+     * 刷单金额
+     */
+    public BigDecimal cheatedAmount;
+    /**
+     * 刷单成本
+     */
+    public BigDecimal cheatedOrderCost;
+
+
+    /**
+     * 刷单佣金成本
+     */
+    public BigDecimal cheatedOrderCommissionAmount = BigDecimal.ZERO;
+
 
     /**
      * paidAt ecoupon  resaler
@@ -130,12 +159,8 @@ public class ResaleSalesReport {
             , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
-                this.loginName = order.getResaler().loginName;
-                this.userName = order.getResaler().userName;
-            }
+            this.loginName = order.getResaler().loginName;
+            this.userName = order.getResaler().userName;
         }
         if (salePrice != null) {
             this.salePrice = salePrice;
@@ -149,6 +174,7 @@ public class ResaleSalesReport {
         this.profit = profit;
     }
 
+
     /**
      * paidAt ecoupon   consumer
      */
@@ -156,12 +182,8 @@ public class ResaleSalesReport {
             , BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
-                this.loginName = order.getResaler().loginName;
-                this.userName = order.getResaler().userName;
-            }
+            this.loginName = order.getResaler().loginName;
+            this.userName = order.getResaler().userName;
         }
         if (salePrice != null) {
             this.salePrice = salePrice;
@@ -177,15 +199,11 @@ public class ResaleSalesReport {
 
     //sendAt real   resaler
     public ResaleSalesReport(Order order, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
-            , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
+            , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit, BigDecimal realCommissionAmount) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
-                this.loginName = order.getResaler().loginName;
-                this.userName = order.getResaler().userName;
-            }
+            this.loginName = order.getResaler().loginName;
+            this.userName = order.getResaler().userName;
         }
 
         this.realSalePrice = salePrice;
@@ -194,6 +212,7 @@ public class ResaleSalesReport {
         this.channelCost = channelCost;
         this.grossMargin = grossMargin;
         this.profit = profit;
+        this.realCommissionAmount = realCommissionAmount;
     }
 
     //sendAt real consumer
@@ -201,12 +220,8 @@ public class ResaleSalesReport {
             , BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
-                this.loginName = order.getResaler().loginName;
-                this.userName = order.getResaler().userName;
-            }
+            this.loginName = order.getResaler().loginName;
+            this.userName = order.getResaler().userName;
         }
 
         this.realSalePrice = salePrice;
@@ -216,46 +231,47 @@ public class ResaleSalesReport {
         this.profit = profit;
     }
 
+    //cheatedOrder
+    public ResaleSalesReport(Order order, BigDecimal cheatedAmount, BigDecimal cheatedOrderCost, BigDecimal cheatedOrderCommissionAmount) {
+        this.order = order;
+        if (order != null) {
+            this.loginName = order.getResaler().loginName;
+            this.userName = order.getResaler().userName;
+        }
+        this.cheatedAmount = cheatedAmount;
+        this.cheatedOrderCost = cheatedOrderCost;
+        this.cheatedOrderCommissionAmount = cheatedOrderCommissionAmount;
+    }
 
     public ResaleSalesReport(BigDecimal consumedPrice, Order order, Long consumedNumber) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
-                this.loginName = order.getResaler().loginName;
-                this.userName = order.getResaler().userName;
-            }
+            this.loginName = order.getResaler().loginName;
+            this.userName = order.getResaler().userName;
         }
 
         this.consumedPrice = consumedPrice;
         this.consumedNumber = consumedNumber;
     }
 
-    public ResaleSalesReport(BigDecimal refundPrice, Long refundNumber, Order order) {
+    public ResaleSalesReport(BigDecimal refundPrice, Long refundNumber, Order order, BigDecimal refundCommissionAmount, BigDecimal refundCost) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
-                this.loginName = order.getResaler().loginName;
-                this.userName = order.getResaler().userName;
-            }
+            this.loginName = order.getResaler().loginName;
+            this.userName = order.getResaler().userName;
         }
 
         this.refundPrice = refundPrice;
         this.refundNumber = refundNumber;
+        this.refundCommissionAmount = refundCommissionAmount;
+        this.refundCost = refundCost;
     }
 
     public ResaleSalesReport(Long refundNumber, BigDecimal refundPrice, Order order) {
         this.order = order;
         if (order != null) {
-            if (order.userType == AccountType.CONSUMER) {
-                this.loginName = "一百券";
-            } else {
-                this.loginName = order.getResaler().loginName;
-                this.userName = order.getResaler().userName;
-            }
+            this.loginName = order.getResaler().loginName;
+            this.userName = order.getResaler().userName;
         }
 
         this.realRefundPrice = refundPrice;
@@ -318,7 +334,7 @@ public class ResaleSalesReport {
         String sql = "select new models.ResaleSalesReport(min(r.order), sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
                 ",sum(r.originalPrice),sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100" +
                 ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
-                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100-sum(r.originalPrice)" +
+                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum((r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100)-sum(r.originalPrice)" +
                 ") from OrderItems r, ECoupon e,Order o,Resaler b,Supplier s where e.orderItems=r and r.order=o and o.userId=b.id" +
                 " and r.goods.supplierId = s ";
         String groupBy = " group by r.order.userId";
@@ -334,7 +350,7 @@ public class ResaleSalesReport {
         sql = "select new models.ResaleSalesReport(r.order,sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.originalPrice*r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100" +
                 ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100-sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum((r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber),sum((r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100)" +
                 ") from OrderItems r,Order o,Resaler b where r.order=o and o.userId=b.id and ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRealSendAt() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
@@ -354,7 +370,8 @@ public class ResaleSalesReport {
         List<ResaleSalesReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
+        sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),r.order,sum(e.refundPrice*b.commissionRatio/100),sum(e.originalPrice)) " +
+                "from OrderItems r, ECoupon e,Resaler b where e.orderItems=r and r.order.userId = b.id";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRefundAt() + groupBy + " order by sum(e.refundPrice) desc");
         for (String param : condition.getParamMap().keySet()) {
@@ -363,6 +380,22 @@ public class ResaleSalesReport {
         List<ResaleSalesReport> refundResultList = query.getResultList();
 
         //refundAt real need to do !!!!!
+
+        //算出刷单金额和成本  cheatedOrder
+        sql = "select new models.ResaleSalesReport(r.order," +
+                "sum(r.salePrice-r.rebateValue/r.buyNumber)" +
+                " ,sum(r.originalPrice), sum((r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100)" +
+                ")" +
+                " from OrderItems r,Order o,Resaler b, ECoupon e where e.orderItems=r and ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterCheatedOrder() + groupBy);
+
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        List<ResaleSalesReport> cheatedOrderResultList = query.getResultList();
 
 
         Map<Long, ResaleSalesReport> map = new HashMap<>();
@@ -387,9 +420,9 @@ public class ResaleSalesReport {
                 }
 
                 item.channelCost = item.channelCost.add(paidItem.channelCost);
-                item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
-
+//                item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+                item.profit = item.profit.add(item.realSalePrice).subtract(paidItem.totalCost).subtract(paidItem.realCommissionAmount);
                 item.totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
             }
         }
@@ -413,8 +446,20 @@ public class ResaleSalesReport {
             } else {
                 item.refundPrice = refundItem.refundPrice;
                 item.refundNumber = refundItem.refundNumber;
+                item.profit = item.profit.subtract(refundItem.refundPrice).add(refundItem.refundCost).add(refundItem.refundCommissionAmount);
             }
         }
+
+        for (ResaleSalesReport cheatedItem : cheatedOrderResultList) {
+            ResaleSalesReport item = map.get(getReportKey(cheatedItem));
+            if (item == null) {
+                map.put(getReportKey(cheatedItem), cheatedItem);
+            } else {
+                item.profit = item.profit.subtract(cheatedItem.cheatedAmount).add(cheatedItem.cheatedOrderCost);
+            }
+        }
+
+
 
         List resultList = new ArrayList();
         for (Long key : map.keySet()) {
