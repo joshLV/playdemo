@@ -3,6 +3,7 @@ package functional;
 import com.google.gson.Gson;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
+import factory.resale.ResalerFactory;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.order.ECoupon;
@@ -46,6 +47,7 @@ public class WubaGroupBuyTest extends FunctionalTest {
             }
         });
         AccountUtil.getCreditableAccount(resaler.getId(), AccountType.RESALER);
+        ResalerFactory.getYibaiquanResaler(); //必须存在一百券
     }
 
     @After

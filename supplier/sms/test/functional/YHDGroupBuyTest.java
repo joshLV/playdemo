@@ -2,6 +2,7 @@ package functional;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
+import factory.resale.ResalerFactory;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.util.AccountUtil;
@@ -49,7 +50,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
         Account account= AccountUtil.getResalerAccount(resaler.getId());
         account.creditable = AccountCreditable.YES;
         account.save();
-
+        ResalerFactory.getYibaiquanResaler(); //必须存在一百券
     }
     @Test
     public void testInform(){

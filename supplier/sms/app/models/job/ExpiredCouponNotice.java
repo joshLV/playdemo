@@ -5,6 +5,7 @@ import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.SentCouponMessage;
 import models.sms.SMSUtil;
+import play.Logger;
 import play.jobs.Job;
 
 import javax.persistence.Query;
@@ -32,6 +33,7 @@ public class ExpiredCouponNotice extends Job {
         query.setFirstResult(0);
         query.setMaxResults(200);
         List<ECoupon> expiredCoupons = query.getResultList();
+        Logger.info("expiredCoupons.size=" + expiredCoupons.size());
 
         String pre_phone = "";
         String pre_goodsName = "";
@@ -40,11 +42,13 @@ public class ExpiredCouponNotice extends Job {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (ECoupon coupon : expiredCoupons) {
             if (coupon.order.isWebsiteOrder()) {
+                Logger.info("order.id:" + coupon.order.id + " 是一百券订单，不需要处理");
                 // 一百券网站订单不需要处理
                 break;
             }
             mobile = coupon.orderItems.phone;
             goodsName = coupon.goods.name;
+            Logger.info("mobile=" + mobile + ", goodsName=" + goodsName);
             if (!pre_phone.equals(mobile) || !pre_goodsName.equals(goodsName)) {
                 SMSUtil.send("您的" + goodsName + "，将要过期，请注意消费截止日期为" + sdf.format(coupon.expireAt) + "。",
                         mobile,

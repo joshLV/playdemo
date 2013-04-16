@@ -2,6 +2,7 @@ package functional;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
+import factory.resale.ResalerFactory;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountType;
@@ -21,7 +22,11 @@ import play.mvc.Http;
 import play.test.FunctionalTest;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * <p/>
@@ -31,7 +36,7 @@ import java.util.*;
  */
 public class DDOrderApiTest extends FunctionalTest {
     ResalerProduct product;
-
+    Resaler yibaiquanResaler;
 
     @Before
     public void setup() {
@@ -42,6 +47,7 @@ public class DDOrderApiTest extends FunctionalTest {
                 target.partner = OuterOrderPartner.DD;
             }
         });
+        yibaiquanResaler = ResalerFactory.getYibaiquanResaler();
     }
 
     @Test

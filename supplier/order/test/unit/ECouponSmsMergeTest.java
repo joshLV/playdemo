@@ -13,6 +13,7 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.Play;
 import play.test.UnitTest;
@@ -103,6 +104,7 @@ public class ECouponSmsMergeTest extends UnitTest {
         });
     }
 
+    @Ignore
     @Test
     public void 购买同组不同商品生成的ECoupon会有相同的ReplyCode() throws Exception {
         Order order = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
@@ -121,6 +123,7 @@ public class ECouponSmsMergeTest extends UnitTest {
         assertEquals(ecoupons.get(0).replyCode, ecoupons.get(1).replyCode);
     }
 
+    @Ignore
     @Test
     public void 不同订单购买同组不同商品生成的ECoupon会有相同的ReplyCode() throws Exception {
         Order order1 = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
@@ -186,6 +189,7 @@ public class ECouponSmsMergeTest extends UnitTest {
         assertNotSame(ecoupons.get(0).replyCode, ecoupons.get(1).replyCode);
     }
 
+    @Ignore
     @Test
     public void 购买未设置组代码的同一商品生成的ECoupon会产生相同的ReplyCode() throws Exception {
         Order order = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
@@ -205,6 +209,7 @@ public class ECouponSmsMergeTest extends UnitTest {
         assertEquals(ecoupons.get(0).replyCode, ecoupons.get(1).replyCode);
     }
 
+    @Ignore
     @Test
     public void 不同订单购买未设置组代码的同一商品生成的ECoupon会产生相同的ReplyCode() throws Exception {
         Order order1 = Order.createConsumeOrder(user.id, AccountType.CONSUMER);

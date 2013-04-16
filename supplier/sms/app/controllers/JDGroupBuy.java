@@ -334,7 +334,7 @@ public class JDGroupBuy extends Controller {
         if (resaler == null) {
             finish(207, "can not find the jingdong resaler");
         }
-        Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
+        Order ybqOrder = Order.createConsumeOrder(resaler.id, AccountType.RESALER);
         ybqOrder.save();
         try {
             Goods goods = ResalerProduct.getGoods(venderTeamId, OuterOrderPartner.JD);

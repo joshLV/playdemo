@@ -195,8 +195,6 @@ public class DDGroupBuy extends Controller {
         String receiverMobileTel = XPath.selectText("/data/order/receiver_mobile_tel", dataXml).trim();
         String consumeId = XPath.selectText("/data/order/consume_id", dataXml).trim();
 
-
-
         //取得data节点中的数据信息
 
         //根据当当订单编号，查询订单是否存在
@@ -210,7 +208,7 @@ public class DDGroupBuy extends Controller {
             renderError(DDErrorCode.USER_NOT_EXITED, "当当用户不存在！");
         }
 
-        Order ybqOrder = Order.find("orderNumber= ? and userId=? and userType=?", outerOrder.ybqOrder.orderNumber, resaler.id, AccountType.RESALER).first();
+        Order ybqOrder = Order.find("orderNumber= ? and userId=?", outerOrder.ybqOrder.orderNumber, resaler.id).first();
         if (ybqOrder == null) {
             renderError(DDErrorCode.ORDER_NOT_EXITED, "没找到对应的当当订单!");
         }

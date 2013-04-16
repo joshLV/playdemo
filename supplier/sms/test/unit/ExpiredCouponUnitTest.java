@@ -9,11 +9,13 @@ import models.mail.MailUtil;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.SentCouponMessage;
+import models.resale.Resaler;
 import models.sales.Goods;
 import models.sms.SMSMessage;
 import models.sms.SMSUtil;
 import org.junit.Before;
 import org.junit.Test;
+import play.Logger;
 import play.test.UnitTest;
 import util.DateHelper;
 import util.mq.MockMQ;
@@ -126,17 +128,25 @@ public class ExpiredCouponUnitTest extends UnitTest {
             }
 
         });
+
+
         ECoupon coupon = FactoryBoy.create(ECoupon.class);
         coupon.goods = goods;
         coupon.expireAt = DateHelper.afterDays(6);
         coupon.save();
 
+        Logger.info("yibaiquan.id=" + Resaler.getYibaiquan().id);
+        Logger.info("order.userId=" + coupon.order.userId);
+        coupon.order.userId = FactoryBoy.create(Resaler.class).id; //不是一百券的订单才会发短信
+
+        Logger.info("testJob1");
         ExpiredCouponNotice job = new ExpiredCouponNotice();
         job.doJob();
 
         List<SentCouponMessage> sentList = SentCouponMessage.findAll();
         assertEquals(1, sentList.size());
 
+        Logger.info("testJob2");
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
         assertEquals("您的" + goods.name + "，将要过期，请注意消费截止日期为" + sdf.format(coupon.expireAt) + "。【一百券】", msg.getContent());
 

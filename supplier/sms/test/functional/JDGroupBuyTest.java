@@ -2,9 +2,15 @@ package functional;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
+import factory.resale.ResalerFactory;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.ECouponPartner;
+import models.order.Order;
+import models.order.OrderStatus;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.ResalerProduct;
 import org.junit.Before;
@@ -46,6 +52,7 @@ public class JDGroupBuyTest extends FunctionalTest {
         });
         //创建可欠款账户
         AccountUtil.getCreditableAccount(resaler.id, AccountType.RESALER);
+        ResalerFactory.getYibaiquanResaler(); //必须存在一百券
     }
 
     @Test
