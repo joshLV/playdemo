@@ -982,19 +982,16 @@ public class ECoupon extends Model {
     }
 
     public static List<ECoupon> findByUserAndIds(List<Long> ids, Long userId, AccountType accountType) {
-        String sql = "select e from ECoupon e where e.id in :ids and e.order.consumerId = :consumerId";
+        String sql;
+        if (accountType == AccountType.CONSUMER) {
+            sql = "select e from ECoupon e where e.id in :ids and e.order.consumerId = :userId";
+        } else {
+            sql = "select e from ECoupon e where e.id in :ids and e.order.userId = :userId";
+        }
         Query query = ECoupon.em().createQuery(sql);
         query.setParameter("ids", ids);
-        query.setParameter("consumerId", userId);
+        query.setParameter("userId", userId);
         return query.getResultList();
-    }
-
-    @Transient
-    public Integer getAvailableSendSMsCount() {
-        if (smsSentCount > 3) {
-            return 0;
-        }
-        return 3 - smsSentCount;
     }
 
     /**

@@ -4,6 +4,7 @@ import controllers.modules.resale.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
+import factory.resale.ResalerFactory;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.order.ECoupon;
@@ -77,6 +78,7 @@ public class ResalerOrdersTest extends FunctionalTest {
 
         ecoupon = ecoupons.get(0);
         Security.setLoginUserForTest(resaler.loginName);
+        ResalerFactory.getYibaiquanResaler(); //必须存在一百券
     }
 
     @Test
