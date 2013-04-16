@@ -38,6 +38,9 @@ public class OperateResaleSalesReportCondition {
         if (type == AccountType.CONSUMER) {
             condBuilder.append(" and r.order.userId = :yibaiquanId");
             paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
+        } else {
+            condBuilder.append(" and r.order.userId <> :yibaiquanId");
+            paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
         }
 
         if (beginAt != null) {
@@ -84,6 +87,9 @@ public class OperateResaleSalesReportCondition {
         if (type == AccountType.CONSUMER) {
             condBuilder.append(" and r.order.userId = :yibaiquanId");
             paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
+        } else {
+            condBuilder.append(" and r.order.userId <> :yibaiquanId");
+            paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
         }
 
         if (beginAt != null) {
@@ -107,6 +113,9 @@ public class OperateResaleSalesReportCondition {
 
         if (type == AccountType.CONSUMER) {
             condBuilder.append(" and r.order.userId = :yibaiquanId");
+            paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
+        } else {
+            condBuilder.append(" and r.order.userId <> :yibaiquanId");
             paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
         }
 
@@ -146,6 +155,9 @@ public class OperateResaleSalesReportCondition {
                 " and e.virtualVerify =true and (e.goods.noRefund = true or e.isCheatedOrder = true) and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
         if (type == AccountType.CONSUMER) {
             condBuilder.append(" and e.order.userId = :yibaiquanId");
+            paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
+        } else {
+            condBuilder.append(" and e.order.userId <> :yibaiquanId");
             paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
         }
         paramMap.put("status", ECouponStatus.UNCONSUMED);

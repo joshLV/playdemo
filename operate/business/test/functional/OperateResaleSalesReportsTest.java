@@ -62,6 +62,7 @@ public class OperateResaleSalesReportsTest extends FunctionalTest {
             @Override
             public void build(Order target) {
                 target.status = OrderStatus.PAID;
+                target.userId = FactoryBoy.create(Resaler.class).id;
                 target.paidAt = new Date();
                 target.userId = FactoryBoy.lastOrCreate(Resaler.class).id;
             }
@@ -133,7 +134,7 @@ public class OperateResaleSalesReportsTest extends FunctionalTest {
             public void build(Order target) {
                 target.status = OrderStatus.PAID;
                 target.paidAt = new Date();
-                target.userId = FactoryBoy.lastOrCreate(Resaler.class).id;
+                target.userId = FactoryBoy.create(Resaler.class).id;
             }
         });
         FactoryBoy.create(ECoupon.class);

@@ -2,6 +2,7 @@ package functional;
 
 import controllers.modules.website.cas.Security;
 import factory.FactoryBoy;
+import factory.resale.ResalerFactory;
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
@@ -28,13 +29,14 @@ public class OrderFuncTest extends FunctionalTest {
 
     @Before
     public void setup() {
-        FactoryBoy.lazyDelete();
+        FactoryBoy.deleteAll();
         FactoryBoy.create(Goods.class);
 
         //设置虚拟登陆
         // 设置测试登录的用户名
         User user = FactoryBoy.create(User.class);
         Security.setLoginUserForTest(user.loginName);
+        ResalerFactory.getYibaiquanResaler(); //必须存在一百券
     }
 
     @Test

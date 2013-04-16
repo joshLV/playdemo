@@ -16,7 +16,7 @@
 	function getpwsbyemail() {
 		var useremail = $.trim($("#email").val());
 	    if(useremail==''|| checkEmail(useremail)) {
-	    $(".error").html("邮箱地址不合法"); 
+	        $(".error").html("邮箱地址不合法");
 	        return false;
 	    }
 	    $("#next").attr("disabled","disabled");

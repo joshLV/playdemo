@@ -6,7 +6,8 @@
     verifyTitle('一百券 - 通过邮箱找回密码')
     type('id=email','qweqwr')
     click('id=next')
-    verifyTextPresent('邮箱地址不合法')
+
+    *{ verifyTextPresent('邮箱地址不合法') }*
 
     type('id=email','selenium@uhuila.com')
     clickAndWait('id=next')
