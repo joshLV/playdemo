@@ -61,7 +61,6 @@ public class UserCoupons extends Controller {
         ECoupon eCoupon = ECoupon.findById(id);
         System.out.println("eCoupon:" + eCoupon);
         if (eCoupon == null) {
-
             error(404, "no coupon!");
             return;
         }

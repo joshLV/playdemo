@@ -52,7 +52,7 @@ public class UserCouponsTest extends FunctionalTest {
         order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
             @Override
             public void build(Order o) {
-                o.userId = user.id;
+                o.consumerId = user.id;
             }
         });
         orderItems = FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {

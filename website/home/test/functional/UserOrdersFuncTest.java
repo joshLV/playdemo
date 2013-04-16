@@ -1,10 +1,9 @@
 package functional;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
+import factory.callback.SequenceCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
@@ -17,18 +16,17 @@ import models.order.OrdersCondition;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.mvc.Http;
 import play.test.FunctionalTest;
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import factory.callback.SequenceCallback;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 用户订单功能测试.
@@ -61,7 +59,6 @@ public class UserOrdersFuncTest extends FunctionalTest {
         order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
             @Override
             public void build(Order o) {
-                o.userId = user.id;
                 o.consumerId = user.id;
                 o.accountPay = goods.salePrice;
             }

@@ -62,6 +62,7 @@ public class ResalerFactory extends ModelFactory<Resaler> {
     }
 
     public static Resaler getYibaiquanResaler() {
+        Resaler.cleanResalerCache();
         Resaler yibaiquan = Resaler.findOneByLoginName(Resaler.YIBAIQUAN_NAME);
         if (yibaiquan == null) {
             yibaiquan = FactoryBoy.create(Resaler.class);
@@ -73,6 +74,7 @@ public class ResalerFactory extends ModelFactory<Resaler> {
 
 
     public static Resaler getSinaResaler() {
+        Resaler.cleanResalerCache();
         Resaler yibaiquan = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
         if (yibaiquan == null) {
             yibaiquan = FactoryBoy.create(Resaler.class);
@@ -81,7 +83,5 @@ public class ResalerFactory extends ModelFactory<Resaler> {
         }
         return yibaiquan;
     }
-
-
 
 }

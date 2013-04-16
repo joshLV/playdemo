@@ -425,7 +425,8 @@ public class ECoupon extends Model {
         if ("0000".equals(randomNumber)) {
             return true;
         }
-        return ECoupon.find("from ECoupon where replyCode=? and order.userId=? and order.userType=?", randomNumber, userId, userType).fetch().size() > 0;
+        return ECoupon.find("from ECoupon where replyCode=? and order.consumerId=?",
+                randomNumber, userId).fetch().size() > 0;
     }
 
     private boolean isNotUniqueEcouponSn(String randomNumber) {
@@ -810,7 +811,7 @@ public class ECoupon extends Model {
                 userName = "消费者:" + user.getShowName();
             } else {
                 Resaler resaler = Resaler.findById(eCoupon.order.userId);
-                userName = "分销商:" + resaler.userName;
+                userName = "分销商:" + resaler.loginName;
             }
         }
 
@@ -826,19 +827,27 @@ public class ECoupon extends Model {
         BigDecimal onTheBottom = consumedAmount.add(eCoupon.order.refundedAmount);
         //        System.out.println("===onTheBottom" + onTheBottom);
 
+        Logger.info("Hello, onTheBottom=" + onTheBottom);
+
         //再来看看去掉垫底的资金后，此订单还能退多少活动金和可提现余额
         BigDecimal refundOrderTotalCashAmount = eCoupon.order.accountPay.add(eCoupon.order.discountPay);
         BigDecimal refundOrderTotalPromotionAmount = eCoupon.order.promotionBalancePay;
+        Logger.info("1.refundOrderTotalPromotionAmount=" + refundOrderTotalPromotionAmount);
         if (refundOrderTotalPromotionAmount.compareTo(onTheBottom) > 0) {
             //如果该订单的活动金大于垫底资金
             refundOrderTotalPromotionAmount = refundOrderTotalPromotionAmount.subtract(onTheBottom);
+            Logger.info("2-0.refundOrderTotalPromotionAmount=" + refundOrderTotalPromotionAmount);
         } else {
             refundOrderTotalCashAmount = refundOrderTotalCashAmount.add(refundOrderTotalPromotionAmount).subtract(onTheBottom);
+            Logger.info("2-1.refundOrderTotalPromotionAmount=" + refundOrderTotalPromotionAmount);
             refundOrderTotalPromotionAmount = BigDecimal.ZERO;
             if (refundOrderTotalCashAmount.compareTo(BigDecimal.ZERO) < 0) {
                 refundOrderTotalCashAmount = BigDecimal.ZERO;
             }
+            Logger.info("2-2.refundOrderTotalCashAmount=" + refundOrderTotalCashAmount);
         }
+        Logger.info("3.refundOrderTotalCashAmount=" + refundOrderTotalCashAmount);
+
         //        System.out.println("===refundOrderTotalCashAmount" + refundOrderTotalCashAmount);
         //        System.out.println("===refundOrderTotalPromotionAmount" + refundOrderTotalPromotionAmount);
 
@@ -850,12 +859,17 @@ public class ECoupon extends Model {
         BigDecimal refundPromotionAmount = BigDecimal.ZERO;
         BigDecimal refundCashAmount = BigDecimal.ZERO;
 
+        Logger.info("4. refundOrderTotalPromotionAmount=" + refundOrderTotalPromotionAmount + ", " +
+                "refundAtMostCouponAmount=" + refundAtMostCouponAmount);
         if (refundOrderTotalPromotionAmount.compareTo(refundAtMostCouponAmount) > 0) {
             refundPromotionAmount = refundOrderTotalPromotionAmount.subtract(refundAtMostCouponAmount);
+            Logger.info("5-0.refundPromotionAmount=" + refundPromotionAmount);
         } else {
             refundPromotionAmount = refundOrderTotalPromotionAmount;
             refundCashAmount = refundAtMostCouponAmount.subtract(refundPromotionAmount);
+            Logger.info("5-1.refundCashAmount = " + refundCashAmount + ", refundOrderTotalCashAmount=" + refundOrderTotalCashAmount);
             refundCashAmount = refundCashAmount.min(refundOrderTotalCashAmount);
+            Logger.info("5-2.refundCashAmount = " + refundCashAmount);
         }
         //        System.out.println("===refundCashAmount" + refundCashAmount);
         //        System.out.println("===refundPromotionAmount" + refundPromotionAmount);
@@ -882,7 +896,7 @@ public class ECoupon extends Model {
             ECouponHistoryMessage.with(eCoupon).operator(userName).remark("未消费券退款:" + refundComment).toStatus(ECouponStatus.REFUND).sendToMQ();
         }
 
-
+        Logger.info("8. refundCashAmount=" + refundCashAmount + ", refundPromotionAmount=" + refundPromotionAmount);
         // 更改订单状态
         eCoupon.status = ECouponStatus.REFUND;
         eCoupon.refundAt = new Date();
@@ -968,11 +982,10 @@ public class ECoupon extends Model {
     }
 
     public static List<ECoupon> findByUserAndIds(List<Long> ids, Long userId, AccountType accountType) {
-        String sql = "select e from ECoupon e where e.id in :ids and e.order.userId = :userId and e.order.userType = :userType";
+        String sql = "select e from ECoupon e where e.id in :ids and e.order.consumerId = :consumerId";
         Query query = ECoupon.em().createQuery(sql);
         query.setParameter("ids", ids);
-        query.setParameter("userId", userId);
-        query.setParameter("userType", accountType);
+        query.setParameter("consumerId", userId);
         return query.getResultList();
     }
 

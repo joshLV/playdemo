@@ -85,9 +85,13 @@ public class CouponsCondition implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append(" 1=1 ");
         if (userId != null && accountType != null) {
-            sql.append(" and e.order.userId = :userId and e.order.userType = :userType");
-            paramMap.put("userId", userId);
-            paramMap.put("userType", accountType);
+            if (accountType == AccountType.CONSUMER) {
+                sql.append(" and e.order.consumerId = :consumerId");
+                paramMap.put("consumerId", userId);
+            } else {
+                sql.append(" and e.order.userId = :userId");
+                paramMap.put("userId", userId);
+            }
         }
 
         if (createdAtBegin != null) {

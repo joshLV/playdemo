@@ -315,6 +315,11 @@ public class Resaler extends Model {
     private static Resaler _yibaiquan;
     private static Resaler _sina;
 
+    public static void cleanResalerCache() {
+        _yibaiquan = null;
+        _sina = null;
+    }
+
     public static Resaler getYibaiquan() {
         if (_yibaiquan == null) {
             _yibaiquan = findOneByLoginName(YIBAIQUAN_NAME);

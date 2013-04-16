@@ -2,6 +2,7 @@ package unit;
 
 import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
+import factory.resale.ResalerFactory;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
@@ -20,6 +21,7 @@ import models.sms.SMSMessage;
 import models.sms.SMSUtil;
 import org.junit.Before;
 import org.junit.Test;
+import play.Logger;
 import play.modules.paginate.JPAExtPaginator;
 import play.test.UnitTest;
 import util.DateHelper;
@@ -35,6 +37,7 @@ public class ECouponUnitTest extends UnitTest {
     Order order;
     ECoupon eCoupon;
     Resaler resaler;
+    Resaler yibaiquanResaler;
 
     @Before
     public void loadData() {
@@ -48,6 +51,10 @@ public class ECouponUnitTest extends UnitTest {
         order.save();
         eCoupon = FactoryBoy.create(ECoupon.class);
         resaler = FactoryBoy.create(Resaler.class);
+        yibaiquanResaler = ResalerFactory.getYibaiquanResaler();
+        Account platformAccount = AccountUtil.getPlatformIncomingAccount();
+        platformAccount.amount = new BigDecimal(1000);
+        platformAccount.save();
     }
 
     /**
@@ -117,10 +124,12 @@ public class ECouponUnitTest extends UnitTest {
      * 测试退款
      */
     @Test
-    public void applyRefund() {
+    public void applyRefundForConsumer() {
         String ret = ECoupon.applyRefund(null);
         assertEquals("{\"error\":\"no such eCoupon\"}", ret);
-        eCoupon.order.userId = user.id;
+        eCoupon.order.consumerId = user.id;
+        eCoupon.order.userId = yibaiquanResaler.id;
+        eCoupon.order.save();
         eCoupon.save();
         Account account = AccountUtil.getPlatformIncomingAccount();
         account.amount = new BigDecimal("1000000");
@@ -131,40 +140,52 @@ public class ECouponUnitTest extends UnitTest {
         eCoupon.save();
         ret = ECoupon.applyRefund(eCoupon);
         assertEquals("{\"error\":\"can not apply refund with this goods\"}", ret);
+    }
 
+    @Test
+    public void applyRefundForUnsumed() {
+        eCoupon.order.consumerId = user.id;
+        eCoupon.order.userId = yibaiquanResaler.id;
+        eCoupon.order.save();
         eCoupon.status = ECouponStatus.UNCONSUMED;
         eCoupon.save();
-        eCoupon.refresh();
-        assertEquals(new BigDecimal("0.00"), eCoupon.refundPrice);
+        assertEquals(new BigDecimal("0.00"), eCoupon.refundPrice.setScale(2));
         assertNull(eCoupon.refundAt);
 
         eCoupon.order.accountPay = new BigDecimal("8.50");
         eCoupon.order.save();
 
-        ret = ECoupon.applyRefund(eCoupon);
+        String ret = ECoupon.applyRefund(eCoupon);
         assertEquals("{\"error\":\"ok\"}", ret);
         assertEquals(ECouponStatus.REFUND, eCoupon.status);
-        assertEquals(new BigDecimal("8.50"), eCoupon.refundPrice);
+        assertEquals(new BigDecimal("8.50"), eCoupon.refundPrice.setScale(2));
         assertNotNull(eCoupon.refundAt);
 
         ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
         assertEquals("未消费券退款", lastMessage.remark);
         assertEquals("消费者:" + user.getShowName(), lastMessage.operator);
+    }
 
-        eCoupon.refresh();
+    @Test
+    public void applyRefundForResaler() {
         eCoupon.status = ECouponStatus.UNCONSUMED;
         eCoupon.order.userId = resaler.id;
-        eCoupon.refundPrice = BigDecimal.ZERO;
+        eCoupon.order.consumerId = null;
         eCoupon.order.refundedAmount = BigDecimal.ZERO;
+        eCoupon.order.accountPay = new BigDecimal("8.50");
+        eCoupon.refundPrice = BigDecimal.ZERO;
         eCoupon.order.save();
         eCoupon.save();
-        assertEquals(BigDecimal.ZERO, eCoupon.refundPrice);
-        ret = ECoupon.applyRefund(eCoupon);
+        assertEquals(new BigDecimal("0.00"), eCoupon.refundPrice.setScale(2));
+        assertEquals(new BigDecimal("8.50"), eCoupon.salePrice.setScale(2));
+        Logger.info("Error...... for Resaler.");
+        String ret = ECoupon.applyRefund(eCoupon);
+
         assertEquals("{\"error\":\"ok\"}", ret);
         assertEquals(ECouponStatus.REFUND, eCoupon.status);
-        assertEquals(new BigDecimal("8.50"), eCoupon.refundPrice);
+        assertEquals(new BigDecimal("8.50"), eCoupon.refundPrice.setScale(2));
 
-        lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
         assertEquals("未消费券退款", lastMessage.remark);
         assertEquals("分销商:" + resaler.loginName, lastMessage.operator);
     }
@@ -173,7 +194,6 @@ public class ECouponUnitTest extends UnitTest {
     public void getEcouponSn() {
         String sn = eCoupon.getMaskedEcouponSn();
         assertEquals("******" + sn.substring(6), sn);
-
     }
 
     @Test

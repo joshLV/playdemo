@@ -72,9 +72,8 @@ public class OrdersCondition {
         }
 
 
-        if (userType != null) {
-            sql.append(" and o.userType=:userType");
-            paramsMap.put("userType", userType);
+        if (userType != null && AccountType.CONSUMER == userType) {
+            sql.append(" and o.consumerId is not null");
         }
         if (createdAtBegin != null) {
             sql.append(" and o.createdAt >= :createdAtBegin");
@@ -171,30 +170,14 @@ public class OrdersCondition {
 
         //CRM  查询订单
         if (StringUtils.isNotBlank(allSearch)) {
-            sql.append(" and o.userType = models.accounts.AccountType.CONSUMER");
-
             sql.append(" and o.orderNumber = :allSearch");
-            paramsMap.put("allSearch", allSearch);
-
             sql.append(" or o.receiverMobile =:allSearch");
-            paramsMap.put("allSearch", allSearch);
-
             sql.append(" or o.receiverMobile =:allSearch");
-            paramsMap.put("allSearch", allSearch);
-
             sql.append(" or o.buyerMobile =:allSearch");
-            paramsMap.put("allSearch", allSearch);
-
             sql.append(" or  o.id in (select oi.order.id from o.orderItems oi where oi.phone =:allSearch)");
+            sql.append(" or o.consumerId in (select u.id from User u where o.userId = u.id " +
+                    "and (u.loginName=:allSearch or u.mobile=:allSearch))");
             paramsMap.put("allSearch", allSearch);
-
-            sql.append(" or o.userId in (select u.id from User u where o.userId = u.id and u.loginName=:allSearch )");
-            paramsMap.put("allSearch", allSearch);
-
-
-            sql.append(" or o.userId in (select u.id from User u where o.userId = u.id and u.mobile=:allSearch )");
-            paramsMap.put("allSearch", allSearch);
-
         }
 
         //按照手机检索
@@ -215,9 +198,8 @@ public class OrdersCondition {
         sql.append(" o.deleted = :deleted");
         paramsMap.put("deleted", DeletedStatus.UN_DELETED);
         if (user != null) {
-            sql.append(" and o.userId = :userId and o.userType = :userType");
-            paramsMap.put("userId", user.getId());
-            paramsMap.put("userType", AccountType.CONSUMER);
+            sql.append(" and o.consumerId = :consumerId");
+            paramsMap.put("consumerId", user.getId());
         }
         if (createdAtBegin != null) {
             sql.append(" and o.createdAt >= :createdAtBegin");
@@ -254,9 +236,8 @@ public class OrdersCondition {
         sql.append(" o.deleted = :deleted");
         paramsMap.put("deleted", DeletedStatus.UN_DELETED);
         if (resaler != null) {
-            sql.append(" and o.userId = :resalerId and o.userType = :userType");
+            sql.append(" and o.userId = :resalerId");
             paramsMap.put("resalerId", resaler.id);
-            paramsMap.put("userType", AccountType.RESALER);
         }
         if (createdAtBegin != null) {
             sql.append(" and o.createdAt >= :createdAtBegin");

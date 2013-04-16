@@ -61,7 +61,7 @@ public class OrderECouponMessageTest extends UnitTest {
             @Override
             public void build(Order target) {
                 target.paidAt = DateHelper.beforeHours(1);
-                target.userId = user.id;
+                target.consumerId = user.id;
                 target.status = OrderStatus.PAID;
             }
         });
