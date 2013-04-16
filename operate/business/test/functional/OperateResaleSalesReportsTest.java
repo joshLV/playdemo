@@ -3,6 +3,7 @@ package functional;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
+import factory.resale.ResalerFactory;
 import models.OperateResaleSalesReport;
 import models.operator.OperateUser;
 import models.order.ECoupon;
@@ -25,7 +26,7 @@ import java.util.Date;
 /**
  * User: yanjy
  */
-public class ResaleSalesReportFuncTest extends FunctionalTest {
+public class OperateResaleSalesReportsTest extends FunctionalTest {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Before
@@ -37,6 +38,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
 
         OperateUser operateUser = FactoryBoy.create(OperateUser.class);
         Security.setLoginUserForTest(operateUser.loginName);
+        ResalerFactory.getYibaiquanResaler(); //必须有一百券
     }
 
     @After

@@ -56,7 +56,6 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
-        FactoryBoy.delete(PromoteRebate.class);
         FactoryBoy.create(UserInfo.class);
         promoteUser = FactoryBoy.create(User.class);
         goods = FactoryBoy.create(Goods.class);
@@ -95,7 +94,6 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         assertIsOk(response);
         ECoupon coupon = (ECoupon) (renderArgs("ecoupon"));
         assertEquals(ECouponStatus.UNCONSUMED, coupon.status);
-
     }
 
     @Test

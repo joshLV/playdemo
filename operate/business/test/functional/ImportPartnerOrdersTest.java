@@ -3,6 +3,7 @@ package functional;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
+import factory.resale.ResalerFactory;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountStatus;
@@ -62,6 +63,8 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
+
+        ResalerFactory.getYibaiquanResaler(); //必须存在一百券
 
         OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名

@@ -3,6 +3,7 @@ package models;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
 import models.order.ECouponStatus;
+import models.resale.Resaler;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 
@@ -31,12 +32,13 @@ public class OperateResaleSalesReportCondition {
     public String getFilterPaidAt(AccountType type) {
         paramMap = new HashMap<>();
         StringBuilder condBuilder = new StringBuilder("and (r.order.status='PAID' or r.order.status='SENT') " +
-                "and r.order.userType = :userType " +
                 "and r.goods.isLottery=false and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED"
         );
 
-
-        paramMap.put("userType", type);
+        if (type == AccountType.CONSUMER) {
+            condBuilder.append(" and r.order.userId = :yibaiquanId");
+            paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
+        }
 
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
@@ -74,13 +76,15 @@ public class OperateResaleSalesReportCondition {
 
     public String getFilterRealSendAt(AccountType type) {
         paramMap = new HashMap<>();
-        StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT')  " +
-                "and r.order.userType = :userType " +
-                "and r.goods.isLottery=false and r.goods.materialType=models.sales.MaterialType.REAL" +
+        StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT') " +
+                " and r.goods.isLottery=false and r.goods.materialType=models.sales.MaterialType.REAL" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and r.order.deliveryType=models.order.DeliveryType.LOGISTICS");
 
-        paramMap.put("userType", type);
+        if (type == AccountType.CONSUMER) {
+            condBuilder.append(" and r.order.userId = :yibaiquanId");
+            paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
+        }
 
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
@@ -97,10 +101,15 @@ public class OperateResaleSalesReportCondition {
 
     public String getFilterOfECoupon(AccountType type, ECouponStatus status) {
         paramMap = new HashMap<>();
-        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and r.order.userType = :userType and r.goods.isLottery=false and e.status = :status" +
+        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and r.goods.isLottery=false and" +
+                " e.status = :status" +
                 " and  r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
 
-        paramMap.put("userType", type);
+        if (type == AccountType.CONSUMER) {
+            condBuilder.append(" and r.order.userId = :yibaiquanId");
+            paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
+        }
+
         paramMap.put("status", status);
 
         if (status == ECouponStatus.CONSUMED) {
@@ -133,9 +142,12 @@ public class OperateResaleSalesReportCondition {
 
     public String getFilterVirtualVerfiyAt(AccountType type) {
         paramMap = new HashMap<>();
-        StringBuilder condBuilder = new StringBuilder(" where e.order.status='PAID' and e.order.userType = :userType and e.goods.isLottery=false and e.status = :status" +
+        StringBuilder condBuilder = new StringBuilder(" where e.order.status='PAID' and e.goods.isLottery=false and e.status = :status" +
                 " and e.virtualVerify =true and (e.goods.noRefund = true or e.isCheatedOrder = true) and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
-        paramMap.put("userType", type);
+        if (type == AccountType.CONSUMER) {
+            condBuilder.append(" and e.order.userId = :yibaiquanId");
+            paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
+        }
         paramMap.put("status", ECouponStatus.UNCONSUMED);
         if (beginAt != null) {
             condBuilder.append(" and e.virtualVerifyAt>= :beginAt");

@@ -601,7 +601,7 @@ public class ECoupon extends Model {
         this.verifyType = type;
         this.save();
         if (this.order != null && this.order.promoteUserId != null) {
-            User invitedUser = User.findById(this.order.userId);
+            User invitedUser = User.findById(this.order.consumerId);
             PromoteRebate promoteRebate = PromoteRebate.find("invitedUser=? and order =?", invitedUser, this.order).first();
             //消费的时候更新返利表已经返利的金额字段
             promoteRebate.partAmount = promoteRebate.partAmount.add(promoterRebateValue);
@@ -668,7 +668,7 @@ public class ECoupon extends Model {
         //给推荐人返利金额
         if (this.order != null && this.order.promoteUserId != null) {
             User promoteUser = User.findById(this.order.promoteUserId);
-            User invitedUser = User.findById(this.order.userId);
+            User invitedUser = User.findById(this.order.consumerId);
             if (promoteUser == null || invitedUser == null) {
                 throw new IllegalArgumentException("promoteUser or invitedUser is not existed");
             }

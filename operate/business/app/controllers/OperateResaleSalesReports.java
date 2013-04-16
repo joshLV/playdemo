@@ -5,6 +5,7 @@ import models.OperateResaleSalesReportCondition;
 import models.accounts.AccountType;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -47,6 +48,9 @@ public class OperateResaleSalesReports extends Controller {
                 resultList.add(resaleSalesReport);
             }
         }
+
+
+        Logger.info("Hello, condition=" + condition);
 
         // 分页
         ValuePaginator<OperateResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);

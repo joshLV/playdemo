@@ -62,6 +62,7 @@ public class ResaleSalesReportUnitTest extends UnitTest {
 
         order.status = OrderStatus.PAID;
         order.userId = resaler.id;
+        order.consumerId = null;
         order.paidAt = DateUtil.getBeginOfDay();
         order.paidAt = new Date();
         order.save();
