@@ -105,6 +105,7 @@ supplierId=商户
 goods.supplierId=商户
 goods.supplier=商户
 goods.no=编号
+goods.supplierGoodsId=外部商品ID
 goods.name=网站标题
 goods.shortName=名称
 goods.useWeekDayAll=指定消费日期

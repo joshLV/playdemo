@@ -1079,6 +1079,7 @@ public class Goods extends Model {
         updateGoods.name = StringUtils.trimToEmpty(goods.name);
         updateGoods.title = StringUtils.trimToEmpty(goods.title);
         updateGoods.no = goods.no;
+        updateGoods.supplierGoodsId = goods.supplierGoodsId;
         updateGoods.beginOnSaleAt = goods.beginOnSaleAt;
         updateGoods.effectiveAt = goods.effectiveAt;
         updateGoods.expireAt = DateUtil.getEndOfDay(goods.expireAt);

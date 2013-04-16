@@ -77,7 +77,7 @@
 </div>
 *{#{/if}}*
 *{#{/if}}*
-    #{layout_operate.textField name:'goods.no', value:goods?.no/}
+    #{layout_operate.textField name:'goods.supplierGoodsId', value:goods?.supplierGoodsId, note:'第三方接口商户对应的商品ID'/}
     #{layout_operate.nameField name:'goods.shortName', value:goods?.shortName, required:true, length:12/}
     #{layout_operate.nameField name:'goods.name', value:goods?.name, required:true, length:300/}
     #{layout_operate.nameField name:'goods.title', value:goods?.title,note:'(包含商家名称和面值)', required:true, length:50/}
