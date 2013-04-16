@@ -52,6 +52,7 @@ public class ConsumerFlowReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
+        System.out.println(condBuilder.toString() + "《=========condBuilder.toString():");
         return condBuilder.toString();
     }
 
@@ -122,7 +123,7 @@ public class ConsumerFlowReportCondition {
     public String getFilterRefundAt() {
         StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and e.goods.isLottery=false" +
                 " and e.status = models.order.ECouponStatus.REFUND" +
-                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and  r.order=o  ");
 
         if (beginAt != null) {
             condBuilder.append(" and e.refundAt >= :createdAtBegin");
@@ -185,5 +186,36 @@ public class ConsumerFlowReportCondition {
 
     public Map<String, Object> getParamMap1() {
         return paramMap1;
+    }
+
+    public String getFilterCheatedOrder() {
+        StringBuilder condBuilder = new StringBuilder("  r.order.status='PAID' and r.goods.isLottery=false" +
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
+                " and e.isCheatedOrder = true and r.order=o and o.userId=b.id ");
+        System.out.println(beginAt + "《=========beginAt:");
+        if (beginAt != null) {
+            condBuilder.append(" and e.order.paidAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.order.paidAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
+        }
+        System.out.println(condBuilder.toString() + "《=========condBuilder.toString():");
+        return condBuilder.toString();
     }
 }

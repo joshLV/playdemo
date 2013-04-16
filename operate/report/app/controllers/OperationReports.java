@@ -288,7 +288,7 @@ public class OperationReports extends Controller {
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
 //        if (flagWithCondition) {
 
-        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition, hasSeeReportProfitRight);
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition);
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
 
@@ -870,21 +870,21 @@ public class OperationReports extends Controller {
 
         List<ChannelGoodsReport> resultList = null;
         resultList = ChannelGoodsReport.query(condition);
-        List<ChannelGoodsReport> consumerList = ChannelGoodsReport.queryConsumer(condition);
+//        List<ChannelGoodsReport> consumerList = ChannelGoodsReport.queryConsumer(condition);
 
         // 查询出所有结果
-        for (ChannelGoodsReport resaleSalesReport : consumerList) {
-            resultList.add(resaleSalesReport);
-        }
+//        for (ChannelGoodsReport resaleSalesReport : consumerList) {
+//            resultList.add(resaleSalesReport);
+//        }
 
         //total
         List<ChannelGoodsReport> totalResultList = ChannelGoodsReport.queryTotal(condition);
-        List<ChannelGoodsReport> totalConsumerResultList = ChannelGoodsReport.queryConsumerTotal(condition);
+//        List<ChannelGoodsReport> totalConsumerResultList = ChannelGoodsReport.queryConsumerTotal(condition);
 
         // 查询出所有结果
-        for (ChannelGoodsReport c : totalConsumerResultList) {
-            totalResultList.add(c);
-        }
+//        for (ChannelGoodsReport c : totalConsumerResultList) {
+//            totalResultList.add(c);
+//        }
 
         // 汇总
         ChannelGoodsReport summary = ChannelGoodsReport.getNetSummary(totalResultList);
@@ -956,20 +956,20 @@ public class OperationReports extends Controller {
 
         resultList = ChannelGoodsReport.query(condition);
 
-        List<ChannelGoodsReport> consumerList = ChannelGoodsReport.queryConsumer(condition);
+//        List<ChannelGoodsReport> consumerList = ChannelGoodsReport.queryConsumer(condition);
         // 查询出所有结果
-        for (ChannelGoodsReport resaleSalesReport : consumerList) {
-            resultList.add(resaleSalesReport);
-        }
+//        for (ChannelGoodsReport resaleSalesReport : consumerList) {
+//            resultList.add(resaleSalesReport);
+//        }
 
         //total
         List<ChannelGoodsReport> totalResultList = ChannelGoodsReport.queryTotal(condition);
-        List<ChannelGoodsReport> totalConsumerResultList = ChannelGoodsReport.queryConsumerTotal(condition);
+//        List<ChannelGoodsReport> totalConsumerResultList = ChannelGoodsReport.queryConsumerTotal(condition);
 
         // 查询出所有结果
-        for (ChannelGoodsReport c : totalConsumerResultList) {
-            totalResultList.add(c);
-        }
+//        for (ChannelGoodsReport c : totalConsumerResultList) {
+//            totalResultList.add(c);
+//        }
 
         //汇总
         ChannelGoodsReport summary = ChannelGoodsReport.getNetSummary(totalResultList);
@@ -1030,7 +1030,7 @@ public class OperationReports extends Controller {
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
-        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition, hasSeeReportProfitRight);
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition);
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
 

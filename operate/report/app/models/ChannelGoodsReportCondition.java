@@ -291,6 +291,7 @@ public class ChannelGoodsReportCondition {
             condBuilder.append(" and r.goods.supplierId = :supplierId");
             paramMap.put("supplierId", supplierId);
         }
+        System.out.println(condBuilder.toString() + "《=========condBuilder.toString():");
         return condBuilder.toString();
     }
 
