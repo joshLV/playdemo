@@ -356,7 +356,7 @@ public class ECoupon extends Model {
         //if (USE_PRODUCT_SERIAL_REPLYCODE) {
         //    this.replyCode = generateAvailableReplayCode(order.userId, order.userType, goods);
         //} else {
-            this.replyCode = generateAvailableReplayCode(order.userId);
+        this.replyCode = generateAvailableReplayCode(order.userId);
         //}
     }
 
@@ -400,7 +400,7 @@ public class ECoupon extends Model {
     private String generateAvailableReplayCode(long userId) {
         String randomNumber;
         //do {
-            randomNumber = RandomNumberUtil.generateSerialNumber(4);
+        randomNumber = RandomNumberUtil.generateSerialNumber(4);
         //} while (isNotUniqueReplyCode(randomNumber, userId, userType));
         return randomNumber;
     }
@@ -437,7 +437,7 @@ public class ECoupon extends Model {
      * 生成当前用户相对于商户某一系列商品的ReplyCode，用于发送短信. 即用户在一个商户购买的同一系列商品都在一个短信下.
      *
      * @param userId
-     * @param goods    商品，通过供应商和系列号分配，如果无系列号，使用商品ID，这样同一个商品会使用相同的replyCode
+     * @param goods  商品，通过供应商和系列号分配，如果无系列号，使用商品ID，这样同一个商品会使用相同的replyCode
      * @return
      */
     private String generateAvailableReplayCode(long userId, Goods goods) {
@@ -1050,6 +1050,14 @@ public class ECoupon extends Model {
     }
 
 
+    @Transient
+    public Integer getAvailableSendSMsCount() {
+        if (smsSentCount > 3) {
+            return 0;
+        }
+        return 3 - smsSentCount;
+    }
+
     /**
      * 判断开始使用时间和结束时间的大小
      *
@@ -1420,7 +1428,7 @@ public class ECoupon extends Model {
      */
     public static Long getUnConsumedCount(User user) {
         return ECoupon.count("order.consumerId = ? and status = ? and goods.isLottery=?", user.id,
-                        ECouponStatus.UNCONSUMED, Boolean.FALSE);
+                ECouponStatus.UNCONSUMED, Boolean.FALSE);
     }
 
     /**
