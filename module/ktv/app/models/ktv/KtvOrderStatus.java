@@ -7,6 +7,7 @@ package models.ktv;
  */
 public enum KtvOrderStatus {
     LOCK,//锁定
-    CANCELED//取消锁定
 
+    DEAL,//成交
+    CANCELED
 }

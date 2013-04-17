@@ -22,7 +22,7 @@ import java.util.List;
  * Date: 13-4-16
  * Time: 下午3:56
  */
-@Every("1mn")
+//@Every("1mn")
 public class KtvOrderCancel extends Job {
     @Override
     public void doJob() {

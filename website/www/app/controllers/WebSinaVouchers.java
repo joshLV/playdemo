@@ -119,6 +119,10 @@ public class WebSinaVouchers extends Controller {
         }
 
         User user = SecureCAS.getUser();
+
+        if ("1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
+            renderTemplate("WebSinaVouchers/ktvorder.html", goods, productId, user);
+        }
         render(goods, productId, user);
     }
 
