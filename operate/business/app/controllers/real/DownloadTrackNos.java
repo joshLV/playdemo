@@ -46,7 +46,6 @@ public class DownloadTrackNos extends Controller {
             condition.sentEndAt = new Date();
         }
         List<DownloadTrackNoReport> resultList = DownloadTrackNoReport.query(condition);
-
 //        分页
         ValuePaginator<DownloadTrackNoReport> shippingList = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
         render(shippingList, pageNumber, condition);
@@ -65,7 +64,6 @@ public class DownloadTrackNos extends Controller {
     private static void jdShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, String outerGoodsNo, String singleDownload) {
         List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, outerGoodsNo);
         request.format = "xls";
-        System.out.println(singleDownload.trim() + "《=========singleDownload:");
         if (singleDownload.trim().equals("1")) {
             renderArgs.put("__FILE_NAME__", "京东发货单导出_" + orderItemsList.get(0).outerGoodsNo+DateUtil.getNowTime() + ".xls");
         } else {
@@ -97,11 +95,8 @@ public class DownloadTrackNos extends Controller {
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "一号店发货单导出_" + System.currentTimeMillis() + ".xls");
         Map<String, String> channelExpressMap = models.order.ExpressCompany.findChannelExpress();
-
         //更新orderItems的状态为：已上传
         for (OrderItems item : orderItemsList) {
-
-
             item.status = OrderStatus.UPLOADED;
             OuterOrder outerOrder = OuterOrder.getOuterOrder(item.order);
             item.outerOrderId = outerOrder.orderId;
