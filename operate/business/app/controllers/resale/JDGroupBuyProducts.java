@@ -43,7 +43,7 @@ public class JDGroupBuyProducts extends Controller{
      * 上传商品
      */
     @ActiveNavigation("resale_partner_product")
-    public static void upload(Long venderTeamId, String areas) {
+    public static void upload(Long venderTeamId, String areas, Date endTime) {
         //查找商品
         Goods goods = Goods.findById(venderTeamId);
         if (goods == null) {
@@ -86,6 +86,7 @@ public class JDGroupBuyProducts extends Controller{
         //保存历史
         if(response.isOk()) {
             OperateUser operateUser = OperateRbac.currentUser();
+            product.endSale = endTime;
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id)
                     .partnerProduct(response.selectTextTrim("./JdTeamId").trim())
                     .save();
