@@ -309,10 +309,10 @@ select:'condition_status',value:condition?.status/}
             #{/else}
         #{/else}
 
-        #{if !order.userType.isWebsiteOrder()}
+        #{if !order.isWebsiteOrder()}
             <td rowspan="${order?.orderItems?.size()}">${order?.resaler?.loginName}</td>
         #{/if}
-        #{if order.userType.isWebsiteOrder()}
+        #{if order.isWebsiteOrder()}
             <td rowspan="${order?.orderItems?.size()}">${order?.user?.loginName?:order?.user?.openIdExpress}</td>
         #{/if}
         <td rowspan="${order?.orderItems?.size()}">
