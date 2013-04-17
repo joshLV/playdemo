@@ -94,6 +94,7 @@ $(function () {
                                     text: ' 导出Excel数据 ',
                                     onclick: function () {
                                         $("#report-form").attr("action", "@{SupplierIncomeReports.exportDailyReport()}");
+                                        $("#report-form").attr("method", "POST");
                                         $("#report-form").submit();
                                     }
                                 },
@@ -169,6 +170,7 @@ $(function () {
                                 {
                                     text: ' 导出Excel数据 ',
                                     onclick: function () {
+                                        $("#report-form").attr("method", "POST");
                                         $("#report-form").attr("action", "@{SupplierIncomeReports.exportShopReport()}");
                                         $("#report-form").submit();
                                     }
@@ -246,6 +248,7 @@ $(function () {
                                     text: ' 导出Excel数据 ',
                                     onclick: function () {
                                         $("#report-form").attr("action", "@{SupplierIncomeReports.exportGoodsReport()}");
+                                        $("#report-form").attr("method", "POST");
                                         $("#report-form").submit();
                                     }
                                 },

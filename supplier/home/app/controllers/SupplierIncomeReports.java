@@ -174,6 +174,7 @@ public class SupplierIncomeReports extends Controller {
      * @param toDate   结束日期
      */
     public static void exportGoodsReport(String goodsShortName, Long shopId, Date fromDate, Date toDate) {
+        System.out.println( "here《=========:");
         final Supplier supplier = SupplierRbac.currentUser().supplier;
         setFromToDate(supplier, fromDate, toDate);
 
