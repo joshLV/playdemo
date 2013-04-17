@@ -65,7 +65,9 @@ var KTVOrder = (function  () {
     function init(ktv, args) {
         if (args.length != 1) { return ktv};
         ktv.wrapperId = args[0].wrapperId;
-        ktv.summryId = args[0].summryId;
+        ktv.summaryId = args[0].summaryId;
+        ktv.amountId = args[0].amountId;
+
         ktv.day = new XDate(new XDate(args[0].day).toString("yyyy-MM-dd"));
         ktv.dataUrl = args[0].dataUrl;
 
@@ -124,7 +126,7 @@ var KTVOrder = (function  () {
         */
     }
 
-    function toggleSeleted(ktv, ele) {
+    function toggleSelected(ktv, ele) {
         var roomId = Number(ele.attr("data-room-id")); 
         var time = ele.attr("data-time");
 
@@ -138,6 +140,7 @@ var KTVOrder = (function  () {
                 };
             };
         };
+        //更新保存的选择信息
         if (index >= 0) {
             ktv.selected.splice(index, 1);
         }else {
@@ -147,11 +150,21 @@ var KTVOrder = (function  () {
                 price:Number(ele.attr("data-price"))
             });
         }
+
+        //更新总价
+        var amount = 0;
+        for (i = 0; i < ktv.selected.length; i++) {
+            var selected = ktv.selected[i]
+            if (selected) {
+                amount += selected.price;
+            };
+        };
+        $("#" + ktv.amountId).text("￥" + amount);
         return index;
     }
 
-    function closePriceSummry(ktv, ele) {
-        var index = toggleSeleted(ktv, ele);
+    function closePriceSummary(ktv, ele) {
+        var index = toggleSelected(ktv, ele);
         if (index >=0) {
             var roomId = Number(ele.attr("data-room-id")); 
             var time = ele.attr("data-time");
@@ -162,7 +175,7 @@ var KTVOrder = (function  () {
     }
 
     function togglePriceCell(ktv, ele) {
-        var index = toggleSeleted(ktv, ele);
+        var index = toggleSelected(ktv, ele);
 
         var roomId = Number(ele.attr("data-room-id")); 
         var time = ele.attr("data-time");
@@ -170,12 +183,12 @@ var KTVOrder = (function  () {
 
         if (index >= 0) {
             ele.removeClass("wk-order-room-selected");
-            $("#" + ktv.summryId + " [data-room-id='" + roomId + "'][data-time='" + time + "']").remove();
+            $("#" + ktv.summaryId + " [data-room-id='" + roomId + "'][data-time='" + time + "']").remove();
         }else {
             ele.addClass("wk-order-room-selected");
             var roomName = $(".wk-order-room[data-room-id='" + roomId + "'] .wk-pri").text();
 
-            $("#" + ktv.summryId).append(
+            $("#" + ktv.summaryId).append(
                 $("<div/>", {
                     "class":"wk-selected",
                     "data-room-id": roomId,
@@ -183,13 +196,13 @@ var KTVOrder = (function  () {
                     "data-price":price
                 }).append(
                     $("<span/>").css("float", "left").text(time + " " + roomName)
-                    .append($("<span/>").addClass("wk-summry-price").text(price) )
+                    .append($("<span/>").addClass("wk-summary-price").text(price) )
                     .append($("<span/>").text("元"))
                 ).append(
                     $("<span/>",{
-                        "class":"wk-summry-close",
+                        "class":"wk-summary-close",
                         text:"x"
-                    }).click(function(){closePriceSummry(ktv, $(this).parent())})
+                    }).click(function(){closePriceSummary(ktv, $(this).parent())})
                 )
             );
         }
@@ -201,7 +214,7 @@ var KTVOrder = (function  () {
         var roomsEle = $("#" + ktv.wrapperId + " .rooms");
 
         roomsEle.empty();
-        $("#" + ktv.summryId).empty();
+        $("#" + ktv.summaryId).empty();
         ktv.selected = new Array();
         ktv.rooms = new Array();
 

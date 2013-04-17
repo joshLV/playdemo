@@ -70,7 +70,10 @@
 
             </div>
         </div><!-- end of scroll -->
-        <div class="wk-order-summry" id="wk-order-summry" style="width:150px;">
+        <div class="wk-order-summary" id="wk-order-summary" style="width:150px;">
+        </div>
+        <div class="wk-order-amount" id="wk-order-amount">
+
         </div>
 
 
@@ -94,19 +97,19 @@
     <script src="@{'/public/javascripts/iscroll-lite.js'}" type="text/javascript" charset="UTF-8"></script>
 
 
-
     <script type="text/javascript">
-        if(navigator.userAgent.match(/Android [2|1]/)) {
-            new iScroll('wk-order-scroll',{vScrollbar: false});
-        }
-
         $(function () {
             var ktvOrder = KTVOrder({
                 wrapperId:"wk-order-wrapper",
-                summryId:"wk-order-summry",
+                summaryId:"wk-order-summary",
+                amountId:"wk-order-amount",
                 day:new Date()
             });
         });
+
+        if(navigator && navigator.userAgent && navigator.userAgent.match(/Android [2|1]/)) {
+            new iScroll('wk-order-scroll',{vScrollbar: false});
+        }
     </script>
 
 #{/set}
