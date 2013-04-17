@@ -1,6 +1,7 @@
 package models.kangou;
 
 import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.OrderItems;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.w3c.dom.Document;
@@ -132,7 +133,9 @@ public class KangouUtil {
         List<KangouCard> kangouCards = new ArrayList<>();
         for (int i = 0; i < orderItems.buyNumber; i++) {
             KangouCard card = doCallGetCardId(params);
-            kangouCards.add(card);
+            if (card != null) {
+                kangouCards.add(card);
+            }
         }
 
         return kangouCards;
@@ -244,7 +247,8 @@ public class KangouUtil {
      <CardStatus>
      <CardID>卡ID</CardID>
      <CardNumber>卡号</CardNumber>
-     <CardStatus>卡状态 0未启用1启用9已使用</CardStatus> <CardDateEnd>有效截止日期</CardDateEnd>
+     <CardStatus>卡状态 0未启用1启用9已使用</CardStatus>
+     <CardDateEnd>有效截止日期</CardDateEnd>
      <TicketCount>卡能够兑换的总票数</TicketCount> <TicketRemainCount>卡能够兑换的剩余票数</TicketRemainCount>
      <TicketMonth>卡当月能够兑换的剩余票数</TicketMonth> <CardKind>卡的种类</CardKind>
      </CardStatus>
@@ -264,7 +268,32 @@ public class KangouUtil {
                 eCoupon.eCouponSn);
 
         //返回更新过状态后的ECoupon
-        return null;
+        return doCallGetCardStatus(eCoupon, params);
+    }
+
+    private static ECoupon doCallGetCardStatus(ECoupon eCoupon, Map<String, Object> params) {
+        Document document = WebServiceRequest.url(URL).params(params).postXml();
+        Logger.info("xml: \n%s", XML.serialize(document));
+
+        // 检查是否出错, error message
+        Node errorNode = XPath.selectNode("/string/Errors", document);
+        if (errorNode != null) {
+            String errorId = XPath.selectText("ErrorId", errorNode);
+            String errorMessage = XPath.selectText("ErrorDescription", errorNode);
+            Logger.info("found ERROR: %s, %s", errorId, errorMessage);
+            return null;
+        }
+
+        String cardStatus = XPath.selectText("/string/Datas/CardStatus/CardStatus", document);
+
+        if ("0".equals(cardStatus) || "1".equals(cardStatus)) {
+            eCoupon.status = ECouponStatus.UNCONSUMED;
+        }
+        if ("9".equals(cardStatus)) {
+            eCoupon.status = ECouponStatus.CONSUMED;
+        }
+
+        return eCoupon;
     }
 
     /**

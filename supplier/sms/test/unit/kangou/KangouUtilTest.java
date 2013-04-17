@@ -56,7 +56,7 @@ public class KangouUtilTest extends UnitTest {
     @Test
     public void testGetCardId购买一张券返回出错信息() throws Exception {
         mockErrorResponse();
-        assertNull(KangouUtil.getCardId(orderItems));
+        assertEquals(0, KangouUtil.getCardId(orderItems).size());
     }
 
     @Test
@@ -136,8 +136,7 @@ public class KangouUtilTest extends UnitTest {
         String cardId = RandomNumberUtil.generateRandomNumber(12);
         ECoupon eCoupon = mockSetCardUselessResponse(cardId);
         KangouCardStatus status = KangouUtil.setCardUseless(eCoupon);
-        assertEquals(KangouCardStatus.AVAIABLE, status);
-
+        assertEquals(KangouCardStatus.USED_REFUND, status);
     }
 
     /**
