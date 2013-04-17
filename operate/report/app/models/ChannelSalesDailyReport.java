@@ -76,7 +76,7 @@ public class ChannelSalesDailyReport implements Comparable<ChannelSalesDailyRepo
     public static List<ChannelSalesDailyReport> query(
             ChannelSalesDailyReportCondition condition) {
         //算出券和实物销售额 paidAt  (ecoupon + real)
-        String sql = "select new models.ChannelSalesDailyReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),min(o),sum(r.salePrice-r.rebateValue/r.buyNumber))" +
+        String sql = "select new models.ChannelSalesDailyReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),min(o),sum(r.salePrice*r.buyNumber-r.rebateValue))" +
                 " from OrderItems r,Order o where r.order=o ";
         String groupBy = " group by TO_DAYS(r.order.paidAt), r.order.userId";
         Query query = JPA.em()
@@ -85,7 +85,6 @@ public class ChannelSalesDailyReport implements Comparable<ChannelSalesDailyRepo
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ChannelSalesDailyReport> paidResultList = query.getResultList();
-
 
         //算出券退款金额  refundAt (ecoupon)
         sql = "select new models.ChannelSalesDailyReport(str(year(e.refundAt))||'-'||str(month(e.refundAt))||'-'||str(day(e.refundAt)),e.order,sum(e.refundPrice),e.goods " +
