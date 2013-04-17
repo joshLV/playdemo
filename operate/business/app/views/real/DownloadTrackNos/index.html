@@ -35,7 +35,7 @@
         <button class="btn btn-primary" id="searchbtn" onclick="formSearchSubmit()" type="submit">搜索</button>
 
         <a class="btn btn-primary"
-           href="/real/partner/download-track-nos/download?partner=${condition?.outerOrderPartner}&paidBeginAt=${condition?.paidBeginAt}&paidEndAt=${condition?.paidEndAt}&sentBeginAt=${condition?.sentBeginAt}&sentEndAt=${condition?.sentEndAt}&singleDownload=0">下载</a>
+           href="/real/partner/download-track-nos/download?partner=${condition?.outerOrderPartner}&paidBeginAt=${condition?.paidBeginAt?.format()}&paidEndAt=${condition?.paidEndAt?.format()}&sentBeginAt=${condition?.sentBeginAt?.format()}&sentEndAt=${condition?.sentEndAt?.format()}&singleDownload=0">下载</a>
 
 
 
@@ -64,7 +64,7 @@
             </td>
             <td>
                 #{if shipping?.partnerLoginName == "jingdong" }
-                    <a href="/real/partner/download-track-nos/download?partner=${condition?.outerOrderPartner}&paidBeginAt=${condition?.paidBeginAt}&paidEndAt=${condition?.paidEndAt}&sentBeginAt=${condition?.sentBeginAt}&sentEndAt=${condition?.sentEndAt}&outerGoodsNo=${shipping?.orderItems?.outerGoodsNo}&singleDownload=1">下载</a>
+                    <a href="/real/partner/download-track-nos/download?partner=${condition?.outerOrderPartner}&paidBeginAt=${condition?.paidBeginAt?.format()}&paidEndAt=${condition?.paidEndAt?.format()}&sentBeginAt=${condition?.sentBeginAt?.format()}&sentEndAt=${condition?.sentEndAt?.format()}&outerGoodsNo=${shipping?.orderItems?.outerGoodsNo}&singleDownload=1">下载</a>
                 #{/if}
             </td>
         </tr>
