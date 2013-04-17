@@ -147,7 +147,7 @@
     }%
     #{paginate.list items:reportPage, as:'report'}
     %{
-        userType=report?.order?.userType== null ? 'CONSUMER':report?.order?.userType;
+        userType=report?.order?.isWebsiteOrder() ? 'CONSUMER':'RESALER';
         beginAt=condition?.beginAt?.format();
         endAt=condition?.endAt?.format();
         userName="condition.userName="+report?.loginName;

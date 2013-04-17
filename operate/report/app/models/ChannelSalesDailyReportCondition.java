@@ -37,9 +37,8 @@ public class ChannelSalesDailyReportCondition implements Serializable {
 
     public String getRefundAtFilter() {
         StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false" +
-                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and e.order.userType = :userType ");
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED ");
         paramMap1.put("status", ECouponStatus.REFUND);
-        paramMap1.put("userType", models.accounts.AccountType.RESALER);
         if (beginAt != null) {
             condBuilder.append(" and e.refundAt >= :createdAtBegin");
             paramMap1.put("createdAtBegin", beginAt);
@@ -54,9 +53,7 @@ public class ChannelSalesDailyReportCondition implements Serializable {
     public String getCheatedOrderFilter() {
         StringBuilder condBuilder = new StringBuilder(" r.order.status='PAID' and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
-                " and r.order.userType = :userType " +
                 " and e.isCheatedOrder = true ");
-        paramMap.put("userType", models.accounts.AccountType.RESALER);
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);

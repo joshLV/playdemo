@@ -206,8 +206,6 @@ public class CouponsCondition implements Serializable {
         //CRM  查询券
         if (StringUtils.isNotBlank(allSearch)) {
 
-            sql.append(" and  e.order.userType = models.accounts.AccountType.CONSUMER");
-
             sql.append(" and  e.order.orderNumber like :allSearch");
             paramMap.put("allSearch", "%" + allSearch + "%");
 
@@ -257,10 +255,6 @@ public class CouponsCondition implements Serializable {
                 sql.append(" and e.goods.isLottery = true");
             } else {
                 sql.append(" and e.goods.isLottery = false");
-            }
-            if (accountType != null) {
-                sql.append(" and e.order.userType = :userType");
-                paramMap.put("userType", accountType);
             }
         }
 

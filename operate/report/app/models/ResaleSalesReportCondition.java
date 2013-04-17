@@ -2,6 +2,7 @@ package models;
 
 import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
+import models.resale.Resaler;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 
@@ -27,8 +28,6 @@ public class ResaleSalesReportCondition {
         StringBuilder condBuilder = new StringBuilder("and (r.order.status='PAID' or r.order.status='SENT') " +
                 "and r.goods.isLottery=false and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED"
         );
-
-
 
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
@@ -203,10 +202,16 @@ public class ResaleSalesReportCondition {
     }
 
     public String getFilterRealRefundAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder(" where r.order.status='SENT' and r.order.userType = :userType and r.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" where r.order.status='SENT' and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
 
-        paramMap.put("userType", type);
+        if (type == AccountType.CONSUMER) {
+            condBuilder.append(" and r.order.userId = :yibaiquanId");
+            paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
+        } else {
+            condBuilder.append(" and r.order.userId <> :yibaiquanId");
+            paramMap.put("yibaiquanId", Resaler.getYibaiquan().id);
+        }
 
         if (beginAt != null) {
             condBuilder.append(" and r.order.refundAt >= :createdAtBegin");

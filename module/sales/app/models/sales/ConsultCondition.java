@@ -1,16 +1,11 @@
 package models.sales;
 
-import com.uhuila.common.util.DateUtil;
 import models.accounts.WithdrawBill;
 import models.consumer.Address;
 import models.consumer.CRMCondition;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.Order;
-import models.order.OrdersCondition;
-import models.order.QueryType;
-import org.apache.commons.lang.StringUtils;
-import play.db.jpa.Model;
 
 import java.util.List;
 
@@ -60,7 +55,7 @@ public class ConsultCondition {
         //  查询订单信息
 
         List<Order> orderList = Order.find("select distinct o from Order o, User u where " +
-                "o.amount>0 and o.userId=u.id and o.userType = models.accounts.AccountType.CONSUMER and" +
+                "o.amount>0 and o.consumerId=u.id and" +
                 "(o.orderNumber=? or u.mobile=? or u.loginName=? or o.receiverMobile=? or o.buyerMobile = ?"
                 + "or o.id in (select oi.order.id from o.orderItems oi where oi.phone =?)"
                 + "or u.id=?)",
@@ -76,7 +71,7 @@ public class ConsultCondition {
 
 
         return Order.count("from Order o, User u where " +
-                "o.amount>0 and o.userId=u.id and o.userType = models.accounts.AccountType.CONSUMER and" +
+                "o.amount>0 and o.consumerId=u.id and" +
                 "(o.orderNumber=? or u.mobile=? or u.loginName=? or o.receiverMobile=? or o.buyerMobile = ?"
                 + "or o.id in (select oi.order.id from o.orderItems oi where oi.phone =?))",
                 condition.searchOrderCoupon, condition.searchUser,

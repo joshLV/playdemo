@@ -1,7 +1,6 @@
 package models.order;
 
 import cache.CacheHelper;
-import models.accounts.AccountType;
 import models.consumer.User;
 import models.sales.Goods;
 import models.sales.GoodsStatus;
@@ -10,9 +9,19 @@ import models.sales.SecKillGoodsItem;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "cart")
@@ -191,10 +200,9 @@ public class Cart extends Model {
     public static long itemsNumber(User user, Long goodsId) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and " +
-                "order.userId=:userId and order.userType=:userType and status=:status");
+                "order.consumerId=:userId and status=:status");
         q.setParameter("goodsId", goodsId);
         q.setParameter("userId", user.id);
-        q.setParameter("userType", AccountType.CONSUMER);
         q.setParameter("status", OrderStatus.PAID);
         Object result = q.getSingleResult();
         return result == null ? 0 : (Long) result;

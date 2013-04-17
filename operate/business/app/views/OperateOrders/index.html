@@ -309,13 +309,20 @@ select:'condition_status',value:condition?.status/}
             #{/else}
         #{/else}
 
-        #{if order.userType ==models.accounts.AccountType.RESALER}
+        #{if !order.userType.isWebsiteOrder()}
             <td rowspan="${order?.orderItems?.size()}">${order?.resaler?.loginName}</td>
         #{/if}
-        #{if order.userType ==models.accounts.AccountType.CONSUMER}
+        #{if order.userType.isWebsiteOrder()}
             <td rowspan="${order?.orderItems?.size()}">${order?.user?.loginName?:order?.user?.openIdExpress}</td>
         #{/if}
-        <td rowspan="${order?.orderItems?.size()}">&{'order.'+order.userType}</td>
+        <td rowspan="${order?.orderItems?.size()}">
+            #{if order?.isWebsiteOrder()}
+               &{'order.CONSUMER'}
+            #{/if}
+            #{else}
+               &{'order.RESALER'}
+            #{/else}
+        </td>
         <td rowspan="${order?.orderItems?.size()}">${order.amount?.formatCurrency('CNY')}</td>
         <td rowspan="${order?.orderItems?.size()}">${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td rowspan="${order?.orderItems?.size()}">${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>

@@ -1,6 +1,5 @@
 package models.order;
 
-import models.accounts.AccountType;
 import models.resale.Resaler;
 import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
@@ -73,9 +72,8 @@ public class DownloadTrackNoReport {
     }
 
     public static List<OrderItems> queryOrderItems(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, String outerGoodsNo) {
-        StringBuilder sql = new StringBuilder("shippingInfo.expressNumber is not null and order.userType=? and order.userId=?");
+        StringBuilder sql = new StringBuilder("shippingInfo.expressNumber is not null and order.userId=?");
         List<Object> params = new ArrayList();
-        params.add(AccountType.RESALER);
         params.add(Resaler.findOneByLoginName(partner.partnerLoginName()).id);
         if (StringUtils.isNotBlank(outerGoodsNo)) {
             sql.append(" and outerGoodsNo= ?");

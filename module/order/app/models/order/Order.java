@@ -79,10 +79,6 @@ public class Order extends Model {
     public Long consumerId;                //下单用户ID，消费者
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_type")
-    public AccountType userType;            //用户类型，个人/分销商
-
-    @Enumerated(EnumType.STRING)
     @Column(name = "orderType")
     public OrderType orderType;
 

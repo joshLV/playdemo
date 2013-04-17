@@ -1,6 +1,5 @@
 package models.order;
 
-import models.accounts.AccountType;
 import models.resale.Resaler;
 
 import java.io.Serializable;
@@ -32,9 +31,7 @@ public class DownloadTrackNoCondition implements Serializable {
             outerOrderPartner = OuterOrderPartner.JD;
         }
         builder.append(" where oi.shippingInfo.expressNumber is not null" +
-                " and oi.order.userType =:userType and " +
-                " oi.order.userId =:resalerId and oi.outerGoodsNo is not null");
-        paramMap.put("userType", AccountType.RESALER);
+                " and oi.order.userId =:resalerId and oi.outerGoodsNo is not null");
         paramMap.put("resalerId", Resaler.findOneByLoginName(outerOrderPartner.partnerLoginName()).id);
 
         if (paidBeginAt != null) {

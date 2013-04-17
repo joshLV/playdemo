@@ -4,7 +4,6 @@ import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.constants.PlatformType;
 import controllers.modules.website.cas.SecureCAS;
-import models.accounts.AccountType;
 import models.cms.Block;
 import models.cms.BlockType;
 import models.cms.Topic;
@@ -174,7 +173,7 @@ public class WebsiteInjector extends Controller {
             //判断是否通过注册产生的推荐
             if (user != null && user.promoteUserId != null) {
                 User promoteUser = User.findById(user.promoteUserId);
-                Order order = Order.find("userId=? and userType=?", user.id, AccountType.CONSUMER).first();
+                Order order = Order.find("consumerId=?", user.id).first();
                 //是推荐的并且第一次下单 购买，才写入cookie
                 if (promoteUser != null && order == null)
                     response.setCookie(PROMOTER_COOKIE, promoteUser.promoterCode);

@@ -525,7 +525,7 @@ public class OperateResaleSalesReport {
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
                 ") from OrderItems r where ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + " group by r.order.userType order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + " group by r.order.userId order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
