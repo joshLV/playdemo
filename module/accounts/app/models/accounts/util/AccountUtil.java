@@ -228,13 +228,15 @@ public class AccountUtil {
         if (account.uncashAmount.add(uncashAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()) {
             account.uncashAmount = account.uncashAmount.add(uncashAugend);
         } else {
-            throw new BalanceNotEnoughException("error while add uncashAmount to account: balance not enough");
+            throw new BalanceNotEnoughException("error while add uncashAmount to account: balance not enough. " +
+                    "account.id=" + account.id);
         }
 
         if (account.promotionAmount.add(promotionAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()) {
             account.promotionAmount = account.promotionAmount.add(promotionAugend);
         } else {
-            throw new BalanceNotEnoughException("error while add promotionAmount to account: balance not enough");
+            throw new BalanceNotEnoughException("error while add promotionAmount to account: balance not enough. " +
+                    "account.id=" + account.id);
         }
 
         account.save();
