@@ -101,10 +101,11 @@ public class ConsultCondition {
 
     public static List<ECoupon> findCouponByCondition(CRMCondition condition) {
         //  查询券信息       and o.userType = models.accounts.AccountType.CONSUMER
+        //and  e.order.userType = models.accounts.AccountType.CONSUMER
 
         List<ECoupon> eCoupons = ECoupon.find("select distinct e from ECoupon e, User u where " +
                 "e.order.amount>0 and e.order.userId = u.id " +
-                "and  e.order.userType = models.accounts.AccountType.CONSUMER and ( " +
+                " and ( " +
                 "  e.eCouponSn like ? " +
                 "  or e.order.orderNumber=? " +
                 "  or u.mobile=? " +

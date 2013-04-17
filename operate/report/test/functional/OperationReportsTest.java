@@ -254,7 +254,7 @@ public class OperationReportsTest extends FunctionalTest {
     public void testShowChannelCategoryReport() {
         Http.Response response = GET(Router.reverse("OperationReports.showChannelCategoryReport").url);
         assertIsOk(response);
-        assertEquals(0l, ((ValuePaginator<ChannelCategoryReport>) renderArgs("reportPage")).size());
+        assertEquals(2l, ((ValuePaginator<ChannelCategoryReport>) renderArgs("reportPage")).size());
 //        assertEquals(BigDecimal.valueOf(20).setScale(2), ((ValuePaginator<ChannelCategoryReport>) renderArgs("reportPage")).get(0).grossMargin.setScale(2));
 //        assertEquals(BigDecimal.valueOf(2).setScale(2), ((ValuePaginator<ChannelCategoryReport>) renderArgs("reportPage")).get(0).profit.setScale(2));
     }
@@ -263,7 +263,7 @@ public class OperationReportsTest extends FunctionalTest {
     public void testChannelCategoryReportWithPrivilegeExcelOut() {
         Http.Response response = GET(Router.reverse("OperationReports.channelCategoryReportWithPrivilegeExcelOut").url);
         assertIsOk(response);
-        assertEquals(0l, ((List<ChannelCategoryReport>) renderArgs("resultList")).size());
+        assertEquals(1l, ((List<ChannelCategoryReport>) renderArgs("resultList")).size());
 //        assertEquals(BigDecimal.valueOf(10).setScale(2), ((List<ChannelCategoryReport>) renderArgs("resultList")).get(0).salePrice.setScale(2));
 //        assertEquals(BigDecimal.valueOf(2).setScale(2), ((List<ChannelCategoryReport>) renderArgs("resultList")).get(0).profit.setScale(2));
     }
