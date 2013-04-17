@@ -108,7 +108,7 @@ public class OrdersCondition {
             paramsMap.put("refundAtEnd", DateUtil.getEndOfDay(refundAtEnd));
         }
         if (status != null) {
-            sql.append(" and o.status = :status");
+            sql.append(" and ( o.status = :status or EXISTS (select 1 from OrderItems r where r.order=o and r.status = :status)) ");
             paramsMap.put("status", status);
         }
         if (isLottery) {
