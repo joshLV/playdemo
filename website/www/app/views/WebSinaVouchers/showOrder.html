@@ -16,10 +16,10 @@
     ktvSupplier=goods.getSupplier()?.getProperty(models.supplier.Supplier.KTV_SUPPLIER)?:'0'
     }%
     #{if "1".equals(ktvSupplier)}
-        门店:<input type="text" name="shopId" value="275"/>
-        包厢类型:<input type="text" name="roomTypeId" value="3"/>
-        日期:<input type="text" name="useDate" value="2013-04-17 00:00:00"/>
-        时段:<input type="text" name="useTime" value="10:00"/>
+    #{list items:roomList,as:'room'}
+        包厢:<input type="text" name="roomId${room.id}" value="${}"/>
+        日期:<input type="text" name="useDate" value="2013-04-17"/>
+    #{/list}
     #{/if}
     <div class="content-title">
         <div class="legend">

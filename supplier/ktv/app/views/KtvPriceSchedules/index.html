@@ -1,17 +1,40 @@
 #{extends 'layout_trader/layout2.html' /}
 #{set title:'设置价格' /}
-#{set menu:"ktv_room" /}
+#{set menu:"ktv_price" /}
 <div class="body">
 #{form @KtvPriceSchedules.index() , id:'creationForm',class:"form-horizontal" }
+    <div class="bd">
+        <h2>${title}</h2>
+
+        <div class="field-group" style="padding-left: 0px">
+            <table cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                    <td>适用门店:<select name="shop.id" value="${shop?.id}" style="width: auto">
+                        #{list items:shops,as:'shopa'}
+                            <option value="${shopa?.id}" ${shop?.id==shopa?.id ?'selected':''}/>${shopa.name}&nbsp;&nbsp;
+                        #{/list}
+                    </select>
+                        包厢类型：<select name="roomType.id" value="${roomType.id}" style="width: auto">
+                            #{list items:roomTypeList,as:'roomTypes'}
+                                <option value="${roomTypes?.id}" ${roomTypes?.id==roomType?.id?'selected':''}/>${roomTypes.name}
+                                &nbsp;&nbsp;
+                            #{/list}
+                        </select>
+                    </td>
+                    <td wdith="50%">
+                        <button class="btn" id="search" type="submit">查询</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <input type="hidden" id="shopId" value="${shop.id?:shops?.get(0).id}">
+        <input type="hidden" id="roomTypeId" value="${roomType.id?:roomTypeList?.get(0)?.id}">
+
+        <div class="wk-ktvwrapper" id="wk-ktvwrapper"></div>
+
+    </div>
+</div>
 #{/form}
-<div class="bd">
-    <h2>${title}</h2>
-
-    <div class="wk-ktvwrapper" id="wk-ktvwrapper"> </div>
-
-</div>
-</div>
-
 #{set 'moreStyles'}
 <link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/ktv.css'}">
 #{/set}
@@ -22,11 +45,14 @@
 <script type="text/javascript">
     $(function () {
         var ktvWeek = KTVWeek({
-            wrapperId:"wk-ktvwrapper",
-            dataUrl:"/ktv/price-schedule/json-search",
-            addLink:"@{KtvPriceSchedules.add()}",
-            startDay:new Date()
+            wrapperId: "wk-ktvwrapper",
+            dataUrl: "/ktv/price-schedule/json-search",
+            addLink: "@{KtvPriceSchedules.add()}",
+            startDay: new Date(),
+            shop: $("#shopId").val(),
+            roomType: $("#roomTypeId").val()
         });
+
     });
 </script>
 #{/set}

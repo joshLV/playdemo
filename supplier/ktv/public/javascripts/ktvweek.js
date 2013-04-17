@@ -1,7 +1,6 @@
 var KTVWeek = (function  () {
     var weekNames = ["一", "二", "三", "四", "五", "六", "日"];
-    var colors = ["carrot","amethyst", "alizarin", "emerland",];
-    var colorIndex = -1;
+    var colors = ["carrot","amethyst", "concrete", "emerland"];
 
     function KTVWeek(){
         return  init(
@@ -14,6 +13,9 @@ var KTVWeek = (function  () {
         ktv.wrapperId = args[0].wrapperId;
         ktv.dataUrl = args[0].dataUrl;
         ktv.addLink = args[0].addLink;
+        ktv.shop = args[0].shop;
+        ktv.roomType = args[0].roomType;
+        ktv.colorIndex = -1;
         $("#" + ktv.wrapperId).append($('<div class="wk-pagination"> <div class="wk-topLeftNav"> <table  cellpadding="0" cellspacing="0"> <tr> <td><div class="wk-button wk-button-thisweek">本周</div></td> <td><div class="wk-button wk-button-previous">&lt;</div></td> <td><div class="wk-button wk-button-next">&gt;</div></td> <td><div class="wk-show-range"></div></td> </tr> </table> </div> <div class="wk-topRightNav"> <table cellpadding="0" cellspacing="0"> <tr> <td><a class="wk-button wk-button-add" href="#">添加</a></td> </tr> </table> </div> </div> <div class="wk-topwrapper"> <table class="wk-weektop" cellpadding="0" cellspacing="0"> <tbody> <tr class="wk-daynames"> <td style="width:60px;">&nbsp;</td> <th> <div class="wk-dayname"></div> </th> <th> <div class="wk-dayname"></div> </th> <th> <div class="wk-dayname"></div> </th> <th> <div class="wk-dayname"></div> </th> <th> <div class="wk-dayname"></div> </th> <th> <div class="wk-dayname"></div> </th> <th> <div class="wk-dayname"></div> </th> </tr> </tbody> </table> </div> <div class="wk-mainwrapper" style="margin-top:0px;"> <table class="wk-timeprices" cellpadding="0" cellspacing="0"> <tbody > <!--行--> <tr height="1"> <td style="width:60px;"></td> <td colspan="7"> <div class="wk-spanningwrapper"> <div class="wk-hourmarkers"> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div> </div> </div> <div class="wk-spanningwrapper wk-chipspanningwrapper"></div> </td> </tr> <tr> <!-- 时间 --> <td class="wk-times-pri"> <div style="height:40px;"> <div class="wk-time-pri">08:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">09:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">10:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">11:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">12:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">13:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">14:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">15:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">16:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">17:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">18:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">19:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">20:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">21:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri">22:00</div> </div> <div style="height:40px;"> <div class="wk-time-pri wk-time-pri-last">23:00</div> </div> </td> <!-- 7 列 周一到周日 --> <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td> <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td> <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td> <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td> <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td> <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td> <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td> </tr> </tbody> </table> <!-- 价格 --> <div class="wk-pricecells"> </div> </div> '));
         $("#" + ktv.wrapperId + " .wk-button-add").attr("href", ktv.addLink);
         $("#" + ktv.wrapperId + " .wk-button-previous").click(function(){
@@ -38,10 +40,10 @@ var KTVWeek = (function  () {
         return day == 0 ? 7 : day;
     }
 
-    function nextColor() {
-        colorIndex += 1;
-        if (colorIndex == colors.length) { colorIndex = 0};
-        return colors[colorIndex];
+    function nextColor(ktv) {
+        ktv.colorIndex += 1;
+        if (ktv.colorIndex == colors.length) { ktv.colorIndex = 0};
+        return colors[ktv.colorIndex];
 
     }
 
@@ -54,9 +56,15 @@ var KTVWeek = (function  () {
         var ktv = this;
         ktv.monday = new XDate().setWeek(today.getWeek());
         ktv.sunday = new XDate(ktv.monday).addDays(6);
+        ktv.colorIndex = -1;
         $.post(
             ktv.dataUrl,
-            {startDay: ktv.monday.toString("yyyy-MM-dd"), endDay: ktv.sunday.toString("yyyy-MM-dd")},
+            {
+                startDay: ktv.monday.toString("yyyy-MM-dd"),
+                endDay: ktv.sunday.toString("yyyy-MM-dd"),
+                "shop.id": ktv.shop,
+                "roomType.id": ktv.roomType
+            },
             function(data){
                 ktv.dataLoaded(data);
             }
@@ -87,7 +95,7 @@ var KTVWeek = (function  () {
             var starTime = Number(data[i].startTime.substring(0, data[i].startTime.indexOf(":")));
             var endTime = Number(data[i].endTime.substring(0, data[i].endTime.indexOf(":")));
 
-            var color = nextColor();
+            var color = nextColor(this);
 
             //遍历设置中的天
             for (var j = 0; j<= diffDays; j++) {
@@ -125,7 +133,7 @@ var KTVWeek = (function  () {
             function() {
                 var ele = $(this);
                 ele.text(ele.attr("data-price"));
-                $(".wk-pricecell-"+ele.attr("data-color")).not(this).stop().animate({opacity:1}, 100);
+                $(".wk-pricecell-"+ele.attr("data-color")).not(this).stop().animate({opacity:1}, 400);
             }
         );
     }

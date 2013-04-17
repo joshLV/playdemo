@@ -33,9 +33,7 @@ import play.mvc.Http;
 import play.mvc.With;
 
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: yan
@@ -72,21 +70,23 @@ public class WebSinaVouchers extends Controller {
         if (goods == null || goods.status != GoodsStatus.ONSALE) {
             error("no goods!");
         }
-        List<KtvRoomType> roomTypeList = KtvRoomType.findRoomTypeList(goods.getSupplier());
+        Collection<Shop> shops = goods.getShopList();
+        List<KtvRoom> roomList = KtvRoom.findByShop(shops.iterator().next());
         User user = SecureCAS.getUser();
-        render(goods, productId, user, roomTypeList);
+        render(goods, productId, user, roomList);
     }
 
     /**
      * 创建订单
      */
-    public static void order(String productId, Long buyCount, String phone, Date useDate, List<String> useTime, Long roomTypeId, Long shopId, String source) {
+    public static void order(String productId, Long buyCount, String phone, Date scheduledDay, String source) {
         User user = SecureCAS.getUser();
         Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
         Validation.required("phone", phone);
         Validation.match("phone", phone, "^1\\d{10}$");
-
-        Validation.required("buyCount", buyCount);
+        if (!"1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
+            Validation.required("buyCount", buyCount);
+        }
         if (Validation.hasErrors()) {
             render("WebSinaVouchers/showOrder.html", goods, productId, phone);
         }
@@ -98,20 +98,27 @@ public class WebSinaVouchers extends Controller {
         Order order = Order.createConsumeOrder(user, resaler).save();
         OrderItems orderItems = null;
         try {
+            //页面根据包厢ID,取得该时间段的价格信息
             if ("1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
-//                Shop shop = Shop.findById(shopId);
-//                KtvRoomType ktvRoomType = KtvRoomType.findById(roomTypeId);
-//                List<KtvRoom> ktvRoomList = KtvRoom.findKtvRoom(ktvRoomType, shop);
-//                orderItems = order.addOrderItem(goods, Long.valueOf("1"), phone, goods.getResalePrice(), goods.getResalePrice());
-//                for (String time : useTime) {
-//                    new KtvRoomOrderInfo(goods, orderItems, ktvRoomList.get(0), ktvRoomType, useDate, time).save();
-//                }
-
+                for (String key : request.params.all().keySet()) {
+                    if (key.startsWith("roomId")) {
+                        String[] values = request.params.getAll(key);
+                        String[] scheduledTimes = values[0].split("@");
+                        for (String scheduledTime : scheduledTimes) {
+                            KtvRoom ktvRoom = KtvRoom.findById(Long.valueOf(key.substring(6)));
+                            KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
+                            orderItems = order.addOrderItem(goods, Long.valueOf("1"), phone, ktvPriceSchedule.price, ktvPriceSchedule.price);
+                            orderItems.outerGoodsNo = productId;
+                            orderItems.save();
+                            new KtvRoomOrderInfo(goods, orderItems, ktvRoom, ktvRoom.roomType, scheduledDay, scheduledTime).save();
+                        }
+                    }
+                }
             } else {
                 orderItems = order.addOrderItem(goods, buyCount, phone, goods.getResalePrice(), goods.getResalePrice());
+                orderItems.outerGoodsNo = productId;
+                orderItems.save();
             }
-            orderItems.outerGoodsNo = productId;
-            orderItems.save();
 
         } catch (NotEnoughInventoryException e) {
             Logger.info("inventory is not enough!");
