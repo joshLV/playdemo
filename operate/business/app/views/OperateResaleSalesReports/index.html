@@ -153,7 +153,7 @@
         userName="condition.userName="+report?.loginName;
         }%
         <tr>
-            <td>${report?.order?.userType==models.accounts.AccountType.RESALER ? '分销商':'消费者'}</td>
+            <td>${report?.order?.isWebsiteOrder() ? '消费者':'分销商'}</td>
             <td>${report.userName}<br>${report?.loginName}</td>
             <td>
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
