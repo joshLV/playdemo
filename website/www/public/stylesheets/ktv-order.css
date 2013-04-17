@@ -1,4 +1,4 @@
-.wk-order-wrapper, .wk-order-summry {
+.wk-order-wrapper, .wk-order-summary {
     font-size: 12px;
     font-family: Arial,sans-serif;
     color: #555;
@@ -13,7 +13,7 @@
     padding: 0px 6px 10px 6px;
 }
 
-.wk-order-summry .wk-selected {
+.wk-order-summary .wk-selected {
     /*border: 1px solid #4cafda;*/
     border: 1px solid #ddd;
     padding: 5px 10px;
@@ -22,11 +22,11 @@
     height: 16px;
     margin-bottom: 5px;
 }
-.wk-order-summry .wk-summry-price {
+.wk-order-summary .wk-summary-price {
     font-size: 14px;
     color: #329acd;
 }
-.wk-order-summry .wk-summry-close {
+.wk-order-summary .wk-summary-close {
     border: 1px solid #ddd;
     padding: 0px 5px;
     float: right;
@@ -125,7 +125,7 @@
 .wk-order-cells {
     position: relative;
 }
-.wk-order-summry {
+.wk-order-summary {
     margin-top: 5px;;
 }
 
