@@ -5,6 +5,7 @@ import models.order.OrderStatus;
 import models.sales.Goods;
 import models.sales.Shop;
 import play.db.jpa.Model;
+import util.DateHelper;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -65,7 +66,9 @@ public class KtvRoomOrderInfo extends Model {
     }
 
     public static List<KtvRoomOrderInfo> findScheduledInfos(Date scheduleDay, Shop shop) {
-        return KtvRoom.find("select ksp from KtvPriceSchedule where ktvRoom=? and goods.shops.id=? and status=?", scheduleDay, shop.id, KtvOrderStatus.LOCK).fetch();
+        return KtvRoom.find("select ksp from KtvPriceSchedule where ktvRoom=? and goods.shops.id=? and (status = ? or (status=?  and createdAt<=:?))",
+                scheduleDay, shop.id, KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, DateHelper.beforeMinuts(10)).fetch();
+        //return KtvRoom.find("select ksp from KtvPriceSchedule where ktvRoom=? and goods.shops.id=? and status=?", scheduleDay, shop.id, KtvOrderStatus.LOCK).fetch();
 
     }
 
