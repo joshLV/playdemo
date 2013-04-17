@@ -41,12 +41,11 @@ public class KtvPriceSchedules extends Controller {
             error();
         }
 
-        List<KtvPriceSchedule> schedules =
-                KtvPriceSchedule.find("select k from KtvPriceSchedule k join k.shops s where (k.startDay <= ?  and k.endDay >= ?) " +
-                        "and k.roomType=? and s.id =?", endDay, startDay, roomType, shop.id).fetch();
+        List<KtvPriceSchedule> schedules = KtvPriceSchedule.getKtvPriceSchedules(startDay, endDay, shop, roomType);
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("yyyy-MM-dd").create();
         renderJSON(gson.toJson(schedules));
     }
+
 
     public static void add() {
         initParams(null);

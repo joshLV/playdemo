@@ -138,7 +138,13 @@ public class DDGroupBuy extends Controller {
         for (String goodsItem : arrGoods) {
             arrGoodsItem = goodsItem.split(":");
             if (arrGoodsItem != null) {
+                if(StringUtils.isEmpty(arrGoodsItem[0])){
+                    renderError(DDErrorCode.ORDER_EXCEPTION, "传参数据信息格式不对！请确认检查无误！");
+                }
                 Goods goods = ResalerProduct.getGoods(Long.parseLong(arrGoodsItem[0]), OuterOrderPartner.DD);
+                if (goods==null){
+                    renderError(DDErrorCode.ORDER_EXCEPTION, "没有对应的商品信息！");
+                }
                 BigDecimal resalerPrice = goods.getResalePrice();
                 BigDecimal number = new BigDecimal(arrGoodsItem[1]);
                 ybqPrice = ybqPrice.add(resalerPrice.multiply(number));
