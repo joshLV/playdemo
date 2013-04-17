@@ -48,6 +48,7 @@ public class KtvPriceSchedule extends GenericModel {
      */
     @Required
     @Column(name = "start_day")
+    @Temporal(TemporalType.DATE)
     @Expose
     public Date startDay;
 
@@ -107,5 +108,9 @@ public class KtvPriceSchedule extends GenericModel {
         updPriceSchedule.price = schedule.price;
         updPriceSchedule.save();
 
+    }
+
+    public static KtvPriceSchedule findPrice(Date scheduledDay, String scheduledTime, KtvRoomType roomType) {
+        return KtvPriceSchedule.find("startDay<=? and endDay>=? and startTime<=? and endTime >=? and roomType=?", scheduledDay, scheduledDay, scheduledTime, scheduledTime, roomType).first();
     }
 }
