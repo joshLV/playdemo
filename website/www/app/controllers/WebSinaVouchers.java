@@ -1,6 +1,8 @@
 package controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.uhuila.common.util.DateUtil;
 import controllers.modules.website.cas.OAuthType;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.Security;
@@ -59,6 +61,51 @@ public class WebSinaVouchers extends Controller {
         renderTemplate(templatePath, goods, shops, productId);
     }
 
+    public static void jsonRoom(String productId, Date scheduleDay) {
+        Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
+        if (goods == null || goods.status != GoodsStatus.ONSALE) {
+            error("no goods!");
+        }
+        Collection<Shop> shops = goods.getShopList();
+        Shop shop = shops.iterator().next();
+        List<KtvRoom> roomList = KtvRoom.findByShop(shop);
+
+        Map<String, Object> jsonParams = new HashMap<>();
+        Map<String, String> roomsInfo = new HashMap<>();
+        List<Map<String, String>> rooms = new ArrayList<>();
+        for (KtvRoom ktvRoom : roomList) {
+            roomsInfo.put("id", ktvRoom.id.toString());
+            roomsInfo.put("name", ktvRoom.roomType.name);
+            roomsInfo.put("type", ktvRoom.roomType.id.toString());
+            rooms.add(roomsInfo);
+        }
+
+        List<KtvPriceSchedule> schedules = KtvPriceSchedule.getSchedulesByShop(scheduleDay, shop);
+        Map<String, Object> scheduleInfo = new HashMap<>();
+        List<Map<String, Object>> prices = new ArrayList<>();
+        for (KtvPriceSchedule schedule : schedules) {
+            scheduleInfo.put("startDay", schedule.startDay);
+            scheduleInfo.put("endDay", schedule.endDay);
+            scheduleInfo.put("weekday", schedule.useWeekDay);
+            scheduleInfo.put("startTime", schedule.startTime);
+            scheduleInfo.put("endTime", schedule.endTime);
+            scheduleInfo.put("price", schedule.price);
+            scheduleInfo.put("roomType", schedule.roomType);
+            prices.add(scheduleInfo);
+        }
+        List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(scheduleDay, shop);
+        Map<String, Object> scheduleRoomInfo = new HashMap<>();
+        List<Map<String, Object>> scheduleds = new ArrayList<>();
+        for (KtvRoomOrderInfo orderInfo : scheduledRoomList) {
+            scheduleRoomInfo.put("roomId", orderInfo.ktvRoom.id);
+            scheduleRoomInfo.put("roomTime", orderInfo.scheduledTime);
+            scheduleds.add(scheduleRoomInfo);
+        }
+        jsonParams.put("rooms", rooms);
+        jsonParams.put("prices", prices);
+        jsonParams.put("schedules", scheduleds);
+        renderJSON(jsonParams);
+    }
 
     /**
      * 下单页面
@@ -70,10 +117,9 @@ public class WebSinaVouchers extends Controller {
         if (goods == null || goods.status != GoodsStatus.ONSALE) {
             error("no goods!");
         }
-        Collection<Shop> shops = goods.getShopList();
-        List<KtvRoom> roomList = KtvRoom.findByShop(shops.iterator().next());
+
         User user = SecureCAS.getUser();
-        render(goods, productId, user, roomList);
+        render(goods, productId, user);
     }
 
     /**

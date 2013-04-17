@@ -3,10 +3,12 @@ package models.ktv;
 import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.sales.Goods;
+import models.sales.Shop;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * User: tanglq
@@ -59,6 +61,11 @@ public class KtvRoomOrderInfo extends Model {
         this.scheduledTime = scheduledTime;
         this.status = KtvOrderStatus.LOCK;
         this.createdAt = new Date();
+
+    }
+
+    public static List<KtvRoomOrderInfo> findScheduledInfos(Date scheduleDay, Shop shop) {
+        return KtvRoom.find("select ksp from KtvPriceSchedule where ktvRoom=? and goods.shops.id=? and status=?", scheduleDay, shop.id, KtvOrderStatus.LOCK).fetch();
 
     }
 

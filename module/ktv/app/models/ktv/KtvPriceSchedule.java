@@ -10,6 +10,7 @@ import play.db.jpa.Model;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -112,5 +113,20 @@ public class KtvPriceSchedule extends GenericModel {
 
     public static KtvPriceSchedule findPrice(Date scheduledDay, String scheduledTime, KtvRoomType roomType) {
         return KtvPriceSchedule.find("startDay<=? and endDay>=? and startTime<=? and endTime >=? and roomType=?", scheduledDay, scheduledDay, scheduledTime, scheduledTime, roomType).first();
+    }
+
+    /**
+     * 根据门店包厢取得价格信息
+     */
+    public static List<KtvPriceSchedule> getKtvPriceSchedules(Date startDay, Date endDay, Shop shop, KtvRoomType roomType) {
+        return KtvPriceSchedule.find("select k from KtvPriceSchedule k join k.shops s where (k.startDay <= ?  and k.endDay >= ?) " +
+                "and k.roomType=? and s.id =?", endDay, startDay, roomType, shop.id).fetch();
+    }
+
+    /**
+     * 根据门店取得相应包厢价格信息
+     */
+    public static List<KtvPriceSchedule> getSchedulesByShop(Date scheduledDay, Shop shop) {
+        return KtvPriceSchedule.find("select k from KtvPriceSchedule k join k.shops s where s.id =? and startDay<=? and endDay>=? ", shop.id, scheduledDay, scheduledDay).fetch();
     }
 }

@@ -6,6 +6,7 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -69,4 +70,6 @@ public class KtvRoom extends Model {
 
     public KtvRoom() {
     }
+
+
 }
