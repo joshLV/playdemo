@@ -34,7 +34,8 @@ import java.util.Map;
 public class SupplierUploadOrderShippingInfos extends Controller {
     @ActiveNavigation("upload_order_shipping_index")
     public static void index() {
-        render();
+        List<ExpressCompany> expressList = ExpressCompany.findAll();
+        render(expressList);
     }
 
     /**

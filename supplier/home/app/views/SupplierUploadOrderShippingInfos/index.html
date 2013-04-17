@@ -2,6 +2,14 @@
 #{set title:'导入发货单' /}
 #{set menu:"upload-order-shipping" /}
 
+<style type="text/css">
+    .express-table th, .express-table td {
+        border:1px solid #cccccc;
+        border-collapse:collapse;
+    }
+
+</style>
+
 <div class="bd">
     <h2>${title}</h2>
 
@@ -16,7 +24,31 @@
             </tr>
         </table>
 
-        <span style="display:block;color: #808080;">请在下载的发货单中指定位置填写快递信息，<br>请勿随意修改发货单中其他信息，上传时，保证数据放在Sheet1.</span>
+        <span style="display:block;color: #808080;">请在下载的发货单中指定位置填写快递信息，快递公司请根据编码填写
+        <br>
+            请勿随意修改发货单中其他信息，上传时，保证数据放在Sheet1.
+        </span>
+        <br>
+        <table class="express-table">
+            <thead>
+            <tr>
+                <th width="230px" style="text-align: center;">编码</th>
+                <th width="230px"style="text-align: center;">名称</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            #{list items:expressList, as:'express'}
+            <tr>
+                <td style="text-align: center;">${express?.code}</td>
+                <td style="text-align: center;">${express?.name}</td>
+            </tr>
+            #{/list}
+            </tbody>
+        </table>
+
+
         <span class="help-block" style="color: red;">
         ${msgInfo}
         #{if noGoodsCodeList?.size()>0}商品编码：${noGoodsCodeList?.join(",")}不存在,请重新编辑商品分配编码！<br>#{/if}
