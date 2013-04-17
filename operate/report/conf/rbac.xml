@@ -18,9 +18,9 @@
     <permission key="CONSUMER_REPORT" text="消费报表" roles="manager,account"/>
     <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account"/>
     <permission key="PREPAYMENT_REPORT" text="预付款明细表" roles="manager,account"/>
-    <permission key="OPERATION_REPORT" text="运营报表" roles="sales,account,manager"/>
+    <permission key="OPERATION_REPORT" text="运营报表" roles="manager,sales,account"/>
     <permission key="ONSALE_OFFSALE_REPORT" text="上下架报表" roles="sales,account,editor"/>
-    <permission key="SEE_OPERATION_REPORT_PROFIT" text="查看运营报表利润" roles="sales,account"/>
+    <permission key="SEE_OPERATION_REPORT_PROFIT" text="查看运营报表利润" roles="manager,sales,account"/>
 
 
     <navigation key="operation_reports_app" text="运营报表" action="OperationReports.index" display-order="70">
