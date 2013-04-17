@@ -165,7 +165,14 @@
         #{option "UNPAID"}&{'order.UNPAID'}#{/option}
         #{option "PAID"}&{'order.PAID'}#{/option}
         #{option "CANCELED"}&{'order.CANCELED'}#{/option}
+        #{option "PREPARED"}&{'order.PREPARED'}#{/option}
         #{option "SENT"}&{'order.SENT'}#{/option}
+
+        #{option "UPLOADED"}&{'order.UPLOADED'}#{/option}
+        #{option "RETURNING"}&{'order.RETURNING'}#{/option}
+        #{option "RETURNED"}&{'order.RETURNED'}#{/option}
+
+
     #{/select}
         物流方式：
     #{select 'condition.deliveryType', class:'input-small', value:condition.deliveryType}
@@ -197,13 +204,14 @@ select:'condition_status',value:condition?.status/}
         <th width="80px">订单号</th>
         <th width="200px">商品名称</th>
 
-    #{if desc.equals("1000000") }
-        <th width="80px" class="rank rank-asc"><a class="fn-rank" data-rank="2000000">订单状态</a></th>#{/if}
-    #{elseif desc.equals("2000000")}
-        <th width="80px" class="rank rank-desc"><a class="fn-rank" data-rank="1000000">订单状态</a></th>#{/elseif}
-    #{else}
-        <th width="80px" class="rank"><a class="fn-rank" data-rank="2000000">订单状态</a></th>#{/else}
-
+    #{if condition?.status == null}
+        #{if desc.equals("1000000") }
+            <th width="80px" class="rank rank-asc"><a class="fn-rank" data-rank="2000000">订单状态</a></th>#{/if}
+        #{elseif desc.equals("2000000")}
+            <th width="80px" class="rank rank-desc"><a class="fn-rank" data-rank="1000000">订单状态</a></th>#{/elseif}
+        #{else}
+            <th width="80px" class="rank"><a class="fn-rank" data-rank="2000000">订单状态</a></th>#{/else}
+    #{/if}
     #{if desc.equals("0100000") }
         <th width="25px" class="rank rank-asc"><a class="fn-rank" data-rank="0200000">帐号</a></th>#{/if}
     #{elseif desc.equals("0200000")}
@@ -275,22 +283,24 @@ select:'condition_status',value:condition?.status/}
                         target="_blank">${order.realGoods?.get(0)?.shortName}</a>
                 #{/else}
             </td>
-            <td rowspan="${order.realGoods?.size()}">
-                #{if order.deliveryNo!=null}
-                    <a id="sendInfo_${order.id}"
+            #{if condition?.status == null}
+                <td rowspan="${order.realGoods?.size()}">
+                    #{if order.deliveryNo!=null}
+                        <a id="sendInfo_${order.id}"
 
-                       href="#" class="label label-info"
-                       rel="popover"
-                       data-content="运单号: ${order.deliveryNo}"
-                       data-original-title="物流公司: ${order.deliveryCompany}"
-                       onmouseover="$('#sendInfo_${order.id}').popover();">
-                    &{'order.'+ order.realGoodsStatus}</a>
-                #{/if}
-                #{else}&{'order.'+order.realGoodsStatus}#{/else}
+                           href="#" class="label label-info"
+                           rel="popover"
+                           data-content="运单号: ${order.deliveryNo}"
+                           data-original-title="物流公司: ${order.deliveryCompany}"
+                           onmouseover="$('#sendInfo_${order.id}').popover();">
+                        &{'order.'+ order.realGoodsStatus}</a>
+                    #{/if}
+                    #{else}&{'order.'+order.realGoodsStatus}#{/else}
                 *{#{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}
                     <br/><a href="#" id="linkSend_${order.id}" onclick="prepareSend(${order.id})">发货</a>
                 #{/if}}*
-            </td>
+                </td>
+            #{/if}
         #{/if}
 
         #{else}
@@ -301,11 +311,15 @@ select:'condition_status',value:condition?.status/}
                         href="http://www.yibaiquan.com/g/${order.electronicGoods.get(0).id}"
                         target="_blank">${order.electronicGoods.get(0).shortName}&nbsp;</a>
                 </td>
-                <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+                #{if condition?.status == null}
+                    <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+                #{/if}
             #{/if}
             #{else}
                 <td>&nbsp;</td>
-                <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+                #{if condition?.status == null}
+                    <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+                #{/if}
             #{/else}
         #{/else}
 
@@ -317,11 +331,11 @@ select:'condition_status',value:condition?.status/}
         #{/if}
         <td rowspan="${order?.orderItems?.size()}">
             #{if order?.isWebsiteOrder()}
-               &{'order.CONSUMER'}
+            &{'order.CONSUMER'}
             #{/if}
             #{else}
-               &{'order.RESALER'}
-            #{/else}
+        &{'order.RESALER'}
+        #{/else}
         </td>
         <td rowspan="${order?.orderItems?.size()}">${order.amount?.formatCurrency('CNY')}</td>
         <td rowspan="${order?.orderItems?.size()}">${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>

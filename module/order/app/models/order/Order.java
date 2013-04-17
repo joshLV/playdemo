@@ -1016,14 +1016,17 @@ public class Order extends Model {
         return orderPage;
     }
 
+    /*
+        返回订单的状态
+     */
     @Transient
     public OrderStatus getRealGoodsStatus() {
-        return getStatus(MaterialType.REAL);
+        return this.status;
     }
 
     @Transient
     public OrderStatus getElectronicGoodsStatus() {
-        return getStatus(MaterialType.ELECTRONIC);
+        return this.status;
     }
 
     @Transient
@@ -1068,6 +1071,7 @@ public class Order extends Model {
     }
 
     private OrderStatus getStatus(MaterialType type) {
+
         OrderStatus status = null;
         for (OrderItems orderItem : orderItems) {
             if (type.equals(orderItem.goods.materialType)) {
