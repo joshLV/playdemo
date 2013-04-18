@@ -4,10 +4,13 @@ import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.sales.Goods;
 import models.sales.Shop;
+import org.apache.commons.lang.time.DateUtils;
 import play.db.jpa.Model;
 import util.DateHelper;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -53,6 +56,9 @@ public class KtvRoomOrderInfo extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
+    @Column(name = "deal_at")
+    public Date dealAt;
+
     public KtvRoomOrderInfo(Goods goods, OrderItems orderItem, KtvRoom ktvRoom, KtvRoomType ktvRoomType, Date scheduledDay, String scheduledTime) {
         this.goods = goods;
         this.orderItem = orderItem;
@@ -66,10 +72,8 @@ public class KtvRoomOrderInfo extends Model {
     }
 
     public static List<KtvRoomOrderInfo> findScheduledInfos(Date scheduleDay, Shop shop) {
-        return KtvRoom.find("select ksp from KtvPriceSchedule where ktvRoom=? and goods.shops.id=? and (status = ? or (status=?  and createdAt<=:?))",
-                scheduleDay, shop.id, KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, DateHelper.beforeMinuts(10)).fetch();
-        //return KtvRoom.find("select ksp from KtvPriceSchedule where ktvRoom=? and goods.shops.id=? and status=?", scheduleDay, shop.id, KtvOrderStatus.LOCK).fetch();
-
+        return KtvRoom.find("select k from KtvRoomOrderInfo k join k.goods.shops s where k.scheduledDay = ? and s.id=? and (k.status = ? or (k.status=?  and k.createdAt >= ?))",
+                DateUtils.truncate(scheduleDay, Calendar.DATE), shop.id, KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, DateUtils.addMinutes(new Date(), -10)).fetch();
     }
 
     /**
@@ -82,5 +86,20 @@ public class KtvRoomOrderInfo extends Model {
             this.orderItem.save();
             this.save();
         }
+    }
+
+    /**
+     * 更新订单
+     */
+    public void dealKtvRoom() {
+        this.status = KtvOrderStatus.DEAL;
+        this.orderItem.status = OrderStatus.PAID;
+        this.orderItem.save();
+        this.dealAt = new Date();
+        this.save();
+    }
+
+    public static List<KtvRoomOrderInfo> findByOrderItem(OrderItems orderItem) {
+        return KtvRoomOrderInfo.find("status=? and orderItem=?", KtvOrderStatus.LOCK, orderItem).fetch();
     }
 }

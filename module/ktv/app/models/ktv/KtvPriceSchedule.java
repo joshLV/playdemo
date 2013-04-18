@@ -3,6 +3,10 @@ package models.ktv;
 import com.google.gson.annotations.Expose;
 import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Shop;
+import play.Logger;
+import play.data.validation.MaxSize;
+import play.data.validation.Min;
+import play.data.validation.MinSize;
 import play.data.validation.Required;
 import play.db.jpa.GenericModel;
 import play.db.jpa.Model;
@@ -88,6 +92,10 @@ public class KtvPriceSchedule extends GenericModel {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
+    @Min(1)
+    @Column(name = "room_number")
+    public Long roomNumber;
+
     /**
      * 每间每小时的价格
      */
@@ -107,11 +115,13 @@ public class KtvPriceSchedule extends GenericModel {
         updPriceSchedule.startTime = schedule.startTime;
         updPriceSchedule.endTime = schedule.endTime;
         updPriceSchedule.price = schedule.price;
+        updPriceSchedule.roomNumber = schedule.roomNumber;
         updPriceSchedule.save();
 
     }
 
     public static KtvPriceSchedule findPrice(Date scheduledDay, String scheduledTime, KtvRoomType roomType) {
+        Logger.info("startDay=" + scheduledDay + ", startTime=" + scheduledTime  + ", roomType=" + roomType);
         return KtvPriceSchedule.find("startDay<=? and endDay>=? and startTime<=? and endTime >=? and roomType=?", scheduledDay, scheduledDay, scheduledTime, scheduledTime, roomType).first();
     }
 
@@ -127,6 +137,6 @@ public class KtvPriceSchedule extends GenericModel {
      * 根据门店取得相应包厢价格信息
      */
     public static List<KtvPriceSchedule> getSchedulesByShop(Date scheduledDay, Shop shop) {
-        return KtvPriceSchedule.find("select k from KtvPriceSchedule k join k.shops s where s.id =? and startDay<=? and endDay>=? ", shop.id, scheduledDay, scheduledDay).fetch();
+        return KtvPriceSchedule.find("select k from KtvPriceSchedule k join k.shops s where s.id =? and k.startDay<=? and k.endDay>=? ", shop.id, scheduledDay, scheduledDay).fetch();
     }
 }

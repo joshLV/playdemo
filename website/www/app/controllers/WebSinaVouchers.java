@@ -61,52 +61,6 @@ public class WebSinaVouchers extends Controller {
         renderTemplate(templatePath, goods, shops, productId);
     }
 
-    public static void jsonRoom(String productId, Date scheduleDay) {
-        Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
-        if (goods == null || goods.status != GoodsStatus.ONSALE) {
-            error("no goods!");
-        }
-        Collection<Shop> shops = goods.getShopList();
-        Shop shop = shops.iterator().next();
-        List<KtvRoom> roomList = KtvRoom.findByShop(shop);
-
-        Map<String, Object> jsonParams = new HashMap<>();
-        Map<String, String> roomsInfo = new HashMap<>();
-        List<Map<String, String>> rooms = new ArrayList<>();
-        for (KtvRoom ktvRoom : roomList) {
-            roomsInfo.put("id", ktvRoom.id.toString());
-            roomsInfo.put("name", ktvRoom.roomType.name);
-            roomsInfo.put("type", ktvRoom.roomType.id.toString());
-            rooms.add(roomsInfo);
-        }
-
-        List<KtvPriceSchedule> schedules = KtvPriceSchedule.getSchedulesByShop(scheduleDay, shop);
-        Map<String, Object> scheduleInfo = new HashMap<>();
-        List<Map<String, Object>> prices = new ArrayList<>();
-        for (KtvPriceSchedule schedule : schedules) {
-            scheduleInfo.put("startDay", schedule.startDay);
-            scheduleInfo.put("endDay", schedule.endDay);
-            scheduleInfo.put("weekday", schedule.useWeekDay);
-            scheduleInfo.put("startTime", schedule.startTime);
-            scheduleInfo.put("endTime", schedule.endTime);
-            scheduleInfo.put("price", schedule.price);
-            scheduleInfo.put("roomType", schedule.roomType);
-            prices.add(scheduleInfo);
-        }
-        List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(scheduleDay, shop);
-        Map<String, Object> scheduleRoomInfo = new HashMap<>();
-        List<Map<String, Object>> scheduleds = new ArrayList<>();
-        for (KtvRoomOrderInfo orderInfo : scheduledRoomList) {
-            scheduleRoomInfo.put("roomId", orderInfo.ktvRoom.id);
-            scheduleRoomInfo.put("roomTime", orderInfo.scheduledTime);
-            scheduleds.add(scheduleRoomInfo);
-        }
-        jsonParams.put("rooms", rooms);
-        jsonParams.put("prices", prices);
-        jsonParams.put("schedules", scheduleds);
-        renderJSON(jsonParams);
-    }
-
     /**
      * 下单页面
      *
@@ -153,11 +107,11 @@ public class WebSinaVouchers extends Controller {
                 for (String key : request.params.all().keySet()) {
                     if (key.startsWith("roomId")) {
                         String[] values = request.params.getAll(key);
-                        String[] scheduledTimes = values[0].split("@");
+                        String[] scheduledTimes = values[0].split(",");
                         for (String scheduledTime : scheduledTimes) {
-                            KtvRoom ktvRoom = KtvRoom.findById(Long.valueOf(key.substring(6)));
+                            KtvRoom ktvRoom = KtvRoom.findById(Long.valueOf(key.substring("roomId".length())));
                             KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
-                            orderItems = order.addOrderItem(goods, Long.valueOf("1"), phone, ktvPriceSchedule.price, ktvPriceSchedule.price);
+                            orderItems = order.addOrderItem(goods, 1L, phone, ktvPriceSchedule.price, ktvPriceSchedule.price);
                             orderItems.outerGoodsNo = productId;
                             orderItems.save();
                             new KtvRoomOrderInfo(goods, orderItems, ktvRoom, ktvRoom.roomType, scheduledDay, scheduledTime).save();
@@ -170,61 +124,6 @@ public class WebSinaVouchers extends Controller {
                 orderItems.save();
             }
 
-        } catch (NotEnoughInventoryException e) {
-            Logger.info("inventory is not enough!");
-            error("库存不足！goodsId=" + goods.id);
-        }
-
-        order.deliveryType = DeliveryType.SMS;
-        order.generateOrderDescription();
-        order.discountPay = order.needPay;
-        order.accountPay = BigDecimal.ZERO;
-        order.save();
-
-        user.updateMobile(phone);
-
-        PaymentSource paymentSource = PaymentSource.findByCode("sina");
-        PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(paymentSource.paymentCode);
-
-        String form = paymentFlow.getRequestForm(order.orderNumber, order.description,
-                order.discountPay, paymentSource.subPaymentCode, request.remoteAddress, source);
-
-        PaymentJournal.savePayRequestJournal(
-                order.orderNumber,
-                order.description,
-                order.discountPay.toString(),
-                paymentSource.paymentCode,
-                paymentSource.subPaymentCode,
-                request.remoteAddress,
-                form);
-        render(form);
-
-    }
-
-    /**
-     * 创建订单
-     */
-    public static void order1(String productId, Long buyCount, String phone, String source) {
-        User user = SecureCAS.getUser();
-        Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
-        Validation.required("phone", phone);
-        Validation.match("phone", phone, "^1\\d{10}$");
-
-        Validation.required("buyCount", buyCount);
-        if (Validation.hasErrors()) {
-            render("WebSinaVouchers/showOrder.html", goods, productId, phone);
-        }
-        Resaler resaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
-        if (resaler == null) {
-            error("not found this resaler!");
-        }
-        //创建订单
-        Order order = Order.createConsumeOrder(user, resaler).save();
-        OrderItems orderItems = null;
-        try {
-            orderItems = order.addOrderItem(goods, buyCount, phone, goods.getResalePrice(), goods.getResalePrice());
-            orderItems.outerGoodsNo = productId;
-            orderItems.save();
         } catch (NotEnoughInventoryException e) {
             Logger.info("inventory is not enough!");
             error("库存不足！goodsId=" + goods.id);
