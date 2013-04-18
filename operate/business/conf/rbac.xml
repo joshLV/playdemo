@@ -10,7 +10,7 @@
     <role key="solr_load" text="solr加载数据"/>
     <role key="virtual_verify" text="虚拟验证"/>
     <role key="developer" text="开发人员"/>
-    <role key="reviewer" teedext="产品审核"/>
+    <role key="reviewer" text="产品审核"/>
     <role key="contractadminister" text="合同管理"/>
     <role key="inventory_manager" text="库存管理员"/>
     <role key="purchaser" text="采购人员"/>
