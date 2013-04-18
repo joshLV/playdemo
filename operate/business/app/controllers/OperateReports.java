@@ -396,25 +396,30 @@ public class OperateReports extends Controller {
      * 商户资金明细的统计
      */
     @ActiveNavigation("suppliers_account_reports")
-    public static void statisticSupplierReport(AccountSequenceCondition condition) {
+    public static void statisticSupplierReport(AccountSequenceCondition condition, Long supplierId, Long shopId) {
         if (condition == null) {
             condition = getDefaultAccountSequenceCondition();
         }
 
-        if (condition.accountUid != null && !condition.accountUid.equals(0l)) {
-            Supplier supplier = Supplier.findById(condition.accountUid);
-            if (supplier != null) {
-                condition.account = AccountUtil.getSupplierAccount(supplier.id);
-            } else {
-                condition.account = new Account();
-                condition.account.id = -1L;
-            }
+
+        if (shopId != null && !shopId.equals(0L)) {
+            condition.accountType = AccountType.SHOP;
+            condition.account = AccountUtil.getShopAccount(shopId);
+        } else if (supplierId != null && !supplierId.equals(0L)) {
+            condition.accountType = AccountType.SUPPLIER;
+            condition.account = AccountUtil.getSupplierAccount(supplierId);
+//        } else {
+//            condition.account = new Account();
+//            condition.account.id = -1L;
+        } else {
+            condition.accountType = AccountType.SUPPLIER;
         }
-        condition.accountType = AccountType.SUPPLIER;
+
+
         List<AccountSequenceStatistic> statisticList = AccountSequence.statisticByCondition(condition);
         AccountSequenceSummary summary = AccountSequence.findSummaryByCondition(condition);
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        render("OperateReports/showSupplierReport.html", statisticList, summary, supplierList, condition);
+        render("OperateReports/showSupplierReport.html", statisticList, summary, supplierList, condition,supplierId,shopId);
     }
 }
 

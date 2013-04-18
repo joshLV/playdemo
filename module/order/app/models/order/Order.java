@@ -17,6 +17,7 @@ import models.consumer.UserInfo;
 import models.consumer.UserWebIdentification;
 import models.kangou.KangouCard;
 import models.kangou.KangouUtil;
+import models.ktv.KtvRoomOrderInfo;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;
@@ -837,12 +838,24 @@ public class Order extends Model {
                         eCoupon.partner = ECouponPartner.SINA;
                         eCoupon.save();
                     }
+
                     //记录券历史信息
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
                 }
+
+
+                //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
+                if ("1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
+                    List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItem);
+                    for (KtvRoomOrderInfo orderInfo : ktvRoomOrderInfoList) {
+                        orderInfo.dealKtvRoom();
+                    }
+
+                }
             }
+
             //邮件提醒
             sendPaidMail(goods, orderItem);
         }
@@ -1031,14 +1044,17 @@ public class Order extends Model {
         return orderPage;
     }
 
+    /*
+        返回订单的状态
+     */
     @Transient
     public OrderStatus getRealGoodsStatus() {
-        return getStatus(MaterialType.REAL);
+        return this.status;
     }
 
     @Transient
     public OrderStatus getElectronicGoodsStatus() {
-        return getStatus(MaterialType.ELECTRONIC);
+        return this.status;
     }
 
     @Transient
@@ -1083,6 +1099,7 @@ public class Order extends Model {
     }
 
     private OrderStatus getStatus(MaterialType type) {
+
         OrderStatus status = null;
         for (OrderItems orderItem : orderItems) {
             if (type.equals(orderItem.goods.materialType)) {

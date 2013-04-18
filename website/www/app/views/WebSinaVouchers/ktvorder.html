@@ -1,0 +1,241 @@
+#{extends 'wap.html' /}
+#{set title:'一百券 - 下单' /}
+<div id="wrap">
+    <div id="main-header">
+        <h1>下单</h1>
+    </div>
+    <div id="main-back-button">
+        <div class="left-triangle"></div>
+        <div class="button nav-button left"><a href="javascript:history.go(-1);">返回</a></div>
+    </div>
+#{form @WebSinaVouchers.order(),id:'orderForm'}
+    <div class="message message-success pre-help">
+        <p>${goods.shortName}</p>
+    </div>
+
+    <div class="content-title">
+
+        <div style="overflow-x: auto" id="wk-order-scroll">
+            <div class="wk-order-wrapper" id="wk-order-wrapper">
+                <div class="wk-order-nav-wrapper">
+                    <div class="wk-order-nav-left">
+                        <table cellspacing="0" cellpadding="0">
+                            <tr class="wk-order-days">
+                                <td>
+                                    <div class="wk-order-day"></div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-day"></div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-day"></div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-day"></div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-day"></div>
+                                </td>
+                            *{<td><div class="wk-order-date-select">选</div></td>}*
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="wk-order-nav-right">
+                        <table>
+                            <tr>
+                                <td>
+                                    <div class="wk-order-info-avaliable"></div>
+                                </td>
+                                <td> 可预订</td>
+                                <td>
+                                    <div class="wk-order-info-reserved"></div>
+                                </td>
+                                <td> 已预订</td>
+                                <td>
+                                    <div class="wk-order-info-selected"></div>
+                                </td>
+                                <td> 您选择的</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="wk-order-main-wrapper">
+                    <div class="wk-order-times">
+                        <table cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td style="width:60px">&nbsp;</td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">08:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">09:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">10:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">11:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">12:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">13:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">14:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">15:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">16:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">17:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">18:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">19:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">20:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">21:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">22:00</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wk-order-time">
+                                        <div class="wk-pri">23:00</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="rooms">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- end of scroll -->
+        <table cellspacing="0" cellpadding="0" style="table-layout: fixed; width: 100%;">
+            <tr>
+                <td>
+                    <div class="wk-order-summary" id="wk-order-summary">
+                    </div>
+                </td>
+                <td style="text-align: right">总价：
+                    <span class="wk-order-amount" id="wk-order-amount">￥0</span>
+                </td>
+            </tr>
+        </table>
+
+        <div class="legend">
+            <fleft>手机号：</fleft>
+            <fright>
+                <span class="tip">(用于接收券号)</span>
+                <input type="text" value="${user?.mobile}" name="phone" size="11">
+                        <span style="display: inline;color: #ff0000;"
+                                >#{error 'phone'/}</span>
+            </fright>
+            <div class="clear"></div>
+        </div>
+
+    </div>
+
+    <div class="main-content">
+        <button class="button main-button" type="button" id="submitButton">使用微币支付</button>
+    </div>
+    <input type="hidden" name="productId" id="productId" value="${productId}">
+    <input type="hidden" name="source" value="wap">
+    <input type="hidden" name="scheduledDay" id="scheduledDay">
+#{/form}
+</div>
+
+#{set 'moreStyles'}
+<link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/ktv-order.css'}">
+#{/set}
+
+#{set 'moreScripts' }
+#{asset.js src:'/y/xdate.js'/}
+<script src="@{'/public/javascripts/ktvorder.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/iscroll-lite.js'}" type="text/javascript" charset="UTF-8"></script>
+
+
+<script type="text/javascript">
+    $(function () {
+        var ktvOrder = KTVOrder({
+            dataUrl:"/ktv/roominfo/json-search",
+            productId:$("#productId").val(),
+            wrapperId: "wk-order-wrapper",
+            summaryId: "wk-order-summary",
+            amountId: "wk-order-amount",
+            day: new Date()
+        });
+        $("#submitButton").click(function () {
+            var rooms = [];
+            //遍历已选择的
+            for (var i = 0; i < ktvOrder.selected.length; i++) {
+                var selected = ktvOrder.selected[i];
+                var roomId = selected.roomId;
+                if (!rooms[roomId]) {
+                    rooms[roomId] = "";
+                }
+                rooms[roomId] += selected.time + ",";
+            }
+            var form = $("#orderForm");
+            //插入到form里
+            for (var k in rooms) {
+                form.append($("<input/>", {
+                    "name": "roomId" + k,
+                    "type": "hidden",
+                    "value": rooms[k]
+                }))
+            }
+            $("#scheduledDay").val(ktvOrder.day.toString("yyyy-MM-dd"));
+            form.submit();
+        });
+    });
+
+    if (navigator && navigator.userAgent && navigator.userAgent.match(/Android [2|1]/)) {
+        new iScroll('wk-order-scroll', {vScrollbar: false});
+    }
+</script>
+
+#{/set}

@@ -1,0 +1,135 @@
+.wk-order-wrapper, .wk-order-summary {
+    font-size: 12px;
+    font-family: Arial,sans-serif;
+    color: #555;
+    font-weight: normal !important;
+    width: 780px;
+    background-color: #fff;
+}
+
+.wk-order-main-wrapper {
+    border: 1px solid #ddd;
+    padding-bottom: 10px;
+    padding: 0px 6px 10px 6px;
+}
+
+.wk-order-summary .wk-selected {
+    /*border: 1px solid #4cafda;*/
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    clear: both;
+    width: 160px;
+    height: 16px;
+    margin-bottom: 5px;
+}
+.wk-order-summary .wk-summary-price {
+    font-size: 14px;
+    color: #329acd;
+}
+.wk-order-summary .wk-summary-close {
+    border: 1px solid #ddd;
+    padding: 0px 5px;
+    float: right;
+    cursor: pointer;
+}
+.wk-order-nav-wrapper {
+    position: relative;
+    height: 30px;
+}
+.wk-order-nav-left {
+    position: absolute;
+    left: 0;
+}
+.wk-order-nav-right {
+    position: absolute;
+    right: 0;
+}
+.wk-order-info-avaliable {
+   width: 20px;
+   height: 14px; 
+   background-color: #b4d3eb;
+}
+.wk-order-info-reserved {
+    width: 20px;
+    height: 14px;
+    background-color: #ef581f;
+}
+.wk-order-info-selected {
+    width: 20px;
+    height: 14px;
+    background-color: #1ABC9C;
+}
+.wk-order-day {
+    border: 1px solid #dcdcdc;
+    border-bottom: none;
+    color: #444;
+    cursor: pointer;
+
+    padding-left:8px;
+    padding-right:8px;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 8px;
+    outline: none;
+    /*font-size: 14px;*/
+    text-align: center;
+}
+.wk-order-day-selected {
+    background-color: #f3f3f3;
+}
+
+.wk-order-time {
+    width: 40px;
+    text-align: center;
+    margin-left: 4px;
+}
+.wk-order-time .wk-pri {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.wk-order-room {
+    height: 30px;
+    line-height: 30px;
+    position: relative;
+    margin-top: 4px;
+}
+.wk-order-room .wk-pri {
+    /*border-top: 1px solid #ddd;*/
+}
+.wk-order-room-cell {
+    position: absolute;
+    width: 40px;
+    height: 26px;
+    text-align: center;
+
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;  
+}
+.wk-order-room-reserved {
+    background-color: #ef581f;
+    border: 1px solid #ac2b0c;
+}
+.wk-order-room-price {
+    background-color: #eaf6fd;
+    border: 1px solid #b4d3eb;
+    cursor: pointer;
+}
+.wk-order-room-blank {
+    border: 1px solid #b4d3eb;
+}
+.wk-order-room-selected {
+    background-color: #1ABC9C;
+    color: #fff;
+}
+.wk-order-cells {
+    position: relative;
+}
+.wk-order-summary {
+    margin-top: 5px;;
+}
+.wk-order-amount {
+    font-size: 30px;;
+    color: rgb(240, 98, 62);
+}
+

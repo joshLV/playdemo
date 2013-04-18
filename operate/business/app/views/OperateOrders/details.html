@@ -240,7 +240,7 @@
             </td>
             <td>${orderItem.amount?.formatCurrency('CNY')}</td>
         %{returnEntry = orderItem.getReturnEntry()}%
-            <td>&{'order.'+orders.status} #{if orderItem.returnStatus!=null}<a id="returnEntry_${orderItem.id}"
+            <td>&{'order.'+orderItem.status} #{if orderItem.returnStatus!=null}<a id="returnEntry_${orderItem.id}"
                                                                                href="#"
                                                                                rel="popover"
                                                                                data-html="true"

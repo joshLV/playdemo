@@ -1,7 +1,5 @@
 package controllers;
 
-import com.uhuila.common.util.PathUtil;
-import models.sales.Goods;
 import models.supplier.Supplier;
 import models.supplier.SupplierContract;
 import models.supplier.SupplierContractCondition;
@@ -10,6 +8,7 @@ import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -17,10 +16,9 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 商户合同
@@ -37,6 +35,8 @@ public class SuppliersContracts extends Controller {
     public static String ROOT_PATH = Play.configuration.getProperty("upload.contractpath", "");
     //    public static final String BASE_URL = Play.configuration.getProperty("uri.operate_business");
     public static String FILE_TYPES = Play.configuration.getProperty("newsImg.fileTypes", "");
+    private static final String IMAGE_ROOT_GENERATED = play.Play.configuration.getProperty("image.root.generated", "/nfs/images/contract/p"); //缩略图根目录
+
 
     public static void index(SupplierContractCondition condition) {
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
@@ -91,6 +91,18 @@ public class SuppliersContracts extends Controller {
         if (hasViewContractPermission) {
             SupplierContract contract = SupplierContract.findById(contractId);
             Collections.sort(contract.supplierContractImagesList);
+
+            File targetParent = new File(joinPath(IMAGE_ROOT_GENERATED, contract.supplierId.toString(), contractId.toString()));
+            //检查目标目录
+            if (!targetParent.exists()) {
+                if (!targetParent.mkdirs()) {
+                    Logger.error("can not mkdir on %s before viewing contract", targetParent.getPath());
+                    error("can not mkdir on  " + targetParent.getPath() + "[before viewing contract]");
+                } else {
+                    Logger.info("madir %s success before viewing contract!", targetParent.getPath());
+                }
+            }
+
             render(contract);
         } else {
             index(null);
@@ -141,7 +153,6 @@ public class SuppliersContracts extends Controller {
 
     @Right("SUPPLIER_CONTRACT_MANAGEMENT")
     public static void create(@Valid SupplierContract contract, SupplierContractCondition condition) {
-        System.out.println(condition.supplierId + "===condition.supplierId>>");
         if (condition.supplierId != 0 && contract.supplierId == 0) {
             contract.supplierId = condition.supplierId;
         }
@@ -228,5 +239,17 @@ public class SuppliersContracts extends Controller {
     private static int getPage() {
         String page = request.params.get("page");
         return StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+    }
+
+    private static String joinPath(String... nodes) {
+        StringBuilder path = new StringBuilder();
+        for (String node : nodes) {
+            path.append(node).append(File.separator);
+        }
+        if (nodes.length > 0) {
+            return path.substring(0, path.length() - File.separator.length());
+        } else {
+            return "";
+        }
     }
 }

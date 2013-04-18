@@ -40,6 +40,7 @@ require:
     - supplier_api -> supplier_api
     - com.taobao -> taobao-top 20121130
     - supports -> supports
+    - ktv -> ktv
 
 repositories:
     - mavenRepository:
@@ -85,3 +86,4 @@ repositories:
             - supports -> *
             - resale_api -> *
             - supplier_api -> *
+            - ktv -> *

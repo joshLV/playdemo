@@ -37,6 +37,7 @@ require:
     - oauth -> oauth
     - com.taobao -> taobao-top 20121130
     - supports -> supports
+    - ktv -> ktv
 
 repositories:
     - mavenRepository:
@@ -81,3 +82,4 @@ repositories:
             - supplier_api -> *
             - oauth -> *
             - supports -> *
+            - ktv -> *

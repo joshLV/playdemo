@@ -33,6 +33,7 @@ require:
     - supplier_api -> supplier_api
     - supports -> supports
     - commons-httpclient -> commons-httpclient 3.1
+    - ktv -> ktv
 
 repositories:
     - mavenRepository:
@@ -66,6 +67,7 @@ repositories:
             - supports -> *
             - resale_api -> *
             - supplier_api -> *
+            - ktv -> *
 
     - play1ContributedModules:
         type: http
