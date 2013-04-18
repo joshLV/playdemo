@@ -13,6 +13,8 @@ import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.admin.SupplierUser;
 import models.consumer.User;
+import models.kangou.KangouCardStatus;
+import models.kangou.KangouUtil;
 import models.operator.OperateUser;
 import models.resale.Resaler;
 import models.sales.Goods;
@@ -796,6 +798,18 @@ public class ECoupon extends Model {
             returnFlg = "{\"error\":\"can not apply refund with this goods\"}";
             return returnFlg;
         }
+
+        // 看购网
+        if (KangouUtil.SUPPLIER_DOMAIN_NAME.equals(eCoupon.goods.getSupplier().domainName)) {
+            // 更新一下券状态
+            ECoupon eCouponStatus = KangouUtil.getCardStatus(eCoupon);
+            if (eCouponStatus.status == ECouponStatus.CONSUMED) {
+                Logger.info("看购网状态为已经消费，不能退款： eCoupon.id:" + eCoupon.id);
+                returnFlg = "{\"error\":\"看购网已经消费，不能退款!\"}";
+                return returnFlg;
+            }
+        }
+
         if (eCoupon.order.refundedAmount == null) {
             eCoupon.order.refundedAmount = BigDecimal.ZERO;
         }
@@ -826,8 +840,6 @@ public class ECoupon extends Model {
         //已消费的金额加上已退款的金额作为垫底
         BigDecimal onTheBottom = consumedAmount.add(eCoupon.order.refundedAmount);
         //        System.out.println("===onTheBottom" + onTheBottom);
-
-        Logger.info("Hello, onTheBottom=" + onTheBottom);
 
         //再来看看去掉垫底的资金后，此订单还能退多少活动金和可提现余额
         BigDecimal refundOrderTotalCashAmount = eCoupon.order.accountPay.add(eCoupon.order.discountPay);
@@ -908,6 +920,16 @@ public class ECoupon extends Model {
         // 是清团券
         if (tsingTuanOrder != null) {
             TsingTuanSendOrder.refund(tsingTuanOrder);
+        }
+
+
+        // 看购网
+        if (KangouUtil.SUPPLIER_DOMAIN_NAME.equals(eCoupon.goods.getSupplier().domainName)) {
+            // 更新一下券状态
+            KangouCardStatus kangouCardStatus = KangouUtil.setCardUseless(eCoupon);
+            //if (KangouCardStatus.REFUND == kangouCardStatus) {
+            Logger.info("看购网券eCoupon.id:" + eCoupon.id + "退款成功，看购网返回订单状态：" + kangouCardStatus);
+            //}
         }
 
         // 更改搜索服务中的库存

@@ -77,8 +77,10 @@ public class JDGroupBuyTest extends FunctionalTest {
         assertNotNull(outerOrder.ybqOrder);
         assertEquals(OrderStatus.PAID, outerOrder.ybqOrder.status);
 
-        assertNotNull(ECoupon.find("byOrderAndPartnerAndPartnerCouponId", outerOrder.ybqOrder, ECouponPartner.JD, "123"));
-        assertNotNull(ECoupon.find("byOrderAndPartnerAndPartnerCouponId", outerOrder.ybqOrder, ECouponPartner.JD, "456"));
+        assertNotNull(ECoupon.find("byOrderAndPartnerAndPartnerCouponId", outerOrder.ybqOrder, ECouponPartner.JD,
+                "123").first());
+        assertNotNull(ECoupon.find("byOrderAndPartnerAndPartnerCouponId", outerOrder.ybqOrder, ECouponPartner.JD,
+                "456").first());
     }
 
     @Test

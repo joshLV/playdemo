@@ -15,6 +15,8 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.consumer.UserWebIdentification;
+import models.kangou.KangouCard;
+import models.kangou.KangouUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;
@@ -944,6 +946,19 @@ public class Order extends Model {
         } else {
             eCoupon = new ECoupon(this, goods, orderItem);
             eCoupon.save();
+
+            if (KangouUtil.SUPPLIER_DOMAIN_NAME.equals(orderItem.goods.getSupplier().domainName)) {
+                KangouCard card = KangouUtil.getCardId(eCoupon);
+
+                if (card == null) {
+                    eCoupon.delete();
+                    throw new RuntimeException("can not generate a kangou goods: " + goods.getId());
+                }
+                eCoupon.eCouponSn = card.cardId;
+                eCoupon.eCouponPassword = card.cardNumber;
+                eCoupon.save();
+            }
+
         }
         return eCoupon;
     }
