@@ -131,7 +131,7 @@ public class JingDongGroupByRequest extends Controller {
         // 用作生成券信息.
         List<ImportedCoupon> coupons = new ArrayList<>();
         for (int i = 0; i < buyNumber; i++) {
-            ImportedCoupon c = new ImportedCoupon();
+            ImportedCoupon c = new ImportedCoupon();  //这里只用使用这个类包装数据，不是导入券.
             c.id = System.currentTimeMillis() + i;
             c.coupon = "8888887" + i;
             coupons.add(c);

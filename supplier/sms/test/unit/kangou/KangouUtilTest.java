@@ -9,7 +9,6 @@ import models.kangou.KangouCardStatus;
 import models.kangou.KangouUtil;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
-import models.order.OrderItems;
 import models.sales.Goods;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +19,6 @@ import util.DateHelper;
 import util.ws.MockWebServiceClient;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +29,7 @@ import java.util.Map;
 public class KangouUtilTest extends UnitTest {
 
     Goods goods;
-    OrderItems orderItems;
+    ECoupon eCoupon;
 
     @Before
     public void setUp() throws Exception {
@@ -43,20 +41,20 @@ public class KangouUtilTest extends UnitTest {
                 target.supplierGoodsId = 161l;
             }
         });
-        orderItems = FactoryBoy.create(OrderItems.class);
+        eCoupon = FactoryBoy.create(ECoupon.class);
     }
 
     @Test
     public void testGetCardId未设置外部商品ID返回NULL() throws Exception {
         goods.supplierGoodsId = null;
         goods.save();
-        assertNull(KangouUtil.getCardId(orderItems));
+        assertNull(KangouUtil.getCardId(eCoupon));
     }
 
     @Test
     public void testGetCardId购买一张券返回出错信息() throws Exception {
         mockErrorResponse();
-        assertEquals(0, KangouUtil.getCardId(orderItems).size());
+        assertNull(KangouUtil.getCardId(eCoupon));
     }
 
     @Test
@@ -66,26 +64,9 @@ public class KangouUtilTest extends UnitTest {
 
         mockGetCardIdResponse(cardId, cardNumber);
 
-        List<KangouCard> kangouCards = KangouUtil.getCardId(orderItems);
-        assertEquals(1, kangouCards.size());
-        assertEquals(cardId, kangouCards.get(0).cardId);
-        assertEquals(cardNumber, kangouCards.get(0).cardNumber);
-    }
-
-    @Test
-    public void testGetCardId购买3张券() throws Exception {
-        orderItems.buyNumber = 3l;
-        orderItems.save();
-        String cardId0 = RandomNumberUtil.generateRandomNumber(12);
-        String cardNumber0 = RandomNumberUtil.generateRandomNumber(10);
-        mockGetCardIdResponse(cardId0, cardNumber0);
-        mockGetCardIdResponse(RandomNumberUtil.generateRandomNumber(12), RandomNumberUtil.generateRandomNumber(10));
-        mockGetCardIdResponse(RandomNumberUtil.generateRandomNumber(12), RandomNumberUtil.generateRandomNumber(10));
-
-        List<KangouCard> kangouCards = KangouUtil.getCardId(orderItems);
-        assertEquals(3, kangouCards.size());
-        assertEquals(cardId0, kangouCards.get(0).cardId);
-        assertEquals(cardNumber0, kangouCards.get(0).cardNumber);
+        KangouCard kangouCard = KangouUtil.getCardId(eCoupon);
+        assertEquals(cardId, kangouCard.cardId);
+        assertEquals(cardNumber, kangouCard.cardNumber);
     }
 
     @Test
@@ -158,7 +139,7 @@ public class KangouUtilTest extends UnitTest {
     private void mockGetCardIdResponse(String cardId, String cardNumber) {
         Template template = TemplateLoader.load("test/data/kangou/GetCardIdResponse.xml");
         Map<String, Object> params = new HashMap<>();
-        params.put("orderNumber", orderItems.order.orderNumber);
+        params.put("orderNumber", eCoupon.id);
         params.put("cardId", cardId);
         params.put("cardNumber", cardNumber);
         String responseBody = template.render(params);

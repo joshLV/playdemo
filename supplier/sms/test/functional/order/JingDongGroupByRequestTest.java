@@ -1,10 +1,9 @@
-package functional.mock;
+package functional.order;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
-import models.sales.Goods;
 import models.sales.ResalerProduct;
 import org.junit.Before;
 import org.junit.Test;

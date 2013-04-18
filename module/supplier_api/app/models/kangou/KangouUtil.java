@@ -70,6 +70,7 @@ public class KangouUtil {
             "e125b66bd307e4fcc5a2e305367eb980");
     public static final String URL = Play.configuration.getProperty("kangou.url",
             "https://passport.kangou.cn/service/cardapi.aspx");
+    public static final String SUPPLIER_DOMAIN_NAME = "kangou";
 
 
     private static Map<String, Object> generateRequestParams(String functionId) {
@@ -113,32 +114,24 @@ public class KangouUtil {
 
      * @param orderItems  订单项
      */
-    public static List<KangouCard> getCardId(OrderItems orderItems) {
-        if (orderItems.goods.supplierGoodsId == null) {
+    public static KangouCard getCardId(ECoupon eCoupon) {
+        if (eCoupon.goods.supplierGoodsId == null) {
             Logger.error("看购网商品必须设置外部商品ID，goods(id:%d, name:%s",
-                    orderItems.goods.id, orderItems.goods.shortName);
+                    eCoupon.goods.id, eCoupon.goods.shortName);
             return null;
         }
         String functionId = "GetCardId";
         String ticketCount = "1";
         Map<String, Object> params = generateRequestParams(functionId);
-        params.put("OrderId", orderItems.order.orderNumber);
-        params.put("CardKindID", orderItems.goods.supplierGoodsId);
+        params.put("OrderId", eCoupon.id);
+        params.put("CardKindID", eCoupon.goods.supplierGoodsId);
         params.put("TicketCount", ticketCount); // TODO: 确认一下是否一个券一张票
-        params.put("HashCode", hashCode(MD5_KEY, USER_ID, orderItems.order.orderNumber,
-                orderItems.goods.supplierGoodsId.toString(), ticketCount, functionId));
+        params.put("HashCode", hashCode(MD5_KEY, USER_ID, eCoupon.id.toString(),
+                eCoupon.goods.supplierGoodsId.toString(), ticketCount, functionId));
 
-        Logger.info("KangouUtil.getCardId: orderId=%s, cardKindId=%s", orderItems.order.orderNumber,
-                orderItems.goods.supplierGoodsId.toString());
-        List<KangouCard> kangouCards = new ArrayList<>();
-        for (int i = 0; i < orderItems.buyNumber; i++) {
-            KangouCard card = doCallGetCardId(params);
-            if (card != null) {
-                kangouCards.add(card);
-            }
-        }
-
-        return kangouCards;
+        Logger.info("KangouUtil.getCardId: orderId=%s, cardKindId=%s", eCoupon.id,
+                eCoupon.goods.supplierGoodsId.toString());
+        return doCallGetCardId(params);
     }
 
     private static KangouCard doCallGetCardId(Map<String, Object> params) {
