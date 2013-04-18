@@ -128,4 +128,8 @@
 .wk-order-summary {
     margin-top: 5px;;
 }
+.wk-order-amount {
+    font-size: 30px;;
+    color: rgb(240, 98, 62);
+}
 

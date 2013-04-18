@@ -15,6 +15,7 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.consumer.UserWebIdentification;
+import models.ktv.KtvRoomOrderInfo;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;
@@ -835,12 +836,24 @@ public class Order extends Model {
                         eCoupon.partner = ECouponPartner.SINA;
                         eCoupon.save();
                     }
+
                     //记录券历史信息
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
                 }
+
+
+                //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
+                if ("1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
+                    List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItem);
+                    for (KtvRoomOrderInfo orderInfo : ktvRoomOrderInfoList) {
+                        orderInfo.dealKtvRoom();
+                    }
+
+                }
             }
+
             //邮件提醒
             sendPaidMail(goods, orderItem);
         }

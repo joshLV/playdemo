@@ -36,6 +36,7 @@ require:
     - oauth -> oauth
     - resale_api -> resale_api
     - supplier_api -> supplier_api
+    - ktv -> ktv
 
 repositories:
     - mavenRepository:
@@ -80,3 +81,4 @@ repositories:
             - oauth -> *
             - resale_api -> *
             - supplier_api -> *
+            - ktv -> *

@@ -8,6 +8,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import controllers.supplier.SupplierInjector;
 import models.ktv.KtvPriceSchedule;
+import models.ktv.KtvRoom;
 import models.ktv.KtvRoomType;
 import models.sales.Shop;
 import models.supplier.Supplier;
@@ -76,6 +77,17 @@ public class KtvPriceSchedules extends Controller {
         index(null, null);
     }
 
+    private static KtvRoom checkShopTime(KtvPriceSchedule priceSchedule, Shop shop) {
+        List<KtvRoom> rooms = KtvRoom.find("byShopAndRoomType", shop, priceSchedule.roomType).fetch();
+
+
+        for (KtvRoom room : rooms) {
+        }
+
+
+        return null;
+    }
+
     private static void checkTime(KtvPriceSchedule priceSchedule) {
         Set<Shop> shops = priceSchedule.shops;
 
@@ -95,8 +107,8 @@ public class KtvPriceSchedules extends Controller {
                             Validation.addError("priceSchedule.day", "该日期范围有交叉，请确认！");
                             break;
                         }
-                        if ((priceSchedule.startTime.compareTo(schedule.startTime) >= 0 && priceSchedule.startTime.compareTo(schedule.endTime) <= 0) ||
-                                priceSchedule.startTime.compareTo(schedule.endTime) <= 0) {
+                        if ((priceSchedule.startTime.compareTo(schedule.startTime) > 0 && priceSchedule.startTime.compareTo(schedule.endTime) < 0)) {
+//                               || priceSchedule.startTime.compareTo(schedule.endTime) < 0) {
                             Validation.addError("priceSchedule.useTime", "该时间段有交叉，请确认！");
                             break;
                         }
@@ -134,7 +146,6 @@ public class KtvPriceSchedules extends Controller {
         checkTime(priceSchedule);
         if (Validation.hasErrors()) {
             initParams(priceSchedule);
-            System.out.println(Validation.errors().get(0));
             render("KtvPriceSchedules/edit.html", priceSchedule);
         }
         KtvPriceSchedule.update(id, priceSchedule);

@@ -1,78 +1,24 @@
-var data = {
-    "rooms":[
-        {
-            "id":2,
-            "name":"小包厢1号",
-            "type":1
-        },
-        {
-            "id":3,
-            "name":"小包厢2号",
-            "type":1
-        }
-    ],
-    "prices":[
-        {
-            "startDay":"2013-04-11",
-            "endDay":"2013-04-18",
-            "weekday":"1,3,4,5",
-            "startTime":"10:00",
-            "endTime":"12:00",
-            "price":"30",
-            "roomType":1
-        },
-        {
-            "startDay":"2013-04-08",
-            "endDay":"2013-04-19",
-            "weekday":"1,2,3,5",
-            "startTime":"14:00",
-            "endTime":"16:00",
-            "price":"50",
-            "roomType":1
-        },
-        {
-            "startDay":"2013-04-10",
-            "endDay":"2013-04-19",
-            "weekday":"1,2,3,4,5",
-            "startTime":"18:00",
-            "endTime":"22:00",
-            "price":"60",
-            "roomType":1
-        }
-    ],
-    "schedules":[
-        {
-            "roomId":2,
-            "roomTime":"12:00"
-        },
-        {
-            "roomId":2,
-            "roomTime":"13:00"
-        }
-    ]
-};
-
 var KTVOrder = (function  () {
-    var colors = ["carrot","amethyst", "alizarin", "emerland"];
     var weekNames = ["一", "二", "三", "四", "五", "六", "日"];
 
     function KTVOrder(){
         return  init(
             this instanceof KTVOrder ? this : new KTVOrder(),
             arguments);
-    };
+    }
 
     function init(ktv, args) {
-        if (args.length != 1) { return ktv};
+        if (args.length != 1) { return ktv}
         ktv.wrapperId = args[0].wrapperId;
         ktv.summaryId = args[0].summaryId;
         ktv.amountId = args[0].amountId;
 
         ktv.day = new XDate(new XDate(args[0].day).toString("yyyy-MM-dd"));
         ktv.dataUrl = args[0].dataUrl;
+        ktv.productId = args[0].productId;
 
-        ktv.rooms = new Array();
-        ktv.selected = new Array();
+        ktv.rooms = [];
+        ktv.selected = [];
 
         $("#" + ktv.wrapperId + " .wk-order-days .wk-order-day").each(function(index){
             var ele = $(this);
@@ -81,12 +27,12 @@ var KTVOrder = (function  () {
             ele.attr("data-day", day.toString("yyyy-MM-dd"));
             ele.click(function(){
                 var dataDay = ele.attr("data-day");
-                if (ktv.day.diffDays(new XDate(dataDay)) == 0) {return;};
+                if (ktv.day.diffDays(new XDate(dataDay)) == 0) {return;}
                 ktv.loadScheduleDataFor(dataDay);
             });
         });
 
-        ktv.loadScheduleDataFor(args[0].startDay);
+        ktv.loadScheduleDataFor(ktv.day);
         return ktv;
     }
 
@@ -102,7 +48,7 @@ var KTVOrder = (function  () {
         var ktv = this;
         ktv.day = new XDate(new XDate(date).toString("yyyy-MM-dd"));
 
-        $("#" + ktv.wrapperId + " .wk-order-days .wk-order-day").each(function(index){
+        $("#" + ktv.wrapperId + " .wk-order-days .wk-order-day").each(function(){
             var ele = $(this);
             if (new XDate(ele.attr("data-day")).diffDays(ktv.day) == 0) {
                 ele.addClass("wk-order-day-selected");
@@ -112,34 +58,31 @@ var KTVOrder = (function  () {
 
         });
 
-        this.dataLoaded(data);
-        /*
-        ktv.monday = new XDate().setWeek(today.getWeek());
-        ktv.sunday = new XDate(ktv.monday).addDays(6);
         $.post(
             ktv.dataUrl,
-            {startDay: ktv.monday.toString("yyyy-MM-dd"), endDay: ktv.sunday.toString("yyyy-MM-dd")},
+            {
+                productId:ktv.productId,
+                day:ktv.day.toString("yyyy-MM-dd")
+            },
             function(data){
                 ktv.dataLoaded(data);
             }
         );
-        */
-    }
+    };
 
     function toggleSelected(ktv, ele) {
         var roomId = Number(ele.attr("data-room-id")); 
         var time = ele.attr("data-time");
 
         var index = -1;
+        var selected;
         for (var i = 0; i < ktv.selected.length; i++) {
-            var selected = ktv.selected[i]
-            if (selected) {
-                if (selected.roomId == roomId && selected.time == time) {
-                    index = i;
-                    break;
-                };
-            };
-        };
+            selected = ktv.selected[i];
+            if (selected.roomId == roomId && selected.time == time) {
+                index = i;
+                break;
+            }
+        }
         //更新保存的选择信息
         if (index >= 0) {
             ktv.selected.splice(index, 1);
@@ -154,11 +97,8 @@ var KTVOrder = (function  () {
         //更新总价
         var amount = 0;
         for (i = 0; i < ktv.selected.length; i++) {
-            var selected = ktv.selected[i]
-            if (selected) {
-                amount += selected.price;
-            };
-        };
+            amount += ktv.selected[i].price;
+        }
         $("#" + ktv.amountId).text("￥" + amount);
         return index;
     }
@@ -170,8 +110,7 @@ var KTVOrder = (function  () {
             var time = ele.attr("data-time");
             $("#" + ktv.wrapperId + " [data-room-id='" + roomId + "'][data-time='" + time + "']").removeClass("wk-order-room-selected");
             ele.remove();
-        };
-
+        }
     }
 
     function togglePriceCell(ktv, ele) {
@@ -215,13 +154,13 @@ var KTVOrder = (function  () {
 
         roomsEle.empty();
         $("#" + ktv.summaryId).empty();
-        ktv.selected = new Array();
-        ktv.rooms = new Array();
+        ktv.selected = [];
+        ktv.rooms = [];
 
         //创建房间
         for (var i = 0; i < data.rooms.length; i++) {
             var room = data.rooms[i];
-            ktv.rooms[room.id] = new Array();
+            ktv.rooms[room.id] = [];
             roomsEle.append(
                 $("<div/>", {
                     "class": "wk-order-room",
@@ -233,7 +172,7 @@ var KTVOrder = (function  () {
                     })
                 })
             );
-        };
+        }
         //先画上已预订的格子
         for (i = 0; i < data.schedules.length; i++) {
             var schedule = data.schedules[i];
@@ -248,20 +187,15 @@ var KTVOrder = (function  () {
                     }
                 })
             );
-        };
+        }
 
         //画上有价格的格子
         for (i = 0; i < data.prices.length; i++) {
             var price = data.prices[i];
-            var startDay = new XDate(price.startDay);
-            var endDay = new XDate(price.endDay);
-            if (startDay.diffDays(ktv.day) < 0 || endDay.diffDays(ktv.day) > 0 ) {
-                continue;//日期不符
-            };
             var weekdays = price.weekday.split(",");
             if ($.inArray(dayStartsWithMonday(ktv.day.getDay()).toString(), weekdays) < 0) {
                 continue;//星期不符
-            };
+            }
             var starTime = Number(price.startTime.substring(0, price.startTime.indexOf(":")));
             var endTime = Number(price.endTime.substring(0, price.endTime.indexOf(":")));
 
@@ -270,8 +204,8 @@ var KTVOrder = (function  () {
                     var ele = $(this);
                     var roomId = Number(ele.attr("data-room-id"));
                     if ($.inArray(j, ktv.rooms[roomId]) >= 0) {
-                        return true;//已经被预订
-                    };
+                        return;//已经被预订
+                    }
                     ktv.rooms[roomId].push(j);
 
                     ele.append(
@@ -289,8 +223,8 @@ var KTVOrder = (function  () {
                         })
                     );
                 });
-            };
-        };
+            }
+        }
         //补上空的格子
         $("#" + ktv.wrapperId + " [data-room-type]").each(function(){
             var ele = $(this);
@@ -298,7 +232,7 @@ var KTVOrder = (function  () {
             for (var i = 8; i <= 23; i++) {
                 if ($.inArray(i, ktv.rooms[roomId]) >= 0) {
                     continue;//已经有块了，或者是被预订，或者是有价格的
-                };
+                }
                 ele.append(
                     $("<div/>", {
                         "class": "wk-order-room-cell wk-order-room-blank",
@@ -308,10 +242,10 @@ var KTVOrder = (function  () {
                         }
                     })
                 );
-            };
+            }
 
         });
-    }
+    };
     return KTVOrder;
 })();
 
