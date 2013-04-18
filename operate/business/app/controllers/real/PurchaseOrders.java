@@ -13,7 +13,6 @@ import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
-import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -37,7 +36,7 @@ public class PurchaseOrders extends Controller {
         int page = getPage();
         List<PurchaseOrder> purchaseOrderList = PurchaseOrder.findByCondition(keyword);
         for (PurchaseOrder purchaseOrder : purchaseOrderList) {
-            purchaseOrder.totalPrice = BigDecimal.ONE.setScale(2);
+            purchaseOrder.totalPrice = BigDecimal.ZERO.setScale(2);
             for (PurchaseItem item : purchaseOrder.purchaseItems) {
                 purchaseOrder.totalPrice = purchaseOrder.totalPrice.add(item.price.multiply(BigDecimal.valueOf(item.count)).setScale(2, BigDecimal.ROUND_HALF_UP));
             }
