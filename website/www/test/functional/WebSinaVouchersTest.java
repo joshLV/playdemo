@@ -230,7 +230,7 @@ public class WebSinaVouchersTest extends FunctionalTest {
         params.put("productId", product.partnerProductId);
         params.put("scheduledDay", DateUtil.dateToString(new Date(), 0));
         params.put("phone", "13231283912");
-        params.put("roomId" + ktvRoomA.id, "08:00@09:00");
+        params.put("roomId" + ktvRoomA.id, "08:00,09:00");
         Http.Response response = POST(Router.reverse("WebSinaVouchers.order"), params);
         assertStatus(200, response);
         assertEquals(1, Order.count());
