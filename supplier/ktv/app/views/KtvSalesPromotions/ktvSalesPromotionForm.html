@@ -1,0 +1,82 @@
+<div class="field-group">
+    <label>促销名称</label>
+#{if "add".equals(action)}
+    <input type="text" name="salesPromotion.name" value="${salesPromotion?.name}"/>
+    <span class="error">#{error 'salesPromotion.name' /}</span>
+#{/if}
+#{else}
+${salesPromotion?.name}
+#{/else}
+</div>
+
+<div class="field-group">
+    <label>促销类型</label>
+#{if "add".equals(action)}
+    #{list items:promotionTypeList,as:'promotionType'}
+        <input type="radio" name="salesPromotion.promotionType"
+               value="${promotionType}" ${(salesPromotion?.promotionType?.name==promotionType) ?'checked':''}/>${promotionType}
+        &nbsp;&nbsp;
+    #{/list}
+    <span class="error">#{error 'salesPromotion.promotionType' /}</span>
+#{/if}
+#{else}
+${salesPromotion.promotionType.name}
+    <input type="hidden" name="salesPromotion.promotionType" value="${salesPromotion.promotionType}"/>
+#{/else}
+</div>
+<div class="field-group">
+    <label>促销时间</label>
+    <input type="text" class="time" name="salesPromotion.startDay" onfocus="WdatePicker({readOnly:true})"
+           value="${salesPromotion?.startDay?.format()}"><span>到</span>
+    <span class="error">#{error 'salesPromotion.startDay' /}</span>
+    <input type="text" class="time"
+           name="salesPromotion.endDay"
+           onfocus="WdatePicker({readOnly:true})" value="${salesPromotion?.endDay?.format()}">
+    <span class="error">#{error 'salesPromotion.endDay' /}</span>
+    <span class="error">#{error 'salesPromotion.day' /}</span>
+</div>
+
+<div class="field-group">
+    <label>促销适用时段</label>
+    <select name="salesPromotion.startTime" id="startTime" style="width: auto">
+        <option value="08:00">08:00</option>
+        <option value="09:00">09:00</option>
+        <option value="10:00">10:00</option>
+        <option value="11:00">11:00</option>
+        <option value="12:00">12:00</option>
+        <option value="13:00">13:00</option>
+        <option value="14:00">14:00</option>
+        <option value="15:00">15:00</option>
+        <option value="16:00">16:00</option>
+        <option value="17:00">17:00</option>
+        <option value="18:00">18:00</option>
+        <option value="19:00">19:00</option>
+        <option value="20:00">20:00</option>
+        <option value="21:00">21:00</option>
+        <option value="22:00">22:00</option>
+        <option value="23:00">23:00</option>
+    </select>
+    <span>到</span>
+    <select name="salesPromotion.endTime" id="endTime" style="width: auto">
+        <option value="09:00">09:00</option>
+        <option value="10:00">10:00</option>
+        <option value="11:00">11:00</option>
+        <option value="12:00">12:00</option>
+        <option value="13:00">13:00</option>
+        <option value="14:00">14:00</option>
+        <option value="15:00">15:00</option>
+        <option value="16:00">16:00</option>
+        <option value="17:00">17:00</option>
+        <option value="18:00">18:00</option>
+        <option value="19:00">19:00</option>
+        <option value="20:00">20:00</option>
+        <option value="21:00">21:00</option>
+        <option value="22:00">22:00</option>
+        <option value="23:00">23:00</option>
+        <option value="24:00">24:00</option>
+    </select>
+    <span class="error">#{error 'salesPromotion.useTime' /}</span>
+</div>
+<div class="field-group">
+    <input type="submit" class="btn" value="确定"/> <a href="/ktv/room-type">取消</a>
+</div>

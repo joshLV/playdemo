@@ -23,6 +23,10 @@ DELETE  /ktv/price-schedule/{id}                         KtvPriceSchedules.delet
 PUT     /ktv/price-schedule/{id}                         KtvPriceSchedules.update
 
 
+#ktv 促销活动
+GET     /ktv/sales-promotion                             KtvSalesPromotions.index
+GET     /ktv/sales-promotion/new                         KtvSalesPromotions.add
+
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
