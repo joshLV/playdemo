@@ -709,9 +709,8 @@ public class Order extends Model {
 
 
         if (paid()) {
-//            //ktv 一个room被两个消费者订购，只有一个成功，另外一个则进行如果也支付成功，则对其做退款处理，并且把订单状态和orderItem状态变为CANCELED
+            //ktv 一个room被两个消费者订购，只有一个成功，另外一个则进行如果也支付成功，则对其做退款处理，并且把订单状态和orderItem状态变为CANCELED
 //            List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrder(this);
-//            System.out.println(ktvRoomOrderInfoList.size()+"-----------");
 //            if (ktvRoomOrderInfoList.size() > 0) {
 //                for (KtvRoomOrderInfo ktvRoomOrderInfo : ktvRoomOrderInfoList) {
 //                    ktvRoomOrderInfo.cancelKtvRoom();

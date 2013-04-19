@@ -17,6 +17,22 @@
 
         <div style="overflow-x: auto" id="wk-order-scroll">
             <div class="wk-order-wrapper" id="wk-order-wrapper">
+                <table style="margin-bottom: 5px">
+                    <tr>
+                        <td>
+                            <div class="wk-order-info-avaliable"></div>
+                        </td>
+                        <td> 可预订</td>
+                        <td>
+                            <div class="wk-order-info-reserved"></div>
+                        </td>
+                        <td> 已预订</td>
+                        <td>
+                            <div class="wk-order-info-selected"></div>
+                        </td>
+                        <td> 您选择的</td>
+                    </tr>
+                </table>
                 <div class="wk-order-nav-wrapper">
                     <div class="wk-order-nav-left">
                         <table cellspacing="0" cellpadding="0">
@@ -40,24 +56,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="wk-order-nav-right">
-                        <table>
-                            <tr>
-                                <td>
-                                    <div class="wk-order-info-avaliable"></div>
-                                </td>
-                                <td> 可预订</td>
-                                <td>
-                                    <div class="wk-order-info-reserved"></div>
-                                </td>
-                                <td> 已预订</td>
-                                <td>
-                                    <div class="wk-order-info-selected"></div>
-                                </td>
-                                <td> 您选择的</td>
-                            </tr>
-                        </table>
-                    </div>
+                *{<div class="wk-order-nav-right"></div>}*
                 </div>
                 <div class="wk-order-main-wrapper">
                     <div class="wk-order-times">
@@ -189,20 +188,17 @@
 </div>
 
 #{set 'moreStyles'}
-<link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/ktv-order.css'}">
+#{asset.css src:['/y/ktv/ktv-order.css']/}
 #{/set}
 
 #{set 'moreScripts' }
-#{asset.js src:'/y/xdate.js'/}
-<script src="@{'/public/javascripts/ktvorder.js'}" type="text/javascript" charset="UTF-8"></script>
-<script src="@{'/public/javascripts/iscroll-lite.js'}" type="text/javascript" charset="UTF-8"></script>
-
+#{asset.js src:['/ktv/xdate.js','/ktv/ktvorder.js','/ktv/iscroll-lite.js']/}
 
 <script type="text/javascript">
     $(function () {
         var ktvOrder = KTVOrder({
-            dataUrl:"/ktv/roominfo/json-search",
-            productId:$("#productId").val(),
+            dataUrl: "/ktv/roominfo/json-search",
+            productId: $("#productId").val(),
             wrapperId: "wk-order-wrapper",
             summaryId: "wk-order-summary",
             amountId: "wk-order-amount",

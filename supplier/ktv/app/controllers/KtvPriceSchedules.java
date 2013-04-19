@@ -110,8 +110,7 @@ public class KtvPriceSchedules extends Controller {
                         }
                         System.out.println("startTime=" + schedule.startTime + "&endTime=" + schedule.endTime);
                         //10：00~12：00  交叉的可能时间段09:00~11:00 或 11：00~13：00
-                        if ((priceSchedule.startTime.compareTo(schedule.startTime) <= 0 && priceSchedule.endTime.compareTo(schedule.endTime) <= 0)
-                                || (priceSchedule.startTime.compareTo(schedule.startTime) >= 0 && priceSchedule.endTime.compareTo(schedule.endTime) >= 0)) {
+                        if (!(priceSchedule.endTime.compareTo(schedule.startTime) <= 0 || priceSchedule.startTime.compareTo(schedule.endTime) >= 0)) {
                             Validation.addError("priceSchedule.useTime", "该时间段有交叉，请确认！");
                             break;
                         }
