@@ -182,6 +182,7 @@
         <button class="button main-button" type="button" id="submitButton">使用微币支付</button>
     </div>
     <input type="hidden" name="productId" id="productId" value="${productId}">
+    <input type="hidden" id="shopId" value="${shopId}">
     <input type="hidden" name="source" value="wap">
     <input type="hidden" name="scheduledDay" id="scheduledDay">
 #{/form}
@@ -198,7 +199,7 @@
     $(function () {
         var ktvOrder = KTVOrder({
             dataUrl: "/ktv/roominfo/json-search",
-            productId: $("#productId").val(),
+            shopId: $("#shopId").val(),
             wrapperId: "wk-order-wrapper",
             summaryId: "wk-order-summary",
             amountId: "wk-order-amount",

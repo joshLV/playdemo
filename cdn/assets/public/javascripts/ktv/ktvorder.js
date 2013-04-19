@@ -10,12 +10,13 @@ var KTVOrder = (function  () {
     function init(ktv, args) {
         if (args.length != 1) { return ktv}
         ktv.wrapperId = args[0].wrapperId;
+        ktv.viewMode = args[0].viewMode;
         ktv.summaryId = args[0].summaryId;
         ktv.amountId = args[0].amountId;
 
         ktv.day = new XDate(new XDate(args[0].day).toString("yyyy-MM-dd"));
         ktv.dataUrl = args[0].dataUrl;
-        ktv.productId = args[0].productId;
+        ktv.shopId = args[0].shopId;
 
         ktv.rooms = [];
         ktv.selected = [];
@@ -61,7 +62,7 @@ var KTVOrder = (function  () {
         $.post(
             ktv.dataUrl,
             {
-                productId:ktv.productId,
+                shopId:ktv.shopId,
                 day:ktv.day.toString("yyyy-MM-dd")
             },
             function(data){
@@ -208,20 +209,21 @@ var KTVOrder = (function  () {
                     }
                     ktv.rooms[roomId].push(j);
 
-                    ele.append(
-                        $("<div/>", {
-                            "class": "wk-order-room-cell wk-order-room-price",
-                            "data-room-id":roomId,
-                            "data-time":j + ":00",
-                            "data-price": price.price,
-                            text: "￥" + price.price,
-                            css:{
-                                "top":"2px",
-                                "left": (60 + 4 + (j-8)*44) + "px"
-                            },
-                            click:function(){togglePriceCell(ktv, $(this))}
-                        })
-                    );
+                    var priceCell = $("<div/>", {
+                        "class": "wk-order-room-cell wk-order-room-price",
+                        "data-room-id":roomId,
+                        "data-time":(j<10 ? "0"+j : j) + ":00",
+                        "data-price": price.price,
+                        text: "￥" + price.price,
+                        css:{
+                            "top":"2px",
+                            "left": (60 + 4 + (j-8)*44) + "px"
+                        }
+                    })
+                    if (!ktv.viewMode) {
+                        priceCell.click(function(){togglePriceCell(ktv, $(this))});
+                    };
+                    ele.append(priceCell);
                 });
             }
         }
