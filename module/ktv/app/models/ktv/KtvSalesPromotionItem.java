@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import models.ktv.KtvSalesPromotion;
 
 /**
  * Ktv促销活动明细.
@@ -23,7 +24,7 @@ import java.math.BigDecimal;
 public class KtvSalesPromotionItem extends Model {
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "sales_promotion_id")
-    public models.ktv.KtvSalesPromotion salesPromotion;
+    public KtvSalesPromotion salesPromotion;
 
     /**
      * 连续预订总时长

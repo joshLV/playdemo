@@ -36,205 +36,207 @@
 </style>
 #{/set}
 <div class="body">
-<legend>${title}</legend>
-<form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateGoods.index()}" method="GET">
-    <table width="100%">
-        <tr>
-            <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-            #{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}</td>
+    <legend>${title}</legend>
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateGoods.index()}" method="GET">
+        <table width="100%">
+            <tr>
+                <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
+                #{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}</td>
 
-            <td width="20%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
-                                        value="${condition?.shortName}"/></td>
-            <td>商品编码：<input type="text" name="condition.code" class="input-medium"
-                                        value="${condition?.code}"/></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td width="30%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
-            #{vx.selectInputField name:"brandName", id:"condition.brandId", list:brandList, array:"brandArray"/}</td>
-            <td width="20%">销售专员工号：<input type="text" name="condition.jobNumber" class="input-medium"
-                              value="${condition?.jobNumber}"/>
-            </td>
-        *{<td width="30%">编号：<input type="text" name="condition.no" class="input-medium"}*
-        *{value="${condition?.no}"/></td>}*
-
-
-        *{</tr>}*
-        *{<tr>}*
-        *{<td width="30%">现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" name="condition.salePriceBegin"}*
-        *{class="input-medium"}*
-        *{value="${condition?.salePriceBegin}"/>}*
-        *{至 <input type="text" name="condition.salePriceEnd" class="input-medium"}*
-        *{value="${condition?.salePriceEnd}"/>}*
-        *{</td>}*
-        *{<td>剩余库存：<input type="text" name="condition.saleCountBegin" class="input-small"}*
-        *{value="#{if condition?.saleCountBegin >=0}${condition?.saleCountBegin}#{/if}"/>}*
-        *{至 <input type="text" name="condition.saleCountEnd" class="input-small"}*
-        *{value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>}*
-        *{</td>}*
-            <td>状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
-            #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
-                #{option ""}不限#{/option}
-                #{option "ONSALE"}&{'goods.ONSALE'}#{/option}
-                #{option "OFFSALE"}&{'goods.OFFSALE'}#{/option}
-                #{option "APPLY"}&{'goods.APPLY'}#{/option}
-                #{option "REJECT"}&{'goods.REJECT'}#{/option}
-            #{/select}
-           设置精选：<input type="checkbox" name="condition.priority" id="priority" class="input-medium"
-                            value="${condition?.priority}" ${condition?.priority == 1 ?'checked':''}/>
-                &nbsp; &nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
-                                         value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
-                <button class="btn btn-large btn-primary" id="searchbtn" type="submit">搜索</button>
+                <td width="20%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
+                                            value="${condition?.shortName}"/></td>
+                <td>商品编码：<input type="text" name="condition.code" class="input-medium"
+                                value="${condition?.code}"/></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td width="30%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
+                #{vx.selectInputField name:"brandName", id:"condition.brandId", list:brandList, array:"brandArray"/}</td>
+                <td width="20%">销售专员工号：<input type="text" name="condition.jobNumber" class="input-medium"
+                                              value="${condition?.jobNumber}"/>
+                </td>
+            *{<td width="30%">编号：<input type="text" name="condition.no" class="input-medium"}*
+            *{value="${condition?.no}"/></td>}*
 
 
+            *{</tr>}*
+            *{<tr>}*
+            *{<td width="30%">现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" name="condition.salePriceBegin"}*
+            *{class="input-medium"}*
+            *{value="${condition?.salePriceBegin}"/>}*
+            *{至 <input type="text" name="condition.salePriceEnd" class="input-medium"}*
+            *{value="${condition?.salePriceEnd}"/>}*
+            *{</td>}*
+            *{<td>剩余库存：<input type="text" name="condition.saleCountBegin" class="input-small"}*
+            *{value="#{if condition?.saleCountBegin >=0}${condition?.saleCountBegin}#{/if}"/>}*
+            *{至 <input type="text" name="condition.saleCountEnd" class="input-small"}*
+            *{value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>}*
+            *{</td>}*
+                <td>状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
+                #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
+                    #{option ""}不限#{/option}
+                    #{option "ONSALE"}&{'goods.ONSALE'}#{/option}
+                    #{option "OFFSALE"}&{'goods.OFFSALE'}#{/option}
+                    #{option "APPLY"}&{'goods.APPLY'}#{/option}
+                    #{option "REJECT"}&{'goods.REJECT'}#{/option}
+                #{/select}
+                    设置精选：<input type="checkbox" name="condition.priority" id="priority" class="input-medium"
+                                value="${condition?.priority}" ${condition?.priority == 1 ?'checked':''}/>
+                    &nbsp; &nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery"
+                                             class="input-medium"
+                                             value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
+                    <button class="btn btn-large btn-primary" id="searchbtn" type="submit">搜索</button>
 
-            </td>
-            <input type="hidden" id="J_rank" name="condition.desc" value=${condition?.desc}/>
-            <input type="hidden" name="queryString" value="${queryString}"/>
-        </tr>
-    </table>
-</form>
-<form class="form-horizontal" name="deletefrm" id="deletefrm">
-    <input type="hidden" name="queryString" value="${queryString}"/>
-    <input type="hidden" name="page" value="${goodsPage.pageNumber}">
 
-    <div style="margin-bottom: 12px">
-        <button class="btn btn-primary" id="onsales" type="button" data-url="/onSale">同意上架</button>
-    *{<button class="btn btn-primary" id="offsales" type="button" data-url="/offSale">批量下架</button>}*
-        <button class="btn btn-primary" id="deletebtn" type="button">删除</button>
-    </div>
+                </td>
+                <input type="hidden" id="J_rank" name="condition.desc" value=${condition?.desc}/>
+                <input type="hidden" name="queryString" value="${queryString}"/>
+            </tr>
+        </table>
+    </form>
+    <form class="form-horizontal" name="deletefrm" id="deletefrm">
+        <input type="hidden" name="queryString" value="${queryString}"/>
+        <input type="hidden" name="page" value="${goodsPage.pageNumber}">
+
+        <div style="margin-bottom: 12px">
+            <button class="btn btn-primary" id="onsales" type="button" data-url="/onSale">同意上架</button>
+        *{<button class="btn btn-primary" id="offsales" type="button" data-url="/offSale">批量下架</button>}*
+            <button class="btn btn-primary" id="deletebtn" type="button">删除</button>
+        </div>
 
 
-#{vx.tab name:'goods',enumItems: [models.sales.GoodsStatus.ONSALE,models.sales.GoodsStatus.OFFSALE,
-models.sales.GoodsStatus.APPLY,models.sales.GoodsStatus.REJECT],
-select:'condition_status',value:condition?.status/}
-    <table class="table table-striped table-bordered table-condensed">
-        <thead>
-        <tr>
-            <th width="35px"><input type="checkbox" id="selectall" name="selectall">全选</th>
+    #{vx.tab name:'goods',enumItems: [models.sales.GoodsStatus.ONSALE,models.sales.GoodsStatus.OFFSALE,
+    models.sales.GoodsStatus.APPLY,models.sales.GoodsStatus.REJECT],
+    select:'condition_status',value:condition?.status/}
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th width="35px"><input type="checkbox" id="selectall" name="selectall">全选</th>
 
-        #{layout_operate.sortField name:'商户', descField:condition?.desc, desc:'2000000000000',asc:'1000000000000'/}
-        *{#{layout_operate.sortField name:'编号', descField:condition?.desc, desc:'0200000000000',asc:'0100000000000'/}}*
-        #{layout_operate.sortField name:'名称', descField:condition?.desc, desc:'0020000000000',asc:'0010000000000'/}
-        #{layout_operate.sortField name:'原价', descField:condition?.desc, desc:'0002000000000',asc:'0001000000000'/}
-        #{layout_operate.sortField name:'采购价', descField:condition?.desc, desc:'0000200000000',asc:'0000100000000'/}
-        #{layout_operate.sortField name:'售价', descField:condition?.desc, desc:'0000020000000',asc:'0000010000000'/}
-        #{layout_operate.sortField name:'剩余库存', descField:condition?.desc, desc:'0000002000000',asc:'0000001000000'/}
-        *{#{layout_operate.sortField name:'销量', descField:condition?.desc, desc:'0000000200000',asc:'0000000100000'/}}*
-        #{layout_operate.sortField name:'上架时间', descField:condition?.desc, desc:'0000000000020',asc:'0000000000010'/}
-        #{layout_operate.sortField name:'下架时间', descField:condition?.desc, desc:'0000000000002',asc:'0000000000001'/}
-        #{layout_operate.sortField name:'到期时间', descField:condition?.desc, desc:'0000000020000',asc:'0000000010000'/}
-        *{#{layout_operate.sortField name:'最后修改', descField:condition?.desc, desc:'0000000002000',asc:'0000000001000'/}}*
-        #{layout_operate.sortField name:'类型', descField:condition?.desc, desc:'0000000000200',asc:'0000000000100'/}
-            <th width="60px">&{'goods.status'}</th>
-            <th width="70px">编码</th>
-            <th width="100px">操 作</th>
-        </tr>
-        </thead>
+            #{layout_operate.sortField name:'商户', descField:condition?.desc, desc:'2000000000000',asc:'1000000000000'/}
+            *{#{layout_operate.sortField name:'编号', descField:condition?.desc, desc:'0200000000000',asc:'0100000000000'/}}*
+            #{layout_operate.sortField name:'名称', descField:condition?.desc, desc:'0020000000000',asc:'0010000000000'/}
+            #{layout_operate.sortField name:'原价', descField:condition?.desc, desc:'0002000000000',asc:'0001000000000'/}
+            #{layout_operate.sortField name:'采购价', descField:condition?.desc, desc:'0000200000000',asc:'0000100000000'/}
+            #{layout_operate.sortField name:'售价', descField:condition?.desc, desc:'0000020000000',asc:'0000010000000'/}
+            #{layout_operate.sortField name:'剩余库存', descField:condition?.desc, desc:'0000002000000',asc:'0000001000000'/}
+            *{#{layout_operate.sortField name:'销量', descField:condition?.desc, desc:'0000000200000',asc:'0000000100000'/}}*
+            #{layout_operate.sortField name:'上架时间', descField:condition?.desc, desc:'0000000000020',asc:'0000000000010'/}
+            #{layout_operate.sortField name:'下架时间', descField:condition?.desc, desc:'0000000000002',asc:'0000000000001'/}
+            #{layout_operate.sortField name:'到期时间', descField:condition?.desc, desc:'0000000020000',asc:'0000000010000'/}
+            *{#{layout_operate.sortField name:'最后修改', descField:condition?.desc, desc:'0000000002000',asc:'0000000001000'/}}*
+            #{layout_operate.sortField name:'类型', descField:condition?.desc, desc:'0000000000200',asc:'0000000000100'/}
+                <th width="60px">&{'goods.status'}</th>
+                <th width="70px">编码</th>
+                <th width="100px">操 作</th>
+            </tr>
+            </thead>
 
-        <tbody>
+            <tbody>
 
-        #{paginate.list items:goodsPage, as:'goods'}
-        #{set realStock:goods.realStocks/}
-        <tr class="#{if goods.isExpired() || realStock == 0}tr-offsale#{/if} transparent">
-            <td style="text-align:center"><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/></td>
-            <td>${goods?.getSupplier()?.otherName}</td>
-        *{<td>${goods?.no}</td>}*
-            <td>
-                <table>
-                    <tbody>
-                    <tr>
-                        <td>
-                            <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${goods.id}?preview=true"><img
-                                    src="${goods?.imageTinyPath}"/></a></td>
-                        <td>
-                            <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${goods.id}?preview=true">${goods?.shortName}
-                            </a>
-                            #{if goods.priority != null && goods.priority >0}
-                                &nbsp;<span style="color: #ff0000;">&{'goods.priority'}:${goods.priority}</span>#{/if}
-                            #{if goods.keywords != null}
-                                <br/>SEO关键字: ${goods.keywords}
+            #{paginate.list items:goodsPage, as:'goods'}
+                #{set realStock:goods.realStocks/}
+            <tr class="#{if goods.isExpired() || realStock == 0}tr-offsale#{/if} transparent">
+                <td style="text-align:center"><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/>
+                </td>
+                <td>${goods?.getSupplier()?.otherName}</td>
+            *{<td>${goods?.no}</td>}*
+                <td>
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${goods.id}?preview=true"><img
+                                        src="${goods?.imageTinyPath}"/></a></td>
+                            <td>
+                                <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${goods.id}?preview=true">${goods?.shortName}
+                                </a>
+                                #{if goods.priority != null && goods.priority >0}
+                                    &nbsp;<span style="color: #ff0000;">&{'goods.priority'}
+                                    :${goods.priority}</span>#{/if}
+                                #{if goods.keywords != null}
+                                    <br/>SEO关键字: ${goods.keywords}
+                                #{/if}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="amount">${goods?.faceValue?.formatCurrency('CNY')}</td>
+                <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
+                <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>
+                <td class="amount">${realStock}</td>
+            *{<td class="amount">${goods?.getRealSaleCount()}</td>}*
+
+                #{if goods?.beginOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
+                    <td style="color:red;">${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                #{/if}
+                #{else}
+                    <td>${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                #{/else}
+
+                #{if goods?.endOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
+                    <td style="color:red;">${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                #{/if}
+                #{else}
+                    <td>${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                #{/else}
+
+                <td>${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            *{<td>${goods?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>}*
+                <td>&{'goods.'+goods?.materialType}</td>
+                <td> #{if goods.isExpired()}<span class="expired">已过期</span><br/>#{/if}
+                    #{if realStock == 0}<span class="zeroBaseSale">零库存</span><br/>#{/if}
+                &{'goods.'+goods?.getStatus()}
+                    #{if  hasApproveGoodsPermission == true }
+                        #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
+                            #{if goods?.endOnSaleAt.compareTo(new java.util.Date())>0 && realStock != 0 }
+                                <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
                             #{/if}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </td>
-            <td class="amount">${goods?.faceValue?.formatCurrency('CNY')}</td>
-            <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
-            <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>
-            <td class="amount">${realStock}</td>
-        *{<td class="amount">${goods?.getRealSaleCount()}</td>}*
-
-            #{if goods?.beginOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
-                <td style="color:red;">${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-            #{/if}
-            #{else}
-                <td>${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-            #{/else}
-
-            #{if goods?.endOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
-                <td style="color:red;">${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-            #{/if}
-            #{else}
-                <td>${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-            #{/else}
-
-            <td>${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-        *{<td>${goods?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>}*
-            <td>&{'goods.'+goods?.materialType}</td>
-            <td> #{if goods.isExpired()}<span class="expired">已过期</span><br/>#{/if}
-                #{if realStock == 0}<span class="zeroBaseSale">零库存</span><br/>#{/if}
-            &{'goods.'+goods?.getStatus()}
-                #{if  hasApproveGoodsPermission == true }
-                    #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
-                        #{if goods?.endOnSaleAt.compareTo(new java.util.Date())>0 && realStock != 0 }
+                            <br/>#{vx.operateLink text:"拒绝上架", url:"/goods/"+goods?.id+"/reject?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
+                        #{/if}
+                        #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) || realStock == 0}
+                        %{url="/goods/"+goods.id+"/offSale?page="+(goodsPage.pageNumber?:1) + "&"+queryString}%
+                            <br/>#{vx.operateLink text:"强制下架", url:url,method:"PUT"/}#{/if}
+                        #{if models.sales.GoodsStatus.REJECT.equals(goods.status) && !goods.isExpired()}
                             <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
                         #{/if}
-                        <br/>#{vx.operateLink text:"拒绝上架", url:"/goods/"+goods?.id+"/reject?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
-                    #{/if}
-                    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) || realStock == 0}
-                    %{url="/goods/"+goods.id+"/offSale?page="+(goodsPage.pageNumber?:1) + "&"+queryString}%
-                        <br/>#{vx.operateLink text:"强制下架", url:url,method:"PUT"/}#{/if}
-                    #{if models.sales.GoodsStatus.REJECT.equals(goods.status) && !goods.isExpired()}
-                        <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
-                    #{/if}
-                    #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status) && !goods.isExpired() && realStock != 0}
-                        <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
-                    #{/if}
-                    #{if models.sales.GoodsStatus.APPLY.equals(goods.status) && !goods.isExpired() && realStock != 0 && goods?.endOnSaleAt.compareTo(new java.util.Date())>0 }
-                        <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
-                    #{/if}
+                        #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status) && !goods.isExpired() && realStock != 0}
+                            <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
+                        #{/if}
+                        #{if models.sales.GoodsStatus.APPLY.equals(goods.status) && !goods.isExpired() && realStock != 0 && goods?.endOnSaleAt.compareTo(new java.util.Date())>0 }
+                            <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
+                        #{/if}
 
-                #{/if}
-            </td>
-            <td>${goods?.code}</td>
-            <td>
-                <a href="@{OperateGoods.show(goods.id)}">查看</a>
-                /<a href="/goods/${goods.id}/edit2?page=${goodsPage.pageNumber?:'1'}&${queryString}">修改</a>
-                #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
-                .equals(goods.status)}
-                    / #{vx.deleteLink action:"goods", id:goods.id, name:goods.shortName/}
-                #{/if}
-                #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) }
-                    /<a href="#" id="linkSend_${goods.id}"
-                        onclick="prepareSend('${goods.id}','${goods.priority}','${goods.keywords}')
-                                ">网站选项</a>
+                    #{/if}
+                </td>
+                <td>${goods?.code}</td>
+                <td>
+                    <a href="@{OperateGoods.show(goods.id)}">查看</a>
+                    /<a href="/goods/${goods.id}/edit2?page=${goodsPage.pageNumber?:'1'}&${queryString}">修改</a>
+                    #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
+                    .equals(goods.status)}
+                        / #{vx.deleteLink action:"goods", id:goods.id, name:goods.shortName/}
+                    #{/if}
+                    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) }
+                        /<a href="#" id="linkSend_${goods.id}"
+                            onclick="prepareSend('${goods.id}','${goods.priority}','${goods.keywords}')
+                                    ">网站选项</a>
 
-                #{/if}/<a href="@{OperateGoods.copy(goods.id)}">复制</a>/
+                    #{/if}/<a href="@{OperateGoods.copy(goods.id)}">复制</a>/
 
-                <a href="@{OperateGoods.showHistory(goods.id)}" target="_blank">查看历史记录</a>
-            </td>
-        </tr>
-        #{/paginate.list}
-        </tbody>
-    </table>
-</form>
-<div class="pagination" align="center">
-    <ul>
-    #{paginate.controls items:goodsPage /}
-    </ul>
-</div>
+                    <a href="@{OperateGoods.showHistory(goods.id)}" target="_blank">查看历史记录</a>
+                </td>
+            </tr>
+            #{/paginate.list}
+            </tbody>
+        </table>
+    </form>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:goodsPage /}
+        </ul>
+    </div>
 </div>
 
 <div class="modal" id="sendModal" style="display: none;">

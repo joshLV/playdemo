@@ -7,6 +7,9 @@ import play.data.validation.Max;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.solr.SolrField;
+import models.ktv.KtvPromotionType;
+import models.ktv.KtvRoomType;
+import models.ktv.KtvSalesPromotionItem;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -40,7 +43,7 @@ public class KtvSalesPromotion extends Model {
      * 促销名称(不能超过5个汉字)
      */
     @Required
-    @Max(10)
+//    @Max(20)
     public String name;
 
     /**
@@ -49,7 +52,7 @@ public class KtvSalesPromotion extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "ktv_promotion_type")
     @SolrField
-    public models.ktv.KtvPromotionType promotionType;
+    public KtvPromotionType promotionType;
 
     /**
      * 开始日期
@@ -89,10 +92,10 @@ public class KtvSalesPromotion extends Model {
     @JoinTable(name = "ktv_sales_promotions_room_types",
             inverseJoinColumns = @JoinColumn(name = "room_type_id"),
             joinColumns = @JoinColumn(name = "ktv_sales_promotion_id"))
-    public Set<models.ktv.KtvRoomType> roomTypes;
+    public Set<KtvRoomType> roomTypes;
 
     @OneToMany(mappedBy = "salesPromotion")
-    public List<models.ktv.KtvSalesPromotionItem> salesPromotionItem;
+    public List<KtvSalesPromotionItem> salesPromotionItem;
 
 
     @Column(name = "created_at")
@@ -100,7 +103,6 @@ public class KtvSalesPromotion extends Model {
 
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
-
 
 
 }

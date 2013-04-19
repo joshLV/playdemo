@@ -10,3 +10,8 @@ priceSchedule.roomType=包厢类型
 priceSchedule.price=价格
 priceSchedule.useTime=适用时段
 
+salesPromotion.CONTINUOUS_RESERVE_DISCOUNT= 连续预订打折
+salesPromotion.CONTINUOUS_RESERVE_REDUCTION=  连续预订立减
+salesPromotion.ADVANCED_RESERVE_DISCOUNT  = 提前预订打折
+salesPromotion.ADVANCED_RESERVE_REDUCTION =  提前预订立减
+

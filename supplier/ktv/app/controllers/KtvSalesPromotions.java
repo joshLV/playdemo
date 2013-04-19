@@ -2,6 +2,7 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
+import models.ktv.KtvSalesPromotion;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import play.data.validation.Valid;
@@ -14,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * TODO.
+ * ktv促销活动管理
  * <p/>
  * User: wangjia
  * Date: 13-4-18
@@ -31,19 +32,25 @@ public class KtvSalesPromotions extends Controller {
         render();
     }
 
-    public static void create(@Valid models.ktv.KtvSalesPromotion salesPromotion) {
+    public static void create(@Valid KtvSalesPromotion salesPromotion) {
         if (Validation.hasErrors()) {
             initParams(salesPromotion);
             render("/KtvSalesPromotions/add.html", salesPromotion);
         }
+//        System.out.println(salesPromotion.name + "《=========salesPromotion.name:");
+//        System.out.println(salesPromotion.promotionType + "《=========salesPromotion.promotionType:");
+//        System.out.println(salesPromotion.endDay + "《=========salesPromotion.endDay:");
+//        System.out.println(salesPromotion.endTime + "《=========salesPromotion.endTime:");
+//        System.out.println(salesPromotion.startDay + "《=========salesPromotion.startDay:");
+//        System.out.println(salesPromotion.startTime + "《=========salesPromotion.startTime:");
         salesPromotion.createdAt = new Date();
         salesPromotion.deleted = DeletedStatus.UN_DELETED;
         salesPromotion.save();
         index();
     }
 
-    private static void initParams(models.ktv.KtvSalesPromotion salesPromotion) {
-        //促销类型
+    private static void initParams(KtvSalesPromotion salesPromotion) {
+        //初始化促销类型
         List<String> promotionTypeList = new LinkedList<>();
         promotionTypeList.add("CONTINUOUS_RESERVE_DISCOUNT");
         promotionTypeList.add("CONTINUOUS_RESERVE_REDUCTION");
