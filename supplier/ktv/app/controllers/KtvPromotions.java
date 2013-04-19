@@ -2,7 +2,7 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
-import models.ktv.KtvSalesPromotion;
+import models.ktv.KtvPromotion;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import play.data.validation.Valid;
@@ -22,7 +22,7 @@ import java.util.List;
  * Time: 上午10:36
  */
 @With({SupplierRbac.class, SupplierInjector.class})
-public class KtvSalesPromotions extends Controller {
+public class KtvPromotions extends Controller {
     public static void index() {
         render();
     }
@@ -32,10 +32,10 @@ public class KtvSalesPromotions extends Controller {
         render();
     }
 
-    public static void create(@Valid KtvSalesPromotion salesPromotion) {
+    public static void create(@Valid KtvPromotion promotion) {
         if (Validation.hasErrors()) {
-            initParams(salesPromotion);
-            render("/KtvSalesPromotions/add.html", salesPromotion);
+            initParams(promotion);
+            render("/KtvPromotions/add.html", promotion);
         }
 //        System.out.println(salesPromotion.name + "《=========salesPromotion.name:");
 //        System.out.println(salesPromotion.promotionType + "《=========salesPromotion.promotionType:");
@@ -43,27 +43,29 @@ public class KtvSalesPromotions extends Controller {
 //        System.out.println(salesPromotion.endTime + "《=========salesPromotion.endTime:");
 //        System.out.println(salesPromotion.startDay + "《=========salesPromotion.startDay:");
 //        System.out.println(salesPromotion.startTime + "《=========salesPromotion.startTime:");
-        salesPromotion.createdAt = new Date();
-        salesPromotion.deleted = DeletedStatus.UN_DELETED;
-        salesPromotion.save();
+        promotion.createdAt = new Date();
+        promotion.deleted = DeletedStatus.UN_DELETED;
+        promotion.save();
         index();
     }
 
-    private static void initParams(KtvSalesPromotion salesPromotion) {
+    private static void initParams(KtvPromotion promotion) {
         //初始化促销类型
         List<String> promotionTypeList = new LinkedList<>();
         promotionTypeList.add("CONTINUOUS_RESERVE_DISCOUNT");
         promotionTypeList.add("CONTINUOUS_RESERVE_REDUCTION");
         promotionTypeList.add("ADVANCED_RESERVE_DISCOUNT");
         promotionTypeList.add("ADVANCED_RESERVE_REDUCTION");
+        renderArgs.put("promotionTypeList", promotionTypeList);
 
+        //初始化适用门店
         Supplier supplier = SupplierRbac.currentUser().supplier;
-        List<Shop> shops = Shop.findShopBySupplier(supplier.id);
+        List<Shop> shopsList = Shop.findShopBySupplier(supplier.id);
 
 //        List<models.ktv.KtvPromotionType> promotionTypeList = models.ktv.KtvPromotionType.findRoomTypeList(supplier);
 //        String shopIds = setShopIds(priceSchedule);
 //        renderArgs.put("shopIds", shopIds);
-        renderArgs.put("shops", shops);
-        renderArgs.put("promotionTypeList", promotionTypeList);
+        renderArgs.put("shopsList", shopsList);
+
     }
 }

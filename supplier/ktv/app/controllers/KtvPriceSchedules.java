@@ -1,11 +1,8 @@
 package controllers;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
 import controllers.supplier.SupplierInjector;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvRoom;
@@ -16,13 +13,12 @@ import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
-import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * User: yan
@@ -80,7 +76,6 @@ public class KtvPriceSchedules extends Controller {
     private static KtvRoom checkShopTime(KtvPriceSchedule priceSchedule, Shop shop) {
         List<KtvRoom> rooms = KtvRoom.find("byShopAndRoomType", shop, priceSchedule.roomType).fetch();
 
-
         for (KtvRoom room : rooms) {
         }
 
@@ -96,9 +91,10 @@ public class KtvPriceSchedules extends Controller {
             List<KtvPriceSchedule> scheduleList = KtvPriceSchedule.getSchedules(id, priceSchedule);
 
             for (KtvPriceSchedule schedule : scheduleList) {
-                if (!schedule.useWeekDay.contains(priceSchedule.useWeekDay)) {
-                    continue;
-                }
+//                if (!schedule.useWeekDay.contains(priceSchedule.useWeekDay)) {
+//                    continue;
+//                }
+
                 for (Shop shop : shops) {
                     for (Shop existedShop : schedule.shops) {
                         if (!shop.id.equals(existedShop.id)) {
@@ -109,9 +105,9 @@ public class KtvPriceSchedules extends Controller {
                             break;
                         }
                         System.out.println("startTime=" + schedule.startTime + "&endTime=" + schedule.endTime);
-                        //10：00~12：00  交叉的可能时间段09:00~11:00 或 11：00~13：00
-                        if ((priceSchedule.startTime.compareTo(schedule.startTime) <= 0 && priceSchedule.endTime.compareTo(schedule.endTime) <= 0)
-                                || (priceSchedule.startTime.compareTo(schedule.startTime) >= 0 && priceSchedule.endTime.compareTo(schedule.endTime) >= 0)) {
+                         //10：00~12：00  交叉的可能时间段09:00~11:00 或 11：00~13：00
+                        if (!(priceSchedule.endTime.compareTo(schedule.startTime) <= 0 || priceSchedule.startTime.compareTo(schedule.endTime) >= 0)
+                                ) {
                             Validation.addError("priceSchedule.useTime", "该时间段有交叉，请确认！");
                             break;
                         }

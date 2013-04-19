@@ -24,8 +24,8 @@ PUT     /ktv/price-schedule/{id}                         KtvPriceSchedules.updat
 
 
 #ktv 促销活动
-GET     /ktv/sales-promotion                             KtvSalesPromotions.index
-GET     /ktv/sales-promotion/new                         KtvSalesPromotions.add
+GET     /ktv/promotion                             KtvPromotions.index
+GET     /ktv/promotion/new                         KtvPromotions.add
 
 
 # Ignore favicon requests

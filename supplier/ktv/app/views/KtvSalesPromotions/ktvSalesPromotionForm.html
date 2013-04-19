@@ -38,6 +38,29 @@ ${salesPromotion.promotionType.name}
 </div>
 
 <div class="field-group">
+    <label>适用门店</label>
+    <table >
+        <thead>
+        <tr>
+            <th width="45px"><input type="checkbox" id="selectall" name="selectall">全选</th>
+            <th>门店名称</th>
+            <th >已参加促销</th>
+        </tr>
+        </thead>
+        <tbody>
+        #{list items:shopsList, as:'shop'}
+        <tr class="tr-offsale transparent">
+            <td style="text-align:center"><input type="checkbox" id="checkoption" value="${shop.id}" name="id"/></td>
+            <td>${shop?.name}</td>
+            <td>${priceSchedule?.shops?.name}</td>
+        </tr>
+        #{/list}
+        </tbody>
+    </table>
+
+</div>
+
+<div class="field-group">
     <label>促销适用时段</label>
     <select name="salesPromotion.startTime" id="startTime" style="width: auto">
         <option value="08:00">08:00</option>
@@ -78,27 +101,7 @@ ${salesPromotion.promotionType.name}
     </select>
     <span class="error">#{error 'salesPromotion.useTime' /}</span>
 </div>
-<div class="field-group">
-    <label>适用门店</label>
-    <table class="table table-striped table-bordered table-condensed">
-        <thead>
-        <tr>
-            <th width="35px"><input type="checkbox" id="selectall" name="selectall">全选</th>
-            <th width="70px">已参加促销</th>
-        </tr>
-        </thead>
-        <tbody>
-        #{list items:shopsList, as:'shop'}
-        <tr class="tr-offsale transparent">
-            <td style="text-align:center"><input type="checkbox" id="checkoption" value="${shop.id}" name="id"/></td>
-            <td>${shop?.name}</td>
-            <td>${priceSchedule?.shops?.name}</td>
-        </tr>
-        #{/list}
-        </tbody>
-    </table>
 
-</div>
 <div class="field-group">
     <input type="submit" class="btn" value="确定"/> <a href="/ktv/room-type">取消</a>
 </div>

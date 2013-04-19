@@ -38,10 +38,10 @@ public class KtvPriceSchedule extends GenericModel {
     @Id
     @GeneratedValue
     @Expose
-    public ThreadLocal<Long> id = new ThreadLocal<>();
+    public Long id;
 
     public Long getId() {
-        return id.get();
+        return id;
     }
 
     @Override

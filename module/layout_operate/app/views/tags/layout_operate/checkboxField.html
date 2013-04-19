@@ -11,7 +11,8 @@
             <label class="checkbox inline">
                 <input type="checkbox" value="${item}" id="${field.id}_${item}" name="${field.name}"
                     #{if _value?.contains(item) || params[field.name]?.equals(item) }checked#{/if}/>
-            &{field.name+'_'+item}</label>#{/list}
+            &{field.name+'_'+item}</label>
+            #{/list}
     </div>
 </div>
 #{/field}
