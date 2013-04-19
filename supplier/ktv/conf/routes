@@ -22,6 +22,9 @@ GET     /ktv/price-schedule/{id}/edit                    KtvPriceSchedules.edit
 DELETE  /ktv/price-schedule/{id}                         KtvPriceSchedules.delete
 PUT     /ktv/price-schedule/{id}                         KtvPriceSchedules.update
 
+#ktv 每日价格
+GET     /ktv/daily-schedule                         KtvDaily.index
+
 
 
 # Ignore favicon requests
