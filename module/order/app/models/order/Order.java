@@ -14,7 +14,6 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.consumer.UserWebIdentification;
-import models.ktv.KtvOrderStatus;
 import models.kangou.KangouCard;
 import models.kangou.KangouUtil;
 import models.ktv.KtvRoomOrderInfo;
@@ -973,6 +972,7 @@ public class Order extends Model {
                 eCoupon.supplierECouponId = card.cardId;
                 eCoupon.eCouponSn = card.cardNumber;
                 eCoupon.save();
+                KangouUtil.setCardUseAndSend(eCoupon);
                 eCoupon.autoVerify();  // 自动验证掉
             }
 

@@ -119,11 +119,12 @@ public class KangouUtil {
         }
         String functionId = "GetCardID";
         String ticketCount = "1";
+        String orderId = "-" + eCoupon.id; //得到CardId时，orderId不能和调用SetCardUseAndSend一样，所以加一个负号
         Map<String, Object> params = generateRequestParams(functionId);
-        params.put("OrderId", eCoupon.id);
+        params.put("OrderId", orderId); //得到CardId时，orderId不能和调用SetCardUseAndSend一样，所以加一个负号
         params.put("CardKindID", eCoupon.goods.supplierGoodsId);
         params.put("TicketCount", ticketCount); // TODO: 确认一下是否一个券一张票
-        params.put("HashCode", hashCode(MD5_KEY, USER_ID, eCoupon.id.toString(),
+        params.put("HashCode", hashCode(MD5_KEY, USER_ID, orderId,
                 eCoupon.goods.supplierGoodsId.toString(), ticketCount, functionId));
 
         Logger.info("KangouUtil.getCardId: orderId=%s, cardKindId=%s", eCoupon.id,
@@ -187,17 +188,20 @@ public class KangouUtil {
         params.put("OrderId", eCoupon.id);
         params.put("CardID", eCoupon.supplierECouponId);
         params.put("Mobile", eCoupon.orderItems.phone);
-        params.put("HashCode", hashCode(MD5_KEY, USER_ID, eCoupon.order.orderNumber,
-                eCoupon.eCouponSn, eCoupon.orderItems.phone, functionId));
+        params.put("HashCode", hashCode(MD5_KEY, USER_ID, eCoupon.id.toString(),
+                eCoupon.supplierECouponId, eCoupon.orderItems.phone, functionId));
 
-        Logger.info("KangouUtil.setCardUseAndSend: orderId=%s, CardID=%s, params:\n%s", eCoupon.order.orderNumber,
+        Logger.info("KangouUtil.setCardUseAndSend: orderId=%s, CardID=%s, params:\n%s", eCoupon.id,
                 eCoupon.eCouponSn, params.toString());
 
-        return doSetCardUseAndSend(params);
+        return doSetCardUseAndSend(eCoupon, params);
     }
 
-    private static KangouCardStatus doSetCardUseAndSend(Map<String, Object> params) {
-        Document document = WebServiceRequest.url(URL).params(params).postXml();
+    private static KangouCardStatus doSetCardUseAndSend(ECoupon eCoupon, Map<String, Object> params) {
+        Document document = WebServiceRequest.url(URL)
+                .type("kangou")
+                .addKeyword(eCoupon.id)
+                .params(params).postXml();
         Logger.info("xml: \n%s", XML.serialize(document));
 
         // 检查是否出错, error message
@@ -254,11 +258,11 @@ public class KangouUtil {
         Map<String, Object> params = generateRequestParams(functionId);
         params.put("OrderId", eCoupon.id);
         params.put("CardID", eCoupon.supplierECouponId);
-        params.put("HashCode", hashCode(MD5_KEY, USER_ID, eCoupon.order.orderNumber,
-                eCoupon.eCouponSn, functionId));
+        params.put("HashCode", hashCode(MD5_KEY, USER_ID, eCoupon.id.toString(),
+                eCoupon.supplierECouponId, functionId));
 
-        Logger.info("KangouUtil.getCardStatus: orderId=%s, CardID=%s", eCoupon.order.orderNumber,
-                eCoupon.eCouponSn);
+        Logger.info("KangouUtil.getCardStatus: orderId=%s, CardID=%s, params=%s", eCoupon.order.orderNumber,
+                eCoupon.eCouponSn, params.toString());
 
         //返回更新过状态后的ECoupon
         return doCallGetCardStatus(eCoupon, params);
@@ -316,15 +320,16 @@ public class KangouUtil {
      */
     public static KangouCardStatus setCardUseless(ECoupon eCoupon) {
 
-        String functionId = "SetCardUseAndSend";
+        String functionId = "SetCardUseless";
         Map<String, Object> params = generateRequestParams(functionId);
-        params.put("OrderId", eCoupon.id);
+        String orderId = "USELESS-" + eCoupon.id; //看购网调用不能重复订单ID
+        params.put("OrderId", orderId);
         params.put("CardID", eCoupon.supplierECouponId);
-        params.put("HashCode", hashCode(MD5_KEY, USER_ID, eCoupon.order.orderNumber,
-                eCoupon.eCouponSn, functionId));
+        params.put("HashCode", hashCode(MD5_KEY, USER_ID, orderId.toString(),
+                eCoupon.supplierECouponId, functionId));
 
-        Logger.info("KangouUtil.setCardUseless: orderId=%s, CardID=%s", eCoupon.order.orderNumber,
-                eCoupon.eCouponSn);
+        Logger.info("KangouUtil.setCardUseless: orderId=%s, CardID=%s, params=%s", eCoupon.order.orderNumber,
+                eCoupon.eCouponSn, params.toString());
 
         return doSetCardUseless(eCoupon, params);
     }
