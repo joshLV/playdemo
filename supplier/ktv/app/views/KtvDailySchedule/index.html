@@ -3,6 +3,27 @@
 #{set menu:"ktv_daily_schedule" /}
 <div class="body">
 
+    #{if shops}
+
+    #{form @KtvDailySchedule.index() , method:'GET'}
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td>请选择门店</td>
+                <td>
+                    <select name="shopId" style="width: auto">
+                        #{list items:shops,as:'shop'}
+                            <option value="${shop.id}" ${shop.id==shopId?'selected':''}/>${shop.name}
+                            &nbsp;&nbsp;
+                        #{/list}
+                    </select>
+                </td>
+                <td>
+                    <button type="submit">查询</button>
+                </td>
+            </tr>
+        </table>
+    #{/form}
+
     <div style="overflow-x: auto" id="wk-order-scroll">
         <div class="wk-order-wrapper" id="wk-order-wrapper">
             <table style="margin-bottom: 5px">
@@ -135,6 +156,11 @@
 
         </div>
     </div>
+    #{/if}
+    #{else}
+        无门店，请先添加门店
+    #{/else}
+
 
 
 </div>
@@ -149,7 +175,7 @@
         var ktvOrder = KTVOrder({
             dataUrl: "/ktv/roominfo/json-search",
             wrapperId: "wk-order-wrapper",
-            shopId:2438,
+            shopId:${shopId},
             viewMode: true,
             day: new Date()
         });
