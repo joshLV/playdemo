@@ -28,7 +28,7 @@
             </table>
         </div>
         <input type="hidden" id="shopId" value="${shop.id?:shops?.get(0).id}">
-        <input type="hidden" id="roomTypeId" value="${roomType.id?:roomTypeList?.get(0)?.id}">
+        <input type="hidden" id="roomTypeId" value="${roomType?.id?:roomTypeList?.get(0)?.id}">
 
         <div class="wk-ktvwrapper" id="wk-ktvwrapper"></div>
 
@@ -52,7 +52,6 @@
             shop: $("#shopId").val(),
             roomType: $("#roomTypeId").val()
         });
-
     });
 </script>
 #{/set}

@@ -15,6 +15,7 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.consumer.UserWebIdentification;
+import models.ktv.KtvOrderStatus;
 import models.kangou.KangouCard;
 import models.kangou.KangouUtil;
 import models.ktv.KtvRoomOrderInfo;
@@ -706,10 +707,22 @@ public class Order extends Model {
             return;
         }
 
+
         if (paid()) {
-            generateECoupon();
-            remindBigOrderRemark();
-            this.sendOrderSMS("发送券号");
+//            //ktv 一个room被两个消费者订购，只有一个成功，另外一个则进行如果也支付成功，则对其做退款处理，并且把订单状态和orderItem状态变为CANCELED
+//            List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrder(this);
+//            System.out.println(ktvRoomOrderInfoList.size()+"-----------");
+//            if (ktvRoomOrderInfoList.size() > 0) {
+//                for (KtvRoomOrderInfo ktvRoomOrderInfo : ktvRoomOrderInfoList) {
+//                    ktvRoomOrderInfo.cancelKtvRoom();
+//                }
+//                this.status = OrderStatus.CANCELED;
+//                this.save();
+//            } else {
+                generateECoupon();
+                remindBigOrderRemark();
+                this.sendOrderSMS("发送券号");
+//            }
         }
     }
 
@@ -747,6 +760,7 @@ public class Order extends Model {
         Account account = this.getBuyerAccount();
         PaymentSource paymentSource = PaymentSource.find("byCode", this.payMethod).first();
 
+        System.out.println("discountPay:::::::"+this.discountPay);
         //先将用户银行支付的钱充值到自己账户上
         if (this.discountPay.compareTo(BigDecimal.ZERO) > 0) {
             TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource, this.getId());
