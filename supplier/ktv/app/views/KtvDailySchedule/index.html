@@ -1,27 +1,157 @@
 #{extends 'layout_trader/layout2.html' /}
-#{set title:'设置价格' /}
+#{set title:'每日预订' /}
 #{set menu:"ktv_daily_schedule" /}
 <div class="body">
 
+    <div style="overflow-x: auto" id="wk-order-scroll">
+        <div class="wk-order-wrapper" id="wk-order-wrapper">
+            <table style="margin-bottom: 5px">
+                <tr>
+                    <td>
+                        <div class="wk-order-info-avaliable"></div>
+                    </td>
+                    <td> 可预订</td>
+                    <td>
+                        <div class="wk-order-info-reserved"></div>
+                    </td>
+                    <td> 已预订</td>
+                </tr>
+            </table>
+            <div class="wk-order-nav-wrapper">
+                <div class="wk-order-nav-left">
+                    <table cellspacing="0" cellpadding="0">
+                        <tr class="wk-order-days">
+                            <td>
+                                <div class="wk-order-day"></div>
+                            </td>
+                            <td>
+                                <div class="wk-order-day"></div>
+                            </td>
+                            <td>
+                                <div class="wk-order-day"></div>
+                            </td>
+                            <td>
+                                <div class="wk-order-day"></div>
+                            </td>
+                            <td>
+                                <div class="wk-order-day"></div>
+                            </td>
+                            <td><div class="wk-order-date-select">选</div></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="wk-order-main-wrapper">
+                <div class="wk-order-times">
+                    <table cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td style="width:60px">&nbsp;</td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">08:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">09:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">10:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">11:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">12:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">13:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">14:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">15:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">16:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">17:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">18:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">19:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">20:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">21:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">22:00</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wk-order-time">
+                                    <div class="wk-pri">23:00</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="rooms">
+                </div>
+            </div>
+
+        </div>
+    </div>
 
 
 </div>
 #{set 'moreStyles'}
-<link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/ktv.css'}">
+    #{asset.css src:['/y/ktv/ktv-order.css']/}
 #{/set}
 
 #{set 'moreScripts'}
-<script src="@{'/public/javascripts/xdate.js'}" type="text/javascript" charset="UTF-8"></script>
-<script src="@{'/public/javascripts/ktvweek.js'}" type="text/javascript" charset="UTF-8"></script>
+#{asset.js src:['/ktv/xdate.js','/ktv/ktvorder.js','/ktv/iscroll-lite.js']/}
 <script type="text/javascript">
     $(function () {
-        var ktvWeek = KTVWeek({
-            wrapperId: "wk-ktvwrapper",
-            dataUrl: "/ktv/price-schedule/json-search",
-            addLink: "@{KtvPriceSchedules.add()}",
-            startDay: new Date(),
-            shop: $("#shopId").val(),
-            roomType: $("#roomTypeId").val()
+        var ktvOrder = KTVOrder({
+            dataUrl: "/ktv/roominfo/json-search",
+            wrapperId: "wk-order-wrapper",
+            shopId:2438,
+            viewMode: true,
+            day: new Date()
         });
 
     });
