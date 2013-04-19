@@ -162,7 +162,7 @@ public class KangouUtilTest extends UnitTest {
         });
         Template template = TemplateLoader.load("test/data/kangou/SetCardUseAndSendResponse.xml");
         Map<String, Object> params = new HashMap<>();
-        params.put("orderNumber", eCoupon.order.orderNumber);
+        params.put("orderNumber", eCoupon.id);
         params.put("cardId", eCoupon.supplierECouponId);
         params.put("cardStatus", cardStatus);
         String responseBody = template.render(params);
@@ -180,7 +180,7 @@ public class KangouUtilTest extends UnitTest {
         });
         Template template = TemplateLoader.load("test/data/kangou/GetCardStatusResponse.xml");
         Map<String, Object> params = new HashMap<>();
-        params.put("orderNumber", eCoupon.order.orderNumber);
+        params.put("orderNumber", eCoupon.id);
         params.put("cardId", eCoupon.supplierECouponId);
         params.put("cardNumber", eCoupon.eCouponSn);
         params.put("cardStatus", cardStatus);
@@ -210,7 +210,7 @@ public class KangouUtilTest extends UnitTest {
         });
         Template template = TemplateLoader.load("test/data/kangou/SetCardUselessResponse.xml");
         Map<String, Object> params = new HashMap<>();
-        params.put("orderNumber", eCoupon.order.orderNumber);
+        params.put("orderNumber", eCoupon.id);
         params.put("cardId", eCoupon.supplierECouponId);
         params.put("cardStatus", 9);  //废止
         String responseBody = template.render(params);

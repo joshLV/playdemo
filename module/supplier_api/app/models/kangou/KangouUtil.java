@@ -151,6 +151,7 @@ public class KangouUtil {
         KangouCard card = new KangouCard();
         card.cardId = XPath.selectText("/string/Datas/Cards/CardID", document);
         card.cardNumber = XPath.selectText("/string/Datas/Cards/CardNumber", document);
+        Logger.info("card.cardId=%s, cardNumber=%s", card.cardId, card.cardNumber);
         return card;
     }
 
