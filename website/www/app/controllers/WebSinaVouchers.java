@@ -85,6 +85,7 @@ public class WebSinaVouchers extends Controller {
      */
     public static void order(String productId, Long buyCount, String phone, Date scheduledDay, String source) {
         User user = SecureCAS.getUser();
+        System.out.println(user+"---------");
         Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
         Validation.required("phone", phone);
         Validation.match("phone", phone, "^1\\d{10}$");
@@ -104,12 +105,18 @@ public class WebSinaVouchers extends Controller {
         try {
             //页面根据包厢ID,取得该时间段的价格信息
             if ("1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
+                Collection<Shop> shops = goods.getShopList();
+                Shop shop = shops.iterator().next();
                 for (String key : request.params.all().keySet()) {
                     if (key.startsWith("roomId")) {
                         String[] values = request.params.getAll(key);
                         String[] scheduledTimes = values[0].split(",");
                         for (String scheduledTime : scheduledTimes) {
                             KtvRoom ktvRoom = KtvRoom.findById(Long.valueOf(key.substring("roomId".length())));
+                            List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(scheduledDay, shop, ktvRoom, scheduledTime);
+                            if (scheduledRoomList.size() > 0) {
+                                error("该包厢已被他人预定！");
+                            }
                             KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
                             orderItems = order.addOrderItem(goods, 1L, phone, ktvPriceSchedule.price, ktvPriceSchedule.price);
                             orderItems.outerGoodsNo = productId;

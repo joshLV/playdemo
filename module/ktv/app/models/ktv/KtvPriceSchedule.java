@@ -13,6 +13,7 @@ import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -121,7 +122,7 @@ public class KtvPriceSchedule extends GenericModel {
     }
 
     public static KtvPriceSchedule findPrice(Date scheduledDay, String scheduledTime, KtvRoomType roomType) {
-        Logger.info("startDay=" + scheduledDay + ", startTime=" + scheduledTime  + ", roomType=" + roomType);
+        Logger.info("startDay=" + scheduledDay + ", startTime=" + scheduledTime + ", roomType=" + roomType);
         return KtvPriceSchedule.find("startDay<=? and endDay>=? and startTime<=? and endTime >=? and roomType=?", scheduledDay, scheduledDay, scheduledTime, scheduledTime, roomType).first();
     }
 
@@ -138,5 +139,17 @@ public class KtvPriceSchedule extends GenericModel {
      */
     public static List<KtvPriceSchedule> getSchedulesByShop(Date scheduledDay, Shop shop) {
         return KtvPriceSchedule.find("select k from KtvPriceSchedule k join k.shops s where s.id =? and k.startDay<=? and k.endDay>=? ", shop.id, scheduledDay, scheduledDay).fetch();
+    }
+
+    public static List<KtvPriceSchedule> getSchedules(Long id, KtvPriceSchedule priceSchedule) {
+        StringBuilder sq = new StringBuilder("roomType = ? and startDay>=?");
+        List list = new ArrayList();
+        list.add(priceSchedule.roomType);
+        list.add(priceSchedule.startDay);
+        if (id != null) {
+            sq.append("and id <> ?");
+            list.add(id);
+        }
+        return KtvPriceSchedule.find(sq.toString(), list.toArray()).fetch();
     }
 }

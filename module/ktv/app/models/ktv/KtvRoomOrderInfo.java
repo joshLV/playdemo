@@ -1,5 +1,6 @@
 package models.ktv;
 
+import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.sales.Goods;
@@ -77,7 +78,7 @@ public class KtvRoomOrderInfo extends Model {
     }
 
     /**
-     * 取消10分钟前未付款的订单
+     * 取消订单
      */
     public void cancelKtvRoom() {
         if (this.status == KtvOrderStatus.LOCK) {
@@ -89,7 +90,7 @@ public class KtvRoomOrderInfo extends Model {
     }
 
     /**
-     * 更新订单
+     * 成交新订单
      */
     public void dealKtvRoom() {
         this.status = KtvOrderStatus.DEAL;
@@ -99,7 +100,18 @@ public class KtvRoomOrderInfo extends Model {
         this.save();
     }
 
+    public static List<KtvRoomOrderInfo> findByOrder(Order order) {
+        return KtvRoomOrderInfo.find("status=? and orderItem.order = ? and createdAt >= ?", KtvOrderStatus.LOCK, order, DateUtils.addMinutes(new Date(), -10)).fetch();
+    }
+
     public static List<KtvRoomOrderInfo> findByOrderItem(OrderItems orderItem) {
         return KtvRoomOrderInfo.find("status=? and orderItem=?", KtvOrderStatus.LOCK, orderItem).fetch();
+    }
+
+    public static List<KtvRoomOrderInfo> findScheduledInfos(Date scheduledDay, Shop shop, KtvRoom ktvRoom, String scheduledTime) {
+        return KtvRoom.find("select k from KtvRoomOrderInfo k join k.goods.shops s where k.scheduledDay = ? and s.id=? and k.ktvRoom=? and k.scheduledTime =? and " +
+                "(k.status = ? or (k.status=?  and k.createdAt >= ?))",
+                DateUtils.truncate(scheduledDay, Calendar.DATE), shop.id, ktvRoom, scheduledTime,
+                KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, DateUtils.addMinutes(new Date(), -10)).fetch();
     }
 }
