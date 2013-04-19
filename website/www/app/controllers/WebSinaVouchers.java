@@ -85,7 +85,6 @@ public class WebSinaVouchers extends Controller {
      */
     public static void order(String productId, Long buyCount, String phone, Date scheduledDay, String source) {
         User user = SecureCAS.getUser();
-        System.out.println(user+"---------");
         Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
         Validation.required("phone", phone);
         Validation.match("phone", phone, "^1\\d{10}$");

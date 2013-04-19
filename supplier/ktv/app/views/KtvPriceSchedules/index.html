@@ -40,8 +40,7 @@
 #{/set}
 
 #{set 'moreScripts'}
-#{asset.js src:'/y/xdate.js'/}
-<script src="@{'/public/javascripts/ktvweek.js'}" type="text/javascript" charset="UTF-8"></script>
+#{asset.js src:['/ktv/xdate.js','/ktv/ktvweek.js']/}
 <script type="text/javascript">
     $(function () {
         var ktvWeek = KTVWeek({

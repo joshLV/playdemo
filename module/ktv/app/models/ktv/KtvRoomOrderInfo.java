@@ -100,14 +100,26 @@ public class KtvRoomOrderInfo extends Model {
         this.save();
     }
 
+    /**
+     * 查找10分钟前锁定的订单
+     *
+     * @param order
+     * @return
+     */
     public static List<KtvRoomOrderInfo> findByOrder(Order order) {
-        return KtvRoomOrderInfo.find("status=? and orderItem.order = ? and createdAt >= ?", KtvOrderStatus.LOCK, order, DateUtils.addMinutes(new Date(), -10)).fetch();
+        return KtvRoomOrderInfo.find("status=? and orderItem.order = ? and orderItem.order.status=? and createdAt <= ?", KtvOrderStatus.LOCK, order, OrderStatus.PAID, DateUtils.addMinutes(new Date(), -10)).fetch();
     }
 
+    /**
+     * 查出该orderItem对应的room
+     */
     public static List<KtvRoomOrderInfo> findByOrderItem(OrderItems orderItem) {
         return KtvRoomOrderInfo.find("status=? and orderItem=?", KtvOrderStatus.LOCK, orderItem).fetch();
     }
 
+    /**
+     * 查找10分钟内的锁定Room或出售的Room
+     */
     public static List<KtvRoomOrderInfo> findScheduledInfos(Date scheduledDay, Shop shop, KtvRoom ktvRoom, String scheduledTime) {
         return KtvRoom.find("select k from KtvRoomOrderInfo k join k.goods.shops s where k.scheduledDay = ? and s.id=? and k.ktvRoom=? and k.scheduledTime =? and " +
                 "(k.status = ? or (k.status=?  and k.createdAt >= ?))",
