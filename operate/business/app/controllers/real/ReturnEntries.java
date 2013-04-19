@@ -77,11 +77,13 @@ public class ReturnEntries extends Controller {
         inventoryStock.storekeeper = OperateRbac.currentUser().userName;
         inventoryStock.create();
         InventoryStockItem stockItem = new InventoryStockItem(inventoryStock);
+
         GoodsHistory goodsHistory =GoodsHistory.findById(entry.orderItems.goodsHistoryId);
         Goods temporalGoods = Goods.findById(goodsHistory.goodsId);
         stockItem.sku = temporalGoods.sku;
         stockItem.changeCount = entry.returnedCount * temporalGoods.skuCount;
         stockItem.remainCount = stockItem.changeCount;
+
         stockItem.effectiveAt = entry.orderItems.goods.effectiveAt;
         stockItem.expireAt = entry.orderItems.goods.expireAt;
         stockItem.price = entry.orderItems.goods.originalPrice;
