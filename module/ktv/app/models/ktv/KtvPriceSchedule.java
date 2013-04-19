@@ -13,10 +13,7 @@ import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * KTV价格策略.
@@ -151,5 +148,49 @@ public class KtvPriceSchedule extends GenericModel {
             list.add(id);
         }
         return KtvPriceSchedule.find(sq.toString(), list.toArray()).fetch();
+    }
+
+    public static Map<String, Object> dailyScheduleOverview(Long shopId, Date day) {
+        Shop shop = Shop.findById(shopId);
+        if (shop == null) {
+            return null;
+        }
+        Map<String, Object> jsonParams = new HashMap<>();
+
+        List<KtvRoom> roomList = KtvRoom.findByShop(shop);
+        List<Map<String, Object>> rooms = new ArrayList<>();
+        for (KtvRoom ktvRoom : roomList) {
+            Map<String, Object> roomsInfo = new HashMap<>();
+            roomsInfo.put("id", ktvRoom.id);
+            roomsInfo.put("name", ktvRoom.roomType.name);
+            roomsInfo.put("type", ktvRoom.roomType.id);
+            rooms.add(roomsInfo);
+        }
+
+        List<KtvPriceSchedule> schedules = KtvPriceSchedule.getSchedulesByShop(day, shop);
+        List<Map<String, Object>> prices = new ArrayList<>();
+        for (KtvPriceSchedule schedule : schedules) {
+            Map<String, Object> scheduleInfo = new HashMap<>();
+            scheduleInfo.put("weekday", schedule.useWeekDay);
+            scheduleInfo.put("startTime", schedule.startTime);
+            scheduleInfo.put("endTime", schedule.endTime);
+            scheduleInfo.put("price", schedule.price);
+            scheduleInfo.put("roomType", schedule.roomType.id);
+            prices.add(scheduleInfo);
+        }
+        List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(day, shop);
+        List<Map<String, Object>> scheduleList = new ArrayList<>();
+        for (KtvRoomOrderInfo orderInfo : scheduledRoomList) {
+            Map<String, Object> scheduleRoomInfo = new HashMap<>();
+            scheduleRoomInfo.put("roomId", orderInfo.ktvRoom.id);
+            scheduleRoomInfo.put("roomTime", orderInfo.scheduledTime);
+            scheduleList.add(scheduleRoomInfo);
+        }
+
+        jsonParams.put("rooms", rooms);
+        jsonParams.put("prices", prices);
+        jsonParams.put("schedules", scheduleList);
+
+        return jsonParams;
     }
 }
