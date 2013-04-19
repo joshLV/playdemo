@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<string xmlns="http://tempuri.org/">
+    <LKG_CARDAPI_RETURN_HEADER>
+        <OrderID>3234234234</OrderID>
+        <HashCode>234242342412412341234</HashCode>
+    </LKG_CARDAPI_RETURN_HEADER>
+    <Errors>
+        <ErrorID>-100</ErrorID>
+        <ErrorDescription>发现错误信息</ErrorDescription>
+    </Errors>
+</string>

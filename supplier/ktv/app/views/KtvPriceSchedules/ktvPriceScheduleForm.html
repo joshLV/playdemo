@@ -102,6 +102,11 @@ ${priceSchedule.roomType.name}
     <span class="error">#{error 'priceSchedule.price' /}</span>
 </div>
 <div class="field-group">
+
+    <label>包厢数量</label>
+    <input type="text" name="priceSchedule.roomNumber" value="${priceSchedule?.roomNumber?:''}"/>
+</div>
+<div class="field-group">
     <input type="submit" class="btn" value="确定"/> <a href="/ktv/price-schedule">取消</a>
 </div>
 

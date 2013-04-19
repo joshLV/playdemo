@@ -28,7 +28,7 @@
             </table>
         </div>
         <input type="hidden" id="shopId" value="${shop.id?:shops?.get(0).id}">
-        <input type="hidden" id="roomTypeId" value="${roomType.id?:roomTypeList?.get(0)?.id}">
+        <input type="hidden" id="roomTypeId" value="${roomType?.id?:roomTypeList?.get(0)?.id}">
 
         <div class="wk-ktvwrapper" id="wk-ktvwrapper"></div>
 
@@ -40,7 +40,7 @@
 #{/set}
 
 #{set 'moreScripts'}
-<script src="@{'/public/javascripts/xdate.js'}" type="text/javascript" charset="UTF-8"></script>
+#{asset.js src:'/y/xdate.js'/}
 <script src="@{'/public/javascripts/ktvweek.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript">
     $(function () {
@@ -52,7 +52,6 @@
             shop: $("#shopId").val(),
             roomType: $("#roomTypeId").val()
         });
-
     });
 </script>
 #{/set}

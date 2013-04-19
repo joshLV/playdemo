@@ -15,6 +15,10 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.consumer.UserWebIdentification;
+import models.ktv.KtvOrderStatus;
+import models.kangou.KangouCard;
+import models.kangou.KangouUtil;
+import models.ktv.KtvRoomOrderInfo;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;
@@ -703,10 +707,22 @@ public class Order extends Model {
             return;
         }
 
+
         if (paid()) {
-            generateECoupon();
-            remindBigOrderRemark();
-            this.sendOrderSMS("发送券号");
+//            //ktv 一个room被两个消费者订购，只有一个成功，另外一个则进行如果也支付成功，则对其做退款处理，并且把订单状态和orderItem状态变为CANCELED
+//            List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrder(this);
+//            System.out.println(ktvRoomOrderInfoList.size()+"-----------");
+//            if (ktvRoomOrderInfoList.size() > 0) {
+//                for (KtvRoomOrderInfo ktvRoomOrderInfo : ktvRoomOrderInfoList) {
+//                    ktvRoomOrderInfo.cancelKtvRoom();
+//                }
+//                this.status = OrderStatus.CANCELED;
+//                this.save();
+//            } else {
+                generateECoupon();
+                remindBigOrderRemark();
+                this.sendOrderSMS("发送券号");
+//            }
         }
     }
 
@@ -744,6 +760,7 @@ public class Order extends Model {
         Account account = this.getBuyerAccount();
         PaymentSource paymentSource = PaymentSource.find("byCode", this.payMethod).first();
 
+        System.out.println("discountPay:::::::"+this.discountPay);
         //先将用户银行支付的钱充值到自己账户上
         if (this.discountPay.compareTo(BigDecimal.ZERO) > 0) {
             TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource, this.getId());
@@ -835,12 +852,24 @@ public class Order extends Model {
                         eCoupon.partner = ECouponPartner.SINA;
                         eCoupon.save();
                     }
+
                     //记录券历史信息
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
                 }
+
+
+                //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
+                if ("1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
+                    List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItem);
+                    for (KtvRoomOrderInfo orderInfo : ktvRoomOrderInfoList) {
+                        orderInfo.dealKtvRoom();
+                    }
+
+                }
             }
+
             //邮件提醒
             sendPaidMail(goods, orderItem);
         }
@@ -944,6 +973,19 @@ public class Order extends Model {
         } else {
             eCoupon = new ECoupon(this, goods, orderItem);
             eCoupon.save();
+
+            if (KangouUtil.SUPPLIER_DOMAIN_NAME.equals(orderItem.goods.getSupplier().domainName)) {
+                KangouCard card = KangouUtil.getCardId(eCoupon);
+
+                if (card == null) {
+                    eCoupon.delete();
+                    throw new RuntimeException("can not generate a kangou goods: " + goods.getId());
+                }
+                eCoupon.eCouponSn = card.cardId;
+                eCoupon.eCouponPassword = card.cardNumber;
+                eCoupon.save();
+            }
+
         }
         return eCoupon;
     }

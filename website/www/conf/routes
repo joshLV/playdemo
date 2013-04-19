@@ -127,16 +127,17 @@ GET     /coins                                  ObtainGoldenCoins.index
 
 #新浪微博
 #手机端
-GET /weibo/product/{productId}                   WebSinaVouchers.showProduct
-GET /weibo/wap/product/{productId}               WebSinaVouchers.showProduct(source:'wap')
+GET     /weibo/product/{productId}                   WebSinaVouchers.showProduct
+GET     /weibo/wap/product/{productId}               WebSinaVouchers.showProduct(source:'wap')
 
-GET /weibo/wap/order                             WebSinaVouchers.showOrder(source:'wap')
-POST /weibo/wap/order                            WebSinaVouchers.order
-GET /weibo/wap/coupons                           WebUserSinaVouchers.myCoupons
-GET /weibo/wap/coupon/{couponId}                 WebUserSinaVouchers.showDetail
-GET /weibo/wap/more-coupon                       WebUserSinaVouchers.showMoreCoupon
-GET /weibo/wap/coupon/{couponId}/refund          WebUserSinaVouchers.showRefund
-POST /weibo/wap/coupon/{couponId}                WebUserSinaVouchers.refund
+GET     /weibo/wap/order                             WebSinaVouchers.showOrder(source:'wap')
+POST    /weibo/wap/order                            WebSinaVouchers.order
+GET     /weibo/wap/coupons                           WebUserSinaVouchers.myCoupons
+GET     /weibo/wap/coupon/{couponId}                 WebUserSinaVouchers.showDetail
+GET     /weibo/wap/more-coupon                       WebUserSinaVouchers.showMoreCoupon
+GET     /weibo/wap/coupon/{couponId}/refund          WebUserSinaVouchers.showRefund
+POST    /weibo/wap/coupon/{couponId}                WebUserSinaVouchers.refund
+POST    /ktv/roominfo/json-search                  KtvAPI.jsonRoom
 
 
 # Ignore favicon requests

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<string xmlns="http://tempuri.org/">
+    <LKG_CARDAPI_RETURN_HEADER>
+        <OrderID>${orderNumber}</OrderID>
+        <HashCode>123412341234123423424234</HashCode>
+    </LKG_CARDAPI_RETURN_HEADER>
+    <Datas>
+        <Cards>
+            <CardID>${cardId}</CardID>
+            <CardStatus>${cardStatus}</CardStatus>
+        </Cards>
+    </Datas>
+</string>

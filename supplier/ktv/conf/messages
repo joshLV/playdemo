@@ -1,5 +1,6 @@
 validation.required=请输入%s!
 validation.future=%s必须填写未来的时间!
+validation.min=%s必须大于或等于%d!
 
 ktvRoomType.name=包厢类型
 priceSchedule.shop=门店
@@ -15,3 +16,4 @@ salesPromotion.CONTINUOUS_RESERVE_REDUCTION=  连续预订立减
 salesPromotion.ADVANCED_RESERVE_DISCOUNT  = 提前预订打折
 salesPromotion.ADVANCED_RESERVE_REDUCTION =  提前预订立减
 
+priceSchedule.roomNumber=包厢数量

@@ -8,6 +8,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import controllers.supplier.SupplierInjector;
 import models.ktv.KtvPriceSchedule;
+import models.ktv.KtvRoom;
 import models.ktv.KtvRoomType;
 import models.sales.Shop;
 import models.supplier.Supplier;
@@ -65,7 +66,7 @@ public class KtvPriceSchedules extends Controller {
 
     public static void create(@Valid KtvPriceSchedule priceSchedule, List<String> useWeekDays) {
         priceSchedule.useWeekDay = StringUtils.join(useWeekDays, ",");
-        checkTime(priceSchedule);
+        checkTime(null, priceSchedule);
         if (Validation.hasErrors()) {
             initParams(priceSchedule);
             render("/KtvPriceSchedules/add.html", priceSchedule);
@@ -76,27 +77,41 @@ public class KtvPriceSchedules extends Controller {
         index(null, null);
     }
 
-    private static void checkTime(KtvPriceSchedule priceSchedule) {
-        Set<Shop> shops = priceSchedule.shops;
+    private static KtvRoom checkShopTime(KtvPriceSchedule priceSchedule, Shop shop) {
+        List<KtvRoom> rooms = KtvRoom.find("byShopAndRoomType", shop, priceSchedule.roomType).fetch();
 
+
+        for (KtvRoom room : rooms) {
+        }
+
+
+        return null;
+    }
+
+    private static void checkTime(Long id, KtvPriceSchedule priceSchedule) {
+        Set<Shop> shops = priceSchedule.shops;
         Validation.required("priceSchedule.shop", shops);
         if (shops != null && shops.size() > 0) {
-            List<KtvPriceSchedule> scheduleList = KtvPriceSchedule.find("roomType=?", priceSchedule.roomType).fetch();
+
+            List<KtvPriceSchedule> scheduleList = KtvPriceSchedule.getSchedules(id, priceSchedule);
+
             for (KtvPriceSchedule schedule : scheduleList) {
+                if (!schedule.useWeekDay.contains(priceSchedule.useWeekDay)) {
+                    continue;
+                }
                 for (Shop shop : shops) {
                     for (Shop existedShop : schedule.shops) {
                         if (!shop.id.equals(existedShop.id)) {
-                            continue;
-                        }
-                        if (!schedule.useWeekDay.contains(priceSchedule.useWeekDay)) {
                             continue;
                         }
                         if (priceSchedule.startDay.after(schedule.startDay) && priceSchedule.endDay.before(schedule.endDay)) {
                             Validation.addError("priceSchedule.day", "该日期范围有交叉，请确认！");
                             break;
                         }
-                        if ((priceSchedule.startTime.compareTo(schedule.startTime) >= 0 && priceSchedule.startTime.compareTo(schedule.endTime) <= 0) ||
-                                priceSchedule.startTime.compareTo(schedule.endTime) <= 0) {
+                        System.out.println("startTime=" + schedule.startTime + "&endTime=" + schedule.endTime);
+                        //10：00~12：00  交叉的可能时间段09:00~11:00 或 11：00~13：00
+                        if ((priceSchedule.startTime.compareTo(schedule.startTime) <= 0 && priceSchedule.endTime.compareTo(schedule.endTime) <= 0)
+                                || (priceSchedule.startTime.compareTo(schedule.startTime) >= 0 && priceSchedule.endTime.compareTo(schedule.endTime) >= 0)) {
                             Validation.addError("priceSchedule.useTime", "该时间段有交叉，请确认！");
                             break;
                         }
@@ -131,10 +146,9 @@ public class KtvPriceSchedules extends Controller {
 
     public static void update(Long id, @Valid KtvPriceSchedule priceSchedule, List<String> useWeekDays) {
         priceSchedule.useWeekDay = StringUtils.join(useWeekDays, ",");
-        checkTime(priceSchedule);
+        checkTime(id, priceSchedule);
         if (Validation.hasErrors()) {
             initParams(priceSchedule);
-            System.out.println(Validation.errors().get(0));
             render("KtvPriceSchedules/edit.html", priceSchedule);
         }
         KtvPriceSchedule.update(id, priceSchedule);

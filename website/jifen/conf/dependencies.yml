@@ -40,6 +40,7 @@ require:
     - supports -> supports
     - resale_api -> resale_api
     - supplier_api -> supplier_api
+    - ktv -> ktv
 
 repositories:
 
@@ -86,3 +87,4 @@ repositories:
             - supplier_api -> *
             - supports -> *
             - oauth -> *
+            - ktv -> *

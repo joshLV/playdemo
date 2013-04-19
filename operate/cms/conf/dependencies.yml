@@ -38,6 +38,7 @@ require:
     - com.taobao -> taobao-top 20121130
     - supports -> supports
     - commons-httpclient -> commons-httpclient 3.1
+    - ktv -> ktv
 
 repositories:
     - mavenRepository:
@@ -81,3 +82,4 @@ repositories:
             - supports -> *
             - resale_api -> *
             - supplier_api -> *
+            - ktv -> *

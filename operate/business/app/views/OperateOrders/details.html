@@ -210,7 +210,7 @@
         <tr>
             <td>${orderItem?.goods?.code}</td>
             <td>
-                <a href="http://www.yibaiquan.com/p/${orderItem.goods.id}">${orderItem.goodsName}</a>
+                <a href="http://www.yibaiquan.com/p/${orderItem.goods.id}">${orderItem.goods.name}</a>
                 &nbsp;<i class="icon-user"></i>${orderItem?.goods?.getSupplierSalesUserName()}
             </td>
             <td>&{'goods.'+orderItem.goods.materialType}</td>
@@ -259,7 +259,8 @@
                 件 &{'entry.'+
                 orderItem.returnStatus})</a>#{/if}</td>
             <td>#{if orderItem.goods.materialType == models.sales.MaterialType.REAL && returnEntry == null}
-                #{if orders.status == models.order.OrderStatus.PAID}<a
+                #{if orders.status == models.order.OrderStatus.PAID}
+                    <a
                         href="javascript:void(0);"
                         onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}')">退货</a>#{/if}#{else}
                     <a

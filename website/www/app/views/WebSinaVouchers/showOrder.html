@@ -6,7 +6,7 @@
     </div>
     <div id="main-back-button">
         <div class="left-triangle"></div>
-        <div class="button nav-button left"><a href="javascript:history.go(-1);">返回</a></div>
+        <div class="button nav-button left"><a href="@{WebSinaVouchers.showProduct()}">返回</a></div>
     </div>
 #{form @WebSinaVouchers.order(),id:'order'}
     <div class="message message-success pre-help">
@@ -16,10 +16,10 @@
     ktvSupplier=goods.getSupplier()?.getProperty(models.supplier.Supplier.KTV_SUPPLIER)?:'0'
     }%
     #{if "1".equals(ktvSupplier)}
-    #{list items:roomList,as:'room'}
-        包厢:<input type="text" name="roomId${room.id}" value="${}"/>
-        日期:<input type="text" name="useDate" value="2013-04-17"/>
-    #{/list}
+        #{list items:roomList,as:'room'}
+            包厢:<input type="text" name="roomId${room.id}" value="${}"/>
+            日期:<input type="text" name="useDate" value="2013-04-17"/>
+        #{/list}
     #{/if}
     <div class="content-title">
         <div class="legend">
@@ -42,7 +42,7 @@
             <fleft>手机号：</fleft>
             <fright>
                 <span class="tip">(用于接收券号)</span>
-                <input type="text" value="${user?.mobile}" name="phone" size="11">
+                <input type="text" value="${user?.mobile}" name="phone" size="11" style="width: 140px;">
                         <span style="display: inline;color: #ff0000;"
                                 >#{error 'phone'/}</span>
             </fright>
