@@ -10,7 +10,6 @@ import models.accounts.TradeBill;
 import models.accounts.Voucher;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
-import models.admin.SupplierUser;
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
@@ -29,7 +28,6 @@ import models.sales.ImportedCoupon;
 import models.sales.ImportedCouponStatus;
 import models.sales.MaterialType;
 import models.sales.SecKillGoodsItem;
-import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
@@ -956,17 +954,8 @@ public class Order extends Model {
                 throw new RuntimeException("can not find an imported coupon of goods " + goods.getId());
             } else {
                 eCoupon = new ECoupon(this, goods, orderItem, importedCoupon.coupon, importedCoupon.password).save();
-                Supplier supplier = Supplier.findById(goods.supplierId);
-                SupplierUser supplierUser = SupplierUser.find("bySupplier", supplier).first();
-                if (supplierUser == null) {
-                    throw new RuntimeException("can not find a supplierUser of goods " + goods.getId());
-                }
-                Shop shop = supplierUser.shop;
-                if (supplierUser.shop == null) {
-                    shop = Shop.findShopBySupplier(supplier.id).get(0);
-                }
-                eCoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.IMPORT_VERIFY);
-                eCoupon.save();
+
+                eCoupon.autoVerify();
                 importedCoupon.status = ImportedCouponStatus.USED;
                 importedCoupon.save();
             }
@@ -981,9 +970,11 @@ public class Order extends Model {
                     eCoupon.delete();
                     throw new RuntimeException("can not generate a kangou goods: " + goods.getId());
                 }
-                eCoupon.eCouponSn = card.cardId;
-                eCoupon.eCouponPassword = card.cardNumber;
+                eCoupon.createType = ECouponCreateType.IMPORT;
+                eCoupon.supplierECouponId = card.cardId;
+                eCoupon.eCouponSn = card.cardNumber;
                 eCoupon.save();
+                eCoupon.autoVerify();  // 自动验证掉
             }
 
         }

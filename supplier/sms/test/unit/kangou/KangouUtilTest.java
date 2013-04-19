@@ -156,14 +156,14 @@ public class KangouUtilTest extends UnitTest {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
             @Override
             public void build(ECoupon target) {
-                target.eCouponSn = cardId;
-                target.eCouponPassword = RandomNumberUtil.generateRandomNumber(10);
+                target.supplierECouponId = cardId;
+                target.eCouponSn = RandomNumberUtil.generateRandomNumber(10);
             }
         });
         Template template = TemplateLoader.load("test/data/kangou/SetCardUseAndSendResponse.xml");
         Map<String, Object> params = new HashMap<>();
         params.put("orderNumber", eCoupon.order.orderNumber);
-        params.put("cardId", eCoupon.eCouponSn);
+        params.put("cardId", eCoupon.supplierECouponId);
         params.put("cardStatus", cardStatus);
         String responseBody = template.render(params);
         MockWebServiceClient.addMockHttpRequest(200, responseBody);
@@ -174,15 +174,15 @@ public class KangouUtilTest extends UnitTest {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
             @Override
             public void build(ECoupon target) {
-                target.eCouponSn = cardId;
-                target.eCouponPassword = RandomNumberUtil.generateRandomNumber(10);
+                target.supplierECouponId = cardId;
+                target.eCouponSn = RandomNumberUtil.generateRandomNumber(10);
             }
         });
         Template template = TemplateLoader.load("test/data/kangou/GetCardStatusResponse.xml");
         Map<String, Object> params = new HashMap<>();
         params.put("orderNumber", eCoupon.order.orderNumber);
-        params.put("cardId", eCoupon.eCouponSn);
-        params.put("cardNumber", eCoupon.eCouponPassword);
+        params.put("cardId", eCoupon.supplierECouponId);
+        params.put("cardNumber", eCoupon.eCouponSn);
         params.put("cardStatus", cardStatus);
         params.put("cardDateEnd", DateUtil.dateToString(DateHelper.afterDays(30), "yyyy-MM-dd"));
         params.put("ticketCount", 1);
@@ -204,14 +204,14 @@ public class KangouUtilTest extends UnitTest {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
             @Override
             public void build(ECoupon target) {
-                target.eCouponSn = cardId;
-                target.eCouponPassword = RandomNumberUtil.generateRandomNumber(10);
+                target.supplierECouponId = cardId;
+                target.eCouponSn = RandomNumberUtil.generateRandomNumber(10);
             }
         });
         Template template = TemplateLoader.load("test/data/kangou/SetCardUselessResponse.xml");
         Map<String, Object> params = new HashMap<>();
         params.put("orderNumber", eCoupon.order.orderNumber);
-        params.put("cardId", eCoupon.eCouponSn);
+        params.put("cardId", eCoupon.supplierECouponId);
         params.put("cardStatus", 9);  //废止
         String responseBody = template.render(params);
         MockWebServiceClient.addMockHttpRequest(200, responseBody);

@@ -2,7 +2,6 @@ package models.kangou;
 
 import models.order.ECoupon;
 import models.order.ECouponStatus;
-import models.order.OrderItems;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -12,9 +11,7 @@ import play.libs.XML;
 import play.libs.XPath;
 import util.ws.WebServiceRequest;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -112,7 +109,7 @@ public class KangouUtil {
      </string>
      </Return_Datas>
 
-     * @param orderItems  订单项
+     * @param eCoupon  订单券
      */
     public static KangouCard getCardId(ECoupon eCoupon) {
         if (eCoupon.goods.supplierGoodsId == null) {
@@ -120,7 +117,7 @@ public class KangouUtil {
                     eCoupon.goods.id, eCoupon.goods.shortName);
             return null;
         }
-        String functionId = "GetCardId";
+        String functionId = "GetCardID";
         String ticketCount = "1";
         Map<String, Object> params = generateRequestParams(functionId);
         params.put("OrderId", eCoupon.id);
@@ -131,11 +128,14 @@ public class KangouUtil {
 
         Logger.info("KangouUtil.getCardId: orderId=%s, cardKindId=%s", eCoupon.id,
                 eCoupon.goods.supplierGoodsId.toString());
-        return doCallGetCardId(params);
+        return doCallGetCardId(eCoupon, params);
     }
 
-    private static KangouCard doCallGetCardId(Map<String, Object> params) {
-        Document document = WebServiceRequest.url(URL).params(params).postXml();
+    private static KangouCard doCallGetCardId(ECoupon eCoupon, Map<String, Object> params) {
+        Document document = WebServiceRequest.url(URL).type("kangou")
+                .addKeyword(eCoupon.id.toString())
+                .params(params)
+                .postXml();
         Logger.info("xml: \n%s", XML.serialize(document));
 
         // 检查是否出错, error message
@@ -184,14 +184,14 @@ public class KangouUtil {
     public static KangouCardStatus setCardUseAndSend(ECoupon eCoupon) {
         String functionId = "SetCardUseAndSend";
         Map<String, Object> params = generateRequestParams(functionId);
-        params.put("OrderId", eCoupon.order.orderNumber);
-        params.put("CardID", eCoupon.eCouponSn);
+        params.put("OrderId", eCoupon.id);
+        params.put("CardID", eCoupon.supplierECouponId);
         params.put("Mobile", eCoupon.orderItems.phone);
         params.put("HashCode", hashCode(MD5_KEY, USER_ID, eCoupon.order.orderNumber,
                 eCoupon.eCouponSn, eCoupon.orderItems.phone, functionId));
 
-        Logger.info("KangouUtil.setCardUseAndSend: orderId=%s, CardID=%s", eCoupon.order.orderNumber,
-                eCoupon.eCouponSn);
+        Logger.info("KangouUtil.setCardUseAndSend: orderId=%s, CardID=%s, params:\n%s", eCoupon.order.orderNumber,
+                eCoupon.eCouponSn, params.toString());
 
         return doSetCardUseAndSend(params);
     }
@@ -252,8 +252,8 @@ public class KangouUtil {
     public static ECoupon getCardStatus(ECoupon eCoupon) {
         String functionId = "GetCardStatus";
         Map<String, Object> params = generateRequestParams(functionId);
-        params.put("OrderId", eCoupon.order.orderNumber);
-        params.put("CardID", eCoupon.eCouponSn);
+        params.put("OrderId", eCoupon.id);
+        params.put("CardID", eCoupon.supplierECouponId);
         params.put("HashCode", hashCode(MD5_KEY, USER_ID, eCoupon.order.orderNumber,
                 eCoupon.eCouponSn, functionId));
 
@@ -265,7 +265,9 @@ public class KangouUtil {
     }
 
     private static ECoupon doCallGetCardStatus(ECoupon eCoupon, Map<String, Object> params) {
-        Document document = WebServiceRequest.url(URL).params(params).postXml();
+        Document document = WebServiceRequest.url(URL).type("kangou")
+                .addKeyword(eCoupon.id)
+                .params(params).postXml();
         Logger.info("xml: \n%s", XML.serialize(document));
 
         // 检查是否出错, error message
@@ -295,7 +297,8 @@ public class KangouUtil {
      <summary>取消订单,设置卡的状态为废止</summary>
      <param name="HashCode">md5加密后的字符,加密顺序:key + UserId + OrderId + CardID + FunctionId </param>
      <param name="UserId">合作厂商ID</param>
-     <param name="OrderId">合作厂商的内部的订单ID</param> <param name="FunctionID">调用的功能ID</param>
+     <param name="OrderId">合作厂商的内部的订单ID</param>
+     <param name="FunctionID">调用的功能ID</param>
      <param name="CardID">需要取消的CardID</param>
      <Return_Datas>
      <?xml version="1.0" encoding="utf-8" ?>
@@ -315,19 +318,22 @@ public class KangouUtil {
 
         String functionId = "SetCardUseAndSend";
         Map<String, Object> params = generateRequestParams(functionId);
-        params.put("OrderId", eCoupon.order.orderNumber);
-        params.put("CardID", eCoupon.eCouponSn);
+        params.put("OrderId", eCoupon.id);
+        params.put("CardID", eCoupon.supplierECouponId);
         params.put("HashCode", hashCode(MD5_KEY, USER_ID, eCoupon.order.orderNumber,
                 eCoupon.eCouponSn, functionId));
 
         Logger.info("KangouUtil.setCardUseless: orderId=%s, CardID=%s", eCoupon.order.orderNumber,
                 eCoupon.eCouponSn);
 
-        return doSetCardUseless(params);
+        return doSetCardUseless(eCoupon, params);
     }
 
-    private static KangouCardStatus doSetCardUseless(Map<String, Object> params) {
-        Document document = WebServiceRequest.url(URL).params(params).postXml();
+    private static KangouCardStatus doSetCardUseless(ECoupon eCoupon, Map<String, Object> params) {
+        Document document = WebServiceRequest.url(URL)
+                .type("kangou")
+                .addKeyword(eCoupon.id).addKeyword(eCoupon.supplierECouponId)
+                .params(params).postXml();
         Logger.info("xml: \n%s", XML.serialize(document));
 
         // 检查是否出错, error message
