@@ -5,6 +5,7 @@
 <script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 #{set 'moreStyles'}
+
 <style type="text/css">
     body {
         color: #4E4E4E;
@@ -47,6 +48,7 @@
         padding: 5px 15px;
         text-align: center;
         font-size: 15px;
+        border-bottom: 1px #8F8F8F solid;
     }
 
     dt {
@@ -85,6 +87,9 @@
     }
 </style>
 #{/set}
+
+
+
 <div id="page">
     <h1>采购合同</h1>
 
@@ -105,38 +110,38 @@
         </div>
     </div>
     <div style="border: 1px solid;">
-    <table style="margin-top: 10px;" border="0"  cellpadding="0" cellspacing="0">
-        <thead>
-        <tr>
-            <th width="300px">名称规格</th>
-            <th width="300px">产品数量</th>
-            <th width="300px">单位</th>
-            <th width="300px">折前价</th>
-            <th width="300px">折扣</th>
-            <th width="300px">折后价</th>
-            <th width="300px">金额</th>
-        </tr>
-        </thead>
+        <table border="0" cellpadding="0" cellspacing="0">
+            <thead>
+            <tr>
+                <th width="300px">名称规格</th>
+                <th width="300px">产品数量</th>
+                <th width="300px">单位</th>
+                <th width="300px">折前价</th>
+                <th width="300px">折扣</th>
+                <th width="300px">折后价</th>
+                <th width="300px">金额</th>
+            </tr>
+            </thead>
 
-        <tbody>
-        #{list items:purchaseItemList, as:'item'}
-        <tr>
-            <td>${item?.sku?.name}</td>
-            <td>${item?.count}</td>
-            <td>张</td>
-            <td>${item?.sku?.marketPrice}</td>
-            <td>${item?.discount}</td>
-            <td>${item?.price}</td>
-            <td>${item?.totalPrice}</td>
-        </tr>
-        #{/list}
-        <tr>
-            <td>合计金额：</td>
-            <td colspan="6" style="text-align: right;padding-right: 35px;">${purchaseOrder?.totalPrice}</td>
-        </tr>
-        </tbody>
-    </table>
-        </div>
+            <tbody>
+            #{list items:purchaseItemList, as:'item'}
+            <tr>
+                <td>${item?.sku?.name}</td>
+                <td>${item?.count}</td>
+                <td>张</td>
+                <td>${item?.sku?.marketPrice}</td>
+                <td>${item?.discount}</td>
+                <td>${item?.price}</td>
+                <td>${item?.totalPrice}</td>
+            </tr>
+            #{/list}
+            <tr>
+                <td>合计金额：</td>
+                <td colspan="6" style="text-align: right;padding-right: 35px;">${purchaseOrder?.totalPrice}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
     <div style="padding-top: 20px;">
         <div>
@@ -177,4 +182,14 @@
         总经理审核：_______________
         <span style="padding-left: 100px;"> 收货人签字：_______________ </span>
     </div>
+    <br><br>
+
+    <div style="padding-left:300px;">
+        <button type="button" id="print" name="print_button"
+                onclick="javascript:$('#print').css('display', 'none');window.print();$('#print').show();">打印
+        </button>
+    </div>
 </div>
+
+
+
