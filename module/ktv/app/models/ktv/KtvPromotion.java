@@ -1,10 +1,11 @@
 package models.ktv;
 
 import com.uhuila.common.constants.DeletedStatus;
+import models.order.OuterOrder;
 import models.sales.Shop;
+import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
-import play.modules.solr.SolrField;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,6 +21,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -28,16 +30,22 @@ import java.util.Set;
  * KTV促销活动
  */
 @Entity
-@Table(name="ktv_promotions")
+@Table(name = "ktv_promotions")
 public class KtvPromotion extends Model {
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "ktv_promotions_shops",
             inverseJoinColumns = @JoinColumn(name = "shop_id"),
-            joinColumns = @JoinColumn(name = "ktv_promotion_id"))
+            joinColumns = @JoinColumn(name = "promotion_id"))
     public Set<Shop> shops;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ktvPromotion")
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @JoinTable(name = "ktv_promotions_room_types",
+            inverseJoinColumns = @JoinColumn(name = "room_type_id"),
+            joinColumns = @JoinColumn(name = "ktv_promotion_id"))
+    public Set<KtvRoomType> roomTypes;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "promotion")
     @OrderBy("id")
     public List<KtvPromotionConfig> promotionConfigs;
 
@@ -45,15 +53,15 @@ public class KtvPromotion extends Model {
      * 促销名称(不能超过5个汉字)
      */
     @Required
-//    @Max(20)
+    @MaxSize(5)
     public String name;
 
     /**
      * 促销类型
      */
+    @Required
     @Enumerated(EnumType.STRING)
-    @Column(name = "ktv_promotion_type")
-    @SolrField
+    @Column(name = "promotion_type")
     public KtvPromotionType promotionType;
 
     /**
@@ -83,14 +91,10 @@ public class KtvPromotion extends Model {
     @Column(name = "end_time")
     public String endTime;
 
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinTable(name = "ktv_promotions_room_types",
-            inverseJoinColumns = @JoinColumn(name = "room_type_id"),
-            joinColumns = @JoinColumn(name = "ktv_promotion_id"))
-    public Set<KtvRoomType> roomTypes;
 
-    @OneToMany(mappedBy = "salesPromotion")
-    public List<KtvPromotionItem> promotionItem;
+
+    @OneToMany(mappedBy = "promotion")
+    public List<KtvPromotionConfig> promotionItem;
 
 
     @Column(name = "created_at")
@@ -98,5 +102,7 @@ public class KtvPromotion extends Model {
 
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
+
+
 
 }

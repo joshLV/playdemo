@@ -25,8 +25,6 @@ public class KtvRoomType extends Model {
 
     public String name;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    public models.ktv.KtvSalesPromotion goods;
 
     /**
      * 取得包厢类型的列表
