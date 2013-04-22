@@ -10,6 +10,7 @@ import java.util.Map;
 
 import models.payment.PaymentFlow;
 import models.payment.PaymentUtil;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 
 public class SinaPaymentFlow extends PaymentFlow {
@@ -161,7 +162,7 @@ public class SinaPaymentFlow extends PaymentFlow {
         StringBuilder result = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
             String value = entry.getValue();
-            if (value != null) {
+            if (!StringUtils.isBlank(value)) {
                 result.append(entry.getKey())
                         .append("=")
                         .append(entry.getValue())

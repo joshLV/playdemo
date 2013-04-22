@@ -19,20 +19,20 @@ import factory.FactoryBoy;
 /**
  * @author : likang
  */
-public class OrderChargeTest extends UnitTest{
+public class OrderChargeTest extends UnitTest {
 
     private User user;
-	private Goods goods;
+    private Goods goods;
 
-	@Before
-    public void setup(){
-    	FactoryBoy.deleteAll();
-    	user = FactoryBoy.create(User.class);
-    	goods = FactoryBoy.create(Goods.class);
-	}
+    @Before
+    public void setup() {
+        FactoryBoy.deleteAll();
+        user = FactoryBoy.create(User.class);
+        goods = FactoryBoy.create(Goods.class);
+    }
 
 
-    private Account getAccount(){
+    private Account getAccount() {
         return AccountUtil.getAccount(user.id, AccountType.CONSUMER);
     }
 
@@ -40,22 +40,23 @@ public class OrderChargeTest extends UnitTest{
      * 测试充值
      */
     @Test
-    public void testCharge(){
+    public void testCharge() {
         Account account = getAccount();
         assertEquals(0, BigDecimal.ZERO.compareTo(account.amount));
-        
-        Order order = FactoryBoy.create(Order.class, "charge");
 
-        order.paid();
-        
+        Order order = FactoryBoy.create(Order.class, "charge");
+        Account accountOrder = order.chargeAccount();
+        order.paid(accountOrder);
+
         assertEquals(OrderStatus.PAID, order.status);
         account = getAccount();
         assertEquals(0, order.discountPay.compareTo(account.amount));
 
-        try{
-            order.paid();
+        try {
+            order.paid(accountOrder);
             fail("order can not be paid twice");
-        }catch (RuntimeException e){}
+        } catch (RuntimeException e) {
+        }
         account = getAccount();
         assertEquals(0, order.discountPay.compareTo(account.amount));
     }

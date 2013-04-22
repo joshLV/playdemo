@@ -54,9 +54,15 @@ public class KtvRoomOrderInfo extends Model {
     @Column(name = "scheduled_time")
     public String scheduledTime;
 
+    /**
+     * 锁定时间
+     */
     @Column(name = "created_at")
     public Date createdAt;
 
+    /**
+     * 取消时间||成交时间
+     */
     @Column(name = "deal_at")
     public Date dealAt;
 
@@ -85,6 +91,7 @@ public class KtvRoomOrderInfo extends Model {
             this.status = KtvOrderStatus.CANCELED;
             this.orderItem.status = OrderStatus.CANCELED;
             this.orderItem.save();
+            this.dealAt = new Date();
             this.save();
         }
     }
@@ -107,7 +114,7 @@ public class KtvRoomOrderInfo extends Model {
      * @return
      */
     public static List<KtvRoomOrderInfo> findByOrder(Order order) {
-        return KtvRoomOrderInfo.find("status=? and orderItem.order = ? and orderItem.order.status=? and createdAt <= ?", KtvOrderStatus.LOCK, order, OrderStatus.PAID, DateUtils.addMinutes(new Date(), -10)).fetch();
+        return KtvRoomOrderInfo.find("status=? and orderItem.order = ? and createdAt <= ?", KtvOrderStatus.LOCK, order, DateUtils.addMinutes(new Date(), -10)).fetch();
     }
 
     /**
