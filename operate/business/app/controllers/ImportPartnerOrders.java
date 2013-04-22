@@ -1,6 +1,7 @@
 package controllers;
 
 import com.google.gson.Gson;
+import models.accounts.Account;
 import models.accounts.PaymentSource;
 import models.order.*;
 import models.resale.Resaler;
@@ -155,7 +156,8 @@ public class ImportPartnerOrders extends Controller {
                 ybqOrder.accountPay = ybqOrder.needPay;
                 ybqOrder.discountPay = BigDecimal.ZERO;
                 ybqOrder.payMethod = PaymentSource.getBalanceSource().code;
-                ybqOrder.paid();
+                Account account = ybqOrder.chargeAccount();
+                ybqOrder.paid(account);
                 ybqOrder.paidAt = logistic.paidAt;
                 ybqOrder.save();
                 renderArgs.put("unBindGoodsList", unBindGoodsSet);

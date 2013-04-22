@@ -704,28 +704,45 @@ public class Order extends Model {
             return;
         }
 
+        //先将用户银行支付的钱充值到自己账户上
+        Account account = chargeAccount();
 
-        if (paid()) {
-            //ktv 一个room被两个消费者订购，只有一个成功，另外一个则进行如果也支付成功，则对其做退款处理，并且把订单状态和orderItem状态变为CANCELED
-//            List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrder(this);
-//            if (ktvRoomOrderInfoList.size() > 0) {
-//                for (KtvRoomOrderInfo ktvRoomOrderInfo : ktvRoomOrderInfoList) {
-//                    ktvRoomOrderInfo.cancelKtvRoom();
-//                }
-//                this.status = OrderStatus.CANCELED;
-//                this.save();
-//            } else {
-                generateECoupon();
-                remindBigOrderRemark();
-                this.sendOrderSMS("发送券号");
-//            }
+        //  ktv 一个room被两个消费者订购，只有一个成功，另外一个则进行如果也支付成功，则对其做退款处理，并且把订单状态和orderItem状态变为CANCELED
+        List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrder(this);
+        if (ktvRoomOrderInfoList.size() > 0) {
+            for (KtvRoomOrderInfo ktvRoomOrderInfo : ktvRoomOrderInfoList) {
+                ktvRoomOrderInfo.cancelKtvRoom();
+            }
+            this.status = OrderStatus.CANCELED;
+            this.save();
+            return;
         }
+
+        if (paid(account)) {
+            generateECoupon();
+            remindBigOrderRemark();
+            this.sendOrderSMS("发送券号");
+        }
+    }
+
+    public Account chargeAccount() {
+        Account account = this.getBuyerAccount();
+        PaymentSource paymentSource = PaymentSource.find("byCode", this.payMethod).first();
+
+        //先将用户银行支付的钱充值到自己账户上
+        if (this.discountPay.compareTo(BigDecimal.ZERO) > 0) {
+            TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource, this.getId());
+            TradeUtil.success(chargeTradeBill, "充值");
+            this.payRequestId = chargeTradeBill.getId();
+        }
+        this.save();
+        return account;
     }
 
     /**
      * 订单已支付，修改支付状态、时间，更改库存，发送电子券密码
      */
-    public boolean paid() {
+    public boolean paid(Account account) {
         if (this.status != OrderStatus.UNPAID) {
             throw new RuntimeException("can not pay order:" + this.getId() + " since it's already been processed");
         }
@@ -751,17 +768,6 @@ public class Order extends Model {
                 uwi.payAmount = uwi.payAmount.add(this.amount);
                 uwi.save();
             }
-        }
-
-        Account account = this.getBuyerAccount();
-        PaymentSource paymentSource = PaymentSource.find("byCode", this.payMethod).first();
-
-        System.out.println("discountPay:::::::"+this.discountPay);
-        //先将用户银行支付的钱充值到自己账户上
-        if (this.discountPay.compareTo(BigDecimal.ZERO) > 0) {
-            TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource, this.getId());
-            TradeUtil.success(chargeTradeBill, "充值");
-            this.payRequestId = chargeTradeBill.getId();
         }
 
         //如果订单类型不是充值,那接着再支付此次订单

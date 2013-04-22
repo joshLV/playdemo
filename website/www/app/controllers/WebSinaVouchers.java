@@ -123,6 +123,7 @@ public class WebSinaVouchers extends Controller {
                                 error("该包厢已被他人预定！");
                             }
                             KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
+                            System.out.println(ktvPriceSchedule+"=============="+scheduledTime);
                             orderItems = order.addOrderItem(goods, 1L, phone, ktvPriceSchedule.price, ktvPriceSchedule.price);
                             orderItems.outerGoodsNo = productId;
                             orderItems.save();

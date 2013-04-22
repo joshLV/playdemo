@@ -158,8 +158,9 @@ public class OrderUnitTest extends UnitTest {
         account.amount = new BigDecimal(10000);
         account.save();
         order.setUser(user.id, AccountType.CONSUMER);
-        
-        order.paid();
+
+        account = order.chargeAccount();
+        order.paid(account);
         assertEquals(OrderStatus.PAID, order.status);
     }
 
