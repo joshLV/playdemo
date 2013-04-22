@@ -21,6 +21,7 @@ import static util.DateHelper.beforeDays;
 public class InventoryStockItemFactory extends ModelFactory<InventoryStockItem> {
     @Override
     public InventoryStockItem define() {
+
         InventoryStockItem stockItem = new InventoryStockItem(FactoryBoy.lastOrCreate(InventoryStock.class));
         stockItem.changeCount = 10l;
         stockItem.remainCount = stockItem.changeCount;
