@@ -76,7 +76,7 @@
             #{if navigation.ContextedPermission.hasPermission("SHOPS")}
                 <li><a #{if "shops".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/shops')}">我的门店</a></li>#{/if}
             #{if navigation.ContextedPermission.hasPermission("ACCOUNT")}
-                <li><a #{if "users".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/users')}">账号管理</a></li>#{/if}
+                <li><a #{if "users".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/users')}">帐号管理</a></li>#{/if}
         #{/if}
         #{if navigation.ContextedPermission.hasPermission("DOWNLOAD_ORDER_SHIPPING") && ("1".equals(canSaleReal))}
             <li><a #{if "download-order-shipping".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/real/download-order-shipping')}">下载发货单</a>

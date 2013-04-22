@@ -45,8 +45,7 @@ public class SupplierUserFactory extends ModelFactory<SupplierUser> {
 
 
     public static SupplierRole role(String roleName) {
-        SupplierRole role = SupplierRole.find("byKey", roleName).first();
-        return role;
+        return SupplierRole.find("byKey", roleName).first();
     }
 
 
