@@ -77,24 +77,12 @@ public class KtvPriceSchedules extends Controller {
         index(null, null);
     }
 
-    private static KtvRoom checkShopTime(KtvPriceSchedule priceSchedule, Shop shop) {
-        List<KtvRoom> rooms = KtvRoom.find("byShopAndRoomType", shop, priceSchedule.roomType).fetch();
-
-
-        for (KtvRoom room : rooms) {
-        }
-
-
-        return null;
-    }
-
     private static void checkTime(Long id, KtvPriceSchedule priceSchedule) {
         Set<Shop> shops = priceSchedule.shops;
         Validation.required("priceSchedule.shop", shops);
         if (shops != null && shops.size() > 0) {
 
             List<KtvPriceSchedule> scheduleList = KtvPriceSchedule.getSchedules(id, priceSchedule);
-
             for (KtvPriceSchedule schedule : scheduleList) {
                 if (!schedule.useWeekDay.contains(priceSchedule.useWeekDay)) {
                     continue;
@@ -108,7 +96,6 @@ public class KtvPriceSchedules extends Controller {
                             Validation.addError("priceSchedule.day", "该日期范围有交叉，请确认！");
                             break;
                         }
-                        System.out.println("startTime=" + schedule.startTime + "&endTime=" + schedule.endTime);
                         //10：00~12：00  交叉的可能时间段09:00~11:00 或 11：00~13：00
                         if (!(priceSchedule.endTime.compareTo(schedule.startTime) <= 0 || priceSchedule.startTime.compareTo(schedule.endTime) >= 0)) {
                             Validation.addError("priceSchedule.useTime", "该时间段有交叉，请确认！");
@@ -148,6 +135,7 @@ public class KtvPriceSchedules extends Controller {
         checkTime(id, priceSchedule);
         if (Validation.hasErrors()) {
             initParams(priceSchedule);
+            System.out.println(Validation.errors().get(0));
             render("KtvPriceSchedules/edit.html", priceSchedule);
         }
         KtvPriceSchedule.update(id, priceSchedule);
@@ -162,5 +150,6 @@ public class KtvPriceSchedules extends Controller {
         }
         priceSchedule.delete();
 
+        index(null, null);
     }
 }

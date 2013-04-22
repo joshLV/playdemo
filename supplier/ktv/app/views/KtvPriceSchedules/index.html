@@ -28,7 +28,12 @@
             </table>
         </div>
         <input type="hidden" id="shopId" value="${shop.id?:shops?.get(0).id}">
-        <input type="hidden" id="roomTypeId" value="${roomType?.id?:roomTypeList?.get(0)?.id}">
+        #{if roomTypeList.size()>0}
+            <input type="hidden" id="roomTypeId" value="${roomType?.id?:roomTypeList.get(0).id}">
+        #{/if}
+        #{else}
+            <div class="error">请到左边菜单【我的门店】的新增门店页面，添加包厢信息！</div>
+        #{/else}
 
         <div class="wk-ktvwrapper" id="wk-ktvwrapper"></div>
 

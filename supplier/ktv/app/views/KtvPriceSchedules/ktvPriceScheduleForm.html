@@ -106,7 +106,11 @@ ${priceSchedule.roomType.name}
     <input type="text" name="priceSchedule.roomNumber" value="${priceSchedule?.roomNumber?:''}"/>
 </div>
 <div class="field-group">
-    <input type="submit" class="btn" value="确定"/> <a href="/ktv/room-type">取消</a>
+    <input type="submit" class="btn" value="确定"/>
+#{if "edit".equals(action)}
+    #{vx.deleteLink action:"/ktv/price-schedule",class:'btn', id:priceSchedule.id, name:' 该时间段的价格信息 '/}
+#{/if}
+    <a href="/ktv/price-schedule" class="btn">取消</a>
 </div>
 
 <script type="text/javascript">
