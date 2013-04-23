@@ -1,34 +1,37 @@
-#{form @KtvPromotions.updateItem() , id:'creationForm',class:"form-horizontal",id:"promotion_form" }
-<div class="field-group">
+﻿<div class="field-group">
     <label>促销名称</label>
-    #{if "add".equals(action)}
-        <input type="text" name="promotion.name" value="${promotion?.name}"/>
-        <span class="error">#{error 'promotion.name' /}</span>
-    #{/if}
-    #{else}
-    ${promotion?.name}
-    #{/else}
+#{if "add".equals(action)}
+    <input type="text" name="promotion.name" value="${promotion?.name}"/>
+    <span class="error">#{error 'promotion.name' /}</span>
+#{/if}
+#{else}
+${promotion?.name}
+#{/else}
 </div>
 
 <div class="field-group">
     <label>促销类型</label>
-    #{if "add".equals(action)}
-        #{set i:0/}
-        #{list items:promotionTypeList,as:'promotionType'}
-            <input id="promotion_type_${i}" type="radio" name="promotion.promotionType"
-                   indexId="${i}"
-                   value="${promotionType}" ${(promotion?.promotionType.equals(promotionType)) ?'checked':''}/>
-        &{'promotion.'+promotionType}
-        *{--- ${promotion?.promotionType}\\\\\${promotionType}}*
-            &nbsp;&nbsp;
-            #{set i++/}
-        #{/list}
-        <span class="error">#{error 'promotion.promotionType' /}</span>
-    #{/if}
-    #{else}
-    ${promotion.promotionType.name}
-        <input type="hidden" name="promotion.promotionType" value="${promotion.promotionType}"/>
-    #{/else}
+#{if "add".equals(action)}
+    #{set i:0/}
+    #{list items:promotionTypeList,as:'promotionType'}
+        <input id="promotion_type_${i}" type="radio" name="promotion.promotionType"
+               indexId="${i}"
+               value="${promotionType}" ${(promotion?.promotionType.equals(promotionType)) ?'checked':''}/>
+    &{'promotion.'+promotionType}
+    *{--- ${promotion?.promotionType}\\\\\${promotionType}}*
+        &nbsp;&nbsp;
+        #{set i++/}
+    #{/list}
+    <span class="error">#{error 'promotion.promotionType' /}</span>
+#{/if}
+#{else}
+${promotion.promotionType.name}
+    <input type="hidden" name="promotion.promotionType" value="${promotion.promotionType}"/>
+    <input type="hidden" id="previous_promotion_type" name="previousPromotionType"/>
+
+    <input type="hidden" id="max_j" name="maxJ"/>
+
+#{/else}
 </div>
 <div class="field-group">
     <label>促销时间</label>
@@ -53,16 +56,16 @@
         </tr>
         </thead>
         <tbody>
-            #{list items:shopsList, as:'shop'}
-            <tr class="tr-offsale transparent">
-                <td style="text-align:center">
-                    <input type="checkbox" name="promotion.shops.id" id="checkoption" value="${shop?.id}"
-                           #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}  />
-                </td>
-                <td>${shop?.name}</td>
-                <td></td>
-            </tr>
-            #{/list}
+        #{list items:shopsList, as:'shop'}
+        <tr class="tr-offsale transparent">
+            <td style="text-align:center">
+                <input type="checkbox" name="promotion.shops.id" id="checkoption" value="${shop?.id}"
+                       #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}  />
+            </td>
+            <td>${shop?.name}</td>
+            <td></td>
+        </tr>
+        #{/list}
         </tbody>
     </table>
 
@@ -115,107 +118,88 @@
 <div class="field-group">
     <label>适用包厢</label>
 
-    #{list items:roomsList,as:'room'}
-        <input type="checkbox" name="promotion.roomTypes.id" value="${room?.id}"
-               #{if roomTypeIds?.contains(","+room?.id+",")}checked#{/if}/>${room.name}&nbsp;&nbsp;
-    #{/list}
+#{list items:roomsList,as:'room'}
+    <input type="checkbox" name="promotion.roomTypes.id" value="${room?.id}"
+           #{if roomTypeIds?.contains(","+room?.id+",")}checked#{/if}/>${room.name}&nbsp;&nbsp;
+#{/list}
     <span class=" error">
-        #{error 'promotion.roomTypes' /}</span>
+    #{error 'promotion.roomTypes' /}</span>
 </div>
 
-    #{set j:0/}
+#{set j:0/}
 <input type="hidden" name="j" value="${j}" id="j"/>
 
 <div class="field-group" id="promotion_configs" style="display: none;">
 
 *{<div class="field-group" id="promotion_configs_${j}" style="display: none;">}*
     <label>促销方案</label>
-*{<span id="CONTINUOUS_RESERVE_DISCOUNT" style="display: none;">}*
     <span id="promotion_configs_item">
     <div style="padding: 15px;
 margin-right: 100px;
 margin-bottom: 10px;
-border: 1px dashed #c2c2c2; " id="promotion_configs_item_${j}">
+border: 1px dashed #c2c2c2; " id="promotion_configs_item">
         <span id="promotion_configs_name">  </span>
-        <input type="text" class="input-small" name="item.continuousReservedDuration"
+        <input type="text" class="input-small" name="promotionConfigs.continuousReservedDuration"
 
-               value="${item?.continuousReservedDuration}"/> 小时
-    *{</span>}*
+               value="${promotionConfigs?.continuousReservedDuration}"/> 天
 
-        <span id="discount" style="display: none;">
+    <span id="discount" style="display: none;">
           <br> <br>
         折扣
-    <input type="text" class="input-small" name="item.discount"
+    <input type="text" class="input-small" name="promotionConfigs.discount"
 
-           value="${item?.discount}"/> 折/间/小时
+           value="${promotionConfigs?.discount}"/> 折
     </span>
 
        <span id="reduced_price" style="display: none;">
           <br> <br>
         立减
-    <input type="text" class="input-small" name="item.reducedPrice"
+    <input type="text" class="input-small" name="promotionConfigs.reducedPrice"
 
-           value="${item?.reducedPrice}"/> 元
+           value="${promotionConfigs?.reducedPrice}"/> 元
+    </span>
+
+    </div>
+      </span>
+
+         <span id="promotion_configs_item_next">
+
+         </span>
+
+    <div style="padding: 15px;
+margin-right: 100px;
+margin-bottom: 10px;
+border: 1px dashed #c2c2c2; display: none;" id="promotion_configs_item_0">
+        <span id="promotion_configs_name_0">  </span>
+        <input type="text" class="input-small" name="promotionConfigs.continuousReservedDuration"
+
+               value="${promotionConfigs?.continuousReservedDuration}"/> 天
+    *{</span>}*
+
+        <span id="discount_0" style="display: none;">
+          <br> <br>
+        折扣
+    <input type="text" class="input-small" name="promotionConfigs.discount"
+
+           value="${promotionConfigs?.discount}"/> 折
+    </span>
+
+       <span id="reduced_price_0" style="display: none;">
+          <br> <br>
+        立减
+    <input type="text" class="input-small" name="promotionConfigs.reducedPrice"
+
+           value="${promotionConfigs?.reducedPrice}"/> 元
     </span>
     </div>
-       </span>
-    <input type="hidden" id="whole_promotion" name="promotionId" value="${promotionId}"/>
 
-    <button class="btn btn-primary" type="submit">添加促销方案</button>
+    <a style="margin-left:80px;background-color: darkseagreen;" class="btn btn-primary"
+       onclick="addItem()">添加
+    </a>
 </div>
-#{/form}
-<div class="field-group" id="edit_promotion_configs" style="display: none;">
-#{if itemList.size()>0}
-    <legend>修改促销方案</legend>
 
-    <table class="table" style="width:auto">
-        <tr>
-            <th>时长</th>
-            <th>优惠</th>
-            <th>操作</th>
-        </tr>
-        #{list items:itemList, as:'item'}
-            <tr>
-                #{form @KtvPromotions.updateItem(),id:"update_item"}
-                    <td>
-                        <div class="control-group">
-                            <input type="text" class="input-small" name="item.continuousReservedDuration"
-                                   id="item_continuousReservedDuration_${item?.id}"
-                                   value="${item?.continuousReservedDuration}"/> 件
-                        *{<span class="error">#{error 'item.count'/}</span>}*
-                        </div>
-                    </td>
-                    <td>
-                        <div class="control-group">
-                            <input type="text" class="input-small" name="item.price"
-                                   id="item_price_${purchaseItem?.count}"
-                                   value="${purchaseItem?.price}"/> 元
-                        *{<span class="error">#{error 'item.price'/}</span>}*
-                        </div>
-                    </td>
-
-                <td>
-                <div class="control-group" style="margin-top:-22px;">
-                    <input type="hidden" name="promotionId" value="${promotionId}"/>
-                    <input type="hidden" name="item.id" value="${item?.id}"/>
-                    <button class=" btn btn-primary" type="submit">修 改</button>
-                #{/form}
-                #{form @real.PurchaseOrders.deleteItem(), style:"display:inline",method:'DELETE'}
-                    <input type="hidden" name="itemId" value="${item?.id}"/>
-                    <input type="hidden" name="promotionId" value="${promotionId}"/>
-                    <button class="btn btn-danger">删 除</button>
-                #{/form}
-            </div>
-            </td>
-            </tr>
-        #{/list}
-    </table>
-#{/if}
-</div>
 <div class="field-group">
-*{<input type="submit" class="btn" value="确定"/>}*
-    <a class="btn btn-primary" id="save_promotion" onclick="savePromotion()"> 保存</a>
-
+    <input type="submit" class="btn" value="确定"/>
     <a href="/ktv/room-type">取消</a>
 </div>
 
@@ -235,52 +219,130 @@ border: 1px dashed #c2c2c2; " id="promotion_configs_item_${j}">
     $("#endTime").val("${promotion?.endTime}")
 
     $("input[type='radio']").click(function () {
+        var j = $("#j").val();
         var promotionTypeName = $("#promotion_type_" + $(this).attr('indexId')).val();
-//        var j = $("#j").val();
-        $("#promotion_configs").show();
-        $("#edit_promotion_configs").show();
+//        console.log($("#j").val())
+        console.log($("#previous_promotion_type").val())
+        console.log(promotionTypeName)
+        if ($("#previous_promotion_type").val() != promotionTypeName && $("#j").val() != 0) {
+            j = $("#j").val(0);
+            console.log("here")
+//            $('#promotion_configs_item_next').empty();
 
+//            $("#promotion_configs").empty();
+//            $('#promotion_configs_item').append($("#promotion_configs_item_" + j).clone());
+        }
+
+//        var j = $("#j").val();
 
 //        $("#promotion_configs_" + j).show();
-        if (promotionTypeName == "CONTINUOUS_RESERVE_DISCOUNT") {
+        if ($("#j").val() == 0) {
+            console.log("9090");
+//            $('#promotion_configs_item_next').html("");
+            if (promotionTypeName == "CONTINUOUS_RESERVE_DISCOUNT") {
 //            $("#CONTINUOUS_RESERVE_DISCOUNT").show();
-            $("#promotion_configs_name").html('连续预订');
-            $("#reduced_price").hide();
-            $("#discount").show();
-        }
-        else if (promotionTypeName == "CONTINUOUS_RESERVE_REDUCTION") {
-            $("#promotion_configs_name").html('连续预订');
-            $("#discount").hide();
-            $("#reduced_price").show();
-        }
-        else if (promotionTypeName == "ADVANCED_RESERVE_DISCOUNT") {
-            $("#promotion_configs_name").html('提前预订');
-            $("#reduced_price").hide();
-            $("#discount").show();
-        }
-        else if (promotionTypeName == "ADVANCED_RESERVE_REDUCTION") {
-            $("#promotion_configs_name").html('提前预订');
-            $("#discount").hide();
-            $("#reduced_price").show();
-        }
+                $("#promotion_configs_name").html('连续预订');
+                $("#reduced_price").hide();
+                $("#discount").show();
+            }
+            else if (promotionTypeName == "CONTINUOUS_RESERVE_REDUCTION") {
+                $("#promotion_configs_name").html('连续预订');
+                $("#discount").hide();
+                $("#reduced_price").show();
+            }
+            else if (promotionTypeName == "ADVANCED_RESERVE_DISCOUNT") {
+                $("#promotion_configs_name").html('提前预订');
+                $("#reduced_price").hide();
+                $("#discount").show();
+            }
+            else if (promotionTypeName == "ADVANCED_RESERVE_REDUCTION") {
+                $("#promotion_configs_name").html('提前预订');
+                $("#discount").hide();
+                $("#reduced_price").show();
+            }
 
+            $('#promotion_configs_item_next').hide();
+//            $("#promotion_configs_item_" + j).remove();
+
+            $("#promotion_configs").show();
+        }
+        else {
+            if (promotionTypeName == "CONTINUOUS_RESERVE_DISCOUNT") {
+//            $("#CONTINUOUS_RESERVE_DISCOUNT").show();
+                $("#promotion_configs_name_" + j).html('连续预订');
+                $("#reduced_price_" + j).hide();
+                $("#discount_" + j).show();
+            }
+            else if (promotionTypeName == "CONTINUOUS_RESERVE_REDUCTION") {
+                $("#promotion_configs_name_" + j).html('连续预订');
+                $("#discount_" + j).hide();
+                $("#reduced_price_" + j).show();
+            }
+            else if (promotionTypeName == "ADVANCED_RESERVE_DISCOUNT") {
+                $("#promotion_configs_name_" + j).html('提前预订');
+                $("#reduced_price_" + j).hide();
+                $("#discount_" + j).show();
+            }
+            else if (promotionTypeName == "ADVANCED_RESERVE_REDUCTION") {
+                $("#promotion_configs_name_" + j).html('提前预订');
+                $("#discount_" + j).hide();
+                $("#reduced_price_" + j).show();
+            }
+        }
+//             console.log("after ---"+promotionTypeName)
+
+        $("#previous_promotion_type").val(promotionTypeName);
     });
 
-    function savePromotion() {
-        console.log("savepromotion")
-        console.log($("#action").val())
-        if ($("#action").val() == "add") {
-            console.log("inini")
-            $("#promotion_form").attr("action", "@{KtvPromotions.create()}");
+    function addItem() {
+        var j = $("#j").val();
+//        console.log(j)
+//           j=j+1;
+        var promotionTypeName = $("#promotion_type_" + $("input:checked").attr('indexId')).val();
+        console.log(promotionTypeName)
+        if (promotionTypeName == "CONTINUOUS_RESERVE_DISCOUNT") {
+//            $("#CONTINUOUS_RESERVE_DISCOUNT").show();
+            $("#promotion_configs_name_" + j).html('连续预订');
+            $("#reduced_price_" + j).hide();
+            $("#discount_" + j).show();
         }
-        else if ($("#action").val() == "edit") {
-            var id = $("#whole_promotion").val();
-            *{$("#promotion_form").attr("action", "@{KtvPromotions.update(id)}");}*
+        else if (promotionTypeName == "CONTINUOUS_RESERVE_REDUCTION") {
+            $("#promotion_configs_name_" + j).html('连续预订');
+            $("#discount_" + j).hide();
+            $("#reduced_price_" + j).show();
         }
-//        $("#promotion_form").attr("method", "POST");
-//        $("#promotion_form").submit();
+        else if (promotionTypeName == "ADVANCED_RESERVE_DISCOUNT") {
+            $("#promotion_configs_name_" + j).html('提前预订');
+            $("#reduced_price_" + j).hide();
+            $("#discount_" + j).show();
+        }
+        else if (promotionTypeName == "ADVANCED_RESERVE_REDUCTION") {
+            $("#promotion_configs_name_" + j).html('提前预订');
+            $("#discount_" + j).hide();
+            $("#reduced_price_" + j).show();
+        }
+        $('#promotion_configs_item_next').show();
+        $("#promotion_configs_item_" + j).show();
+        console.log("222--" + j)
+        if (j != 0) {
+        ﻿    $('#promotion_configs_item_next').append($("#promotion_configs_item_0").clone());
+        }
+
+
+        $('#promotion_configs_item_' + j).attr('id', 'promotion_configs_item_' + j + 1);
+        $('#promotion_configs_name_' + j).attr('id', 'promotion_configs_name_' + j + 1);
+        $('#reduced_price_' + j).attr('id', 'reduced_price_' + j + 1);
+        $('#discount_' + j).attr('id', 'discount_' + j + 1);
+        $("#j").val(j + 1);
+//         console.log("add item ---"+promotionTypeName)
+//        $("#previous_promotion_type").val(promotionTypeName);
+
+//        $("#max_j").val(j + 1);
+//        console.log(j+1)
+//        console.log("max-===="+$("#max_j").val())
+
         return false;
     }
-
+    ;
 
 </script>

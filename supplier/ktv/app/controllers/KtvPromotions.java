@@ -32,19 +32,20 @@ public class KtvPromotions extends Controller {
     }
 
     public static void add() {
-        KtvPromotion promotion = new KtvPromotion();
-        promotion.create();
-        promotion.deleted = DeletedStatus.DELETED;
-        promotion.save();
-        Long promotionId = promotion.id;
-        List<KtvPromotionConfig> itemList =
-                KtvPromotionConfig.find("promotion.id=? and deleted = ? ", promotionId, DeletedStatus.UN_DELETED).fetch();
+//        KtvPromotion promotion = new KtvPromotion();
+//        promotion.create();
+//        promotion.deleted = DeletedStatus.DELETED;
+//        promotion.save();
+//        Long promotionId = promotion.id;
+//        List<KtvPromotionConfig> itemList =
+//                KtvPromotionConfig.find("promotion.id=? and deleted = ? ", promotionId, DeletedStatus.UN_DELETED).fetch();
         initParams(null);
-        render(promotionId,itemList);
+//        render(promotionId,itemList);
+        render();
     }
 
     public static void create(@Valid KtvPromotion promotion, KtvPromotionConfig promotionConfigs) {
-        System.out.println(promotion.shops + "《=========promotion.shops:");
+//        System.out.println(promotion.shops + "《=========promotion.shops:");
 //        System.out.println(promotion.startTime + "《=========promotion.startTime:");
 //        System.out.println(promotion.endTime + "《=========promotion.endTime:");
 //        System.out.println(promotionConfigs.reducedPrice + "《=========promotion.promotionConfigs.reducedPrice:");
@@ -52,7 +53,8 @@ public class KtvPromotions extends Controller {
         Set<KtvRoomType> roomTypes = promotion.roomTypes;
         Validation.required("promotion.roomTypes", roomTypes);
 //        System.out.println(promotion.promotionType + "《=========salesPromotion.promotionType:");
-
+        System.out.println(promotionConfigs.reducedPrice + "《=========promotionConfigs[0].reducedPrice:");
+//        System.out.println(promotionConfigs[1].reducedPrice + "《=========promotionConfigs[1].reducedPrice:");
         Long promotionId=promotion.id;
         //适用时段
         if (promotion.startTime.compareTo(promotion.endTime) > 0) {
@@ -60,7 +62,9 @@ public class KtvPromotions extends Controller {
         }
         if (Validation.hasErrors()) {
             initParams(promotion);
-            render("/KtvPromotions/add.html", promotion,promotionId);
+            List<KtvPromotionConfig> itemList =
+                    KtvPromotionConfig.find("promotion.id=? and deleted = ? ", promotionId, DeletedStatus.UN_DELETED).fetch();
+            render("/KtvPromotions/add.html", promotion,promotionId,itemList);
         }
 
 //        System.out.println(promotion.roomTypes + "《=========promotion.roomTypes:");
@@ -133,7 +137,11 @@ public class KtvPromotions extends Controller {
     }
 
 
-    public static void updateItem(Long promotionId, @Valid KtvPromotionConfig item, KtvPromotion promotion) {
+    public static void updateItem(KtvPromotion promotion,Long promotionId, @Valid KtvPromotionConfig item ) {
+        System.out.println(promotion.name + "《=========promotion.name:");
+        System.out.println(item.continuousReservedDuration + "《=========item.continuousReservedDuration:");
+        System.out.println(item.reducedPrice + "《=========item.reducedPrice:");
+
         //判断是否选择了适用包厢
         Set<KtvRoomType> roomTypes = promotion.roomTypes;
         Validation.required("promotion.roomTypes", roomTypes);
@@ -151,6 +159,7 @@ public class KtvPromotions extends Controller {
         }
 
         KtvPromotion currentPromotion = KtvPromotion.findById(promotionId);
+        currentPromotion.refresh();
         if (StringUtils.isNotBlank(promotion.name)) {
             currentPromotion.name = promotion.name;
         }
@@ -163,19 +172,21 @@ public class KtvPromotions extends Controller {
         if (promotion.endDay != null) {
             currentPromotion.endDay = promotion.endDay;
         }
-        System.out.println(promotion.shops + "《=========promotion.shops:");
+//        System.out.println(promotion.shops + "《=========promotion.shops:");
+//        System.out.println(currentPromotion.shops + "《=========currentPromotion.shops:");
         if (promotion.shops != null) {
             currentPromotion.shops = promotion.shops;
         }
-//        if (promotion.startTime != null) {
-//            currentPromotion.startTime = promotion.startTime;
-//        }
-//        if (promotion.endTime != null) {
-//            currentPromotion.endTime = promotion.endTime;
-//        }
-//        if (promotion.roomTypes != null) {
-//            currentPromotion.roomTypes = promotion.roomTypes;
-//        }
+        if (promotion.startTime != null) {
+            currentPromotion.startTime = promotion.startTime;
+        }
+        if (promotion.endTime != null) {
+            currentPromotion.endTime = promotion.endTime;
+        }
+        System.out.println(promotion.roomTypes + "《=========promotion.roomTypes:");
+        if (promotion.roomTypes != null) {
+            currentPromotion.roomTypes = promotion.roomTypes;
+        }
 
 //        currentPromotion.save();
         item.promotion = currentPromotion;

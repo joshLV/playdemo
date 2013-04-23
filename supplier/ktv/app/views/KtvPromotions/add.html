@@ -20,9 +20,11 @@
 </style>
 #{/set}
 <div class="body">
+#{form @KtvPromotions.create() , id:'creationForm',class:"form-horizontal" }
     <div class="bd">
         <h2>${title}</h2>
         #{set action:"add"/}
         #{include '/KtvPromotions/ktvPromotionForm.html'/}
     </div>
+#{/form}
 </div>

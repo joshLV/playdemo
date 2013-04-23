@@ -1,6 +1,7 @@
 package models.ktv;
 
 import com.uhuila.common.constants.DeletedStatus;
+import play.data.validation.Required;
 import play.db.jpa.Model;
 
 import javax.persistence.Column;
@@ -46,5 +47,12 @@ public class KtvPromotionConfig extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
+    /**
+     * 促销类型
+     */
+    @Required
+    @Enumerated(EnumType.STRING)
+    @Column(name = "promotion_type")
+    public KtvPromotionType promotionType;
 
 }
