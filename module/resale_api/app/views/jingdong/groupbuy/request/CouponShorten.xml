@@ -5,5 +5,5 @@
     *{ 外团产品ID[必填] }*
     <VenderTeamId>${venderTeamId}</VenderTeamId>
     *{ 优惠券截至日期时间 格式：2010-10-11 23:59:59,表示产品延期至2010年10月11日23点59分59秒 若不填写时分秒信息，则默认缩短至00点00分00秒[必填] }*
-    <ExpireTime>${expireTime.format('yyyy-MM-dd HH:mm:ss')}</ExpireTime>
+    <ExpireTime>${expireTime}</ExpireTime>
 </Message>
