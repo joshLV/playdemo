@@ -27,6 +27,7 @@ public class CDNImages extends Controller {
     private static final Pattern imageNamePattern = Pattern.compile("([a-z0-9]{8})_([^_]+)(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
     private static final Pattern sizePattern = Pattern.compile(".+_([0-9]+)x([0-9]+)(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
     private static final Pattern waterPattern = Pattern.compile(".+_nw(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
+    private static final Pattern jdWaterMarkPattern = Pattern.compile(".+_jd.+");
 
     public static void showOriginalImage(String path1, String path2, String path3, String path4) {
         String targetImagePath = joinPath(ROOT_PATH, path1, path2, path3, path4);
@@ -106,6 +107,7 @@ public class CDNImages extends Controller {
         //if(waterPattern.matcher(imageName).matches() || !originImageExist){
             noWatermark = true;
         //}
+        boolean jdWatermark = jdWaterMarkPattern.matcher(imageName).matches();
 
         defaultTargetImageName.append(".png");
         if(!originImageExist){
@@ -138,6 +140,13 @@ public class CDNImages extends Controller {
                             .outputQuality(0.99f)
                             .size(waterWidth, waterHeight);
                     imageBuilder.watermark(Positions.BOTTOM_RIGHT, waterBuilder.asBufferedImage(), 0.5f);
+                }
+
+                if(jdWatermark) {
+                    Thumbnails.Builder<File> jdWaterBuilder = Thumbnails.of(
+                            new File(Play.applicationPath, joinPath("public", "images", "jd_logo.png")))
+                            .outputQuality(1.0F);
+                    imageBuilder.watermark(Positions.BOTTOM_RIGHT, jdWaterBuilder.asBufferedImage(), 0.5f);
                 }
                 imageBuilder.toFile(targetImage);
             } catch (IOException e) {

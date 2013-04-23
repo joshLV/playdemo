@@ -20,6 +20,7 @@ PUT     /goods/{id}/reject                      OperateGoods.reject
 PUT     /goods/{id}/priority                    OperateGoods.priority
 DELETE  /goods/{id}                             OperateGoods.delete
 POST    /goods/images                           OperateUploadFiles.uploadJson
+POST    /goods/images/jd                        OperateUploadFiles.uploadJson(source:'jd')
 POST    /goods_images/{id}                      OperateGoods.setDisplay
 POST    /goods_images                           OperateUploadFiles.uploadImages
 DELETE  /goods_images/{id}                      OperateGoods.deleteImage

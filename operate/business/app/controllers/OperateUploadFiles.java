@@ -28,7 +28,7 @@ public class OperateUploadFiles extends Controller {
      *
      * @param imgFile
      */
-    public static void uploadJson(File imgFile) {
+    public static void uploadJson(File imgFile, String source) {
         //文件保存目录路径
         if (imgFile == null) {
             getError("请选择文件。");
@@ -67,6 +67,9 @@ public class OperateUploadFiles extends Controller {
             String path = targetFilePath.substring(ROOT_PATH.length(), targetFilePath.length());
             //不加水印
             path = PathUtil.addImgPathMark(path, "nw");
+            if (StringUtils.isNotBlank(source)) {
+                path = PathUtil.addImgPathMark(path, source);
+            }
             if (path == null) {
                 getError("上传失败，服务器忙，请稍后再试。");
             }
