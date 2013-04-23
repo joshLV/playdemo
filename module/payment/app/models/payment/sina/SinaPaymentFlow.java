@@ -155,7 +155,7 @@ public class SinaPaymentFlow extends PaymentFlow {
                     break;
             }
         }
-        String successInfo = "<result>" + rtnOK + "</result><redirecturl><!CDATA[" + rtnUrl + "]]></redirecturl>";
+        String successInfo = "<result>" + rtnOK + "</result><redirecturl><![CDATA[" + rtnUrl + "]]></redirecturl>";
         result.put(SUCCESS_INFO, successInfo);
 
         Logger.info("sina callback result: flag:" + flag + ";payResult:" + params.get("payResult"));

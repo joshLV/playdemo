@@ -74,7 +74,14 @@ public class WebSinaVouchers extends Controller {
 
         User user = SecureCAS.getUser();
 
-        if ("1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
+        //判断是否ktv商户，读取价格等信息
+        initKtvPage(productId, goods, user);
+
+        render(goods, productId, user);
+    }
+
+    private static void initKtvPage(String productId, Goods goods, User user) {
+        if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
             Collection<Shop> shops = goods.getShopList();
             if (shops.size() == 0) {
                 error("no shop found");
@@ -83,7 +90,6 @@ public class WebSinaVouchers extends Controller {
             Long shopId = shop.id;
             renderTemplate("WebSinaVouchers/ktvorder.html", goods, productId, shopId, user);
         }
-        render(goods, productId, user);
     }
 
     /**
@@ -94,11 +100,18 @@ public class WebSinaVouchers extends Controller {
         Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
         Validation.required("phone", phone);
         Validation.match("phone", phone, "^1\\d{10}$");
-        if (!"1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
+        String pageUrl = "ktvorder.html";
+        //ktv商户不需要验证购买数量
+        if (!goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
+            pageUrl = "showOrder.html";
             Validation.required("buyCount", buyCount);
         }
+
         if (Validation.hasErrors()) {
-            render("WebSinaVouchers/showOrder.html", goods, productId, phone);
+            //判断是否ktv商户，读取价格等信息
+            renderArgs.put("phone", phone);
+            initKtvPage(productId, goods, user);
+            render("WebSinaVouchers/" + pageUrl, goods, productId);
         }
         Resaler resaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
         if (resaler == null) {
@@ -109,7 +122,7 @@ public class WebSinaVouchers extends Controller {
         OrderItems orderItems = null;
         try {
             //页面根据包厢ID,取得该时间段的价格信息
-            if ("1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
+            if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
                 Collection<Shop> shops = goods.getShopList();
                 Shop shop = shops.iterator().next();
                 for (String key : request.params.all().keySet()) {
@@ -123,7 +136,6 @@ public class WebSinaVouchers extends Controller {
                                 error("该包厢已被他人预定！");
                             }
                             KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
-                            System.out.println(ktvPriceSchedule+"=============="+scheduledTime);
                             orderItems = order.addOrderItem(goods, 1L, phone, ktvPriceSchedule.price, ktvPriceSchedule.price);
                             orderItems.outerGoodsNo = productId;
                             orderItems.save();

@@ -620,6 +620,14 @@ public class Goods extends Model {
         });
     }
 
+    @Transient
+    public boolean getSupplierProperty(String key) {
+        if (this.id == null) {
+            return false;
+        }
+        return "1".equals(getSupplier().getProperty(key));
+    }
+
     @Column(name = "is_all_shop")
     public Boolean isAllShop = true;
 
