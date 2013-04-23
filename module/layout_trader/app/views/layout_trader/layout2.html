@@ -91,7 +91,7 @@
             #{if navigation.ContextedPermission.hasPermission("KTV") && ("1".equals(ktvSupplier))}
                 <li><a #{if "ktv_room".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/room-type')}">包厢类型</a></li>
                 <li><a #{if "ktv_price".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/price-schedule')}">价格策略</a></li>
-                <li><a #{if "ktv_promotion".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/promotion')}">促销活动</a></li>
+                <li><a #{if "ktv_promotion".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/promotion/new')}">促销活动</a></li>
             #{/if}
         </ul>
         <div class="sbox">
