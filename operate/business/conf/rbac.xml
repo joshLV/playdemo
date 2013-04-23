@@ -20,6 +20,11 @@
     <permission key="SKU" text="SKU管理" roles="editor,customservice"/>
     <permission key="SKU_NEW" text="货品添加" roles="editor"/>
     <permission key="INVENTORY" text="库存管理" roles="inventory_manager"/>
+    <permission key="RETURN_GOODS" text="退货操作" roles="inventory_manager,customservice"/>
+
+    <permission key="VIEW_RETURN" text="退货单查询" roles="customservice,inventory_manager"/>
+    <permission key="VIEW_TAKE_OUTS" text="查看根据订单出库" roles="inventory_manager,customservice"/>
+
     <permission key="GOODS_SCHEDULE" text="商品排期" roles="editor,customservice"/>
     <permission key="SECKILL_GOODS_NEW" text="秒杀活动添加" roles="editor"/>
     <permission key="SECKILL_GOODS" text="秒杀活动管理" roles="editor,customservice"/>
@@ -159,9 +164,9 @@
         </navigation>
         <navigation key="inventory_management" text="库存管理">
             <navigation key="sku_takeouts_index" action="SkuTakeouts.index" text="根据订单出库"
-                        permissions="INVENTORY"/>
+                        permissions="VIEW_TAKE_OUTS"/>
             <navigation key="return_entries_index" action="real.ReturnEntries.index" text="退货单管理"
-                        permissions="INVENTORY"/>
+                        permissions="VIEW_RETURN"/>
             <navigation key="inventory_details" action="InventoryStocks.index" text="库存变动明细"
                         permissions="INVENTORY"/>
             <navigation key="inventory_stockIn" action="InventoryStocks.stockIn" text="添加入库记录" permissions="INVENTORY"/>
