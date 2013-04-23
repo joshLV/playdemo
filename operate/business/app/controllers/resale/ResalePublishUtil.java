@@ -21,7 +21,6 @@ public class ResalePublishUtil {
         Matcher m = jdLogoPattern.matcher(param);
         while (m.find()){
             String src = m.group(1);
-            System.out.println("======\n" + src);
             if (src.contains("_jd")){
                 continue;
             }

@@ -145,7 +145,7 @@ public class CDNImages extends Controller {
                 if(jdWatermark) {
                     Thumbnails.Builder<File> jdWaterBuilder = Thumbnails.of(
                             new File(Play.applicationPath, joinPath("public", "images", "jd_logo.png")))
-                            .outputQuality(1.0F);
+                            .outputQuality(1.0F).scale(1.0F);
                     imageBuilder.watermark(Positions.BOTTOM_RIGHT, jdWaterBuilder.asBufferedImage(), 0.5f);
                 }
                 imageBuilder.toFile(targetImage);
