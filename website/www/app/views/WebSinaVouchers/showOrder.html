@@ -42,7 +42,7 @@
             <fleft>手机号：</fleft>
             <fright>
                 <span class="tip">(用于接收券号)</span>
-                <input type="text" value="${user?.mobile}" name="phone" size="11" style="width: 140px;">
+                <input type="text" value="${phone?:user?.mobile}" name="phone" size="11" style="width: 140px;">
                         <span style="display: inline;color: #ff0000;"
                                 >#{error 'phone'/}</span>
             </fright>

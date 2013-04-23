@@ -169,7 +169,7 @@
             <fleft>手机号：</fleft>
             <fright>
                 <span class="tip">(用于接收券号)</span>
-                <input type="text" value="${user?.mobile}" name="phone" size="11">
+                <input type="text" value="${phone?:user?.mobile}" name="phone" size="15">
                         <span style="display: inline;color: #ff0000;"
                                 >#{error 'phone'/}</span>
             </fright>
@@ -189,11 +189,11 @@
 </div>
 
 #{set 'moreStyles'}
-#{asset.css src:['/y/ktv/ktv-order.css']/}
+    #{asset.css src:['/y/ktv/ktv-order.css']/}
 #{/set}
 
 #{set 'moreScripts' }
-#{asset.js src:['/ktv/xdate.js','/ktv/ktvorder.js','/ktv/iscroll-lite.js']/}
+    #{asset.js src:['/ktv/xdate.js','/ktv/ktvorder.js','/ktv/iscroll-lite.js']/}
 
 <script type="text/javascript">
     $(function () {
