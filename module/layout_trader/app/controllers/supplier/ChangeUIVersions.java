@@ -30,7 +30,7 @@ public class ChangeUIVersions extends Controller {
         } else {
             // 跳转到新版本 v2
             sbUrl.append(".home.").append(baseDomain)
-                    .append("/verify");
+                    .append("/");
             supplierUser.defaultUiVersion = "v2";
         }
 

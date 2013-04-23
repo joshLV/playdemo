@@ -1,5 +1,6 @@
 package unit;
 
+import extension.order.OrderECouponSMSContext;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
@@ -79,16 +80,16 @@ public class OrderECouponMessageTest extends UnitTest {
     public void 无密码单张券发送短信() {
         createNoPasswordCoupons(2);
         assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",截止" + dateFormat.format(couponList.get(0).expireAt) + "一百券客服4006865151",
-                OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
+                OrderECouponMessage.getOrderSMSMessage(couponList.get(0)).getSmsContent());
     }
 
     @Test
     public void 无密码2张券发送短信() {
         createNoPasswordCoupons(2);
-        String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
-        Logger.info(smsMessages[0]);
+        OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        Logger.info(smsMessages[0].getSmsContent());
         assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",券号" + couponList.get(1).eCouponSn + "[共2张],截止" + dateFormat.format(couponList.get(0).expireAt) + "一百券客服4006865151",
-                smsMessages[0]);
+                smsMessages[0].getSmsContent());
     }
 
     @Test
@@ -96,7 +97,7 @@ public class OrderECouponMessageTest extends UnitTest {
         createNoPasswordCoupons(30);
 
         // 发短信时只会收到4条长短信，一条短信包括8张券
-        String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
         assertEquals(4, smsMessages.length);
     }
 
@@ -114,7 +115,7 @@ public class OrderECouponMessageTest extends UnitTest {
         }
 
         // 重发短信时只会收到2条长短信
-        String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
         assertEquals(2, smsMessages.length);
     }
 
@@ -124,19 +125,19 @@ public class OrderECouponMessageTest extends UnitTest {
         assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + "密码"
                 + couponList.get(0).eCouponPassword + ",截止" +
                 dateFormat.format(couponList.get(1).expireAt) + "一百券客服4006865151",
-                OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
+                OrderECouponMessage.getOrderSMSMessage(couponList.get(0)).getSmsContent());
     }
 
     @Test
     public void 有密码多张券发送短信() {
         createWithPasswordCoupons(2);
-        String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
-        Logger.info(smsMessages[0]);
+        OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        Logger.info(smsMessages[0].getSmsContent());
         assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + "密码"
                 + couponList.get(0).eCouponPassword + ",券号" + couponList.get(1).eCouponSn + "密码" +
                 couponList.get(1).eCouponPassword + "[共2张],截止" +
                 dateFormat.format(couponList.get(1).expireAt) + "一百券客服4006865151",
-                smsMessages[0]);
+                smsMessages[0].getSmsContent());
     }
 
     @Test
@@ -150,7 +151,7 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append("由58合作商家【一百券】提供,一百券号").append(couponList.get(0).eCouponSn)
                 .append(",有效期至").append(dateFormat.format(couponList.get(0).expireAt))
                 .append("58客服4007895858");
-        assertEquals(sb.toString(), OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
+        assertEquals(sb.toString(), OrderECouponMessage.getOrderSMSMessage(couponList.get(0)).getSmsContent());
     }
 
     @Test
@@ -159,8 +160,8 @@ public class OrderECouponMessageTest extends UnitTest {
         orderItems.order.userId = wuba.id;
         orderItems.order.save();
 
-        String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
-        Logger.info(smsMessages[0]);
+        OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        Logger.info(smsMessages[0].getSmsContent());
         System.out.println(smsMessages[0]);
 
         StringBuilder sb = new StringBuilder();
@@ -174,7 +175,7 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append("[共2张]")
                 .append(",有效期至").append(dateFormat.format(couponList.get(1).expireAt))
                 .append("58客服4007895858");
-        assertEquals(sb.toString(), smsMessages[0]);
+        assertEquals(sb.toString(), smsMessages[0].getSmsContent());
     }
 
 

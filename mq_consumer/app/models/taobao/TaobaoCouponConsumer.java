@@ -141,8 +141,8 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
+        Goods goods = ResalerProduct.getGoods(outerGroupId, OuterOrderPartner.TB);
         try {
-            Goods goods = ResalerProduct.getGoods(outerGroupId, OuterOrderPartner.TB);
             if (goods == null) {
                 Logger.info("goods not found: %s", outerGroupId);
                 return null;
@@ -157,7 +157,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 ybqOrder.deliveryType = DeliveryType.SMS;
             }
         } catch (NotEnoughInventoryException e) {
-            Logger.info("enventory not enough");
+            Logger.error("enventory not enough: goods.id=" + goods.id, e);
             return null;
         }
 

@@ -1,5 +1,6 @@
 package consumer.order;
 
+import extension.order.OrderECouponSMSContext;
 import jobs.dadong.DadongConsumptionRequest;
 import jobs.dadong.DadongErSendToRequest;
 import models.RabbitMQConsumerWithTx;
@@ -126,20 +127,22 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
                 return;
             }
 
-            String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+            OrderECouponSMSContext[] smsContexts = OrderECouponMessage.getOrderSMSMessage(orderItems);
 
-            if (smsMessages == null) {
+            if (smsContexts == null) {
                 Logger.info("OrderItems(id:" + orderItems.id + ").getOrderSMSMessage() == null, " +
                         "Will NOT Send SMS.");
                 return;
             }
 
-            for (String msg : smsMessages) {
-                try {
-                    getSMSProvider().send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
-                } catch (Exception e1) {
-                    Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
-                    getSMSProvider2().send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
+            for (OrderECouponSMSContext smsContext : smsContexts) {
+                if (smsContext != null && smsContext.needSendSMS) {
+                    try {
+                        getSMSProvider().send(new SMSMessage(smsContext.getSmsContent(), phone, ecoupons.get(0).replyCode));
+                    } catch (Exception e1) {
+                        Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
+                        getSMSProvider2().send(new SMSMessage(smsContext.getSmsContent(), phone, ecoupons.get(0).replyCode));
+                    }
                 }
             }
 
@@ -162,11 +165,15 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
     }
 
     private void sendECouponSMS(ECoupon ecoupon, OrderECouponMessage message) {
-        String msg = OrderECouponMessage.getOrderSMSMessage(ecoupon);
+        OrderECouponSMSContext smsContext = OrderECouponMessage.getOrderSMSMessage(ecoupon);
 
 
-        if (msg == null) {
+        if (smsContext == null) {
             Logger.info("ECoupon(id:" + ecoupon.id + ").getOrderSMSMessage() == null, Will NOT Send SMS.");
+            return;
+        }
+        if (!smsContext.needSendSMS) {
+            Logger.info("ECoupon(id:" + ecoupon.id + ").getOrderSMSMessage() mark it NOT need send SMS");
             return;
         }
         try {
@@ -187,10 +194,10 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
             }
 
             try {
-                getSMSProvider().send(new SMSMessage(msg, phone, ecoupon.replyCode));
+                getSMSProvider().send(new SMSMessage(smsContext.getSmsContent(), phone, ecoupon.replyCode));
             } catch (Exception e1) {
                 Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
-                getSMSProvider2().send(new SMSMessage(msg, phone, ecoupon.replyCode));
+                getSMSProvider2().send(new SMSMessage(smsContext.getSmsContent(), phone, ecoupon.replyCode));
             }
             // 如果没有出现异常，则记录一下发送历史
             if (ecoupon.smsSentCount == null) {

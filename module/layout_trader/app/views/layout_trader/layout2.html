@@ -76,7 +76,7 @@
             #{if navigation.ContextedPermission.hasPermission("SHOPS")}
                 <li><a #{if "shops".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/shops')}">我的门店</a></li>#{/if}
             #{if navigation.ContextedPermission.hasPermission("ACCOUNT")}
-                <li><a #{if "users".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/users')}">账号管理</a></li>#{/if}
+                <li><a #{if "users".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/users')}">帐号管理</a></li>#{/if}
         #{/if}
         #{if navigation.ContextedPermission.hasPermission("DOWNLOAD_ORDER_SHIPPING") && ("1".equals(canSaleReal))}
             <li><a #{if "download-order-shipping".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/real/download-order-shipping')}">下载发货单</a>
@@ -92,6 +92,8 @@
                 <li><a #{if "ktv_room".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/room-type')}">包厢类型</a></li>
                 <li><a #{if "ktv_price".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/price-schedule')}">价格策略</a></li>
                 <li><a #{if "ktv_promotion".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/promotion/new')}">促销活动</a></li>
+
+                <li><a #{if "ktv_daily_schedule".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/daily-schedule')}">每日预订</a></li>
             #{/if}
         </ul>
         <div class="sbox">

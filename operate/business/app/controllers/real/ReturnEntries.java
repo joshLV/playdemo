@@ -12,7 +12,9 @@ import models.sales.InventoryStock;
 import models.sales.InventoryStockItem;
 import models.sales.StockActionType;
 import models.supplier.Supplier;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
+import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.modules.paginate.JPAExtPaginator;
@@ -30,7 +32,6 @@ import java.util.Date;
  */
 
 @With(OperateRbac.class)
-@ActiveNavigation("return_entries_index")
 public class ReturnEntries extends Controller {
     public static int PAGE_SIZE = 15;
 
@@ -47,14 +48,16 @@ public class ReturnEntries extends Controller {
     /**
      * 查看待处理的视惠的实物退货单.
      */
+    @ActiveNavigation("return_entries_index")
     public static void index(RealGoodsReturnEntryCondition condition) {
+        Boolean hasHandleReturnGoodsPermission = ContextedPermission.hasPermission("INVENTORY");
         if (condition == null) {
             condition = new RealGoodsReturnEntryCondition(Supplier.getShihui().id, RealGoodsReturnStatus.RETURNING);
         }
         condition.supplierId = Supplier.getShihui().id;
         final int page = getPage();
         JPAExtPaginator<RealGoodsReturnEntry> entryPage = RealGoodsReturnEntry.getPage(condition, page, PAGE_SIZE);
-        render(entryPage, condition);
+        render(entryPage, condition,hasHandleReturnGoodsPermission);
     }
 
     /**
@@ -62,6 +65,8 @@ public class ReturnEntries extends Controller {
      *
      * @param id
      */
+    @ActiveNavigation("return_entries_index")
+    @Right("INVENTORY")
     public static void received(Long id) {
         //1、修改退货单状态.
         RealGoodsReturnEntry entry = RealGoodsReturnEntry.findById(id);
@@ -77,11 +82,13 @@ public class ReturnEntries extends Controller {
         inventoryStock.storekeeper = OperateRbac.currentUser().userName;
         inventoryStock.create();
         InventoryStockItem stockItem = new InventoryStockItem(inventoryStock);
+
         GoodsHistory goodsHistory =GoodsHistory.findById(entry.orderItems.goodsHistoryId);
         Goods temporalGoods = Goods.findById(goodsHistory.goodsId);
         stockItem.sku = temporalGoods.sku;
         stockItem.changeCount = entry.returnedCount * temporalGoods.skuCount;
         stockItem.remainCount = stockItem.changeCount;
+
         stockItem.effectiveAt = entry.orderItems.goods.effectiveAt;
         stockItem.expireAt = entry.orderItems.goods.expireAt;
         stockItem.price = entry.orderItems.goods.originalPrice;
@@ -97,6 +104,9 @@ public class ReturnEntries extends Controller {
      *
      * @param id
      */
+
+    @ActiveNavigation("return_entries_index")
+    @Right("INVENTORY")
     public static void unreceived(Long id, String unreceivedReason) {
         //1、修改退货单状态
         RealGoodsReturnEntry entry = RealGoodsReturnEntry.findById(id);
@@ -120,6 +130,7 @@ public class ReturnEntries extends Controller {
      *
      * @param entry
      */
+    @Right("RETURN_GOODS")
     public static void returnGoods(RealGoodsReturnEntry entry) {
         System.out.println("entry.unreceivedReason:" + entry.unreceivedReason);
 

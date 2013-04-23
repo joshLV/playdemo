@@ -115,7 +115,7 @@ public class OrderECouponMessage implements Serializable {
      *
      * @return
      */
-    public static String getOrderSMSMessage(ECoupon coupon) {
+    public static OrderECouponSMSContext getOrderSMSMessage(ECoupon coupon) {
         if (!coupon.canSendSMSByOperate()) {  //检查是否可发短信
             Logger.info("ECoupon(id:" + coupon.id + ") stats is not UNCONSUMED, but was " + coupon.status + ", " +
                     "cann't send SMS.");
@@ -131,7 +131,7 @@ public class OrderECouponMessage implements Serializable {
      *
      * @return
      */
-    public static String[] getOrderSMSMessage(OrderItems orderItems) {
+    public static OrderECouponSMSContext[] getOrderSMSMessage(OrderItems orderItems) {
         if (orderItems.order.status != OrderStatus.PAID) {
             Logger.info("OrderItem(" + orderItems.id + ").order Status is NOT PAID, but was:" + orderItems.order.status);
             return null;  //未支付时不能发短信.
@@ -164,7 +164,7 @@ public class OrderECouponMessage implements Serializable {
         }
 
         List<List<ECoupon>> splitECoupons = Lists.partition(needSendECoupons, 8);
-        String[] smsContents = new String[splitECoupons.size()];
+        OrderECouponSMSContext[] smsContents = new OrderECouponSMSContext[splitECoupons.size()];
         for (int i = 0; i < splitECoupons.size(); i++) {
             smsContents[i] = getSMSContent(orderItems, splitECoupons.get(i));
         }
@@ -172,7 +172,7 @@ public class OrderECouponMessage implements Serializable {
         return smsContents;
     }
 
-    private static String getSMSContent(OrderItems orderItems, List<ECoupon> eCoupons) {
+    private static OrderECouponSMSContext getSMSContent(OrderItems orderItems, List<ECoupon> eCoupons) {
         List<String> ecouponSNs = new ArrayList<>();
         ECoupon lastECoupon = null;
         for (ECoupon e : eCoupons) {
@@ -205,13 +205,14 @@ public class OrderECouponMessage implements Serializable {
         }
 
         String expiredDate = dateFormat.format(lastECoupon.expireAt);
-        OrderECouponSMSContext context = new OrderECouponSMSContext(orderItems.order, orderItems.goods, couponInfo, note, expiredDate);
+        OrderECouponSMSContext context = new OrderECouponSMSContext(orderItems.order, orderItems.goods,
+                orderItems, couponInfo, note, expiredDate);
 
         ExtensionResult result = ExtensionInvoker.run(OrderECouponSMSInvocation.class, context, defaultSmsAction);
 
         Logger.info("generate SMS Content:" + result);
 
-        return context.getSmsContent();
+        return context;
     }
 
     @Override

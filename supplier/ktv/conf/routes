@@ -22,6 +22,10 @@ GET     /ktv/price-schedule/{id}/edit                    KtvPriceSchedules.edit
 DELETE  /ktv/price-schedule/{id}                         KtvPriceSchedules.delete
 PUT     /ktv/price-schedule/{id}                         KtvPriceSchedules.update
 
+#ktv 每日价格
+GET     /ktv/daily-schedule                         KtvDailySchedule.index
+POST    /ktv/roominfo/json-search                  KtvDailySchedule.jsonRoom
+
 
 #ktv 促销活动
 GET     /ktv/promotion                             KtvPromotions.index

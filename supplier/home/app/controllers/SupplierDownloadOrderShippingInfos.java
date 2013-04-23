@@ -32,7 +32,7 @@ public class SupplierDownloadOrderShippingInfos extends Controller {
         long returnEntryCount = RealGoodsReturnEntry.countHandling(supplier.id);
 
         int pageNumber = getPageNumber();
-        if (supplier.canSaleReal == null || !supplier.canSaleReal) {
+        if (!"1".equals(supplier.getProperty(Supplier.CAN_SALE_REAL))) {
             error("have no real goods!");
         }
         List<OrderItems> orderItemsList = getPreparedItems(null);

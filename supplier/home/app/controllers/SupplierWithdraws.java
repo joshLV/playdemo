@@ -6,12 +6,12 @@ import models.accounts.AccountType;
 import models.accounts.WithdrawAccount;
 import models.accounts.WithdrawBill;
 import models.accounts.WithdrawBillCondition;
-import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
 import models.order.Prepayment;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.Play;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
@@ -64,7 +64,7 @@ public class SupplierWithdraws extends Controller {
         Account account = supplierUser.getSupplierAccount();
         BigDecimal prepaymentBalance = Prepayment.findAmountBySupplier(supplier);
 
-        System.out.println("account.accountType:" + account.accountType);
+        Logger.info("account.accountType:" + account.accountType);
         List<WithdrawAccount> withdrawAccounts = account.accountType == AccountType.SHOP ? WithdrawAccount.findByShop(supplierUser.shop.id) :
                 WithdrawAccount.findByUser(supplier.getId(), AccountType.SUPPLIER);
         List<Prepayment> prepayments = Prepayment.findBySupplier(supplier);
@@ -72,6 +72,8 @@ public class SupplierWithdraws extends Controller {
         BigDecimal withdrawAmount = account.getWithdrawAmount(getBeginOfDay());
         //商户可提现金额
         BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, getBeginOfDay());
+        Logger.info("withdrawAmount=%s, supplierWithdrawAmount=%s, prepaymentBalance=%s", withdrawAmount.toString(),
+                supplierWithdrawAmount.toString(), prepaymentBalance.toString());
         render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount);
     }
 

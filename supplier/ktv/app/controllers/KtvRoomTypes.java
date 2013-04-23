@@ -17,7 +17,7 @@ import java.util.List;
 @With({SupplierRbac.class, SupplierInjector.class})
 public class KtvRoomTypes extends Controller {
     public static void index() {
-        List<KtvRoomType> ktvRoomTypeList = KtvRoomType.findAll();
+        List<KtvRoomType> ktvRoomTypeList = KtvRoomType.findRoomTypeList(SupplierRbac.currentUser().supplier);
         render(ktvRoomTypeList);
     }
 

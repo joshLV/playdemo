@@ -4,6 +4,7 @@ import com.uhuila.common.util.DateUtil;
 import models.accounts.util.SerialNumberUtil;
 import models.order.Prepayment;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -215,9 +216,9 @@ public class AccountSequence extends Model {
                 " account=? and sequenceFlag=? and settlementStatus=? and createdAt<?",
                 account, AccountSequenceFlag.VOSTRO, SettlementStatus.UNCLEARED, toDate).first();
         amount = (amount != null) ? amount : BigDecimal.ZERO;
-//        System.out.println("amount:" + amount);
-//        System.out.println("toDate:" + toDate);
+        Logger.info("getVostroAmountTo: amount:" + amount + ", toDate=" + toDate);
         BigDecimal refundAmount = getRefundAmountTo(account, toDate);
+        Logger.info("getVostroAmountTo: refundAmount:" + refundAmount);
         return amount.add(refundAmount);
     }
 

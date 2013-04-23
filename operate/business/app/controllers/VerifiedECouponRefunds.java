@@ -5,6 +5,8 @@ import models.accounts.TradeBill;
 import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
+import models.kangou.KangouCardStatus;
+import models.kangou.KangouUtil;
 import models.order.ECoupon;
 import models.order.ECouponHistoryMessage;
 import models.order.ECouponPartner;
@@ -12,6 +14,7 @@ import models.order.ECouponStatus;
 import models.taobao.TaobaoCouponUtil;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -55,8 +58,24 @@ public class VerifiedECouponRefunds extends Controller {
         }
 
         if ("REFUND".equals(choice)) {
+
+            if (KangouUtil.SUPPLIER_DOMAIN_NAME.equals(ecoupon.goods.getSupplier().domainName)) {
+                // 看购网
+                KangouCardStatus kangouCardStatus = KangouUtil.setCardUseless(ecoupon);
+                if (kangouCardStatus == null) {
+                    message = "看购网退款失败:" + eCouponSn;
+                    render(message);
+                }
+            }
             message = applyRefund(ecoupon, refundComment);
         } else if ("UNCONSUME".equals(choice)) {
+            Logger.info("取消验证.");
+            if (KangouUtil.SUPPLIER_DOMAIN_NAME.equals(ecoupon.goods.getSupplier().domainName)) {
+                Logger.info("处理看购网券:" + ecoupon.id);
+                // 看购网
+                message = "看购网不支持取消验证状态:" + eCouponSn;
+                render(message);
+            }
             message = applyUnConsumed(ecoupon, refundComment);
         } else {
             message = "请输入REFUND或UNCONSUME。";

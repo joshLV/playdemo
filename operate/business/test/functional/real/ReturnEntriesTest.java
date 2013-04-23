@@ -11,6 +11,7 @@ import models.order.OrderType;
 import models.order.RealGoodsReturnEntry;
 import models.order.RealGoodsReturnStatus;
 import models.sales.Goods;
+import models.sales.GoodsHistory;
 import models.sales.InventoryStockItem;
 import models.sales.MaterialType;
 import models.sales.Sku;
@@ -40,6 +41,7 @@ public class ReturnEntriesTest extends FunctionalTest {
     InventoryStockItem stockItem;
     RealGoodsReturnEntry entry;
     Account platformIncomingAccount;
+    GoodsHistory goodsHistory;
 
     @org.junit.Before
     public void setup() {
@@ -60,6 +62,8 @@ public class ReturnEntriesTest extends FunctionalTest {
         goods.supplierId = Supplier.getShihui().id;
         goods.save();
 
+        goodsHistory = FactoryBoy.create(GoodsHistory.class);
+
         //添加库存
         stockItem = FactoryBoy.create(InventoryStockItem.class);
 
@@ -67,6 +71,7 @@ public class ReturnEntriesTest extends FunctionalTest {
         orderItems = FactoryBoy.create(OrderItems.class);
         orderItems.goods = goods;
         orderItems.status = OrderStatus.PAID;
+        orderItems.goodsHistoryId=goodsHistory.id;
         orderItems.save();
 
 

@@ -32,7 +32,6 @@ public class SupplierIncomeReports extends Controller {
     /**
      * 报表查询.
      *
-     * @param goodsId  商品标识
      * @param shopId   门店标识
      * @param fromDate 开始日期
      * @param toDate   结束日期

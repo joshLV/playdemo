@@ -43,7 +43,7 @@ public class SupplierChangeUIVersionsTest extends FunctionalTest {
     public void testChangeToV2() {
         Http.Response response = GET("/ui-version/to/v2");
         assertStatus(302, response);
-        assertEquals("http://localhost.home.uhuila.net/verify", response.getHeader("Location"));
+        assertEquals("http://localhost.home.uhuila.net/", response.getHeader("Location"));
 
         supplierUser.refresh();
         assertEquals("v2", supplierUser.defaultUiVersion);

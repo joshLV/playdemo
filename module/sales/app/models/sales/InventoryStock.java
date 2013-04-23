@@ -244,9 +244,9 @@ public class InventoryStock extends Model {
                 stockItem.save();
                 return;
             }
+            reducedCount -= stockItem.remainCount;
             stockItem.remainCount = 0L;
             stockItem.save();
-            reducedCount -= stockItem.remainCount;
         }
     }
 

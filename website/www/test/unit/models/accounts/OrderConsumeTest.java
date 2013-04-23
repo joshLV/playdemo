@@ -60,7 +60,9 @@ public class OrderConsumeTest extends UnitTest {
     @Test
     public void testConsume() {
         assertEquals(0, getAccount().amount.compareTo(BALANCE));
-        order.paid();
+
+        Account account = order.chargeAccount();
+        order.paid(account);
         assertEquals(0, BALANCE.subtract(order.accountPay).compareTo(getAccount().amount));//余额减少
         assertEquals(0, order.discountPay.negate().compareTo(AccountUtil.getPaymentPartnerAccount("alipay").amount));//支付宝虚拟账户
         assertEquals(0, order.accountPay.add(order.discountPay).compareTo(AccountUtil.getPlatformIncomingAccount().amount));
@@ -81,7 +83,8 @@ public class OrderConsumeTest extends UnitTest {
         order.discountPay = BigDecimal.ZERO;
         order.save();
 
-        order.paid();
+        Account account = order.chargeAccount();
+        order.paid(account);
         assertEquals(0, BALANCE.subtract(order.accountPay).compareTo(getAccount().amount));//余额减少
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPaymentPartnerAccount("alipay").amount));//支付宝虚拟账户无变化
         assertEquals(0, order.accountPay.add(order.discountPay).compareTo(AccountUtil.getPlatformIncomingAccount().amount));

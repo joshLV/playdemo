@@ -1,6 +1,7 @@
 package models.order;
 
 import com.google.gson.Gson;
+import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.resale.Resaler;
@@ -426,7 +427,8 @@ public class LogisticImportData implements Cloneable {
         ybqOrder.accountPay = ybqOrder.needPay;
         ybqOrder.discountPay = BigDecimal.ZERO;
         ybqOrder.payMethod = PaymentSource.getBalanceSource().code;
-        ybqOrder.paid();
+        Account account = ybqOrder.chargeAccount();
+        ybqOrder.paid(account);
         ybqOrder.paidAt = this.paidAt;
         ybqOrder.save();
         return ybqOrder;

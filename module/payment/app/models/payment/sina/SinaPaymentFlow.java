@@ -10,6 +10,7 @@ import java.util.Map;
 
 import models.payment.PaymentFlow;
 import models.payment.PaymentUtil;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 
 public class SinaPaymentFlow extends PaymentFlow {
@@ -35,24 +36,28 @@ public class SinaPaymentFlow extends PaymentFlow {
 
         params.put("inputCharset", "1"); //编码方式，1代表 UTF-8; 2 代表 GBK; 3代表 GB2312 默认为1,该参数必填。
         params.put("bgUrl", SinaConfig.NOTIFY_URL); //服务器接收支付结果的后台地址，该参数务必填写，不能为空。
-        params.put("version", "v2.3"); //网关版本，固定值：v2.0,该参数必填。
+        if("wap".equals(ext)) {
+            params.put("version", "v2.1"); //wap网关版本，固定值：v2.1,该参数必填。
+        }else {
+            params.put("version", "v2.3"); //网关版本，固定值：v2.3,该参数必填。
+        }
         params.put("language", "1"); //语言种类，1代表中文显示，2代表英文显示。默认为1,该参数必填。
         params.put("signType", "4"); //签名类型,该值为4，代表PKI加密方式,该参数必填。
         params.put("merchantAcctId", SinaConfig.MERCHANT_ACCOUNT_ID); //人民币网关账号，该账号为11位人民币网关商户编号+01,该参数必填。
-        params.put("payerName", ""); //支付人姓名,可以为空。
+//        params.put("payerName", ""); //支付人姓名,可以为空。
         params.put("payerContactType", "1"); //支付人联系类型，1 代表电子邮件方式；2 代表手机联系方式。可以为空。
-        params.put("payerContact", ""); //支付人联系方式，与payerContactType设置对应，payerContactType为1，则填写邮箱地址；payerContactType为2，则填写手机号码。可以为空。
-        params.put("payerIdType", "");//指定付款人，固定值0，3  0表示不指定，3代表接入平台用户id，如果为空代表不需要指定
-        params.put("payerId", "");//付款人标识，可空
+//        params.put("payerContact", ""); //支付人联系方式，与payerContactType设置对应，payerContactType为1，则填写邮箱地址；payerContactType为2，则填写手机号码。可以为空。
+//        params.put("payerIdType", "");//指定付款人，固定值0，3  0表示不指定，3代表接入平台用户id，如果为空代表不需要指定
+//        params.put("payerId", "");//付款人标识，可空
         params.put("orderId", orderNumber); //请与贵网站订单系统中的唯一订单号匹配
         params.put("orderAmount", orderAmount); //订单总金额 以分为单位
         params.put("orderTime", dateFormat.format(new Date())); //订单提交时间 14位数字。年[4位]月[2位]日[2位]时[2位]分[2位]秒[2位] 如；20080101010101
         params.put("productName", description); //商品名称，可以为空。
-        params.put("productNum", ""); //商品数量，可以为空。
-        params.put("productId", ""); //商品代码，可以为空。
-        params.put("productDesc", ""); //商品描述，可以为空。
+//        params.put("productNum", ""); //商品数量，可以为空。
+//        params.put("productId", ""); //商品代码，可以为空。
+//        params.put("productDesc", ""); //商品描述，可以为空。
         params.put("ext1", ext); //扩展字段1，商户可以传递自己需要的参数，支付完快钱会原值返回，可以为空。
-        params.put("ext2", ""); //扩展自段2，商户可以传递自己需要的参数，支付完快钱会原值返回，可以为空。
+//        params.put("ext2", ""); //扩展自段2，商户可以传递自己需要的参数，支付完快钱会原值返回，可以为空。
         params.put("payType", "10"); //支付方式，一般为00，代表所有的支付方式。如果是银行直连商户，该值为10，必填。
         params.put("bankId", subPaymentCode); //银行代码
         params.put("redoFlag", "0"); //同一订单禁止重复提交标志，实物购物车填1，虚拟产品用0。1代表只能提交一次，0代表在支付不成功情况下可以再提交。可为空。
@@ -65,9 +70,14 @@ public class SinaPaymentFlow extends PaymentFlow {
         params.put("signMsg", signMsg);
 
         StringBuilder sbHtml = new StringBuilder();
-        sbHtml.append("<form id=\"sinaPay\" name=\"sinaPay\" action=\"")
-                .append(SinaConfig.SERVER_URL)
-                .append("\" method=\"post\" >");
+
+        sbHtml.append("<form id=\"sinaPay\" name=\"sinaPay\" action=\"");
+        if ("wap".equals(ext)){
+            sbHtml.append(SinaConfig.WAP_SERVER_URL);
+        }else {
+            sbHtml.append(SinaConfig.SERVER_URL);
+        }
+        sbHtml.append("\" method=\"post\" >");
         for (Map.Entry<String, String> entry : params.entrySet()) {
             sbHtml.append("<input type=\"hidden\" name=\"")
                     .append(entry.getKey())
@@ -145,7 +155,7 @@ public class SinaPaymentFlow extends PaymentFlow {
                     break;
             }
         }
-        String successInfo = "<result>" + rtnOK + "</result><redirecturl><!CDATA[" + rtnUrl + "]]></redirecturl>";
+        String successInfo = "<result>" + rtnOK + "</result><redirecturl><![CDATA[" + rtnUrl + "]]></redirecturl>";
         result.put(SUCCESS_INFO, successInfo);
 
         Logger.info("sina callback result: flag:" + flag + ";payResult:" + params.get("payResult"));
@@ -161,7 +171,7 @@ public class SinaPaymentFlow extends PaymentFlow {
         StringBuilder result = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
             String value = entry.getValue();
-            if (value != null) {
+            if (!StringUtils.isBlank(value)) {
                 result.append(entry.getKey())
                         .append("=")
                         .append(entry.getValue())

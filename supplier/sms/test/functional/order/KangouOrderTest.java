@@ -6,6 +6,7 @@ import factory.callback.BuildCallback;
 import factory.resale.ResalerFactory;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
+import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.Order;
@@ -44,6 +45,7 @@ public class KangouOrderTest extends FunctionalTest {
                 target.domainName = "kangou";
             }
         });
+        FactoryBoy.create(SupplierUser.class);
         goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods target) {
@@ -80,7 +82,9 @@ public class KangouOrderTest extends FunctionalTest {
 
         // 加入看购网券生成响应
         mockGetCardIdResponse("99888871", "8832424323");
-        mockGetCardIdResponse("99888872", "8832424323");
+        mockSetCardUseAndSendResponse("99888871", 1);
+        mockGetCardIdResponse("99888872", "8832424324");
+        mockSetCardUseAndSendResponse("99888872", 1);
 
         Http.Response response = POST("/api/v1/jd/gb/send-order", MULTIPART_FORM_DATA, requestBody);
         assertIsOk(response);
@@ -99,8 +103,9 @@ public class KangouOrderTest extends FunctionalTest {
                 "123").first();
         ECoupon coupon2 = ECoupon.find("byOrderAndPartnerAndPartnerCouponId", outerOrder.ybqOrder, ECouponPartner.JD,
                 "456").first();
-        assertEquals("99888871", coupon1.eCouponSn);
-        assertEquals("99888872", coupon2.eCouponSn);
+        assertEquals("99888871", coupon1.supplierECouponId);
+        assertEquals("8832424323", coupon1.eCouponSn);
+        assertEquals("8832424324", coupon2.eCouponSn);
     }
 
 
@@ -120,4 +125,19 @@ public class KangouOrderTest extends FunctionalTest {
         MockWebServiceClient.addMockHttpRequest(200, responseBody);
     }
 
+    /**
+     * 生成SetCardUseAndSend的Mock响应数据.
+     *
+     * @param cardId
+     * @param cardStatus
+     */
+    private void mockSetCardUseAndSendResponse(final String cardId, Integer cardStatus) {
+        Template template = TemplateLoader.load("test/data/kangou/SetCardUseAndSendResponse.xml");
+        Map<String, Object> params = new HashMap<>();
+        params.put("orderNumber", cardId);
+        params.put("cardId", cardId);
+        params.put("cardStatus", cardStatus);
+        String responseBody = template.render(params);
+        MockWebServiceClient.addMockHttpRequest(200, responseBody);
+    }
 }

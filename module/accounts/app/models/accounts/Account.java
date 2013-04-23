@@ -1,5 +1,6 @@
 package models.accounts;
 
+import play.Logger;
 import play.db.jpa.Model;
 
 import javax.persistence.Column;
@@ -92,6 +93,7 @@ public class Account extends Model {
      */
     public BigDecimal getWithdrawAmount(Date date) {
         BigDecimal vostroAmount = AccountSequence.getVostroAmountTo(this, date);
+        Logger.info("Account.getWithdrawAmount vostroAmount=" + vostroAmount + ", uncashAmount=" + uncashAmount);
         if (uncashAmount == null) {
             return vostroAmount == null ? BigDecimal.ZERO : vostroAmount;
         }

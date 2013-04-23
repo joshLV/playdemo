@@ -21,6 +21,7 @@ import models.sales.Goods;
 import models.sales.GoodsCouponType;
 import models.sales.Shop;
 import models.sms.SMSUtil;
+import models.supplier.Supplier;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
 import org.apache.commons.lang.StringUtils;
@@ -217,18 +218,25 @@ public class ECoupon extends Model {
     public Boolean synced = false;
 
     /**
-     * 合作方券ID。
-     * 如果是第三方发券，记录在这里备查。
+     * 合作方券ID（作为Resaler)。
+     * 渠道方面如果也同时会发券，记录在这里备查。如京东会发一个串码
      */
     @Column(name = "partner_coupon_id")
     public String partnerCouponId;
 
     /**
-     * 合作方券密码。
-     * 如果是第三方发券并且需要密码，记录在这里.
+     * 合作方券密码（作为Resaler)。
+     * 渠道方面如果也同时会发券，记录在这里备查。如京东会发一个串码
      */
     @Column(name = "partner_coupon_pwd")
     public String partnerCouponPwd;
+
+    /**
+     * 第三方发码平台(作为Supplier）发券ID.
+     * 如看购网发码，自己有一个ID，需要作为API调用时跟踪用。
+     */
+    @Column(name = "supplier_coupon_id")
+    public String supplierECouponId;
 
     /**
      * 消费者预约日期。
@@ -1656,5 +1664,25 @@ public class ECoupon extends Model {
 
     public static ECoupon getCouponByIdAndUser(Long id, User user) {
         return ECoupon.find("id=? and order.consumerId=?", id, user.id).first();
+    }
+
+    // 自动验证
+    // 对于导入券会使用此操作
+    public void autoVerify() {
+        if (this.createType != ECouponCreateType.IMPORT) {
+            return; // do nothing!
+        }
+
+        Supplier supplier = Supplier.findById(goods.supplierId);
+        SupplierUser supplierUser = SupplierUser.find("bySupplier", supplier).first();
+        if (supplierUser == null) {
+            throw new RuntimeException("can not find a supplierUser of goods " + goods.getId());
+        }
+        Shop shop = supplierUser.shop;
+        if (supplierUser.shop == null) {
+            shop = Shop.findShopBySupplier(supplier.id).get(0);
+        }
+        this.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.IMPORT_VERIFY);
+        this.save();
     }
 }

@@ -2,6 +2,7 @@ package function;
 
 import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
+import factory.admin.SupplierUserFactory;
 import models.admin.SupplierUser;
 import models.supplier.Supplier;
 import org.junit.Before;
@@ -48,6 +49,20 @@ public class SupplierHomeTest extends FunctionalTest {
         Http.Response response = GET("/");
         assertStatus(302, response);
         assertEquals("/verify", response.getHeader("Location"));
+    }
+
+
+    @Test
+    public void test只有财务角色的人进入首页() {
+        supplierUser.roles.clear();
+        supplierUser.roles.add(SupplierUserFactory.role("account"));
+        supplierUser.save();
+        supplier.setProperty(Supplier.SELL_ECOUPON, "1");
+        supplier.setProperty(Supplier.CAN_SALE_REAL, "1");
+
+        Http.Response response = GET("/");
+        assertStatus(302, response);
+        assertEquals("/sequences", response.getHeader("Location"));
     }
 
     @Test

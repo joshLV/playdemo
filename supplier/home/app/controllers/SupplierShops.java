@@ -163,7 +163,6 @@ public class SupplierShops extends Controller {
 
             for (long i = 0; i < number; i++) {
                 List<KtvRoom> ktvRoomList = KtvRoom.findKtvRoom(ktvRoomType, sp);
-                //TODO 数量待订单产生重新计算包厢数量
                 long roomNumber = KtvRoom.getRoomNumber(ktvRoomType, sp);
                 if (ktvRoomList.size() == 0 || number > roomNumber) {
                     new KtvRoom(ktvRoomType, sp).save();

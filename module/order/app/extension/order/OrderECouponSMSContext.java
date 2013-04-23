@@ -1,6 +1,7 @@
 package extension.order;
 
 import models.order.Order;
+import models.order.OrderItems;
 import models.sales.Goods;
 import util.extension.InvocationContext;
 
@@ -13,6 +14,8 @@ public class OrderECouponSMSContext implements InvocationContext {
 
     public Goods goods;
 
+    public OrderItems orderItems;
+
     /**
      * 券内容
      */
@@ -23,6 +26,8 @@ public class OrderECouponSMSContext implements InvocationContext {
      */
     public String notes;
 
+    public boolean needSendSMS = true;
+
     /**
      * 有效期截止日期
      */
@@ -30,13 +35,16 @@ public class OrderECouponSMSContext implements InvocationContext {
 
     private String smsContent;
 
-    public OrderECouponSMSContext(Order order, Goods goods, String couponInfo, String notes, String expiredDate) {
+    public OrderECouponSMSContext(Order order, Goods goods, OrderItems orderItems, String couponInfo, String notes,
+                                  String expiredDate) {
         this.order = order;
         this.goods = goods;
+        this.orderItems = orderItems;
         this.couponInfo = couponInfo;
         this.notes = notes;
         this.expiredDate = expiredDate;
         this.smsContent = null;
+        this.needSendSMS = true;
     }
 
     public String getSmsContent() {
