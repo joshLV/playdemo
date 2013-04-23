@@ -1,0 +1,348 @@
+﻿<div class="field-group">
+    <label>促销名称</label>
+#{if "add".equals(action)}
+    <input type="text" name="promotion.name" value="${promotion?.name}"/>
+    <span class="error">#{error 'promotion.name' /}</span>
+#{/if}
+#{else}
+${promotion?.name}
+#{/else}
+</div>
+
+<div class="field-group">
+    <label>促销类型</label>
+#{if "add".equals(action)}
+    #{set i:0/}
+    #{list items:promotionTypeList,as:'promotionType'}
+        <input id="promotion_type_${i}" type="radio" name="promotion.promotionType"
+               indexId="${i}"
+               value="${promotionType}" ${(promotion?.promotionType.equals(promotionType)) ?'checked':''}/>
+    &{'promotion.'+promotionType}
+    *{--- ${promotion?.promotionType}\\\\\${promotionType}}*
+        &nbsp;&nbsp;
+        #{set i++/}
+    #{/list}
+    <span class="error">#{error 'promotion.promotionType' /}</span>
+#{/if}
+#{else}
+${promotion.promotionType.name}
+    <input type="hidden" name="promotion.promotionType" value="${promotion.promotionType}"/>
+    <input type="hidden" id="previous_promotion_type" name="previousPromotionType"/>
+
+    <input type="hidden" id="max_j" name="maxJ"/>
+
+#{/else}
+</div>
+<div class="field-group">
+    <label>促销时间</label>
+    <input type="text" class="time" name="promotion.startDay" onfocus="WdatePicker({readOnly:true})"
+           value="${promotion?.startDay?.format()}"><span>到</span>
+    <span class="error">#{error 'promotion.startDay' /}</span>
+    <input type="text" class="time"
+           name="promotion.endDay"
+           onfocus="WdatePicker({readOnly:true})" value="${promotion?.endDay?.format()}">
+    <span class="error">#{error 'promotion.endDay' /}</span>
+    <span class="error">#{error 'promotion.day' /}</span>
+</div>
+
+<div class="field-group">
+    <label>适用门店</label>
+    <table>
+        <thead>
+        <tr>
+            <th width="45px"><input type="checkbox" id="selectall" name="selectall">全选</th>
+            <th>门店名称</th>
+            <th>已参加促销</th>
+        </tr>
+        </thead>
+        <tbody>
+        #{list items:shopsList, as:'shop'}
+        <tr class="tr-offsale transparent">
+            <td style="text-align:center">
+                <input type="checkbox" name="promotion.shops.id" id="checkoption" value="${shop?.id}"
+                       #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}  />
+            </td>
+            <td>${shop?.name}</td>
+            <td></td>
+        </tr>
+        #{/list}
+        </tbody>
+    </table>
+
+</div>
+
+<div class="field-group">
+    <label>适用时段</label>
+    <select name="promotion.startTime" id="startTime" style="width: auto">
+        <option value="08:00">08:00</option>
+        <option value="09:00">09:00</option>
+        <option value="10:00">10:00</option>
+        <option value="11:00">11:00</option>
+        <option value="12:00">12:00</option>
+        <option value="13:00">13:00</option>
+        <option value="14:00">14:00</option>
+        <option value="15:00">15:00</option>
+        <option value="16:00">16:00</option>
+        <option value="17:00">17:00</option>
+        <option value="18:00">18:00</option>
+        <option value="19:00">19:00</option>
+        <option value="20:00">20:00</option>
+        <option value="21:00">21:00</option>
+        <option value="22:00">22:00</option>
+        <option value="23:00">23:00</option>
+    </select>
+    <span>到</span>
+    <select name="promotion.endTime" id="endTime" style="width: auto">
+        <option value="09:00">09:00</option>
+        <option value="10:00">10:00</option>
+        <option value="11:00">11:00</option>
+        <option value="12:00">12:00</option>
+        <option value="13:00">13:00</option>
+        <option value="14:00">14:00</option>
+        <option value="15:00">15:00</option>
+        <option value="16:00">16:00</option>
+        <option value="17:00">17:00</option>
+        <option value="18:00">18:00</option>
+        <option value="19:00">19:00</option>
+        <option value="20:00">20:00</option>
+        <option value="21:00">21:00</option>
+        <option value="22:00">22:00</option>
+        <option value="23:00">23:00</option>
+        <option value="24:00">24:00</option>
+    </select>
+    <span class="error">#{error 'promotion.useTime' /}</span>
+    <span class="error">#{error 'promotion.startTime' /}</span>
+
+</div>
+
+<div class="field-group">
+    <label>适用包厢</label>
+
+#{list items:roomsList,as:'room'}
+    <input type="checkbox" name="promotion.roomTypes.id" value="${room?.id}"
+           #{if roomTypeIds?.contains(","+room?.id+",")}checked#{/if}/>${room.name}&nbsp;&nbsp;
+#{/list}
+    <span class=" error">
+    #{error 'promotion.roomTypes' /}</span>
+</div>
+
+#{set j:0/}
+<input type="hidden" name="j" value="${j}" id="j"/>
+
+<div class="field-group" id="promotion_configs" style="display: none;">
+
+*{<div class="field-group" id="promotion_configs_${j}" style="display: none;">}*
+    <label>促销方案</label>
+    <span id="promotion_configs_item">
+    <div style="padding: 15px;
+margin-right: 100px;
+margin-bottom: 10px;
+border: 1px dashed #c2c2c2; " id="promotion_configs_item">
+        <span id="promotion_configs_name">  </span>
+        <input type="text" class="input-small" name="promotionConfigs.continuousReservedDuration"
+
+               value="${promotionConfigs?.continuousReservedDuration}"/> 天
+
+    <span id="discount" style="display: none;">
+          <br> <br>
+        折扣
+    <input type="text" class="input-small" name="promotionConfigs.discount"
+
+           value="${promotionConfigs?.discount}"/> 折
+    </span>
+
+       <span id="reduced_price" style="display: none;">
+          <br> <br>
+        立减
+    <input type="text" class="input-small" name="promotionConfigs.reducedPrice"
+
+           value="${promotionConfigs?.reducedPrice}"/> 元
+    </span>
+
+    </div>
+      </span>
+
+         <span id="promotion_configs_item_next">
+
+         </span>
+
+    <div style="padding: 15px;
+margin-right: 100px;
+margin-bottom: 10px;
+border: 1px dashed #c2c2c2; display: none;" id="promotion_configs_item_0">
+        <span id="promotion_configs_name_0">  </span>
+        <input type="text" class="input-small" name="promotionConfigs.continuousReservedDuration"
+
+               value="${promotionConfigs?.continuousReservedDuration}"/> 天
+    *{</span>}*
+
+        <span id="discount_0" style="display: none;">
+          <br> <br>
+        折扣
+    <input type="text" class="input-small" name="promotionConfigs.discount"
+
+           value="${promotionConfigs?.discount}"/> 折
+    </span>
+
+       <span id="reduced_price_0" style="display: none;">
+          <br> <br>
+        立减
+    <input type="text" class="input-small" name="promotionConfigs.reducedPrice"
+
+           value="${promotionConfigs?.reducedPrice}"/> 元
+    </span>
+    </div>
+
+    <a style="margin-left:80px;background-color: darkseagreen;" class="btn btn-primary"
+       onclick="addItem()">添加
+    </a>
+</div>
+
+<div class="field-group">
+    <input type="submit" class="btn" value="确定"/>
+    <a href="/ktv/room-type">取消</a>
+</div>
+
+
+<script type="text/javascript">
+
+    $(function () {
+        $("#selectall").click(function () {
+            if (this.checked) {
+                $("[name='promotion.shops.id']").attr("checked", 'true');//全选
+            } else {
+                $("[name='promotion.shops.id']").removeAttr("checked");//取消
+            }
+        });
+    });
+    $("#startTime").val("${promotion?.startTime}")
+    $("#endTime").val("${promotion?.endTime}")
+
+    $("input[type='radio']").click(function () {
+        var j = $("#j").val();
+        var promotionTypeName = $("#promotion_type_" + $(this).attr('indexId')).val();
+//        console.log($("#j").val())
+        console.log($("#previous_promotion_type").val())
+        console.log(promotionTypeName)
+        if ($("#previous_promotion_type").val() != promotionTypeName && $("#j").val() != 0) {
+            j = $("#j").val(0);
+            console.log("here")
+//            $('#promotion_configs_item_next').empty();
+
+//            $("#promotion_configs").empty();
+//            $('#promotion_configs_item').append($("#promotion_configs_item_" + j).clone());
+        }
+
+//        var j = $("#j").val();
+
+//        $("#promotion_configs_" + j).show();
+        if ($("#j").val() == 0) {
+            console.log("9090");
+//            $('#promotion_configs_item_next').html("");
+            if (promotionTypeName == "CONTINUOUS_RESERVE_DISCOUNT") {
+//            $("#CONTINUOUS_RESERVE_DISCOUNT").show();
+                $("#promotion_configs_name").html('连续预订');
+                $("#reduced_price").hide();
+                $("#discount").show();
+            }
+            else if (promotionTypeName == "CONTINUOUS_RESERVE_REDUCTION") {
+                $("#promotion_configs_name").html('连续预订');
+                $("#discount").hide();
+                $("#reduced_price").show();
+            }
+            else if (promotionTypeName == "ADVANCED_RESERVE_DISCOUNT") {
+                $("#promotion_configs_name").html('提前预订');
+                $("#reduced_price").hide();
+                $("#discount").show();
+            }
+            else if (promotionTypeName == "ADVANCED_RESERVE_REDUCTION") {
+                $("#promotion_configs_name").html('提前预订');
+                $("#discount").hide();
+                $("#reduced_price").show();
+            }
+
+            $('#promotion_configs_item_next').hide();
+//            $("#promotion_configs_item_" + j).remove();
+
+            $("#promotion_configs").show();
+        }
+        else {
+            if (promotionTypeName == "CONTINUOUS_RESERVE_DISCOUNT") {
+//            $("#CONTINUOUS_RESERVE_DISCOUNT").show();
+                $("#promotion_configs_name_" + j).html('连续预订');
+                $("#reduced_price_" + j).hide();
+                $("#discount_" + j).show();
+            }
+            else if (promotionTypeName == "CONTINUOUS_RESERVE_REDUCTION") {
+                $("#promotion_configs_name_" + j).html('连续预订');
+                $("#discount_" + j).hide();
+                $("#reduced_price_" + j).show();
+            }
+            else if (promotionTypeName == "ADVANCED_RESERVE_DISCOUNT") {
+                $("#promotion_configs_name_" + j).html('提前预订');
+                $("#reduced_price_" + j).hide();
+                $("#discount_" + j).show();
+            }
+            else if (promotionTypeName == "ADVANCED_RESERVE_REDUCTION") {
+                $("#promotion_configs_name_" + j).html('提前预订');
+                $("#discount_" + j).hide();
+                $("#reduced_price_" + j).show();
+            }
+        }
+//             console.log("after ---"+promotionTypeName)
+
+        $("#previous_promotion_type").val(promotionTypeName);
+    });
+
+    function addItem() {
+        var j = $("#j").val();
+//        console.log(j)
+//           j=j+1;
+        var promotionTypeName = $("#promotion_type_" + $("input:checked").attr('indexId')).val();
+        console.log(promotionTypeName)
+        if (promotionTypeName == "CONTINUOUS_RESERVE_DISCOUNT") {
+//            $("#CONTINUOUS_RESERVE_DISCOUNT").show();
+            $("#promotion_configs_name_" + j).html('连续预订');
+            $("#reduced_price_" + j).hide();
+            $("#discount_" + j).show();
+        }
+        else if (promotionTypeName == "CONTINUOUS_RESERVE_REDUCTION") {
+            $("#promotion_configs_name_" + j).html('连续预订');
+            $("#discount_" + j).hide();
+            $("#reduced_price_" + j).show();
+        }
+        else if (promotionTypeName == "ADVANCED_RESERVE_DISCOUNT") {
+            $("#promotion_configs_name_" + j).html('提前预订');
+            $("#reduced_price_" + j).hide();
+            $("#discount_" + j).show();
+        }
+        else if (promotionTypeName == "ADVANCED_RESERVE_REDUCTION") {
+            $("#promotion_configs_name_" + j).html('提前预订');
+            $("#discount_" + j).hide();
+            $("#reduced_price_" + j).show();
+        }
+        $('#promotion_configs_item_next').show();
+        $("#promotion_configs_item_" + j).show();
+        console.log("222--" + j)
+        if (j != 0) {
+        ﻿    $('#promotion_configs_item_next').append($("#promotion_configs_item_0").clone());
+        }
+
+
+        $('#promotion_configs_item_' + j).attr('id', 'promotion_configs_item_' + j + 1);
+        $('#promotion_configs_name_' + j).attr('id', 'promotion_configs_name_' + j + 1);
+        $('#reduced_price_' + j).attr('id', 'reduced_price_' + j + 1);
+        $('#discount_' + j).attr('id', 'discount_' + j + 1);
+        $("#j").val(j + 1);
+//         console.log("add item ---"+promotionTypeName)
+//        $("#previous_promotion_type").val(promotionTypeName);
+
+//        $("#max_j").val(j + 1);
+//        console.log(j+1)
+//        console.log("max-===="+$("#max_j").val())
+
+        return false;
+    }
+    ;
+
+</script>

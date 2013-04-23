@@ -27,6 +27,10 @@ GET     /ktv/daily-schedule                         KtvDailySchedule.index
 POST    /ktv/roominfo/json-search                  KtvDailySchedule.jsonRoom
 
 
+#ktv 促销活动
+GET     /ktv/promotion                             KtvPromotions.index
+GET     /ktv/promotion/new                         KtvPromotions.add
+
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

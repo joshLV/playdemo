@@ -1,6 +1,7 @@
 validation.required=请输入%s!
 validation.future=%s必须填写未来的时间!
 validation.min=%s必须大于或等于%d!
+validation.beforeThanEndTime=%s不能早于结束时间!
 
 ktvRoomType.name=包厢类型
 priceSchedule.shop=门店
@@ -10,4 +11,17 @@ priceSchedule.endDay=可预订日期-结束时间
 priceSchedule.roomType=包厢类型
 priceSchedule.price=价格
 priceSchedule.useTime=适用时段
+
+promotion.CONTINUOUS_RESERVE_DISCOUNT= 连续预订打折
+promotion.CONTINUOUS_RESERVE_REDUCTION=  连续预订立减
+promotion.ADVANCED_RESERVE_DISCOUNT  = 提前预订打折
+promotion.ADVANCED_RESERVE_REDUCTION =  提前预订立减
+promotion.name=促销名称
+promotion.startDay=促销开始时间
+promotion.endDay=促销结束时间
+
 priceSchedule.roomNumber=包厢数量
+promotion.promotionType=促销类型
+promotion.roomTypes=适用包厢
+promotion.startTime=开始时间
+validation.maxSize=促销名称不能超过5个汉字

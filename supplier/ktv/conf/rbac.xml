@@ -31,6 +31,8 @@
         <navigation key="ktv_rooms" text="包厢类型" permissions="KTV">
             <navigation key="ktv_rooms_type" text="包厢类型" action="KtvRoomTypes.index"
                         permissions="KTV"/>
+            <navigation key="sales_promotion" text="促销活动" action="SalesPromotions.index"
+                        permissions="KTV"/>
         </navigation>
     </navigation>
 </application>

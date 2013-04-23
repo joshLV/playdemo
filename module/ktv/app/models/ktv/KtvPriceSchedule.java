@@ -4,14 +4,25 @@ import com.google.gson.annotations.Expose;
 import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Shop;
 import play.Logger;
-import play.data.validation.MaxSize;
 import play.data.validation.Min;
-import play.data.validation.MinSize;
 import play.data.validation.Required;
 import play.db.jpa.GenericModel;
-import play.db.jpa.Model;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -44,7 +55,7 @@ public class KtvPriceSchedule extends GenericModel {
     @Required
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_type_id", nullable = true)
-    public KtvRoomType roomType;
+    public models.ktv.KtvRoomType roomType;
 
     /**
      * 开始日期
@@ -126,7 +137,7 @@ public class KtvPriceSchedule extends GenericModel {
     /**
      * 根据门店包厢取得价格信息
      */
-    public static List<KtvPriceSchedule> getKtvPriceSchedules(Date startDay, Date endDay, Shop shop, KtvRoomType roomType) {
+    public static List<KtvPriceSchedule> getKtvPriceSchedules(Date startDay, Date endDay, Shop shop, models.ktv.KtvRoomType roomType) {
         return KtvPriceSchedule.find("select k from KtvPriceSchedule k join k.shops s where (k.startDay <= ?  and k.endDay >= ?) " +
                 "and k.roomType=? and s.id =?", endDay, startDay, roomType, shop.id).fetch();
     }

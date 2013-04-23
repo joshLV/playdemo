@@ -102,10 +102,12 @@ ${priceSchedule.roomType.name}
     <span class="error">#{error 'priceSchedule.price' /}</span>
 </div>
 <div class="field-group">
+
     <label>包厢数量</label>
     <input type="text" name="priceSchedule.roomNumber" value="${priceSchedule?.roomNumber?:''}"/>
 </div>
 <div class="field-group">
+
     <input type="submit" class="btn" value="确定"/>
 #{if "edit".equals(action)}
     #{vx.deleteLink action:"/ktv/price-schedule",class:'btn', id:priceSchedule.id, name:' 该时间段的价格信息 '/}
