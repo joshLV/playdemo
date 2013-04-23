@@ -9,7 +9,9 @@ import models.sales.InventoryStock;
 import models.sales.OrderBatch;
 import models.sales.Sku;
 import models.supplier.Supplier;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
+import operate.rbac.annotations.Right;
 import play.data.binding.As;
 import play.data.validation.Validation;
 import play.mvc.Controller;
@@ -38,6 +40,9 @@ public class SkuTakeouts extends Controller {
         long returnEntryCount = RealGoodsReturnEntry.countHandling(Supplier.getShihui().id);
 
         final Date toDate = new Date();
+
+        Boolean hasHandleTakeOutsPermission = ContextedPermission.hasPermission("INVENTORY");
+
         //1 统计总的待出库货品及数量
         Map<Sku, Long> preparingTakeoutSkuMap = OrderItems.findTakeout(toDate);
         //2 获取无法出库订单项
@@ -56,12 +61,13 @@ public class SkuTakeouts extends Controller {
         //8 获取可出库订单计算出的货品平均售价
         Map<Sku, BigDecimal> skuAveragePriceMap = OrderItems.getSkuAveragePriceMap(stockoutOrderList, takeoutSkuMap);
 
-        render(paidOrderCount, returnEntryCount, preparingTakeoutSkuMap, takeoutSkuMap, skuAveragePriceMap, stockoutOrderList, deficientOrderList, toDate);
+        render(paidOrderCount, returnEntryCount, preparingTakeoutSkuMap, takeoutSkuMap, skuAveragePriceMap, stockoutOrderList, deficientOrderList, toDate,hasHandleTakeOutsPermission);
     }
 
     /**
      * 出库
      */
+    @Right("INVENTORY")
     public static void stockOut(@As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss.SSS"}) Date toDate) {
         String operatorName = OperateRbac.currentUser().userName;
         //1 统计总的待出库货品及数量

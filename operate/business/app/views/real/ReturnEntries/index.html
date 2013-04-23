@@ -55,14 +55,20 @@
         <th width="80px">申请人</th>
         <th width="100px">退货状态</th>
         <th width="200px">备注</th>
+    #{if hasHandleReturnGoodsPermission == true}
         <th width="100px">操作</th>
+    #{/if}
     </tr>
     </thead>
 
     <tbody>
     #{paginate.list items:entryPage, as:'entry'}
     <tr>
-        <td>${entry.orderItems?.order?.orderNumber}</td>
+        <td>
+            <a href="@{OperateOrders.details(entry.orderItems?.order?.id)}">
+            ${entry.orderItems?.order?.orderNumber}
+            </a>
+        </td>
         <td>${entry.orderItems?.goods?.shortName}</td>
         <td>${entry.orderItems?.buyNumber}</td>
         <td>${entry.returnedCount}</td>
@@ -82,13 +88,15 @@
                 onmouseover="$('#entry_${entry.id}').popover('show');">&{'entry.'+entry.status}</a>#{/if}
             #{else}&{'entry.'+entry.status}#{/else}</td>
         <td>${entry.reason}#{if entry.unreceivedReason!=null}<br/>未收到货，原因：${entry.unreceivedReason}#{/if}</td>
-        <td>#{if entry.status == models.order.RealGoodsReturnStatus.RETURNING}
-            <a id="link_returned"
-                                                                                 href="javascript:showConfirmModal('${entry.orderItems?.goods?.shortName}', ${entry.returnedCount}, ${entry.id});">已收到货</a>
-            <a id="link_unreturned"
-               href="javascript:showReasonModal('${entry.orderItems?.goods?.shortName}', ${entry.returnedCount}, ${entry.id});">未收到货</a>
+        #{if hasHandleReturnGoodsPermission == true}
+            <td>#{if entry.status == models.order.RealGoodsReturnStatus.RETURNING}
+                <a id="link_returned"
+                   href="javascript:showConfirmModal('${entry.orderItems?.goods?.shortName}', ${entry.returnedCount}, ${entry.id});">已收到货</a>
+                <a id="link_unreturned"
+                   href="javascript:showReasonModal('${entry.orderItems?.goods?.shortName}', ${entry.returnedCount}, ${entry.id});">未收到货</a>
+            #{/if}
+            </td>
         #{/if}
-        </td>
     </tr>
     #{/paginate.list}
     </tbody>

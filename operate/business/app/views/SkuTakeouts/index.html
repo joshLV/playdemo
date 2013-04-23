@@ -60,12 +60,14 @@
             #{/list}
         </tbody>
     </table>
-    <div class="form-actions">
-        <button class="btn btn-primary" id="stock-out-btn" type="submit"
-                #{if paidOrderCount == deficientOrderList.size()}disabled#{/if}>确认出库
-        </button>
-        <a href="/sku-takeouts" class="btn btn-info">重新计算</a>
-    </div>
+    #{if hasHandleTakeOutsPermission == true}
+        <div class="form-actions">
+            <button class="btn btn-primary" id="stock-out-btn" type="submit"
+                    #{if paidOrderCount == deficientOrderList.size()}disabled#{/if}>确认出库
+            </button>
+            <a href="/sku-takeouts" class="btn btn-info">重新计算</a>
+        </div>
+    #{/if}
 #{/form}
 
     <div id="order_list" style="display: none">
