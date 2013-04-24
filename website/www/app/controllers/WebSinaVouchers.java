@@ -35,6 +35,7 @@ import play.mvc.Http;
 import play.mvc.With;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -144,7 +145,7 @@ public class WebSinaVouchers extends Controller {
                         //eCoupon.originalPrice=eCoupon.salePrice*(goods.originalPrice/goods.salePrice)
                         orderItems = order.addOrderItem(goods, 1L, phone, salePrice, salePrice);
                         orderItems.outerGoodsNo = productId;
-                        orderItems.originalPrice = salePrice.multiply(goods.originalPrice.divide(goods.salePrice));
+                        orderItems.originalPrice = salePrice.multiply(goods.originalPrice.divide(goods.salePrice,RoundingMode.FLOOR)).setScale(2, BigDecimal.ROUND_HALF_UP);
                         orderItems.save();
 
                         List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItems);
