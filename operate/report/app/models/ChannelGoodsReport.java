@@ -345,12 +345,12 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
 
 
         //取得退款的数据 ecoupon
-        sql = "select new models.ChannelGoodsReport(e.order, sum(e.refundPrice),e.orderItems.goods,sum(e.orderItems.originalPrice)) " +
+        sql = "select new models.ChannelGoodsReport(e.order, sum(e.salePrice),e.orderItems.goods,sum(e.orderItems.originalPrice)) " +
                 " from ECoupon e ";
         groupBy = " group by e.order.userId, e.orderItems.goods.id";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -360,13 +360,13 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
 
 
         //refund from resaler
-        sql = "select new models.ChannelGoodsReport(e.order,sum(e.refundPrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)" +
+        sql = "select new models.ChannelGoodsReport(e.order,sum(e.salePrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)" +
                 " ,sum(e.orderItems.originalPrice)) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o";
         groupBy = " group by e.orderItems.goods.id,b";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -574,12 +574,12 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
 
 
         //取得退款的数据 ecoupon
-        totalSql = "select new models.ChannelGoodsReport(e.order, sum(e.refundPrice),e.orderItems.goods,sum(e.orderItems.originalPrice)) " +
+        totalSql = "select new models.ChannelGoodsReport(e.order, sum(e.salePrice),e.orderItems.goods,sum(e.orderItems.originalPrice)) " +
                 " from ECoupon e ";
         totalGroupBy = " group by e.order.userId ";
 
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getRefundFilter() + totalGroupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(totalSql + condition.getRefundFilter() + totalGroupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap1().get(param));
@@ -589,13 +589,13 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
 
 
         //refund from resaler
-        totalSql = "select new models.ChannelGoodsReport(e.order,sum(e.refundPrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)" +
+        totalSql = "select new models.ChannelGoodsReport(e.order,sum(e.salePrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)" +
                 " ,sum(e.orderItems.originalPrice)) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o";
         totalGroupBy = " group by b ";
 
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterRefundResaler() + totalGroupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(totalSql + condition.getFilterRefundResaler() + totalGroupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap1().get(param));
@@ -884,12 +884,12 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
 
 
         //取得退款的数据 ecoupon
-        sql = "select new models.ChannelGoodsReport(e.order, sum(e.refundPrice),e.orderItems.goods,sum(e.orderItems.originalPrice)) " +
+        sql = "select new models.ChannelGoodsReport(e.order, sum(e.salePrice),e.orderItems.goods,sum(e.orderItems.originalPrice)) " +
                 " from ECoupon e ";
         groupBy = " group by e.order.userId ";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -899,13 +899,13 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
 
 
         //refund from resaler
-        sql = "select new models.ChannelGoodsReport(e.order,sum(e.refundPrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)" +
+        sql = "select new models.ChannelGoodsReport(e.order,sum(e.salePrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)" +
                 " ,sum(e.orderItems.originalPrice)) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o";
         groupBy = " group by b ";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));

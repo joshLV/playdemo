@@ -459,7 +459,7 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
 
 
         //refundAt ecoupon
-        sql = "select new models.ChannelCategoryReport(sum(e.refundPrice),s.supplierCategory.id, count(e),r.order) " +
+        sql = "select new models.ChannelCategoryReport(sum(e.salePrice),s.supplierCategory.id, count(e),r.order) " +
                 " from OrderItems r, ECoupon e ,Supplier s where e.orderItems=r and r.goods.supplierId = s.id ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRefundAt(AccountType.RESALER) + groupBy + " order by r.order.userId, s.supplierCategory.id desc");
@@ -565,9 +565,9 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
 
 
         //refundAt ecoupon
-        totalSql = "select new models.ChannelCategoryReport(sum(e.refundPrice),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
+        totalSql = "select new models.ChannelCategoryReport(sum(e.salePrice),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterRefundAt(AccountType.RESALER) + totalGroupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(totalSql + condition.getFilterRefundAt(AccountType.RESALER) + totalGroupBy + " order by sum(e.salePrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
         }
@@ -879,10 +879,10 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
         List<ChannelCategoryReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ChannelCategoryReport(sum(e.refundPrice), s.supplierCategory.id, count(e),min(r.order)) " +
+        sql = "select new models.ChannelCategoryReport(sum(e.salePrice), s.supplierCategory.id, count(e),min(r.order)) " +
                 " from OrderItems r, ECoupon e , Supplier s where e.orderItems=r and r.goods.supplierId = s.id ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER) + groupBy + " order by sum(e.salePrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -975,9 +975,9 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
         List<ChannelCategoryReport> totalConsumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ChannelCategoryReport(sum(e.refundPrice),count(e),min(r.order)) from OrderItems r, ECoupon e where e.orderItems=r";
+        sql = "select new models.ChannelCategoryReport(sum(e.salePrice),count(e),min(r.order)) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER) + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER) + " order by sum(e.salePrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -1121,10 +1121,10 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
         List<ChannelCategoryReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ChannelCategoryReport(sum(e.refundPrice), s.supplierCategory.id, count(e),r.order) " +
+        sql = "select new models.ChannelCategoryReport(sum(e.salePrice), s.supplierCategory.id, count(e),r.order) " +
                 " from OrderItems r, ECoupon e , Supplier s where e.orderItems=r and r.goods.supplierId = s.id ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER) + groupBy + " order by sum(e.salePrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }

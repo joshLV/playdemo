@@ -370,10 +370,10 @@ public class ResaleSalesReport {
         List<ResaleSalesReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),r.order,sum(e.refundPrice*b.commissionRatio/100),sum(e.originalPrice)) " +
+        sql = "select new models.ResaleSalesReport(sum(e.salePrice),count(e),r.order,sum(e.salePrice*b.commissionRatio/100),sum(e.originalPrice)) " +
                 "from OrderItems r, ECoupon e,Resaler b where e.orderItems=r and r.order.userId = b.id";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundAt() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundAt() + groupBy + " order by sum(e.salePrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }

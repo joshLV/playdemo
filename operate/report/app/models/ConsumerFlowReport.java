@@ -436,7 +436,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         List<ConsumerFlowReport> consumedResultList = query.getResultList();
 
         //计算退款  refundAt ecoupon
-        sql = "select new models.ConsumerFlowReport(sum(r.order.id),str(year(e.refundAt))||'-'||str(month(e.refundAt))||'-'||str(day(e.refundAt)),sum(e.refundPrice),count(e)," +
+        sql = "select new models.ConsumerFlowReport(sum(r.order.id),str(year(e.refundAt))||'-'||str(month(e.refundAt))||'-'||str(day(e.refundAt)),sum(e.salePrice),count(e)," +
                 "sum(e.orderItems.originalPrice))" +
                 " from OrderItems r, Order o, ECoupon e where e.orderItems=r  ";
         groupBy = " group by str(year(e.refundAt))||'-'||str(month(e.refundAt))||'-'||str(day(e.refundAt)) ";
@@ -451,7 +451,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
 
         //计算退款的佣金  refundAt resaler
         sql = "select new models.ConsumerFlowReport(str(year(e.refundAt))||'-'||str(month(e.refundAt))||'-'||str(day(e.refundAt))" +
-                ",sum(e.refundPrice)*b.commissionRatio/100 )" +
+                ",sum(e.salePrice)*b.commissionRatio/100 )" +
                 " from OrderItems r, Order o, ECoupon e,Resaler b where e.orderItems=r  and o.userId=b.id  ";
         groupBy = " group by b,str(year(e.refundAt))||'-'||str(month(e.refundAt))||'-'||str(day(e.refundAt)) ";
 //
