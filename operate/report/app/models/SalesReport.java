@@ -351,12 +351,12 @@ public class SalesReport implements Comparable<SalesReport> {
 
 
         //取得退款的数据 ecoupon
-        sql = "select new models.SalesReport(sum(e.refundPrice),e.orderItems.goods,sum(r.originalPrice)) " +
+        sql = "select new models.SalesReport(sum(e.salePrice),e.orderItems.goods,sum(r.originalPrice)) " +
                 " from ECoupon e,OrderItems r ";
         groupBy = " group by e.orderItems.goods.id";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -365,12 +365,12 @@ public class SalesReport implements Comparable<SalesReport> {
         List<SalesReport> refundList = query.getResultList();
 
         //refund from resaler
-        sql = "select new models.SalesReport(sum(e.refundPrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)) " +
+        sql = "select new models.SalesReport(sum(e.salePrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o";
         groupBy = " group by e.orderItems.goods.id,b";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -559,11 +559,11 @@ public class SalesReport implements Comparable<SalesReport> {
         List<SalesReport> paidResalerResultList = query.getResultList();
 
         //取得退款的数据 ecoupon
-        sql = "select new models.SalesReport(o,sum(e.refundPrice),sum(r.originalPrice),e.status) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
+        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(r.originalPrice),e.status) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilterOfPeopleEffect(ECouponStatus.REFUND) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getRefundFilterOfPeopleEffect(ECouponStatus.REFUND) + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -586,12 +586,12 @@ public class SalesReport implements Comparable<SalesReport> {
         List<SalesReport> consumedList = query.getResultList();
 
         //refund from resaler
-        sql = "select new models.SalesReport(ou,sum(r),sum(e.refundPrice)*b.commissionRatio/100,b.commissionRatio) " +
+        sql = "select new models.SalesReport(ou,sum(r),sum(e.salePrice)*b.commissionRatio/100,b.commissionRatio) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o,Supplier s,OperateUser ou";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResalerOfPeopleEffect() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundResalerOfPeopleEffect() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));

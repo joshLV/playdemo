@@ -429,10 +429,10 @@ public class PeopleEffectCategoryReport {
 
         List<PeopleEffectCategoryReport> cheatedOrderResalerResultList = query.getResultList();
         //refund from resaler
-        sql = "select new models.PeopleEffectCategoryReport(sum(e.refundPrice)*b.commissionRatio/100,ou,s.supplierCategory.id,b.commissionRatio,sum(e.orderItems.originalPrice)) " +
+        sql = "select new models.PeopleEffectCategoryReport(sum(e.salePrice)*b.commissionRatio/100,ou,s.supplierCategory.id,b.commissionRatio,sum(e.orderItems.originalPrice)) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o,Supplier s,OperateUser ou ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResalerOfPeopleEffect() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundResalerOfPeopleEffect() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -452,7 +452,7 @@ public class PeopleEffectCategoryReport {
 
 
         //refundAt ecoupon
-        sql = "select new models.PeopleEffectCategoryReport(ou,sum(e.refundPrice),s.supplierCategory.id,sum(r.originalPrice),count(e),e.status)" +
+        sql = "select new models.PeopleEffectCategoryReport(ou,sum(e.salePrice),s.supplierCategory.id,sum(r.originalPrice),count(e),e.status)" +
                 " from ECoupon e,OrderItems r,Supplier s,OperateUser ou ";
         query = JPA.em()
                 .createQuery(sql + condition.getECouponFilterOfPeopleEffect(ECouponStatus.REFUND) + groupBy + " order by s.supplierCategory.id desc");
@@ -753,11 +753,11 @@ public class PeopleEffectCategoryReport {
         List<PeopleEffectCategoryReport> paidResalerResultList = query.getResultList();
 
         //total ==取得退款的数据 ecoupon
-        sql = "select new models.PeopleEffectCategoryReport(ou,sum(e.refundPrice),sum(r.originalPrice),count(e.id),e.status) from ECoupon e,OrderItems r,Supplier s,OperateUser ou ";
+        sql = "select new models.PeopleEffectCategoryReport(ou,sum(e.salePrice),sum(r.originalPrice),count(e.id),e.status) from ECoupon e,OrderItems r,Supplier s,OperateUser ou ";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
-                .createQuery(sql + condition.getECouponFilterOfPeopleEffect(ECouponStatus.REFUND) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getECouponFilterOfPeopleEffect(ECouponStatus.REFUND) + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -779,12 +779,12 @@ public class PeopleEffectCategoryReport {
 
         List<PeopleEffectCategoryReport> consumedList = query.getResultList();
         //total== refund from resaler
-        sql = "select new models.PeopleEffectCategoryReport(sum(e.refundPrice)*b.commissionRatio/100,ou,b.commissionRatio) " +
+        sql = "select new models.PeopleEffectCategoryReport(sum(e.salePrice)*b.commissionRatio/100,ou,b.commissionRatio) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o,Supplier s,OperateUser ou";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResalerOfPeopleEffect() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundResalerOfPeopleEffect() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));

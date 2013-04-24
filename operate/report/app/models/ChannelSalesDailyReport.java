@@ -87,7 +87,7 @@ public class ChannelSalesDailyReport implements Comparable<ChannelSalesDailyRepo
         List<ChannelSalesDailyReport> paidResultList = query.getResultList();
 
         //算出券退款金额  refundAt (ecoupon)
-        sql = "select new models.ChannelSalesDailyReport(str(year(e.refundAt))||'-'||str(month(e.refundAt))||'-'||str(day(e.refundAt)),e.order,sum(e.refundPrice),e.goods " +
+        sql = "select new models.ChannelSalesDailyReport(str(year(e.refundAt))||'-'||str(month(e.refundAt))||'-'||str(day(e.refundAt)),e.order,sum(e.salePrice),e.goods " +
                 ") from ECoupon e ";
         groupBy = " group by  TO_DAYS(e.refundAt),e.order.userId ";
 

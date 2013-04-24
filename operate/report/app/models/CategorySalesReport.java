@@ -458,12 +458,12 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
         List<CategorySalesReport> consumedResultList = query.getResultList();
 
         //取得退款的数据 ecoupon
-        sql = "select new models.CategorySalesReport(sum(e.refundPrice),s.supplierCategory.id,e.orderItems.goods,sum(e.originalPrice)) " +
+        sql = "select new models.CategorySalesReport(sum(e.salePrice),s.supplierCategory.id,e.orderItems.goods,sum(e.originalPrice)) " +
                 " from ECoupon e, Supplier s ";
         groupBy = " group by s.supplierCategory.id,e.orderItems.goods.id ";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -472,12 +472,12 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
         List<CategorySalesReport> refundList = query.getResultList();
 
         //refund from resaler
-        sql = "select new models.CategorySalesReport(sum(e.refundPrice)*b.commissionRatio/100,r.goods,s.supplierCategory.id,b.commissionRatio,sum(e.orderItems.originalPrice)) " +
+        sql = "select new models.CategorySalesReport(sum(e.salePrice)*b.commissionRatio/100,r.goods,s.supplierCategory.id,b.commissionRatio,sum(e.orderItems.originalPrice)) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o,Supplier s ";
         groupBy = " group by s.supplierCategory.id,e.orderItems.goods.id,b";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -701,12 +701,12 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
 //        List<CategorySalesReport> paidResalerResultList = query.getResultList();
 //
 //        //取得退款的数据 ecoupon
-//        sql = "select new models.CategorySalesReport(sum(e.refundPrice),e.orderItems.goods,s.supplierCategory.id ) " +
+//        sql = "select new models.CategorySalesReport(sum(e.salePrice),e.orderItems.goods,s.supplierCategory.id ) " +
 //                " from ECoupon e, Supplier s ";
 //        groupBy = " group by s.supplierCategory.id,e.orderItems.goods.id ";
 //
 //        query = JPA.em()
-//                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
+//                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
 //
 //        for (String param : condition.getParamMap1().keySet()) {
 //            query.setParameter(param, condition.getParamMap1().get(param));
@@ -855,12 +855,12 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
         List<CategorySalesReport> consumedResultList = query.getResultList();
 
         //取得退款的数据 ecoupon
-        sql = "select new models.CategorySalesReport(sum(e.refundPrice),s.supplierCategory.id,e.orderItems.goods,sum(e.originalPrice)) " +
+        sql = "select new models.CategorySalesReport(sum(e.salePrice),s.supplierCategory.id,e.orderItems.goods,sum(e.originalPrice)) " +
                 " from ECoupon e, Supplier s ";
         groupBy = " group by s.supplierCategory.id,e.orderItems.goods.id ";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -869,12 +869,12 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
         List<CategorySalesReport> refundList = query.getResultList();
 
         //refund from resaler
-        sql = "select new models.CategorySalesReport(sum(e.refundPrice)*b.commissionRatio/100,r.goods,s.supplierCategory.id,b.commissionRatio,sum(e.orderItems.originalPrice)) " +
+        sql = "select new models.CategorySalesReport(sum(e.salePrice)*b.commissionRatio/100,r.goods,s.supplierCategory.id,b.commissionRatio,sum(e.orderItems.originalPrice)) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o,Supplier s ";
         groupBy = " group by s.supplierCategory.id,e.orderItems.goods.id,b";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -1107,12 +1107,12 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
 
 
         //取得退款的数据 ecoupon
-        sql = "select new models.CategorySalesReport(sum(e.refundPrice),s.supplierCategory.id,sum(e.orderItems.originalPrice)) " +
+        sql = "select new models.CategorySalesReport(sum(e.salePrice),s.supplierCategory.id,sum(e.orderItems.originalPrice)) " +
                 " from ECoupon e, Supplier s ";
         groupBy = " group by s.supplierCategory.id ";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
@@ -1122,12 +1122,12 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
 
 
         //refund from resaler
-        sql = "select new models.CategorySalesReport(sum(e.refundPrice)*b.commissionRatio/100,r.goods,b.commissionRatio,s.supplierCategory.id,sum(e.orderItems.originalPrice)) " +
+        sql = "select new models.CategorySalesReport(sum(e.salePrice)*b.commissionRatio/100,r.goods,b.commissionRatio,s.supplierCategory.id,sum(e.orderItems.originalPrice)) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o,Supplier s ";
         groupBy = " group by s.supplierCategory.id,b";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));

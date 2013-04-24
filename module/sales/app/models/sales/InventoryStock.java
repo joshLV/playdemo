@@ -236,7 +236,7 @@ public class InventoryStock extends Model {
     }
 
     public static void updateInventoryStockRemainCount(Sku sku, Long changeCount) {
-        List<InventoryStockItem> stockItemList = InventoryStockItem.find("sku=? and remainCount>0 order by createdAt", sku).fetch();
+        List<InventoryStockItem> stockItemList = InventoryStockItem.find("sku=? and remainCount>0 order by createdAt ", sku).fetch();
         long reducedCount = changeCount;
         for (InventoryStockItem stockItem : stockItemList) {
             if (stockItem.remainCount >= reducedCount) {

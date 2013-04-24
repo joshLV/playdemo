@@ -224,11 +224,11 @@ public class SalesOrderItemReport {
         List<SalesOrderItemReport> salesList = query.getResultList();
 
         //取得退款的数据
-        String sql = "select new models.SalesOrderItemReport(sum(e.refundPrice),e.orderItems.goods.supplierId) from ECoupon e ,OrderItems r,Supplier s";
+        String sql = "select new models.SalesOrderItemReport(sum(e.salePrice),e.orderItems.goods.supplierId) from ECoupon e ,OrderItems r,Supplier s";
         String groupBy = " group by e.orderItems.goods.supplierId";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
