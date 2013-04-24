@@ -126,7 +126,7 @@ public class Order extends Model {
     public BigDecimal amount;       //订单总金额
 
     @Column(name = "account_pay")
-    public BigDecimal accountPay;   //使用余额付款金额
+    public BigDecimal accountPay;   //使用余额付款金额  可提现余额
 
     /**
      * 使用折扣码后折扣的费用.
