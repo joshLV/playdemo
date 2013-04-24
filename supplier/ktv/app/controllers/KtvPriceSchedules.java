@@ -46,6 +46,7 @@ public class KtvPriceSchedules extends Controller {
 
     public static void add() {
         initParams(null);
+        System.out.println("-------");
         render();
     }
 

@@ -52,7 +52,7 @@ public class KtvRoomTypesTest extends FunctionalTest {
     public void testAdd() {
         Http.Response response = GET(Router.reverse("KtvRoomTypes.add").url);
         assertIsOk(response);
-        assertContentMatch("添加包厢", response);
+        assertContentMatch("新增包厢", response);
     }
 
     @Test

@@ -29,7 +29,7 @@ public class KtvRoomOrderInfo extends Model {
     public Goods goods;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_item_id", nullable = false)
+    @JoinColumn(name = "order_item_id")
     public OrderItems orderItem;
 
     @ManyToOne(fetch = FetchType.LAZY)
