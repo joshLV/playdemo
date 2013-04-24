@@ -131,7 +131,7 @@ public class WebSinaVouchers extends Controller {
                         String[] scheduledTimes = values[0].split(",");
                         Long roomId = Long.valueOf(key.substring("roomId".length()));
                         BigDecimal salePrice = BigDecimal.ZERO;
-                        OrderItems orderItems =  new OrderItems(order, goods, 1L, phone, salePrice, salePrice);
+                        OrderItems orderItems =  new OrderItems(order, goods, 1L, phone, salePrice, salePrice).save();
 
                         for (String scheduledTime : scheduledTimes) {
                             KtvRoom ktvRoom = KtvRoom.findById(roomId);
