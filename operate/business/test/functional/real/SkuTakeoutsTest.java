@@ -16,10 +16,12 @@ import models.sales.OrderBatch;
 import models.sales.Sku;
 import models.sales.StockActionType;
 import models.supplier.Supplier;
+import operate.rbac.RbacLoader;
 import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Router;
 import play.test.FunctionalTest;
+import play.vfs.VirtualFile;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -43,6 +45,9 @@ public class SkuTakeoutsTest extends FunctionalTest {
     @org.junit.Before
     public void setup() {
         FactoryBoy.deleteAll();
+        // 重新加载配置文件
+        VirtualFile file = VirtualFile.open("conf/rbac.xml");
+        RbacLoader.init(file);
 
         OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
@@ -169,6 +174,7 @@ public class SkuTakeoutsTest extends FunctionalTest {
         orderItems.refresh();
         //订单状态检查
         assertEquals(OrderStatus.PREPARED, orderItems.status);
+
         //出库单检查
         List<InventoryStock> stockList = InventoryStock.find("actionType=?", StockActionType.OUT).fetch();
         assertEquals(1, stockList.size());
