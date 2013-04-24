@@ -129,20 +129,32 @@ public class WebSinaVouchers extends Controller {
                     if (key.startsWith("roomId")) {
                         String[] values = request.params.getAll(key);
                         String[] scheduledTimes = values[0].split(",");
+                        Long roomId = Long.valueOf(key.substring("roomId".length()));
+                        BigDecimal salePrice = BigDecimal.ZERO;
                         for (String scheduledTime : scheduledTimes) {
-                            KtvRoom ktvRoom = KtvRoom.findById(Long.valueOf(key.substring("roomId".length())));
+                            KtvRoom ktvRoom = KtvRoom.findById(roomId);
                             List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(scheduledDay, shop, ktvRoom, scheduledTime);
                             if (scheduledRoomList.size() > 0) {
                                 error("该包厢已被他人预定！");
                             }
                             KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
-                            orderItems = order.addOrderItem(goods, 1L, phone, ktvPriceSchedule.price, ktvPriceSchedule.price);
-                            orderItems.outerGoodsNo = productId;
-                            orderItems.save();
-                            new KtvRoomOrderInfo(goods, orderItems, ktvRoom, ktvRoom.roomType, scheduledDay, scheduledTime).save();
+                            salePrice = salePrice.add(ktvPriceSchedule.price);
+                            new KtvRoomOrderInfo(goods, null, ktvRoom, ktvRoom.roomType, scheduledDay, scheduledTime).save();
+                        }
+                        //eCoupon.originalPrice=eCoupon.salePrice*(goods.originalPrice/goods.salePrice)
+                        orderItems = order.addOrderItem(goods, 1L, phone, salePrice, salePrice);
+                        orderItems.outerGoodsNo = productId;
+                        orderItems.originalPrice = salePrice.multiply(goods.originalPrice.divide(goods.salePrice));
+                        orderItems.save();
+
+                        List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItems);
+                        for (KtvRoomOrderInfo orderInfo : ktvRoomOrderInfoList) {
+                            orderInfo.orderItem = orderItems;
+                            orderInfo.save();
                         }
                     }
                 }
+
             } else {
                 orderItems = order.addOrderItem(goods, buyCount, phone, goods.getResalePrice(), goods.getResalePrice());
                 orderItems.outerGoodsNo = productId;

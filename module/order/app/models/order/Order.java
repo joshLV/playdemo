@@ -859,11 +859,17 @@ public class Order extends Model {
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
+
+                    if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
+                        eCoupon.originalPrice = orderItem.originalPrice;
+                        eCoupon.faceValue = eCoupon.salePrice;
+                        eCoupon.save();
+                    }
                 }
 
 
                 //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
-                if ("1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
+                if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
                     List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItem);
                     for (KtvRoomOrderInfo orderInfo : ktvRoomOrderInfoList) {
                         orderInfo.dealKtvRoom();
