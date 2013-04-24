@@ -16,12 +16,14 @@ import models.sales.InventoryStockItem;
 import models.sales.MaterialType;
 import models.sales.Sku;
 import models.supplier.Supplier;
+import operate.rbac.RbacLoader;
 import org.junit.Test;
 import play.Logger;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
 import play.mvc.Router;
 import play.test.FunctionalTest;
+import play.vfs.VirtualFile;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -46,6 +48,9 @@ public class ReturnEntriesTest extends FunctionalTest {
     @org.junit.Before
     public void setup() {
         FactoryBoy.deleteAll();
+        // 重新加载配置文件
+        VirtualFile file = VirtualFile.open("conf/rbac.xml");
+        RbacLoader.init(file);
 
         OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名

@@ -35,6 +35,7 @@ import play.mvc.Http;
 import play.mvc.With;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -119,7 +120,6 @@ public class WebSinaVouchers extends Controller {
         }
         //创建订单
         Order order = Order.createConsumeOrder(user, resaler).save();
-        OrderItems orderItems = null;
         try {
             //页面根据包厢ID,取得该时间段的价格信息
             if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
@@ -129,22 +129,40 @@ public class WebSinaVouchers extends Controller {
                     if (key.startsWith("roomId")) {
                         String[] values = request.params.getAll(key);
                         String[] scheduledTimes = values[0].split(",");
+                        Long roomId = Long.valueOf(key.substring("roomId".length()));
+                        BigDecimal salePrice = BigDecimal.ZERO;
+                        OrderItems orderItems =  new OrderItems(order, goods, 1L, phone, salePrice, salePrice).save();
+
                         for (String scheduledTime : scheduledTimes) {
-                            KtvRoom ktvRoom = KtvRoom.findById(Long.valueOf(key.substring("roomId".length())));
+                            KtvRoom ktvRoom = KtvRoom.findById(roomId);
                             List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(scheduledDay, shop, ktvRoom, scheduledTime);
                             if (scheduledRoomList.size() > 0) {
                                 error("该包厢已被他人预定！");
                             }
                             KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
-                            orderItems = order.addOrderItem(goods, 1L, phone, ktvPriceSchedule.price, ktvPriceSchedule.price);
-                            orderItems.outerGoodsNo = productId;
-                            orderItems.save();
+                            salePrice = salePrice.add(ktvPriceSchedule.price);
                             new KtvRoomOrderInfo(goods, orderItems, ktvRoom, ktvRoom.roomType, scheduledDay, scheduledTime).save();
+                        }
+
+                        //eCoupon.originalPrice=eCoupon.salePrice*(goods.originalPrice/goods.salePrice)
+                        orderItems.salePrice = salePrice;
+                        orderItems.faceValue = salePrice;
+                        orderItems.resalerPrice = salePrice;
+                        orderItems.outerGoodsNo = productId;
+                        orderItems.originalPrice = salePrice.multiply(goods.originalPrice.divide(goods.salePrice, RoundingMode.FLOOR)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        orderItems = order.addOrderItem(orderItems, null, false);
+                        orderItems.save();
+
+                        List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItems);
+                        for (KtvRoomOrderInfo orderInfo : ktvRoomOrderInfoList) {
+                            orderInfo.orderItem = orderItems;
+                            orderInfo.save();
                         }
                     }
                 }
+
             } else {
-                orderItems = order.addOrderItem(goods, buyCount, phone, goods.getResalePrice(), goods.getResalePrice());
+                OrderItems orderItems = order.addOrderItem(goods, buyCount, phone, goods.getResalePrice(), goods.getResalePrice());
                 orderItems.outerGoodsNo = productId;
                 orderItems.save();
             }

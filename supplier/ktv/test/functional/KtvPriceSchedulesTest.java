@@ -89,7 +89,7 @@ public class KtvPriceSchedulesTest extends FunctionalTest {
     public void testAdd() {
         Http.Response response = GET(Router.reverse("KtvPriceSchedules.add").url);
         assertIsOk(response);
-        assertContentMatch("价格设置", response);
+        assertContentMatch("价格策略", response);
     }
 
     @Test

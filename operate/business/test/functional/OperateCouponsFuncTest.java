@@ -42,7 +42,7 @@ public class OperateCouponsFuncTest extends FunctionalTest {
     public void setUp() {
         FactoryBoy.deleteAll();
         MockMQ.clear();
-        // 重新加载配置文件
+              // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 

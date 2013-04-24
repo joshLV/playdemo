@@ -234,7 +234,7 @@ public class WebSinaVouchersTest extends FunctionalTest {
         Http.Response response = POST(Router.reverse("WebSinaVouchers.order"), params);
         assertStatus(200, response);
         assertEquals(1, Order.count());
-        assertEquals(2, OrderItems.count());
+        assertEquals(1, OrderItems.count());
         assertEquals(2, KtvRoomOrderInfo.count());
 
     }

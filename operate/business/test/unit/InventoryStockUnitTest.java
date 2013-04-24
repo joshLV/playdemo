@@ -106,7 +106,7 @@ public class InventoryStockUnitTest extends UnitTest {
     public void test_Update_Inventory_Stock_Remain_Count() {
         InventoryStock.updateInventoryStockRemainCount(sku, 90l);
         stockItem1.refresh();
-        assertEquals(Long.valueOf(61), stockItem1.remainCount);
+        assertEquals(Long.valueOf(61), stockItem2.remainCount);
     }
 
 

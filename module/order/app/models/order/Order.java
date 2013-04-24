@@ -507,20 +507,29 @@ public class Order extends Model {
             throws NotEnoughInventoryException {
         OrderItems orderItem = null;
         if (number > 0 && goods != null) {
-            checkInventory(goods, number);
 
             orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice);
-            //通过推荐购买的情况
-            if (isPromoteFlag) {
-                orderItem.rebateValue = getPromoteRebateOfGoodsAmount(goods, number);
-            } else {
-                //用优惠码的情况
-                orderItem.rebateValue = getDiscountValueOfGoodsAmount(goods, number, discountCode);
-            }
-            this.orderItems.add(orderItem);
-            this.amount = this.amount.add(orderItem.getLineValue()); //计算折扣价
-            this.needPay = this.amount;
+            orderItem = addOrderItem(orderItem, discountCode, isPromoteFlag);
         }
+
+        return orderItem;
+    }
+
+    public OrderItems addOrderItem(OrderItems orderItem, DiscountCode discountCode, boolean isPromoteFlag) throws NotEnoughInventoryException{
+        if (orderItem.buyNumber <= 0 || orderItem.goods == null) {
+            return null;
+        }
+        checkInventory(orderItem.goods, orderItem.buyNumber);
+        //通过推荐购买的情况
+        if (isPromoteFlag) {
+            orderItem.rebateValue = getPromoteRebateOfGoodsAmount(orderItem.goods, orderItem.buyNumber);
+        } else {
+            //用优惠码的情况
+            orderItem.rebateValue = getDiscountValueOfGoodsAmount(orderItem.goods, orderItem.buyNumber, discountCode);
+        }
+        this.orderItems.add(orderItem);
+        this.amount = this.amount.add(orderItem.getLineValue()); //计算折扣价
+        this.needPay = this.amount;
 
         return orderItem;
     }
@@ -859,11 +868,17 @@ public class Order extends Model {
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
+
+                    if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
+                        eCoupon.originalPrice = orderItem.originalPrice;
+                        eCoupon.faceValue = eCoupon.salePrice;
+                        eCoupon.save();
+                    }
                 }
 
 
                 //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
-                if ("1".equals(goods.getSupplier().getProperty(Supplier.KTV_SUPPLIER))) {
+                if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
                     List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItem);
                     for (KtvRoomOrderInfo orderInfo : ktvRoomOrderInfoList) {
                         orderInfo.dealKtvRoom();
