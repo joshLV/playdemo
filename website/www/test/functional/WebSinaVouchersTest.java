@@ -14,18 +14,19 @@ import models.order.*;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
+import models.sms.SMSMessage;
+import models.sms.SMSUtil;
 import models.supplier.Supplier;
-import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.data.validation.Error;
 import play.mvc.Http;
 import play.mvc.Router;
 import play.test.FunctionalTest;
-import util.DateHelper;
+import util.mq.MockMQ;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * User: yan
@@ -236,6 +237,45 @@ public class WebSinaVouchersTest extends FunctionalTest {
         assertEquals(1, Order.count());
         assertEquals(1, OrderItems.count());
         assertEquals(2, KtvRoomOrderInfo.count());
+    }
 
+    @Test
+    public void testOrderTime() {
+        final OrderItems orderItems = FactoryBoy.create(OrderItems.class);
+        KtvRoomOrderInfo orderInfo = FactoryBoy.create(KtvRoomOrderInfo.class, new BuildCallback<KtvRoomOrderInfo>() {
+            @Override
+            public void build(KtvRoomOrderInfo target) {
+                target.orderItem = orderItems;
+            }
+        });
+        FactoryBoy.create(KtvRoomOrderInfo.class, "time1", new BuildCallback<KtvRoomOrderInfo>() {
+            @Override
+            public void build(KtvRoomOrderInfo target) {
+                target.orderItem = orderItems;
+            }
+        });
+        FactoryBoy.create(KtvRoomOrderInfo.class, "time2", new BuildCallback<KtvRoomOrderInfo>() {
+            @Override
+            public void build(KtvRoomOrderInfo target) {
+                target.orderItem = orderItems;
+            }
+        });
+        FactoryBoy.create(KtvRoomOrderInfo.class, "time3", new BuildCallback<KtvRoomOrderInfo>() {
+            @Override
+            public void build(KtvRoomOrderInfo target) {
+                target.orderItem = orderItems;
+            }
+        });
+        FactoryBoy.create(KtvRoomOrderInfo.class, "time4", new BuildCallback<KtvRoomOrderInfo>() {
+            @Override
+            public void build(KtvRoomOrderInfo target) {
+                target.orderItem = orderItems;
+            }
+        });
+
+        List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItems);
+        String remark = KtvRoomOrderInfo.getRoomOrderTime(ktvRoomOrderInfoList);
+        assertEquals("9:00-13:00;15:00-16:00;", remark);
+        assertEquals(DateUtil.dateToString(new Date(), 0), DateUtil.dateToString(orderInfo.scheduledDay,0));
     }
 }

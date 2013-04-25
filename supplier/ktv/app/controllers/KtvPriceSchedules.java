@@ -28,7 +28,7 @@ import java.util.Set;
 @With({SupplierRbac.class, SupplierInjector.class})
 public class KtvPriceSchedules extends Controller {
     public static void index(Shop shop, KtvRoomType roomType) {
-        initParams(null);
+        initParams(null, shop, roomType);
         render(shop, roomType);
     }
 
@@ -45,17 +45,24 @@ public class KtvPriceSchedules extends Controller {
 
 
     public static void add() {
-        initParams(null);
-        System.out.println("-------");
+        initParams(null, null, null);
         render();
     }
 
-    private static void initParams(KtvPriceSchedule priceSchedule) {
+    private static void initParams(KtvPriceSchedule priceSchedule, Shop shop, KtvRoomType roomType) {
         Supplier supplier = SupplierRbac.currentUser().supplier;
         List<Shop> shops = Shop.findShopBySupplier(supplier.id);
-
         List<KtvRoomType> roomTypeList = KtvRoomType.findRoomTypeList(supplier);
+        //初始页面，设置门店和包厢类型，并根据门店和包厢查询该门店是否设置包厢数量
+        if ((shop == null || shop.id == null) && shops.size() > 0) {
+            shop = shops.get(0);
+        }
+        if ((roomType == null || roomType.id == null) && roomTypeList.size() > 0) {
+            roomType = roomTypeList.get(0);
+        }
+        List<KtvRoom> ktvRoomList = KtvRoom.findKtvRoom(roomType, shop);
         String shopIds = setShopIds(priceSchedule);
+        renderArgs.put("ktvRoomList", ktvRoomList);
         renderArgs.put("shopIds", shopIds);
         renderArgs.put("shops", shops);
         renderArgs.put("roomTypeList", roomTypeList);
@@ -65,7 +72,7 @@ public class KtvPriceSchedules extends Controller {
         priceSchedule.useWeekDay = StringUtils.join(useWeekDays, ",");
         checkTime(null, priceSchedule);
         if (Validation.hasErrors()) {
-            initParams(priceSchedule);
+            initParams(priceSchedule, null, null);
             render("/KtvPriceSchedules/add.html", priceSchedule);
         }
         priceSchedule.createdAt = new Date();
@@ -74,35 +81,48 @@ public class KtvPriceSchedules extends Controller {
         index(null, null);
     }
 
-
+    /**
+     * 页面验证
+     */
     private static void checkTime(Long id, KtvPriceSchedule priceSchedule) {
         Set<Shop> shops = priceSchedule.shops;
         Validation.required("priceSchedule.shop", shops);
         if (shops != null && shops.size() > 0) {
-
             List<KtvPriceSchedule> scheduleList = KtvPriceSchedule.getSchedules(id, priceSchedule);
             for (KtvPriceSchedule schedule : scheduleList) {
-//                if (!schedule.useWeekDay.contains(priceSchedule.useWeekDay)) {
-//                    continue;
-//                }
-
                 for (Shop shop : shops) {
-                    for (Shop existedShop : schedule.shops) {
-                        if (!shop.id.equals(existedShop.id)) {
-                            continue;
-                        }
-                        if (priceSchedule.startDay.after(schedule.startDay) && priceSchedule.endDay.before(schedule.endDay)) {
-                            Validation.addError("priceSchedule.day", "该日期范围有交叉，请确认！");
-                            break;
-                        }
-
-                        //10：00~12：00  交叉的可能时间段09:00~11:00 或 11：00~13：00
-                        if (!(priceSchedule.endTime.compareTo(schedule.startTime) <= 0 || priceSchedule.startTime.compareTo(schedule.endTime) >= 0)) {
-                            Validation.addError("priceSchedule.useTime", "该时间段有交叉，请确认！");
-                            break;
-                        }
-                    }
+                    //检查门店是否设置相应包厢类型数量
+                    checkShopRoomNumber(schedule, shop);
+                    //检查是否有交叉时间
+                    checkShopTime(priceSchedule, schedule, shop);
                 }
+            }
+        }
+    }
+
+    /**
+     * 检查门店是否设置相应包厢类型数量
+     */
+    private static void checkShopRoomNumber(KtvPriceSchedule priceSchedule, Shop shop) {
+        List<KtvRoom> rooms = KtvRoom.findKtvRoom(priceSchedule.roomType, shop);
+        if (rooms.size() == 0) {
+            Validation.addError("priceSchedule.shop", "【" + shop.name + "】没有添加该包厢类型的数量！");
+        }
+    }
+
+
+    /**
+     * 检查是否有交叉时间
+     */
+    private static void checkShopTime(KtvPriceSchedule priceSchedule, KtvPriceSchedule schedule, Shop shop) {
+        for (Shop existedShop : schedule.shops) {
+            if (!shop.id.equals(existedShop.id)) {
+                continue;
+            }
+            //10：00~12：00  交叉的可能时间段09:00~11:00 或 11：00~13：00
+            if (!(priceSchedule.endTime.compareTo(schedule.startTime) <= 0 || priceSchedule.startTime.compareTo(schedule.endTime) >= 0)) {
+                Validation.addError("priceSchedule.useTime", "该时间段有交叉，请确认！");
+                break;
             }
         }
     }
@@ -113,7 +133,7 @@ public class KtvPriceSchedules extends Controller {
             error("没有该时间段的价格信息！请确认!");
             return;
         }
-        initParams(priceSchedule);
+        initParams(priceSchedule, null, null);
         render(priceSchedule);
     }
 
@@ -134,7 +154,7 @@ public class KtvPriceSchedules extends Controller {
         priceSchedule.useWeekDay = StringUtils.join(useWeekDays, ",");
         checkTime(id, priceSchedule);
         if (Validation.hasErrors()) {
-            initParams(priceSchedule);
+            initParams(priceSchedule, null, null);
             System.out.println(Validation.errors().get(0));
             render("KtvPriceSchedules/edit.html", priceSchedule);
         }

@@ -28,24 +28,42 @@
             </table>
         </div>
         <input type="hidden" id="shopId" value="${shop.id?:shops?.get(0).id}">
-        #{if roomTypeList.size()>0}
+        #{if roomTypeList}
             <input type="hidden" id="roomTypeId" value="${roomType?.id?:roomTypeList.get(0).id}">
         #{/if}
+        #{if ktvRoomList.size()==0}
+            <div class="error">请到左边菜单【我的门店】的新增门店页面，添加该门店的包厢数量！</div>
+        #{/if}
         #{else}
-            <div class="error">请到左边菜单【我的门店】的新增门店页面，添加门店的包厢信息！</div>
+            <div class="wk-ktvwrapper" id="wk-ktvwrapper"></div>
         #{/else}
-
-        <div class="wk-ktvwrapper" id="wk-ktvwrapper"></div>
-
     </div>
 #{/form}
 </div>
 #{set 'moreStyles'}
 <link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/ktv.css'}">
+<style>
+    a.wk-button {
+        display: inline-block;
+        margin-right: 10px;
+        padding: 5px 15px;
+        color: white;
+        font-size: 14px;
+        text-align: center;
+        vertical-align: top;
+        text-decoration: none;
+        text-shadow: 1px 1px #006dcc;
+        cursor: pointer;
+        border: 1px solid #006dcc;
+        border-radius: 2px;
+        background-color: #006dcc;
+        zoom: 1;
+    }
+</style>
 #{/set}
 
 #{set 'moreScripts'}
-#{asset.js src:['/ktv/xdate.js','/ktv/ktvweek.js']/}
+    #{asset.js src:['/ktv/xdate.js','/ktv/ktvweek.js']/}
 <script type="text/javascript">
     $(function () {
         var ktvWeek = KTVWeek({
