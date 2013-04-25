@@ -202,9 +202,10 @@ public class OrderECouponMessage implements Serializable {
         if (eCoupons.size() == 1) {
             ECoupon coupon = eCoupons.get(0);
             if (coupon.appointmentDate != null) {
-                note += "预约日期:" + coupon.appointmentDate + ",时间:" + coupon.appointmentRemark;
+                note += "预约日期:" + dateFormat.format(coupon.appointmentDate) + ",时间:" + coupon.appointmentRemark;
             }
         }
+
         if (orderItems.goods.isOrder) {
             // 需要预约的产品
             note += "此产品需预约,预约电话见商品详情,";
