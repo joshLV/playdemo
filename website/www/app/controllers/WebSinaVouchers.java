@@ -123,44 +123,7 @@ public class WebSinaVouchers extends Controller {
         try {
             //页面根据包厢ID,取得该时间段的价格信息
             if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
-                Collection<Shop> shops = goods.getShopList();
-                Shop shop = shops.iterator().next();
-                for (String key : request.params.all().keySet()) {
-                    if (key.startsWith("roomId")) {
-                        String[] values = request.params.getAll(key);
-                        String[] scheduledTimes = values[0].split(",");
-                        Long roomId = Long.valueOf(key.substring("roomId".length()));
-                        BigDecimal salePrice = BigDecimal.ZERO;
-                        OrderItems orderItems =  new OrderItems(order, goods, 1L, phone, salePrice, salePrice).save();
-
-                        for (String scheduledTime : scheduledTimes) {
-                            KtvRoom ktvRoom = KtvRoom.findById(roomId);
-                            List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(scheduledDay, shop, ktvRoom, scheduledTime);
-                            if (scheduledRoomList.size() > 0) {
-                                error("该包厢已被他人预定！");
-                            }
-                            KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
-                            salePrice = salePrice.add(ktvPriceSchedule.price);
-                            new KtvRoomOrderInfo(goods, orderItems, ktvRoom, ktvRoom.roomType, scheduledDay, scheduledTime).save();
-                        }
-
-                        //eCoupon.originalPrice=eCoupon.salePrice*(goods.originalPrice/goods.salePrice)
-                        orderItems.salePrice = salePrice;
-                        orderItems.faceValue = salePrice;
-                        orderItems.resalerPrice = salePrice;
-                        orderItems.outerGoodsNo = productId;
-                        orderItems.originalPrice = salePrice.multiply(goods.originalPrice.divide(goods.salePrice, RoundingMode.FLOOR)).setScale(2, BigDecimal.ROUND_HALF_UP);
-                        orderItems = order.addOrderItem(orderItems, null, false);
-                        orderItems.save();
-
-                        List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItems);
-                        for (KtvRoomOrderInfo orderInfo : ktvRoomOrderInfoList) {
-                            orderInfo.orderItem = orderItems;
-                            orderInfo.save();
-                        }
-                    }
-                }
-
+                createKtvOrderItem(productId, phone, scheduledDay, goods, order);
             } else {
                 OrderItems orderItems = order.addOrderItem(goods, buyCount, phone, goods.getResalePrice(), goods.getResalePrice());
                 orderItems.outerGoodsNo = productId;
@@ -196,6 +159,49 @@ public class WebSinaVouchers extends Controller {
                 form);
         render(form);
 
+    }
+
+    /**
+     * 创建ktv的订单项目信息
+     */
+    private static void createKtvOrderItem(String productId, String phone, Date scheduledDay, Goods goods, Order order) throws NotEnoughInventoryException {
+        Collection<Shop> shops = goods.getShopList();
+        Shop shop = shops.iterator().next();
+        for (String key : request.params.all().keySet()) {
+            if (key.startsWith("roomId")) {
+                String[] values = request.params.getAll(key);
+                String[] scheduledTimes = values[0].split(",");
+                Long roomId = Long.valueOf(key.substring("roomId".length()));
+                BigDecimal salePrice = BigDecimal.ZERO;
+                OrderItems orderItems = new OrderItems(order, goods, 1L, phone, salePrice, salePrice).save();
+
+                for (String scheduledTime : scheduledTimes) {
+                    KtvRoom ktvRoom = KtvRoom.findById(roomId);
+                    List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(scheduledDay, shop, ktvRoom, scheduledTime);
+                    if (scheduledRoomList.size() > 0) {
+                        error("该包厢已被他人预定！");
+                    }
+                    KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
+                    salePrice = salePrice.add(ktvPriceSchedule.price);
+                    new KtvRoomOrderInfo(goods, orderItems, ktvRoom, ktvRoom.roomType, scheduledDay, scheduledTime).save();
+                }
+
+                //eCoupon.originalPrice=eCoupon.salePrice*(goods.originalPrice/goods.salePrice)
+                orderItems.salePrice = salePrice;
+                orderItems.faceValue = salePrice;
+                orderItems.resalerPrice = salePrice;
+                orderItems.outerGoodsNo = productId;
+                orderItems.originalPrice = salePrice.multiply(goods.originalPrice.divide(goods.salePrice, RoundingMode.FLOOR)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                orderItems = order.addOrderItem(orderItems, null, false);
+                orderItems.save();
+
+                List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItems);
+                for (KtvRoomOrderInfo orderInfo : ktvRoomOrderInfoList) {
+                    orderInfo.orderItem = orderItems;
+                    orderInfo.save();
+                }
+            }
+        }
     }
 
     /**

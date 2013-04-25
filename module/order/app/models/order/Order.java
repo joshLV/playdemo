@@ -55,10 +55,7 @@ import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 @Entity
@@ -515,7 +512,7 @@ public class Order extends Model {
         return orderItem;
     }
 
-    public OrderItems addOrderItem(OrderItems orderItem, DiscountCode discountCode, boolean isPromoteFlag) throws NotEnoughInventoryException{
+    public OrderItems addOrderItem(OrderItems orderItem, DiscountCode discountCode, boolean isPromoteFlag) throws NotEnoughInventoryException {
         if (orderItem.buyNumber <= 0 || orderItem.goods == null) {
             return null;
         }
@@ -850,6 +847,13 @@ public class Order extends Model {
             }
             //如果不是电子券，跳过
             if (MaterialType.ELECTRONIC == goods.materialType) {
+                boolean isKtvSupplier = false;
+                //ktv商户的场合
+                List<KtvRoomOrderInfo> ktvRoomOrderInfoList = null;
+                if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
+                    isKtvSupplier = true;
+                    ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItem);
+                }
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     //创建电子券
                     ECoupon eCoupon = createCoupon(goods, orderItem);
@@ -864,22 +868,26 @@ public class Order extends Model {
                         eCoupon.save();
                     }
 
+                    //ktv商户的话，更新券的价格信息
+                    if (isKtvSupplier && ktvRoomOrderInfoList.size() > 0) {
+                        eCoupon.originalPrice = orderItem.originalPrice;
+                        eCoupon.faceValue = eCoupon.salePrice;
+
+                        String appointmentRemark = KtvRoomOrderInfo.getRoomOrderTime(ktvRoomOrderInfoList);
+                        eCoupon.appointmentDate = ktvRoomOrderInfoList.get(0).scheduledDay;
+                        eCoupon.appointmentRemark = appointmentRemark;
+                        eCoupon.save();
+                    }
                     //记录券历史信息
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
 
-                    if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
-                        eCoupon.originalPrice = orderItem.originalPrice;
-                        eCoupon.faceValue = eCoupon.salePrice;
-                        eCoupon.save();
-                    }
                 }
 
 
                 //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
-                if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
-                    List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItem);
+                if (isKtvSupplier && ktvRoomOrderInfoList.size() > 0) {
                     for (KtvRoomOrderInfo orderInfo : ktvRoomOrderInfoList) {
                         orderInfo.dealKtvRoom();
                     }

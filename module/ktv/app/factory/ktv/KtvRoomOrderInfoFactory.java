@@ -2,6 +2,7 @@ package factory.ktv;
 
 import factory.FactoryBoy;
 import factory.ModelFactory;
+import factory.annotation.Factory;
 import models.ktv.KtvOrderStatus;
 import models.ktv.KtvRoom;
 import models.ktv.KtvRoomOrderInfo;
@@ -25,8 +26,33 @@ public class KtvRoomOrderInfoFactory extends ModelFactory<KtvRoomOrderInfo> {
         KtvRoomOrderInfo roomOrderInfo = new KtvRoomOrderInfo(FactoryBoy.lastOrCreate(Goods.class),
                 FactoryBoy.create(OrderItems.class), ktvRoom,
                 ktvRoom.roomType, new Date(), "09:00");
+        roomOrderInfo.scheduledDay=new Date();
         roomOrderInfo.status = KtvOrderStatus.LOCK;
         roomOrderInfo.createdAt = new Date();
         return roomOrderInfo;
+    }
+
+    @Factory(name = "time1")
+    public KtvRoomOrderInfo roomOrderWithT1(KtvRoomOrderInfo orderInfo) {
+        orderInfo.scheduledTime = "10:00";
+        return orderInfo;
+    }
+
+    @Factory(name = "time2")
+    public KtvRoomOrderInfo roomOrderWithT2(KtvRoomOrderInfo orderInfo) {
+        orderInfo.scheduledTime = "12:00";
+        return orderInfo;
+    }
+
+    @Factory(name = "time3")
+    public KtvRoomOrderInfo roomOrderWithT3(KtvRoomOrderInfo orderInfo) {
+        orderInfo.scheduledTime = "11:00";
+        return orderInfo;
+    }
+
+    @Factory(name = "time4")
+    public KtvRoomOrderInfo roomOrderWithT4(KtvRoomOrderInfo orderInfo) {
+        orderInfo.scheduledTime = "15:00";
+        return orderInfo;
     }
 }

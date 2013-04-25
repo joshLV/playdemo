@@ -161,18 +161,16 @@ public class SupplierShops extends Controller {
             KtvRoomType ktvRoomType = KtvRoomType.findById(roomTypeId);
             long number = Long.valueOf(params.get("roomTypeNumber" + roomTypeId));
 
-            for (long i = 0; i < number; i++) {
-                List<KtvRoom> ktvRoomList = KtvRoom.findKtvRoom(ktvRoomType, sp);
-                long roomNumber = KtvRoom.getRoomNumber(ktvRoomType, sp);
-                if (ktvRoomList.size() == 0 || number > roomNumber) {
-                    new KtvRoom(ktvRoomType, sp).save();
-                } else {
-                    //如果数量小于包厢数量，则标记为deleted,否则增加
-                    if (number < roomNumber) {
-                        KtvRoom ktvRoom = ktvRoomList.get(0);
-                        ktvRoom.deleted = DeletedStatus.DELETED;
-                        ktvRoom.save();
-                    }
+            List<KtvRoom> ktvRoomList = KtvRoom.findKtvRoom(ktvRoomType, sp);
+            long roomNumber = KtvRoom.getRoomNumber(ktvRoomType, sp);
+            if (ktvRoomList.size() == 0 || number > roomNumber) {
+                new KtvRoom(ktvRoomType, sp).save();
+            } else {
+                //如果数量小于包厢数量，则标记为deleted,否则增加
+                if (number < roomNumber) {
+                    KtvRoom ktvRoom = ktvRoomList.get(0);
+                    ktvRoom.deleted = DeletedStatus.DELETED;
+                    ktvRoom.save();
                 }
             }
         }

@@ -16,8 +16,9 @@ ${priceSchedule?.shops?.name}
 </div>
 <div class="field-group">
     <label>可预订日期</label>
+%{date=new java.util.Date();}%
     <input type="text" class="time" name="priceSchedule.startDay" onfocus="WdatePicker({readOnly:true})"
-           value="${priceSchedule?.startDay?.format()}"><span>到</span>
+           value="${(priceSchedule!=null)? priceSchedule.startDay.format():date.format()}"><span>到</span>
     <span class="error">#{error 'priceSchedule.startDay' /}</span>
     <input type="text" class="time"
            name="priceSchedule.endDay"
