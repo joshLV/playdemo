@@ -4,7 +4,6 @@ import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
-import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.util.TradeUtil;
 import models.consumer.User;
@@ -31,6 +30,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -103,6 +103,15 @@ public class OrderItems extends Model {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = true)
     public Order order;
+
+
+    /**
+     * 当时出库的所有相关sku
+     */
+    @OneToMany
+    @JoinColumn(name = "order_item_id")
+    public List<TakeoutItem> takeOutItems;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id", nullable = true)

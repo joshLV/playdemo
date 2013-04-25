@@ -15,6 +15,7 @@ import play.data.validation.Min;
 import play.data.validation.MinSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.solr.SolrField;
 import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.CascadeType;
@@ -117,6 +118,20 @@ public class GoodsHistory extends Model {
      */
     @Column(name = "is_order")
     public Boolean isOrder = Boolean.FALSE;
+
+    @ManyToOne
+    public Sku sku;
+
+    @Column(name = "sku_count")
+    @Min(value = 1)
+    public Integer skuCount;
+
+    /**
+     * 是否免运费
+     */
+    @Column(name = "free_shipping")
+    @SolrField
+    public Boolean freeShipping = Boolean.FALSE;
 
     /**
      * 券有效开始日

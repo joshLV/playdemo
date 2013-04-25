@@ -23,6 +23,8 @@
             <th>原价</th>
             <th>采购价</th>
             <th>销售价</th>
+            <th>货品名称</th>
+            <th>货品数量</th>
             <th>状态</th>
             <th>操作</th>
         </tr>
@@ -35,6 +37,12 @@
             <td>${goods?.faceValue?.formatCurrency('CNY')}</td>
             <td>${goods?.originalPrice?.formatCurrency('CNY')}</td>
             <td>${goods?.salePrice?.formatCurrency('CNY')}</td>
+            <td>
+            ${goods?.sku?.name}
+            </td>
+            <td>
+            ${goods?.skuCount}
+            </td>
             <td>&{'goods.'+goods?.getStatus()}</td>
             <td><a href=" http://${play.Play.configuration.getProperty("www.url")}/p/${goods?.goods.id}/h/${goods.id}"
                    target="_blank"/>预览
