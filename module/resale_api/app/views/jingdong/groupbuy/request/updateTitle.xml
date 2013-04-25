@@ -5,5 +5,5 @@
     *{ 京东团购ID 必须大于0 [必填] }*
     <JdTeamId>${jdTeamId}</JdTeamId>
     *{ 团购标题名称  最长200个[必填] }*
-    <TeamTitle>${teamTitle}</TeamTitle>
+    <TeamTitle><![CDATA[${teamTitle.trim().raw()}]]></TeamTitle>
 </Message>
