@@ -1399,31 +1399,6 @@ public class Order extends Model {
     }
 
     /**
-     * 计算订单中受邀者应得的返利
-     * <p/>
-     * FIXME: 这个方法不需要的。
-     *
-     * @param order
-     * @return
-     */
-    @Deprecated
-    public static BigDecimal getPromoteRebateOfTotalECartAmount_todelete(Order order) {
-        BigDecimal addAmount = BigDecimal.ZERO;
-        BigDecimal invitedUserPrice;
-        for (OrderItems item : order.orderItems) {
-            BigDecimal rebatePrice = BigDecimal.ZERO;
-            //如果没设置被推荐的返利，默认给1%
-            invitedUserPrice = item.goods.invitedUserPrice == null ? BigDecimal.ONE : item.goods.invitedUserPrice;
-            if (invitedUserPrice.compareTo(BigDecimal.ZERO) > 0 && invitedUserPrice.compareTo(new BigDecimal(5)) <= 0) {
-                rebatePrice = rebatePrice.add(item.goods.salePrice.multiply(invitedUserPrice)).multiply(new BigDecimal(0.01));
-                rebatePrice = rebatePrice.setScale(2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(item.buyNumber));
-                addAmount = addAmount.add(rebatePrice);
-            }
-        }
-        return addAmount;
-    }
-
-    /**
      * 计算推荐者推荐购物的金额
      *
      * @return
