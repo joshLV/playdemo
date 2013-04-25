@@ -6,8 +6,6 @@ import models.order.OrderStatus;
 import models.order.RealGoodsReturnEntry;
 import models.order.RealGoodsReturnEntryCondition;
 import models.order.RealGoodsReturnStatus;
-import models.sales.Goods;
-import models.sales.GoodsHistory;
 import models.sales.InventoryStock;
 import models.sales.InventoryStockItem;
 import models.sales.StockActionType;
@@ -57,7 +55,7 @@ public class ReturnEntries extends Controller {
         condition.supplierId = Supplier.getShihui().id;
         final int page = getPage();
         JPAExtPaginator<RealGoodsReturnEntry> entryPage = RealGoodsReturnEntry.getPage(condition, page, PAGE_SIZE);
-        render(entryPage, condition,hasHandleReturnGoodsPermission);
+        render(entryPage, condition, hasHandleReturnGoodsPermission);
     }
 
     /**
@@ -82,11 +80,15 @@ public class ReturnEntries extends Controller {
         inventoryStock.storekeeper = OperateRbac.currentUser().userName;
         inventoryStock.create();
         InventoryStockItem stockItem = new InventoryStockItem(inventoryStock);
+        //Todo: stock -> item  1:n  orderitems --> takeoutitem 1:n   used by  for (TakeoutItem i : entry.orderItems.takeOutItems) {}
+//        GoodsHistory goodsHistory =GoodsHistory.findById(entry.orderItems.goodsHistoryId);
+//        Goods temporalGoods = Goods.findById(goodsHistory.goodsId);
+//        stockItem.sku = temporalGoods.sku;
+//        stockItem.changeCount = entry.returnedCount * temporalGoods.skuCount;
+//        stockItem.remainCount = stockItem.changeCount;
 
-        GoodsHistory goodsHistory =GoodsHistory.findById(entry.orderItems.goodsHistoryId);
-        Goods temporalGoods = Goods.findById(goodsHistory.goodsId);
-        stockItem.sku = temporalGoods.sku;
-        stockItem.changeCount = entry.returnedCount * temporalGoods.skuCount;
+        stockItem.sku = entry.orderItems.takeOutItems.get(0).sku;
+        stockItem.changeCount = entry.orderItems.takeOutItems.get(0).count;
         stockItem.remainCount = stockItem.changeCount;
 
         stockItem.effectiveAt = entry.orderItems.goods.effectiveAt;
@@ -97,6 +99,7 @@ public class ReturnEntries extends Controller {
         OrderItems.handleRefund(entry.orderItems, entry.returnedCount);
 
         index(null);
+
     }
 
     /**

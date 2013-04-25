@@ -8,6 +8,7 @@ import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.order.OrderType;
+import models.order.TakeoutItem;
 import models.sales.Goods;
 import models.sales.InventoryStock;
 import models.sales.InventoryStockItem;
@@ -157,6 +158,8 @@ public class SkuTakeoutsTest extends FunctionalTest {
 
         Date toDate = (Date) renderArgs("toDate");
         assertEquals(DateUtil.getBeginOfDay().getTime(), DateUtil.getBeginOfDay(toDate).getTime());
+        assertEquals(0l, TakeoutItem.count());
+
     }
 
 
@@ -186,6 +189,12 @@ public class SkuTakeoutsTest extends FunctionalTest {
         //检查库存剩余数量
         stockItem.refresh();
         assertEquals(stockItem.changeCount - orderItems.getSkuCount(), (Object) stockItem.remainCount);
+
+        assertEquals(1l, TakeoutItem.count());
+        TakeoutItem takeoutItem = (TakeoutItem) TakeoutItem.findAll().get(0);
+        assertEquals(sku, takeoutItem.sku);
+        assertEquals(Long.valueOf(2), takeoutItem.count);
+        assertEquals(orderItems, takeoutItem.orderItem);
     }
 
 }

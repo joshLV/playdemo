@@ -1901,6 +1901,19 @@ public class Goods extends Model {
             goodsHistory.goodsImagesList = null;
         }
         goodsHistory.supplierGoodsId = this.supplierGoodsId;
+
+//        goodsHistory.setPublishedPlatforms(this.getPublishedPlatforms());
+        goodsHistory.freeShipping = (this.freeShipping == null) ? Boolean.FALSE : this.freeShipping;
+        goodsHistory.isOrder = (this.isOrder == null) ? Boolean.FALSE : this.isOrder;
+        goodsHistory.isLottery = (this.isLottery == null) ? Boolean.FALSE : this.isLottery;
+        goodsHistory.isHideOnsale = (this.isHideOnsale == null) ? Boolean.FALSE : this.isHideOnsale;
+        goodsHistory.groupCode = (StringUtils.isEmpty(this.groupCode)) ? null : this.groupCode.trim();
+        if (this.materialType == MaterialType.REAL) {
+            goodsHistory.sku = this.sku;
+            goodsHistory.skuCount = this.skuCount;
+            goodsHistory.cumulativeStocks = this.cumulativeStocks + this.skuCount;
+        }
+
         goodsHistory.save();
     }
 

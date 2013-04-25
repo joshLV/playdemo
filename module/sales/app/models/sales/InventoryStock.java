@@ -3,6 +3,7 @@ package models.sales;
 import com.uhuila.common.constants.DeletedStatus;
 import models.order.Order;
 import models.order.OrderItems;
+import models.order.TakeoutItem;
 import models.order.Vendor;
 import models.supplier.Supplier;
 import play.Logger;
@@ -25,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 库存变动单.
@@ -121,8 +123,8 @@ public class InventoryStock extends Model {
     /**
      * 统计未出库实物订单的Sku出库数量.
      *
-     * @param preparingTakeoutSkuMap    总的待出库货品及数量
-     * @param deficientOrders      因缺货而无法发货的待发货订单
+     * @param preparingTakeoutSkuMap 总的待出库货品及数量
+     * @param deficientOrders        因缺货而无法发货的待发货订单
      * @return
      */
     public static Map<Sku, Long> statisticOutCount(Map<Sku, Long> preparingTakeoutSkuMap, List<Order> deficientOrders) {
@@ -141,7 +143,6 @@ public class InventoryStock extends Model {
                 }
                 takeoutSkuMap.put(orderItem.goods.sku, count - orderItem.getSkuCount());
             }
-
         }
 
         return takeoutSkuMap;

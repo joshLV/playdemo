@@ -4,6 +4,7 @@ import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.order.RealGoodsReturnEntry;
+import models.order.TakeoutItem;
 import models.sales.Goods;
 import models.sales.InventoryStock;
 import models.sales.OrderBatch;
@@ -61,7 +62,7 @@ public class SkuTakeouts extends Controller {
         //8 获取可出库订单计算出的货品平均售价
         Map<Sku, BigDecimal> skuAveragePriceMap = OrderItems.getSkuAveragePriceMap(stockoutOrderList, takeoutSkuMap);
 
-        render(paidOrderCount, returnEntryCount, preparingTakeoutSkuMap, takeoutSkuMap, skuAveragePriceMap, stockoutOrderList, deficientOrderList, toDate,hasHandleTakeOutsPermission);
+        render(paidOrderCount, returnEntryCount, preparingTakeoutSkuMap, takeoutSkuMap, skuAveragePriceMap, stockoutOrderList, deficientOrderList, toDate, hasHandleTakeOutsPermission);
     }
 
     /**
@@ -72,6 +73,7 @@ public class SkuTakeouts extends Controller {
         String operatorName = OperateRbac.currentUser().userName;
         //1 统计总的待出库货品及数量
         Map<Sku, Long> preparingTakeoutSkuMap = OrderItems.findTakeout(toDate);
+
         //2 获取无法出库订单项
         List<OrderItems> deficientOrderItemList = InventoryStock.getDeficientOrderItemList(preparingTakeoutSkuMap, toDate);
         //3 无法出库订单
@@ -109,8 +111,12 @@ public class SkuTakeouts extends Controller {
             for (OrderItems orderItem : dbOrder.orderItems) {
                 orderItem.status = OrderStatus.PREPARED;
                 orderItem.orderBatch = orderBatch;
+                TakeoutItem takeoutItem = new TakeoutItem(orderItem, orderItem.goods.sku, takeoutSkuMap.get(orderItem.goods.sku));
+                takeoutItem.save();
+                orderItem.takeOutItems.add(takeoutItem);
                 orderItem.save();
             }
+
         }
 
         //10 获取可出库订单计算出的货品平均售价
@@ -119,6 +125,7 @@ public class SkuTakeouts extends Controller {
         //11 按商品创建出库单明细
         for (Sku sku : takeoutSkuMap.keySet()) {
             //创建出库详单信息
+
             InventoryStock.createInventoryStockItem(sku, 0L - takeoutSkuMap.get(sku), stock, skuAveragePriceMap.get(sku));
             //修改入库的剩余库存
             InventoryStock.updateInventoryStockRemainCount(sku, takeoutSkuMap.get(sku));
