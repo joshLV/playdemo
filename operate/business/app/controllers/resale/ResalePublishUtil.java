@@ -11,26 +11,34 @@ import java.util.regex.Pattern;
  *         Date: 13-4-23
  */
 public class ResalePublishUtil {
-    static Pattern jdLogoPattern = Pattern.compile("<img[^>]*src=[\"']([^\"^']*)", Pattern.CASE_INSENSITIVE);
-    static Pattern urlWithoutSignPattern =  Pattern.compile("(.+/)[a-z0-9]{8}_(.+)");
+    static Pattern imgTagPattern = Pattern.compile("<img[^>]*src=[\"']([^\"^']*)", Pattern.CASE_INSENSITIVE);
+    static Pattern uhcdnPPattern =  Pattern.compile("(.+)uhcdn\\.com/p/(\\d+)/(\\d+)/(\\d+)/[a-z0-9]{8}_(.+)");
+    static Pattern uhcdnOPattern = Pattern.compile("(.+)uhcdn\\.com/o/(\\d+)/(\\d+)/(\\d+)/(.+)");
 
     public static String replaceImgUrlWithJdLogo(String param) {
         if (StringUtils.isBlank(param)){
             return param;
         }
-        Matcher m = jdLogoPattern.matcher(param);
+        Matcher m = imgTagPattern.matcher(param);
         while (m.find()){
             String src = m.group(1);
             if (src.contains("_jd")){
                 continue;
             }
-            Matcher urlWithoutSignMatcher = urlWithoutSignPattern.matcher(src);
-            if (urlWithoutSignMatcher.matches()) {
-                String newSrc = urlWithoutSignMatcher.group(1) + PathUtil.signImgPath(
-                        PathUtil.addImgPathMark(urlWithoutSignMatcher.group(2), "jd")
-                );
-                param = param.replaceAll(src, newSrc);
+            Matcher matcher = uhcdnPPattern.matcher(src);
+            if (!matcher.matches()) {
+                matcher = uhcdnOPattern.matcher(src);
+                if (!matcher.matches()) {
+                    continue;
+                }
             }
+            String newSrc = matcher.group(1)
+                    + "uhcdn.com/p/"
+                    + matcher.group(2) + "/"
+                    + matcher.group(3) + "/"
+                    + matcher.group(4) + "/"
+                    + PathUtil.signImgPath( PathUtil.addImgPathMark(matcher.group(5), "jd") );
+            param = param.replaceAll(src, newSrc);
         }
         return param;
     }
