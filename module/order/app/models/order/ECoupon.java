@@ -713,7 +713,8 @@ public class ECoupon extends Model {
                         .fromAccount(AccountUtil.getUhuilaAccount())
                         .toAccount(account)
                         .balancePaymentAmount(promoterRebateValue)
-                        .orderId(this.order.id);
+                        .orderId(this.order.id)
+                        .make();
                 TradeUtil.success(rebateTrade, "推荐获得的返利" + rebateValue);
             }
 
