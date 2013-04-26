@@ -98,7 +98,6 @@ public class OperateAdminPermissionCheckTest extends FunctionalTest {
 
         operateUser = FactoryBoy.create(OperateUser.class, "role");
 
-
         // 加载test/rbac.xml配置文件
         VirtualFile file = VirtualFile.open("test/rbac.xml");
         RbacLoader.init(file);
