@@ -60,7 +60,7 @@ public class TradeUtil {
      */
     public static TradeBill consumeTrade() {
         TradeBill bill = new TradeBill();
-        bill.toAccount = AccountUtil.getPlatformIncomingAccount(); //默认收款账户为平台收款账户
+        bill.fromAccount = AccountUtil.getPlatformIncomingAccount(); //默认收款账户为平台收款账户
         bill.tradeType = TradeType.PURCHASE_COSTING;
         return bill;
     }
