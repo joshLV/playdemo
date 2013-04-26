@@ -136,6 +136,7 @@ public class KtvRoomOrderInfo extends Model {
         List<Integer> orderTimeList = new ArrayList<>();
         for (KtvRoomOrderInfo ktvRoomOrderInfo : ktvRoomOrderInfoList) {
             orderTimeList.add(Integer.parseInt(ktvRoomOrderInfo.scheduledTime.substring(0, 2)));
+
         }
         Collections.sort(orderTimeList);
 
