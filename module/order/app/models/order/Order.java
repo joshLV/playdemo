@@ -737,7 +737,12 @@ public class Order extends Model {
 
         //先将用户银行支付的钱充值到自己账户上
         if (this.discountPay.compareTo(BigDecimal.ZERO) > 0) {
-            TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource, this.getId());
+            TradeBill chargeTradeBill = TradeUtil.chargeTrade(paymentSource)
+                    .ebankPaymentAmount(this.discountPay)
+                    .toAccount(account)
+                    .orderId(this.getId())
+                    .make();
+
             TradeUtil.success(chargeTradeBill, "充值");
             this.payRequestId = chargeTradeBill.getId();
         }
@@ -779,14 +784,15 @@ public class Order extends Model {
         //如果订单类型不是充值,那接着再支付此次订单
         if (this.orderType != OrderType.CHARGE) {
             try {
-                TradeBill tradeBill = TradeUtil.createOrderTrade(
-                        account,
-                        this.accountPay,
-                        this.discountPay,
-                        BigDecimal.ZERO,
-                        this.promotionBalancePay,
-                        PaymentSource.getBalanceSource(),
-                        this.getId());
+                TradeBill tradeBill = TradeUtil.orderTrade()
+                        .fromAccount(account)
+                        .balancePaymentAmount(this.accountPay)
+                        .ebankPaymentAmount(this.discountPay)
+                        .promotionPaymentAmount(this.promotionBalancePay)
+                        .paymentSource(PaymentSource.getBalanceSource())
+                        .orderId(this.getId())
+                        .make();
+
                 TradeUtil.success(tradeBill, this.description);
                 this.payRequestId = tradeBill.getId();
             } catch (RuntimeException e) {
@@ -1182,11 +1188,12 @@ public class Order extends Model {
 
                 //给商户打钱
                 Account supplierAccount = AccountUtil.getSupplierAccount(orderItem.goods.supplierId);
-                TradeBill consumeTrade = TradeUtil.createConsumeTrade(
-                        orderItem.goods.name,
-                        supplierAccount,
-                        orderItem.originalPrice.multiply(new BigDecimal(orderItem.buyNumber)),
-                        order.getId());
+                TradeBill consumeTrade = TradeUtil.consumeTrade()
+                        .toAccount(supplierAccount)
+                        .balancePaymentAmount(orderItem.originalPrice.multiply(new BigDecimal(orderItem.buyNumber)))
+                        .coupon(orderItem.goods.name)
+                        .orderId(order.getId())
+                        .make();
                 TradeUtil.success(consumeTrade, order.description);
 
                 BigDecimal platformCommission;
@@ -1199,11 +1206,11 @@ public class Order extends Model {
                     platformCommission = orderItem.resalerPrice.subtract(orderItem.originalPrice);
                     //如果是在一百券网站下的单，还要给一百券佣金
                     if (order.isWebsiteOrder()) {
-                        TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(
-                                AccountUtil.getUhuilaAccount(),
-                                orderItem.salePrice.subtract(orderItem.resalerPrice).multiply(new BigDecimal(orderItem.buyNumber)),
-                                "",
-                                order.getId());
+                        TradeBill uhuilaCommissionTrade = TradeUtil.commissionTrade()
+                                .toAccount(AccountUtil.getUhuilaAccount())
+                                .balancePaymentAmount(orderItem.salePrice.subtract(orderItem.resalerPrice).multiply(new BigDecimal(orderItem.buyNumber)))
+                                .orderId(order.getId())
+                                .make();
 
                         TradeUtil.success(uhuilaCommissionTrade, order.description);
                     }
@@ -1211,11 +1218,11 @@ public class Order extends Model {
 
                 if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
                     //给优惠券平台佣金
-                    TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
-                            AccountUtil.getPlatformCommissionAccount(),
-                            platformCommission.multiply(new BigDecimal(orderItem.buyNumber)),
-                            "",
-                            order.getId());
+                    TradeBill platformCommissionTrade = TradeUtil.commissionTrade()
+                            .toAccount(AccountUtil.getPlatformCommissionAccount())
+                            .balancePaymentAmount(platformCommission.multiply(new BigDecimal(orderItem.buyNumber)))
+                            .orderId(order.getId())
+                            .make();
                     TradeUtil.success(platformCommissionTrade, order.description);
                 }
             }
@@ -1223,11 +1230,11 @@ public class Order extends Model {
 
         if (order.freight != null && order.freight.compareTo(BigDecimal.ZERO) >= 0) {
             //给优惠券平台佣金
-            TradeBill freightTrade = TradeUtil.createFreightTrade(
-                    AccountUtil.getPlatformCommissionAccount(),
-                    order.freight,
-                    order.getId()
-            );
+            TradeBill freightTrade = TradeUtil.freightTrade()
+                    .toAccount(AccountUtil.getPlatformCommissionAccount())
+                    .balancePaymentAmount(order.freight)
+                    .orderId(order.getId())
+                    .make();
             TradeUtil.success(freightTrade, "运费:" + order.description);
         }
     }

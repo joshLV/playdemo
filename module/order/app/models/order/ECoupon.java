@@ -637,7 +637,12 @@ public class ECoupon extends Model {
 
     public void payCommission() {
         // 给商户打钱
-        TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, getSupplierAccount(), originalPrice, order.getId());
+        TradeBill consumeTrade = TradeUtil.consumeTrade()
+                .toAccount(getSupplierAccount())
+                .balancePaymentAmount(originalPrice)
+                .orderId(order.getId())
+                .coupon(eCouponSn)
+                .make();
         TradeUtil.success(consumeTrade, "券消费(" + order.description + ")");
 
         BigDecimal platformCommission = BigDecimal.ZERO;
@@ -651,7 +656,12 @@ public class ECoupon extends Model {
             platformCommission = resalerPrice.subtract(originalPrice);
             // 如果是在一百券网站下的单，还要给一百券佣金
             if (order.isWebsiteOrder()) {
-                TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(AccountUtil.getUhuilaAccount(), salePrice.subtract(resalerPrice), eCouponSn, order.getId());
+                TradeBill uhuilaCommissionTrade = TradeUtil.commissionTrade()
+                        .toAccount(AccountUtil.getUhuilaAccount())
+                        .balancePaymentAmount(salePrice.subtract(resalerPrice))
+                        .coupon(eCouponSn)
+                        .orderId(order.getId())
+                        .make();
 
                 TradeUtil.success(uhuilaCommissionTrade, order.description);
             }
@@ -659,20 +669,33 @@ public class ECoupon extends Model {
 
         if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
             // 给优惠券平台佣金
-            TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(AccountUtil.getPlatformCommissionAccount(), platformCommission, eCouponSn, order.getId());
+            TradeBill platformCommissionTrade = TradeUtil.commissionTrade()
+                    .toAccount(AccountUtil.getPlatformCommissionAccount())
+                    .balancePaymentAmount(platformCommission)
+                    .coupon(eCouponSn)
+                    .orderId(order.getId())
+                    .make();
             TradeUtil.success(platformCommissionTrade, order.description);
         }
 
         if (rebateValue != null && rebateValue.compareTo(BigDecimal.ZERO) > 0) {
-            TradeBill rabateTrade = TradeUtil.createTransferTrade(AccountUtil.getUhuilaAccount(), AccountUtil.getPlatformIncomingAccount(), rebateValue, BigDecimal.ZERO);
-            rabateTrade.orderId = this.order.id;
-            TradeUtil.success(rabateTrade, "活动折扣费" + rebateValue);
+            TradeBill rebateTrade = TradeUtil.transferTrade()
+                    .fromAccount(AccountUtil.getUhuilaAccount())
+                    .toAccount(AccountUtil.getPlatformIncomingAccount())
+                    .balancePaymentAmount(rebateValue)
+                    .orderId(this.order.id)
+                    .make();
+            TradeUtil.success(rebateTrade, "活动折扣费" + rebateValue);
         } else if (salePrice.compareTo(originalPrice) < 0) {
             BigDecimal detaPrice = originalPrice.subtract(salePrice);
             // 如果售价低于进价，从活动金账户出
-            TradeBill rabateTrade = TradeUtil.createTransferTrade(AccountUtil.getPromotionAccount(), AccountUtil.getPlatformIncomingAccount(), detaPrice, BigDecimal.ZERO);
-            rabateTrade.orderId = this.order.id;
-            TradeUtil.success(rabateTrade, "低价销售补贴" + detaPrice);
+            TradeBill rebateTrade = TradeUtil.transferTrade()
+                    .fromAccount(AccountUtil.getPromotionAccount())
+                    .toAccount(AccountUtil.getPlatformIncomingAccount())
+                    .balancePaymentAmount(detaPrice)
+                    .orderId(this.order.id)
+                    .make();
+            TradeUtil.success(rebateTrade, "低价销售补贴" + detaPrice);
         }
 
         //给推荐人返利金额
@@ -686,9 +709,12 @@ public class ECoupon extends Model {
             PromoteRebate promoteRebate = PromoteRebate.find("invitedUser=? and order =?", invitedUser, this.order).first();
             if (promoteRebate != null) {
                 Account account = AccountUtil.getConsumerAccount(promoteUser.getId());
-                TradeBill rabateTrade = TradeUtil.createTransferTrade(AccountUtil.getUhuilaAccount(), account, promoterRebateValue, BigDecimal.ZERO);
-                rabateTrade.orderId = this.order.id;
-                TradeUtil.success(rabateTrade, "推荐获得的返利" + rebateValue);
+                TradeBill rebateTrade = TradeUtil.transferTrade()
+                        .fromAccount(AccountUtil.getUhuilaAccount())
+                        .toAccount(account)
+                        .balancePaymentAmount(promoterRebateValue)
+                        .orderId(this.order.id);
+                TradeUtil.success(rebateTrade, "推荐获得的返利" + rebateValue);
             }
 
         }
@@ -896,7 +922,13 @@ public class ECoupon extends Model {
 
 
         // 创建退款交易
-        TradeBill tradeBill = TradeUtil.createRefundTrade(account, refundCashAmount, refundPromotionAmount, eCoupon.order.getId(), eCoupon.eCouponSn);
+        TradeBill  tradeBill = TradeUtil.refundTrade()
+                .toAccount(account)
+                .balancePaymentAmount(refundCashAmount)
+                .promotionPaymentAmount(refundPromotionAmount)
+                .coupon(eCoupon.eCouponSn)
+                .orderId(eCoupon.order.getId())
+                .make();
 
         if (!TradeUtil.success(tradeBill, "退款成功.券号:" + eCoupon.getMaskedEcouponSn() + "," +
                 "商品:" + eCoupon.goods.shortName)) {

@@ -117,7 +117,7 @@ public class UserInfos extends Controller {
             if (BIND_MOBILE_ADD_MONEY.equals("on")) {
                 Account account = AccountUtil.getConsumerAccount(user.getId());
                 BigDecimal promotionAmount = new BigDecimal(BIND_MOBILE_ADD_MONEY_AMOUNT);
-                TradeBill tradeBill = TradeUtil.createPromotionChargeTrade(account, promotionAmount, null);
+                TradeBill tradeBill = TradeUtil.promotionChargeTrade(account, promotionAmount).make();
                 TradeUtil.success(tradeBill, "绑定手机送" + promotionAmount + "元");
             }
         }

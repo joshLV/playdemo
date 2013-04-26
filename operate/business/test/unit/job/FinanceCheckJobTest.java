@@ -47,7 +47,11 @@ public class FinanceCheckJobTest extends UnitTest {
 
     @Test
     public void testNormal() throws Exception {
-        TradeBill transferTrade = TradeUtil.createTransferTrade(platformIncomingAccount, supplierAccount, BigDecimal.TEN, BigDecimal.ZERO);
+        TradeBill transferTrade = TradeUtil.transferTrade()
+                .fromAccount(platformIncomingAccount)
+                .toAccount(supplierAccount)
+                .balancePaymentAmount(BigDecimal.TEN)
+                .make();
         TradeUtil.success(transferTrade, "测试转账");
         platformIncomingAccount.refresh();
         resalerAccount.refresh();

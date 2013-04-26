@@ -94,8 +94,7 @@ public class UserCashCoupons extends Controller {
                 coupon.chargedAt = new Date();
                 coupon.userId = user.getId();
                 coupon.save();
-                TradeBill tradeBill = TradeUtil.createPromotionChargeTrade(
-                        account, coupon.faceValue, null);
+                TradeBill tradeBill = TradeUtil.promotionChargeTrade(account, coupon.faceValue).make();
                 TradeUtil.success(tradeBill, "现金券: " + coupon.name + " 充值"
                         + coupon.faceValue + "元");
             }

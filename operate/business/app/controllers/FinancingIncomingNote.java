@@ -46,8 +46,11 @@ public class FinancingIncomingNote extends Controller{
             Validation.keep();
             add(amount, id);
         }
-        TradeBill bill = TradeUtil.createTransferTrade(
-                AccountUtil.getFinancingIncomingAccount(), account, amount, BigDecimal.ZERO);
+        TradeBill bill = TradeUtil.transferTrade()
+                .fromAccount(AccountUtil.getFinancingIncomingAccount())
+                .toAccount(account)
+                .balancePaymentAmount(amount)
+                .make();
         TradeUtil.success(bill, "财务收到款项", comment, OperateRbac.currentUser().loginName);
         OperateReports.showFinancingIncomingReport(null);
     }

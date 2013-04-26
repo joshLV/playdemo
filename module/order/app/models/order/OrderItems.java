@@ -688,7 +688,12 @@ public class OrderItems extends Model {
         Account account = orderItems.order.getBuyerAccount();
         Logger.info("account=" + account.id + ", refundCashAmount=" + consumedAmount + ", " +
                 "refundPromotionAmount=" + refundPromotionAmount);
-        TradeBill tradeBill = TradeUtil.createRefundTrade(account, consumedAmount, refundPromotionAmount, orderItems.order.getId(), null);
+        TradeBill tradeBill = TradeUtil.refundTrade()
+                .toAccount(account)
+                .balancePaymentAmount(consumedAmount)
+                .promotionPaymentAmount(refundPromotionAmount)
+                .orderId(orderItems.order.getId())
+                .make();
 
         if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
             returnFlg = "{\"error\":\"refound failed\"}";
