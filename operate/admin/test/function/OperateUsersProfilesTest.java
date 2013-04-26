@@ -28,93 +28,15 @@ public class OperateUsersProfilesTest extends FunctionalTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
-        role = FactoryBoy.create(OperateRole.class);
+//        role = FactoryBoy.create(OperateRole.class);
 
-        OperateRole roleSales = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
-            @Override
-            public void build(OperateRole role) {
-                role.text = "销售人员";
-                role.key = "sales";
-            }
-        });
-
-
-        OperateRole roleAdmin = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
-            @Override
-            public void build(OperateRole role) {
-                role.text = "系统管理员";
-                role.key = "admin";
-            }
-        });
-
-        OperateRole roleTest = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
-            @Override
-            public void build(OperateRole role) {
-                role.text = "测试角色";
-                role.key = "test";
-            }
-        });
-
-        OperateRole roleEditor = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
-            @Override
-            public void build(OperateRole role) {
-                role.text = "编辑";
-                role.key = "editor";
-            }
-        });
-
-        OperateRole roleCustomservice = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
-            @Override
-            public void build(OperateRole role) {
-                role.text = "客服";
-                role.key = "customservice";
-            }
-        });
-
-        OperateRole roleWebop = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
-            @Override
-            public void build(OperateRole role) {
-                role.text = "网站运营";
-                role.key = "webop";
-            }
-        });
-
-        OperateRole roleDevelop = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
-            @Override
-            public void build(OperateRole role) {
-                role.text = "开发人员";
-                role.key = "developer";
-            }
-        });
-
-        OperateRole roleManager = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
-            @Override
-            public void build(OperateRole role) {
-                role.text = "经理";
-                role.key = "manager";
-            }
-        });
-
-        OperateRole roleAccount = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
-            @Override
-            public void build(OperateRole role) {
-                role.text = "财务";
-                role.key = "account";
-            }
-        });
-        OperateRole virtualVerify = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
-            @Override
-            public void build(OperateRole role) {
-                role.text = "虚拟验证";
-                role.key = "virtual_verify";
-            }
-        });
         operateUser = FactoryBoy.create(OperateUser.class, new BuildCallback<OperateUser>() {
             @Override
             public void build(OperateUser ou) {
                 ou.mobile = "13211111111";
             }
         });
+
 
         // 加载test/rbac.xml配置文件
         VirtualFile file = VirtualFile.open("test/rbac.xml");
