@@ -14,6 +14,7 @@ import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.Shop;
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import play.Logger;
@@ -178,6 +179,38 @@ public class OrderECouponMessageTest extends UnitTest {
         assertEquals(sb.toString(), smsMessages[0].getSmsContent());
     }
 
+    @Test
+    public void ktv单张券预约短信() {
+        createKtvOneCoupons(1);
+        StringBuilder sb = new StringBuilder();
+        sb.append(couponList.get(0).goods.title)
+                .append("券号").append(couponList.get(0).eCouponSn)
+                .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
+                .append("," + couponList.get(0).appointmentRemark)
+                .append("截止").append(dateFormat.format(couponList.get(0).expireAt))
+                .append("一百券客服4006865151");
+        assertEquals(sb.toString(), OrderECouponMessage.getOrderSMSMessage(couponList.get(0)).getSmsContent());
+    }
+
+    @Test
+    public void ktv多张券预约短信() {
+        createKtvMoreCoupons(2);
+        StringBuilder sb = new StringBuilder();
+        OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        sb.append(couponList.get(0).goods.title)
+                .append("券号").append(couponList.get(0).eCouponSn)
+                .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
+                .append("," + couponList.get(0).appointmentRemark)
+                .append(",券号").append(couponList.get(1).eCouponSn)
+                .append(",预约日期:").append(dateFormat.format(couponList.get(1).appointmentDate))
+                .append("," + couponList.get(1).appointmentRemark)
+                .append("[共2张]")
+                .append(",截止").append(dateFormat.format(couponList.get(0).expireAt))
+                .append("一百券客服4006865151");
+        System.out.println(sb.toString());
+        assertEquals(sb.toString(), smsMessages[0].getSmsContent());
+
+    }
 
     /**
      * 创建没有密码的券列表
@@ -209,4 +242,38 @@ public class OrderECouponMessageTest extends UnitTest {
                 });
     }
 
+    private void createKtvOneCoupons(int size) {
+        couponList = FactoryBoy.batchCreate(size, ECoupon.class, "Id",
+                new SequenceCallback<ECoupon>() {
+                    @Override
+                    public void sequence(ECoupon target, int seq) {
+                        target.shop = shop;
+                        target.goods = goods;
+                        target.eCouponSn = "8888000" + seq;
+                        target.status = ECouponStatus.UNCONSUMED;
+                        target.isFreeze = 0;
+                        target.createdAt = new Date();
+                        target.appointmentDate = DateUtils.addDays(new Date(), 1);
+                        target.appointmentRemark = "小包厢15:00-16:00;17:00-18:00;";
+                    }
+                });
+    }
+
+    private void createKtvMoreCoupons(int size) {
+        couponList = FactoryBoy.batchCreate(size, ECoupon.class, "Id",
+                new SequenceCallback<ECoupon>() {
+                    @Override
+                    public void sequence(ECoupon target, int seq) {
+                        target.shop = shop;
+                        target.goods = goods;
+                        target.eCouponSn = "8888000" + seq;
+                        target.status = ECouponStatus.UNCONSUMED;
+                        target.isFreeze = 0;
+                        target.createdAt = new Date();
+                        target.appointmentDate = DateUtils.addDays(new Date(), 1);
+                        target.appointmentRemark = seq + "包厢" + "18:00-20:00;";
+                        target.orderItems = orderItems;
+                    }
+                });
+    }
 }

@@ -881,7 +881,7 @@ public class Order extends Model {
 
                         String appointmentRemark = KtvRoomOrderInfo.getRoomOrderTime(ktvRoomOrderInfoList);
                         eCoupon.appointmentDate = ktvRoomOrderInfoList.get(0).scheduledDay;
-                        eCoupon.appointmentRemark = appointmentRemark;
+                        eCoupon.appointmentRemark = ktvRoomOrderInfoList.get(0).ktvRoomType.name + appointmentRemark;
                         eCoupon.save();
                     }
                     //记录券历史信息
@@ -890,7 +890,6 @@ public class Order extends Model {
                             .sendToMQ();
 
                 }
-
 
                 //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
                 if (isKtvSupplier && ktvRoomOrderInfoList.size() > 0) {
