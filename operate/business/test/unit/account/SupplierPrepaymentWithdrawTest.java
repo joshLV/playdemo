@@ -374,8 +374,13 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
             });
 
             // 给商户打钱
-            TradeBill consumeTrade = TradeUtil.createConsumeTrade(ecoupon.eCouponSn,
-                    supplierAccount, ecoupon.originalPrice, ecoupon.order.getId());
+            TradeBill consumeTrade = TradeUtil.consumeTrade()
+                    .toAccount(supplierAccount)
+                    .balancePaymentAmount(ecoupon.originalPrice)
+                    .orderId(ecoupon.order.getId())
+                    .coupon(ecoupon.eCouponSn)
+                    .make();
+
             consumeTrade.createdAt = afterMinuts(date, afterMinuts);
             TradeUtil.success(consumeTrade, "券消费(" + ecoupon.order.description + ")");
 

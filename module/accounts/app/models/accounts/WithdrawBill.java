@@ -251,12 +251,12 @@ public class WithdrawBill extends Model {
      */
     private void create2TradeBill(BigDecimal cashSettledAmount, BigDecimal prepaymentSettledAmount, Long withdrawBillId) {
         if (cashSettledAmount.compareTo(BigDecimal.ZERO) > 0) {
-            TradeBill prepaymentTradeBill = TradeUtil.createWithdrawTrade(this.account, cashSettledAmount, withdrawBillId);
+            TradeBill prepaymentTradeBill = TradeUtil.withdrawTrade(this.account, cashSettledAmount, withdrawBillId).make();
 
             TradeUtil.success(prepaymentTradeBill, "现金结算", SettlementStatus.CLEARED);
         }
         if (prepaymentSettledAmount.compareTo(BigDecimal.ZERO) > 0) {
-            TradeBill cashPayTradeBill = TradeUtil.createWithdrawTrade(this.account, prepaymentSettledAmount, withdrawBillId);
+            TradeBill cashPayTradeBill = TradeUtil.withdrawTrade(this.account, prepaymentSettledAmount, withdrawBillId).make();
             TradeUtil.success(cashPayTradeBill, "预付款结算", SettlementStatus.CLEARED);
         }
     }
@@ -286,7 +286,7 @@ public class WithdrawBill extends Model {
         this.operator = operator;
         this.save();
 
-        TradeBill tradeBill = TradeUtil.createWithdrawTrade(this.account, this.amount, id);
+        TradeBill tradeBill  = TradeUtil.withdrawTrade(this.account, this.amount, id).make();
         TradeUtil.success(tradeBill, "提现成功", SettlementStatus.CLEARED);
 
         if (account.accountType == AccountType.SUPPLIER) { //同意提现操作

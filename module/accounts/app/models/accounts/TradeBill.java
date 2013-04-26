@@ -103,6 +103,132 @@ public class TradeBill extends Model {
         this.returnNote = null;
     }
 
+    /**
+     * 设置付款方账户
+     * @param account 账户
+     * @return trade bill
+     */
+    public TradeBill fromAccount(Account account) {
+        this.fromAccount = account;
+        return this;
+    }
+
+    /**
+     * 设置收款方账户
+     * @param account 账户
+     * @return trade bill
+     */
+    public TradeBill toAccount(Account account) {
+        this.toAccount = account;
+        return this;
+    }
+
+    public TradeBill reverseFromAndTo() {
+        Account tmp = this.fromAccount;
+        this.fromAccount = this.toAccount;
+        this.toAccount = tmp;
+        return this;
+    }
+
+    /**
+     * 设置通过余额支付的金额
+     * @param amount 金额
+     * @return trade bill
+     */
+    public TradeBill balancePaymentAmount(BigDecimal amount) {
+        this.balancePaymentAmount = amount;
+        this.amount = this.balancePaymentAmount
+                .add(this.ebankPaymentAmount)
+                .add(this.uncashPaymentAmount)
+                .add(this.promotionPaymentAmount);
+        return this;
+    }
+
+    /**
+     * 设置通过网银支付的金额.
+     *
+     * @param amount 金额
+     * @return trade bill
+     */
+    public TradeBill ebankPaymentAmount(BigDecimal amount) {
+        this.ebankPaymentAmount = amount;
+        this.amount = this.balancePaymentAmount
+                .add(this.ebankPaymentAmount)
+                .add(this.uncashPaymentAmount)
+                .add(this.promotionPaymentAmount);
+        return this;
+    }
+
+    public TradeBill promotionPaymentAmount(BigDecimal amount) {
+        this.promotionPaymentAmount = amount;
+        this.amount = this.balancePaymentAmount
+                .add(this.ebankPaymentAmount)
+                .add(this.uncashPaymentAmount)
+                .add(this.promotionPaymentAmount);
+        return this;
+    }
+
+    /**
+     * 设置用不可提现余额支付的金额.
+     *
+     * @param amount 金额
+     * @return trade bill
+     */
+    public TradeBill uncashPaymentAmount(BigDecimal amount) {
+        this.uncashPaymentAmount = amount;
+        this.amount = this.balancePaymentAmount
+                .add(this.ebankPaymentAmount)
+                .add(this.uncashPaymentAmount)
+                .add(this.promotionPaymentAmount);
+        return this;
+    }
+
+    /**
+     * 设置支付渠道.
+     *
+     * @param source 支付渠道
+     * @return trade bill
+     */
+    public TradeBill paymentSource(PaymentSource source) {
+        this.paymentSource = source;
+        return this;
+    }
+
+    /**
+     * 设置订单ID.
+     *
+     * @param orderId 订单ID
+     * @return trade bill
+     */
+    public TradeBill orderId(Long orderId) {
+        this.orderId = orderId;
+        return this;
+    }
+
+    public TradeBill coupon(String coupon) {
+        this.eCouponSn = coupon;
+        return this;
+    }
+
+    /**
+     * 生成并保存 trade bill
+     *
+     * @return trade bill
+     */
+    public TradeBill make() {
+        if (this.fromAccount == null) {
+            throw new IllegalArgumentException("error while create trade: invalid fromAccount");
+        }
+        if (this.toAccount == null) {
+            throw new IllegalArgumentException("error while create trade: invalid toAccount");
+        }
+        if (this.tradeType == null) {
+            throw new IllegalArgumentException("error while create trade: invalid tradeType");
+        }
+
+        return this.save();
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this).

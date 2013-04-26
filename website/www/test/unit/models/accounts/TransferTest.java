@@ -35,11 +35,12 @@ public class TransferTest extends UnitTest {
         assertEquals(0, BigDecimal.ZERO.compareTo(getAccount().amount));
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getFinancingIncomingAccount().amount));
 
-        TradeBill tradeBill = TradeUtil.createTransferTrade(
-                AccountUtil.getFinancingIncomingAccount(),
-                getAccount(),
-                amount,
-                uncashAmount);
+        TradeBill tradeBill = TradeUtil.transferTrade()
+                .fromAccount(AccountUtil.getFinancingIncomingAccount())
+                .toAccount(getAccount())
+                .balancePaymentAmount(amount)
+                .uncashPaymentAmount(uncashAmount)
+                .make();
         TradeUtil.success(tradeBill, "测试转账");
 
         assertEquals(0, amount.compareTo(getAccount().amount));

@@ -181,12 +181,14 @@ public class VerifiedECouponRefunds extends Controller {
             throw new RuntimeException("商户退款失败:" + eCoupon.eCouponSn);
         }
 
-        TradeBill rabateTrade = TradeUtil.createTransferTrade(
-                AccountUtil.getPlatformCommissionAccount(), userAccount,
-                refundCashAmount, BigDecimal.ZERO);
-        rabateTrade.orderId = eCoupon.order.id;
+        TradeBill rebateTrade = TradeUtil.transferTrade()
+                .fromAccount(AccountUtil.getPlatformCommissionAccount())
+                .toAccount(userAccount)
+                .balancePaymentAmount(refundCashAmount)
+                .make();
+        rebateTrade.orderId = eCoupon.order.id;
 
-        if (!TradeUtil.success(rabateTrade, "券" + eCoupon.getMaskedEcouponSn() + "因" + refundComment + "被" + OperateRbac.currentUser().userName + "操作退款")) {
+        if (!TradeUtil.success(rebateTrade, "券" + eCoupon.getMaskedEcouponSn() + "因" + refundComment + "被" + OperateRbac.currentUser().userName + "操作退款")) {
             throw new RuntimeException("退款失败:" + eCoupon.eCouponSn);
         }
 
@@ -232,8 +234,13 @@ public class VerifiedECouponRefunds extends Controller {
         boolean reverse = true;
 
         // 给商户打钱
-        TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCoupon.eCouponSn,
-                eCoupon.getSupplierAccount(), eCoupon.originalPrice, eCoupon.order.getId(), reverse);
+        TradeBill consumeTrade = TradeUtil.consumeTrade()
+                .toAccount(eCoupon.getSupplierAccount())
+                .balancePaymentAmount(eCoupon.originalPrice)
+                .orderId(eCoupon.order.getId())
+                .coupon(eCoupon.eCouponSn)
+                .reverseFromAndTo()
+                .make();
         consumeTrade.tradeType = TradeType.REFUND;
         consumeTrade.save();
         TradeUtil.success(consumeTrade, "已消费退款：" + refundComment + "。" + eCoupon.order.description);
@@ -249,12 +256,13 @@ public class VerifiedECouponRefunds extends Controller {
             platformCommission = eCoupon.resalerPrice.subtract(eCoupon.originalPrice);
             // 如果是在一百券网站下的单，还要给一百券佣金
             if (eCoupon.order.isWebsiteOrder()) {
-                TradeBill uhuilaCommissionTrade = TradeUtil
-                        .createCommissionTrade(
-                                AccountUtil.getUhuilaAccount(),
-                                eCoupon.salePrice.subtract(eCoupon.resalerPrice),
-                                eCoupon.eCouponSn,
-                                eCoupon.order.getId(), reverse);
+                TradeBill uhuilaCommissionTrade = TradeUtil.commissionTrade()
+                        .toAccount(AccountUtil.getUhuilaAccount())
+                        .balancePaymentAmount(eCoupon.salePrice.subtract(eCoupon.resalerPrice))
+                        .coupon(eCoupon.eCouponSn)
+                        .orderId(eCoupon.order.getId())
+                        .reverseFromAndTo()
+                        .make();
 
                 TradeUtil.success(uhuilaCommissionTrade, "已消费退款：" + refundComment + "。" + eCoupon.order.description);
             }
@@ -262,31 +270,34 @@ public class VerifiedECouponRefunds extends Controller {
 
         if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
             // 给优惠券平台佣金
-            TradeBill platformCommissionTrade = TradeUtil
-                    .createCommissionTrade(
-                            AccountUtil.getPlatformCommissionAccount(),
-                            platformCommission,
-                            eCoupon.eCouponSn,
-                            eCoupon.order.getId(), reverse);
+            TradeBill platformCommissionTrade = TradeUtil.commissionTrade()
+                    .toAccount(AccountUtil.getPlatformCommissionAccount())
+                    .balancePaymentAmount(platformCommission)
+                    .coupon(eCoupon.eCouponSn)
+                    .orderId(eCoupon.order.getId())
+                    .reverseFromAndTo()
+                    .make();
             TradeUtil.success(platformCommissionTrade, "已消费退款：" + refundComment + "。" + eCoupon.order.description);
         }
 
         if (eCoupon.rebateValue != null && eCoupon.rebateValue.compareTo(BigDecimal.ZERO) > 0) {
-            TradeBill rabateTrade = TradeUtil.createTransferTrade(
-                    AccountUtil.getPlatformIncomingAccount(),
-                    AccountUtil.getUhuilaAccount(),
-                    eCoupon.rebateValue, BigDecimal.ZERO);
-            rabateTrade.orderId = eCoupon.order.id;
-            TradeUtil.success(rabateTrade, "已消费退款：" + refundComment + "。活动折扣费" + eCoupon.rebateValue);
+            TradeBill rebateTrade = TradeUtil.transferTrade()
+                    .fromAccount(AccountUtil.getPlatformIncomingAccount())
+                    .toAccount(AccountUtil.getUhuilaAccount())
+                    .balancePaymentAmount(eCoupon.rebateValue)
+                    .orderId(eCoupon.order.id)
+                    .make();
+            TradeUtil.success(rebateTrade, "已消费退款：" + refundComment + "。活动折扣费" + eCoupon.rebateValue);
         } else if (eCoupon.salePrice.compareTo(eCoupon.originalPrice) < 0) {
             BigDecimal detaPrice = eCoupon.originalPrice.subtract(eCoupon.salePrice);
             // 如果售价低于进价，从活动金账户出
-            TradeBill rabateTrade = TradeUtil.createTransferTrade(
-                    AccountUtil.getPlatformIncomingAccount(),
-                    AccountUtil.getPromotionAccount(),
-                    detaPrice, BigDecimal.ZERO);
-            rabateTrade.orderId = eCoupon.order.id;
-            TradeUtil.success(rabateTrade, "已消费退款：" + refundComment + "。低价销售补贴" + detaPrice);
+            TradeBill rebateTrade = TradeUtil.transferTrade()
+                    .fromAccount(AccountUtil.getPlatformIncomingAccount())
+                    .toAccount(AccountUtil.getPromotionAccount())
+                    .balancePaymentAmount(detaPrice)
+                    .orderId(eCoupon.order.id)
+                    .make();
+            TradeUtil.success(rebateTrade, "已消费退款：" + refundComment + "。低价销售补贴" + detaPrice);
         }
         /**
          * FIXME: 后面还有推荐返利的暂时不弄
