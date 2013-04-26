@@ -1,72 +1,38 @@
 package function;
 
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
+import models.admin.SupplierRole;
+import models.admin.SupplierUser;
+import org.junit.Before;
+import org.junit.Test;
+import play.data.validation.Error;
+import play.mvc.Http.Response;
+import play.test.FunctionalTest;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import factory.callback.BuildCallback;
-import models.admin.SupplierRole;
-import models.admin.SupplierUser;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import play.data.validation.Error;
-import play.mvc.Http.Response;
-import play.test.FunctionalTest;
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
-
 public class SupplierProfilesTest extends FunctionalTest {
     SupplierUser supplierUser;
-    SupplierRole role;
+    String[] roleText = {"收银人员", "系统管理员", "销售人员", "编辑", "财务"};
+    String[] roleKey = {"clerk", "admin", "sales", "editor", "account"};
+    int index = 0;
 
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
-        role = FactoryBoy.create(SupplierRole.class);
-        SupplierRole roleClerk = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
-            @Override
-            public void build(SupplierRole role) {
-                role.text = "收银人员";
-                role.key = "clerk";
-            }
-        });
 
-
-        SupplierRole roleAdmin = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
-            @Override
-            public void build(SupplierRole role) {
-                role.text = "系统管理员";
-                role.key = "admin";
-            }
-        });
-
-        SupplierRole roleSales = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
-            @Override
-            public void build(SupplierRole role) {
-                role.text = "销售人员";
-                role.key = "sales";
-            }
-        });
-
-
-        SupplierRole roleEditor = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
-            @Override
-            public void build(SupplierRole role) {
-                role.text = "编辑";
-                role.key = "editor";
-            }
-        });
-
-
-        SupplierRole roleAccount = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
-            @Override
-            public void build(SupplierRole role) {
-                role.text = "财务";
-                role.key = "account";
-            }
-        });
+        FactoryBoy.batchCreate(5, SupplierRole.class,
+                new SequenceCallback<SupplierRole>() {
+                    @Override
+                    public void sequence(SupplierRole role, int seq) {
+                        role.text = roleText[index];
+                        role.key = roleKey[index++];
+                    }
+                });
 
         supplierUser = FactoryBoy.create(SupplierUser.class);
         // 设置测试登录的用户名
