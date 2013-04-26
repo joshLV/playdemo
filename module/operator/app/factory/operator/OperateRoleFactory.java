@@ -22,4 +22,7 @@ public class OperateRoleFactory extends ModelFactory<OperateRole> {
         role.permissions=new HashSet<>();
         return role;
     }
+
+
+
 }

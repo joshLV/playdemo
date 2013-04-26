@@ -65,7 +65,7 @@ public class UserCoins extends Controller {
             error("对不起，你的金币暂时不够兑换！");
         }
 
-        new UserGoldenCoin(user, -(exNumber * 500), null, "兑换" + exNumber + "张5元抵用券", false).save();
+        new UserGoldenCoin(user, -(exNumber * 500), null, "兑换" + exNumber + "张5元抵用券", true).save();
         Account account = AccountUtil.getConsumerAccount(user.id);
         String name = "一百券抵用券";
         String prefix = "YBQ" + RandomNumberUtil.generateRandomNumber(7);
