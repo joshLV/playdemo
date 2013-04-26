@@ -220,16 +220,16 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
     public ConsumerFlowReport(BigDecimal salesCommissionAmount, String date) {
         this.date = date;
         this.salesCommissionAmount = salesCommissionAmount;
-        System.out.println(salesCommissionAmount + "《=========salesCommissionAmount:");
-        System.out.println(  "padi《=========:");
+//        System.out.println(salesCommissionAmount + "《=========salesCommissionAmount:");
+//        System.out.println(  "padi《=========:");
     }
 
     //sendAt resaler
     public ConsumerFlowReport(BigDecimal salesRealCommissionAmount, String date, Long num) {
         this.date = date;
         this.salesRealCommissionAmount = salesRealCommissionAmount;
-        System.out.println(salesRealCommissionAmount + "《=========salesRealCommissionAmount:");
-        System.out.println( "sendat《=========:");
+//        System.out.println(salesRealCommissionAmount + "《=========salesRealCommissionAmount:");
+//        System.out.println( "sendat《=========:");
     }
 
     //sendAt real resaler
@@ -539,7 +539,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
             if (item == null) {
                 map.put(getReportKey(paidResalerItem), paidResalerItem);
             } else {
-                System.out.println(paidResalerItem.salesCommissionAmount + "《=========paidResalerItem.salesCommissionAmount:");
+//                System.out.println(paidResalerItem.salesCommissionAmount + "《=========paidResalerItem.salesCommissionAmount:");
 //                System.out.println(paidResalerItem.order.id + "《=========paidRealResalerItem.order.userType:");
 
                 item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit)
@@ -554,7 +554,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
             if (item == null) {
                 map.put(getReportKey(paidRealResalerItem), paidRealResalerItem);
             } else {
-                System.out.println(paidRealResalerItem.salesRealCommissionAmount + "《=========paidRealResalerItem.salesRealCommissionAmount:");
+//                System.out.println(paidRealResalerItem.salesRealCommissionAmount + "《=========paidRealResalerItem.salesRealCommissionAmount:");
 //                System.out.println(paidRealResalerItem.order.userType + "《=========paidRealResalerItem.order.userType:");
                 item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit)
                         .subtract(paidRealResalerItem.salesRealCommissionAmount == null ? BigDecimal.ZERO : paidRealResalerItem.salesRealCommissionAmount)  ;

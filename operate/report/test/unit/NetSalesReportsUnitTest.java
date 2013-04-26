@@ -1,9 +1,8 @@
 package unit;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
+import controllers.operate.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.SalesOrderItemReport;
 import models.SalesOrderItemReportCondition;
 import models.operator.OperateUser;
@@ -17,17 +16,16 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
 import util.DateHelper;
-import controllers.operate.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p/>
@@ -103,7 +101,7 @@ public class NetSalesReportsUnitTest extends UnitTest {
         assertEquals(supplier.id, reports.get(0).supplier.id);
         SalesOrderItemReport summary = SalesOrderItemReport.getNetSummary(reports);
         assertEquals(17, summary.salesAmount.intValue());
-        assertEquals(16, summary.refundAmount.intValue());
-        assertEquals(1, summary.netSalesAmount.intValue());
+        assertEquals(17, summary.refundAmount.intValue());
+        assertEquals(0, summary.netSalesAmount.intValue());
     }
 }
