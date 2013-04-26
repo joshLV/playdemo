@@ -25,7 +25,7 @@ public class ConsumerFlowReportCondition {
     public Long operatorId;
 
     public String getFilterPaidAt() {
-        StringBuilder condBuilder = new StringBuilder("and (r.order.status='PAID' or r.order.status='SENT') " +
+        StringBuilder condBuilder = new StringBuilder("and (r.order.status='PAID' or r.order.status='SENT' or r.status='SENT') " +
                 " and r.goods.isLottery=false and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED "
         );
 
@@ -57,7 +57,7 @@ public class ConsumerFlowReportCondition {
     }
 
     public String getFilterRealSendAt() {
-        StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT')  " +
+        StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT' or r.status='SENT')  " +
                 "and r.goods.isLottery=false and r.goods.materialType=models.sales.MaterialType.REAL" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and r.order.deliveryType=models.order.DeliveryType.LOGISTICS");
@@ -151,7 +151,7 @@ public class ConsumerFlowReportCondition {
     }
 
     public String getFilterRealRefundAt() {
-        StringBuilder condBuilder = new StringBuilder(" where r.order.status='SENT' and r.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" where ( r.order.status='SENT' or r.status='SENT' ) and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
 
         if (beginAt != null) {
