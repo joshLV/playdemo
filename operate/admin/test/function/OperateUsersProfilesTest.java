@@ -2,7 +2,6 @@ package function;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import factory.callback.BuildCallback;
 import models.operator.OperateRole;
 import models.operator.OperateUser;
 import operate.rbac.RbacLoader;
@@ -30,13 +29,7 @@ public class OperateUsersProfilesTest extends FunctionalTest {
         FactoryBoy.deleteAll();
 //        role = FactoryBoy.create(OperateRole.class);
 
-        operateUser = FactoryBoy.create(OperateUser.class, new BuildCallback<OperateUser>() {
-            @Override
-            public void build(OperateUser ou) {
-                ou.mobile = "13211111111";
-            }
-        });
-
+        operateUser = FactoryBoy.create(OperateUser.class, "with_role");
 
         // 加载test/rbac.xml配置文件
         VirtualFile file = VirtualFile.open("test/rbac.xml");
