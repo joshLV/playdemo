@@ -16,7 +16,9 @@ import models.mail.MailUtil;
 import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.OrderItems;
 import models.order.OrderStatus;
+import models.order.OrderType;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.supplier.Supplier;
@@ -113,6 +115,8 @@ public class Goods extends Model {
     public static final String IMAGE_SLIDE = "nw";
     public static final String IMAGE_ORIGINAL = "nw";
     public static final String IMAGE_DEFAULT = "";
+
+
 
     public static final String[] value = {"99", "999", "9999", "99999", "999999"};
 

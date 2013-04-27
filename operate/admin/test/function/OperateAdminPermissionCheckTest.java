@@ -2,7 +2,7 @@ package function;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
+import factory.operator.OperateRoleFactory;
 import models.operator.OperatePermission;
 import models.operator.OperateRole;
 import models.operator.OperateUser;
@@ -18,9 +18,6 @@ import play.vfs.VirtualFile;
 
 public class OperateAdminPermissionCheckTest extends FunctionalTest {
     OperateUser operateUser;
-    String[] roleText = {"销售人员",  "编辑", "客服", "财务"};
-    String[] roleKey = {"sales", "editor", "customservice", "account"};
-    int index = 0;
 
     @BeforeClass
     public static void setUpRouter() {
@@ -34,14 +31,8 @@ public class OperateAdminPermissionCheckTest extends FunctionalTest {
     public void setUp() {
         FactoryBoy.deleteAll();
 
-        FactoryBoy.batchCreate(4, OperateRole.class,
-                new SequenceCallback<OperateRole>() {
-                    @Override
-                    public void sequence(OperateRole role, int seq) {
-                        role.text = roleText[index];
-                        role.key = roleKey[index++];
-                    }
-                });
+        OperateRoleFactory.createRoles("sales", "editor", "customservice", "account");
+
 
 
         operateUser = FactoryBoy.create(OperateUser.class);

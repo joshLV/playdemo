@@ -275,6 +275,8 @@ GET     /orders                                 OperateOrders.index
 GET     /orders/{id}                            OperateOrders.details
 PUT     /orders/{id}/send                       OperateOrders.send
 GET     /order_excel                            OperateOrders.orderExcelOut
+PUT     /orders/{id}/express                    OperateOrders.updateExpress
+
 
 # 券管理
 GET     /coupons                                OperateCoupons.index

@@ -22,10 +22,20 @@
     #{list stockoutOrderList, as:'stockoutOrder'}
         <input type="hidden" name="stockoutOrderId" value="${stockoutOrder.id}"/>
     #{/list}
+%{ realType = models.sales.MaterialType.REAL;
+    orderType= models.order.OrderType.CONSUME;
+    itemStatus=models.order.OrderStatus.PAID;
+     date= new Date();
+    }%
+
     <table width="100%">
         <tr>
-            <td width="100%">总计: <span class="label">${paidOrderCount}</span>个待处理订单 #{if
-            deficientOrderList?.size()>0}, 其中<span class="label">${deficientOrderList.size()}</span>个订单因库存不足无法出库，<a
+            <td width="100%">总计: <span class="label">${paidOrderCount}</span>个待处理订单
+                <a href="/orders?condition.shihuiSupplierId=5&condition.materialType=${realType}&condition.orderType=${orderType}&condition.itemStatus=${itemStatus}&&condition.itemCreatedAt=${date?.format()}">
+                    查看订单
+                </a>
+                #{if
+                deficientOrderList?.size()>0}, 其中<span class="label">${deficientOrderList.size()}</span>个订单因库存不足无法出库，<a
                         id="show_order" href="#">查看无法出库的订单</a>#{/if}
             </td>
         </tr>
