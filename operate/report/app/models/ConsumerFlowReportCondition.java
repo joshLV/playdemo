@@ -16,8 +16,8 @@ import java.util.Map;
  * Time: 下午5:30
  */
 public class ConsumerFlowReportCondition {
-    public Date beginAt = com.uhuila.common.util.DateUtil.getBeforeDate(new Date(), 8);
-    public Date endAt = new Date();
+    public Date beginAt = com.uhuila.common.util.DateUtil.getBeginOfDay(com.uhuila.common.util.DateUtil.getBeforeDate(new Date(), 8));
+    public Date endAt = com.uhuila.common.util.DateUtil.getEndOfDay(new Date());
     public String interval = "7d";
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
@@ -28,7 +28,6 @@ public class ConsumerFlowReportCondition {
         StringBuilder condBuilder = new StringBuilder("and (r.order.status='PAID' or r.order.status='SENT' or r.status='SENT') " +
                 " and r.goods.isLottery=false and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED "
         );
-
 
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
@@ -52,7 +51,7 @@ public class ConsumerFlowReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
-        System.out.println(condBuilder.toString() + "《=========condBuilder.toString():");
+//        System.out.println(condBuilder.toString() + "《=========condBuilder.toString():");
         return condBuilder.toString();
     }
 
@@ -192,7 +191,7 @@ public class ConsumerFlowReportCondition {
         StringBuilder condBuilder = new StringBuilder("  r.order.status='PAID' and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and e.isCheatedOrder = true and r.order=o and o.userId=b.id ");
-        System.out.println(beginAt + "《=========beginAt:");
+//        System.out.println(beginAt + "《=========beginAt:");
         if (beginAt != null) {
             condBuilder.append(" and e.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -215,7 +214,7 @@ public class ConsumerFlowReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
-        System.out.println(condBuilder.toString() + "《=========condBuilder.toString():");
+//        System.out.println(condBuilder.toString() + "《=========condBuilder.toString():");
         return condBuilder.toString();
     }
 }
