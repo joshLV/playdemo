@@ -154,6 +154,12 @@ public class OrdersCondition {
             }
         }
 
+        //按物流单号检索
+        if (QueryType.EXPRESS_NUMBER.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
+            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.shippingInfo.expressNumber = :expressNumber)");
+            paramsMap.put("expressNumber", searchItems);
+        }
+
         if (StringUtils.isNotBlank(outerOrderId)) {
             OuterOrder outerOrder = OuterOrder.find("orderId=?", outerOrderId).first();
             if (outerOrder != null) {

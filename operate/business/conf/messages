@@ -499,6 +499,8 @@ queryType.CLERK_JOB_NUMBER=店员工号
 queryType.SHOP_NAME=消费门店
 queryType.COUPON=券号
 queryType.UID=用户ID
+queryType.EXPRESS_NUMBER=物流单号
+
 
 
 resaler.creditable.true=可欠款
