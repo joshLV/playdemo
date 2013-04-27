@@ -2,8 +2,7 @@ package function;
 
 import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
-import models.admin.SupplierRole;
+import factory.operator.OperateRoleFactory;
 import models.admin.SupplierUser;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,22 +16,13 @@ import java.util.Map;
 
 public class SupplierProfilesTest extends FunctionalTest {
     SupplierUser supplierUser;
-    String[] roleText = {"收银人员", "系统管理员", "销售人员", "编辑", "财务"};
-    String[] roleKey = {"clerk", "admin", "sales", "editor", "account"};
-    int index = 0;
 
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
 
-        FactoryBoy.batchCreate(5, SupplierRole.class,
-                new SequenceCallback<SupplierRole>() {
-                    @Override
-                    public void sequence(SupplierRole role, int seq) {
-                        role.text = roleText[index];
-                        role.key = roleKey[index++];
-                    }
-                });
+        OperateRoleFactory.createRoles("clerk", "admin", "sales", "editor", "account");
+
 
         supplierUser = FactoryBoy.create(SupplierUser.class);
         // 设置测试登录的用户名
