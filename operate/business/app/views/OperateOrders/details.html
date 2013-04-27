@@ -312,7 +312,7 @@
                 #{if outerOrder!=null}
                 ${orderItems?.get(0)?.shippingInfo?.address}
                     &nbsp; &nbsp; &nbsp; &nbsp;
-                    邮编: ${orderItems?.get(0)?.shippingInfo.zipCode}
+                    邮编: ${orderItems?.get(0)?.shippingInfo?.zipCode}
                 #{/if}
                 #{else }
                 ${orders?.receiverAddress} &nbsp; &nbsp; &nbsp; &nbsp;邮编:${orders?.postcode}

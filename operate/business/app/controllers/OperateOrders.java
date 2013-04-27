@@ -36,7 +36,7 @@ public class OperateOrders extends Controller {
             condition.hidPaidAtBegin = DateHelper.beforeDays(1);
             condition.hidPaidAtEnd = new Date();
         }
-        else if  ((StringUtils.isBlank(condition.searchKey)||StringUtils.isBlank(condition.searchItems)) && StringUtils.isBlank(condition.outerOrderId) && condition.paidAtBegin ==null && condition.paidAtEnd==null&&condition.refundAtBegin==null && condition.refundAtEnd==null) {
+        else if  (condition.shihuiSupplierId==null && (StringUtils.isBlank(condition.searchKey)||StringUtils.isBlank(condition.searchItems)) && StringUtils.isBlank(condition.outerOrderId) && condition.paidAtBegin ==null && condition.paidAtEnd==null&&condition.refundAtBegin==null && condition.refundAtEnd==null) {
             condition.paidAtBegin = DateHelper.beforeDays(7);
             condition.paidAtEnd = new Date();
         }

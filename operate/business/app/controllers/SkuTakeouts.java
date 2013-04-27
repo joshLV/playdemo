@@ -125,7 +125,6 @@ public class SkuTakeouts extends Controller {
         //11 按商品创建出库单明细
         for (Sku sku : takeoutSkuMap.keySet()) {
             //创建出库详单信息
-
             InventoryStock.createInventoryStockItem(sku, 0L - takeoutSkuMap.get(sku), stock, skuAveragePriceMap.get(sku));
             //修改入库的剩余库存
             InventoryStock.updateInventoryStockRemainCount(sku, takeoutSkuMap.get(sku));
