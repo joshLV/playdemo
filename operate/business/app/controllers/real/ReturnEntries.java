@@ -86,7 +86,6 @@ public class ReturnEntries extends Controller {
 //        stockItem.sku = temporalGoods.sku;
 //        stockItem.changeCount = entry.returnedCount * temporalGoods.skuCount;
 //        stockItem.remainCount = stockItem.changeCount;
-
         stockItem.sku = entry.orderItems.takeOutItems.get(0).sku;
         stockItem.changeCount = entry.orderItems.takeOutItems.get(0).count;
         stockItem.remainCount = stockItem.changeCount;

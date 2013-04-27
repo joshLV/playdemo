@@ -122,10 +122,14 @@ public class SkuTakeouts extends Controller {
         //10 获取可出库订单计算出的货品平均售价
         Map<Sku, BigDecimal> skuAveragePriceMap = OrderItems.getSkuAveragePriceMap(stockoutOrderList, takeoutSkuMap);
 
+        stock.remark = "发货单批次:" + orderBatch.id;
+        stock.save();
+
         //11 按商品创建出库单明细
         for (Sku sku : takeoutSkuMap.keySet()) {
             //创建出库详单信息
             InventoryStock.createInventoryStockItem(sku, 0L - takeoutSkuMap.get(sku), stock, skuAveragePriceMap.get(sku));
+
             //修改入库的剩余库存
             InventoryStock.updateInventoryStockRemainCount(sku, takeoutSkuMap.get(sku));
         }
