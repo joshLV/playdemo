@@ -15,5 +15,6 @@ public enum QueryType {
     SHOP_NAME,//消费门店名称
     COUPON,
     ALLPHONE,  //按手机号码搜索
-    UID       //按用户Id搜索
+    UID,      //按用户Id搜索
+    EXPRESS_NUMBER    //按物流单号搜索
 }
