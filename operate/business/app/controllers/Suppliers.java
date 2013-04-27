@@ -317,7 +317,9 @@ public class Suppliers extends Controller {
                 .getSupplierUserList(null, null, null,
                         supplierId, null, 1,
                         1);
-        render(supplierUsersPage, supplierDomainName, supplierUsers);
+        String qrCodePath = Play.configuration.getProperty("weixin.qrcode.path");
+
+        render(supplierUsersPage, supplierDomainName, supplierUsers,qrCodePath);
     }
 
     @ActiveNavigation("suppliers_index")
