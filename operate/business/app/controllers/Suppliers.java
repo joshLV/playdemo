@@ -128,9 +128,9 @@ public class Suppliers extends Controller {
      */
     private static void setSupplierProperty(Long id) {
         Supplier supplier = Supplier.findById(id);
-        supplier.setProperty(Supplier.CAN_SALE_REAL,request.params.get(Supplier.CAN_SALE_REAL));
-        supplier.setProperty(Supplier.SELL_ECOUPON,request.params.get(Supplier.SELL_ECOUPON));
-        supplier.setProperty(Supplier.KTV_SUPPLIER,request.params.get(Supplier.KTV_SUPPLIER));
+        supplier.setProperty(Supplier.CAN_SALE_REAL, request.params.get(Supplier.CAN_SALE_REAL));
+        supplier.setProperty(Supplier.SELL_ECOUPON, request.params.get(Supplier.SELL_ECOUPON));
+        supplier.setProperty(Supplier.KTV_SUPPLIER, request.params.get(Supplier.KTV_SUPPLIER));
 
     }
 
@@ -308,19 +308,6 @@ public class Suppliers extends Controller {
         index(null, null, null, null);
     }
 
-    public static void exportMaterial(long supplierId, String supplierDomainName) {
-        JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser
-                .getSupplierUserList(SupplierUserType.ANDROID, null, null, null,
-                        supplierId, null, 1,
-                        1);
-        JPAExtPaginator<SupplierUser> supplierUsers = SupplierUser
-                .getSupplierUserList(null, null, null,
-                        supplierId, null, 1,
-                        1);
-        String qrCodePath = Play.configuration.getProperty("weixin.qrcode.path");
-
-        render(supplierUsersPage, supplierDomainName, supplierUsers,qrCodePath);
-    }
 
     @ActiveNavigation("suppliers_index")
     public static void suppliersExcelOut(Long supplierId, String code, String domainName, String keyword) {
@@ -344,5 +331,26 @@ public class Suppliers extends Controller {
         }
         render(supplierList);
     }
+
+    public static void exportMaterial(long supplierId, String supplierDomainName) {
+        JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser
+                .getSupplierUserList(SupplierUserType.ANDROID, null, null, null,
+                        supplierId, null, 1,
+                        1);
+        JPAExtPaginator<SupplierUser> supplierUsers = SupplierUser
+                .getSupplierUserList(null, null, null,
+                        supplierId, null, 1,
+                        1);
+        String qrCodePath = Play.configuration.getProperty("weixin.qrcode.path");
+        for (SupplierUser s : supplierUsers) {
+            if (StringUtils.isBlank(s.idCode)) {
+                s.idCode = SupplierUser.generateAvailableIdCode();
+                s.save();
+            }
+        }
+
+        render(supplierUsersPage, supplierDomainName, supplierUsers, qrCodePath);
+    }
+
 
 }
