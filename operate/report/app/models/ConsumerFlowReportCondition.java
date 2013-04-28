@@ -21,6 +21,7 @@ public class ConsumerFlowReportCondition {
     public String interval = "7d";
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
+
     public Boolean hasSeeReportProfitRight;
     public Long operatorId;
 

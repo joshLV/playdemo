@@ -1,7 +1,6 @@
 package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.RandomNumberUtil;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.sales.Shop;
@@ -159,6 +158,7 @@ public class OperateSupplierUsers extends Controller {
 
     }
 
+
     /**
      * 判断用户名和手机是否唯一
      *
@@ -179,13 +179,14 @@ public class OperateSupplierUsers extends Controller {
 
     /**
      * 查看微信绑定指导界面.
+     *
      * @param id
      */
     public static void showWeixi(Long id) {
         SupplierUser supplierUser = SupplierUser.findById(id);
         String qrCodePath = Play.configuration.getProperty("weixin.qrcode.path");
         if (StringUtils.isBlank(supplierUser.idCode)) {
-            supplierUser.idCode = RandomNumberUtil.generateSerialNumber(6);
+            supplierUser.idCode = SupplierUser.generateAvailableIdCode();
             supplierUser.save();
         }
         render(supplierUser, qrCodePath);
@@ -193,6 +194,7 @@ public class OperateSupplierUsers extends Controller {
 
     /**
      * 解除微信帐号绑定.
+     *
      * @param id
      */
     public static void unbindWeixi(Long id) {
