@@ -171,25 +171,20 @@ public class SupplierVerifyECoupons extends Controller {
             return; //没有需要发的短信
         }
         final Shop shop = Shop.findById(shopId);
-        ECoupon eCoupon = eCoupons.get(0);
-        BigDecimal sumFaceValue = BigDecimal.ZERO;
-        List<String> availableECouponSNs = new ArrayList<>();
         Map<String, SentAvailableECouponInfo> map = new HashMap<>();
         SentAvailableECouponInfo ecouponInfo;
-        for (ECoupon ae : eCoupons) {
-//            availableECouponSNs.add(ae.eCouponSn);
-//            sumFaceValue = sumFaceValue.add(ae.faceValue);            
+        for (ECoupon ae : eCoupons) {  
             SentAvailableECouponInfo existedEcouponInfo = map.get(ae.orderItems.phone);
             if (existedEcouponInfo == null) {
             	 ecouponInfo=new SentAvailableECouponInfo();
             	 ecouponInfo.availableECouponSNs.add(ae.eCouponSn);
-                 ecouponInfo.sumFaceValue=ecouponInfo.sumFaceValue.add(ae.faceValue);
+                 ecouponInfo.sumFaceValue=ae.faceValue;
                  ecouponInfo.lastECoupon=ae;
                  map.put(ae.orderItems.phone,ecouponInfo);
             }
             else{
             	existedEcouponInfo.availableECouponSNs.add(ae.eCouponSn);
-            	existedEcouponInfo.sumFaceValue=existedEcouponInfo.sumFaceValue.add(ae.faceValue);
+            	existedEcouponInfo.sumFaceValue=ae.faceValue;
             	existedEcouponInfo.lastECoupon=ae;
             }          
         }
@@ -201,7 +196,5 @@ public class SupplierVerifyECoupons extends Controller {
            SMSUtil.send2("您的券" + StringUtils.join( map.get(phone).availableECouponSNs, ",") + "(共" +  map.get(phone).availableECouponSNs.size()+ "张面值" +  map.get(phone).sumFaceValue.setScale(2, BigDecimal.ROUND_HALF_UP) + "元)于" + dateTime
                    + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151", phone, map.get(phone).lastECoupon.replyCode);
         }
-//        SMSUtil.send2("您的券" + StringUtils.join(availableECouponSNs, ",") + "(共" + eCoupons.size() + "张面值" + sumFaceValue.setScale(2, BigDecimal.ROUND_HALF_UP) + "元)于" + dateTime
-//                + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151", eCoupon.orderItems.phone, eCoupon.replyCode);
-    }
+   }
 }
