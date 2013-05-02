@@ -24,46 +24,46 @@
 #{set 'moreScripts'}
 
 <script type="text/javascript">
-    window.onload = function () {
-        var tab = document.getElementById("tab");
-        var maxCol = 1, val, count, start;
-
-        for (var col = maxCol - 1; col >= 0; col--) {
-            count = 1;
-            val = "";
-            for (var i = 0; i < tab.rows.length; i++) {
-                if (val == tab.rows[i].cells[col].innerHTML) {
-                    count++;
-
-                } else {
-                    if (count > 1) { //合并
-                        start = i - count;
-                        tab.rows[start].cells[col].rowSpan = count;
-                        for (var j = start + 1; j < i; j++) {
-                            tab.rows[j].cells[col].style.display = "none";
-                        }
-                        count = 1;
-                    }
-                    val = tab.rows[i].cells[col].innerHTML;
-//                    $('#intab').append('<tr><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td></tr>');
-
-                }
-
-            }
-
-            if (count > 1) { //合并，最后几行相同的情况下
-                start = i - count;
-
-                tab.rows[start].cells[col].rowSpan = count;
-                for (var j = start + 1; j < i; j++) {
-                    tab.rows[j].cells[col].style.display = "none";
-
-                }
-
-
-            }
-        }
-    };
+//    window.onload = function () {
+//        var tab = document.getElementById("tab");
+//        var maxCol = 1, val, count, start;
+//
+//        for (var col = maxCol - 1; col >= 0; col--) {
+//            count = 1;
+//            val = "";
+//            for (var i = 0; i < tab.rows.length; i++) {
+//                if (val == tab.rows[i].cells[col].innerHTML) {
+//                    count++;
+//
+//                } else {
+//                    if (count > 1) { //合并
+//                        start = i - count;
+//                        tab.rows[start].cells[col].rowSpan = count;
+//                        for (var j = start + 1; j < i; j++) {
+//                            tab.rows[j].cells[col].style.display = "none";
+//                        }
+//                        count = 1;
+//                    }
+//                    val = tab.rows[i].cells[col].innerHTML;
+////                    $('#intab').append('<tr><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td></tr>');
+//
+//                }
+//
+//            }
+//
+//            if (count > 1) { //合并，最后几行相同的情况下
+//                start = i - count;
+//
+//                tab.rows[start].cells[col].rowSpan = count;
+//                for (var j = start + 1; j < i; j++) {
+//                    tab.rows[j].cells[col].style.display = "none";
+//
+//                }
+//
+//
+//            }
+//        }
+//    };
 
 </script>
 
