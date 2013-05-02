@@ -446,7 +446,7 @@ public class ResaleSalesReport {
             } else {
                 item.refundPrice = refundItem.refundPrice;
                 item.refundNumber = refundItem.refundNumber;
-                item.profit = item.profit.subtract(refundItem.refundPrice == null ? BigDecimal.ZERO : refundItem.refundPrice).add(refundItem.refundCost== null ? BigDecimal.ZERO : refundItem.refundCost).add(refundItem.refundCommissionAmount== null ? BigDecimal.ZERO : refundItem.refundCommissionAmount);
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(refundItem.refundPrice == null ? BigDecimal.ZERO : refundItem.refundPrice).add(refundItem.refundCost== null ? BigDecimal.ZERO : refundItem.refundCost).add(refundItem.refundCommissionAmount== null ? BigDecimal.ZERO : refundItem.refundCommissionAmount);
             }
         }
 
