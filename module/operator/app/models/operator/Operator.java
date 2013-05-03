@@ -31,6 +31,12 @@ public class Operator extends Model {
     @Required
     public String name;
 
+    @Required
+    public String code;
+
+    @Column(name = "company_name")
+    public String companyName;
+
     @Mobile
     @MinSize(value = 11)
     public String mobile;
