@@ -20,7 +20,10 @@ POST    /edit-password                          OperateUsersPassword.update
 #运营商
 GET     /operators                              Operators.index
 GET     /operators/new                          Operators.add
-POST    /operators/checkName                    Operators.checkName
+POST    /operators/check-name-and-code          Operators.checkNameAndCode
+GET     /operators/{id}/edit                    Operators.edit
+POST    /operators/{id}                         Operators.update
+DELETE  /operators/{id}                         Operators.delete
 
 
 
