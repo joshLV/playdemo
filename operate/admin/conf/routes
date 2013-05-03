@@ -17,6 +17,12 @@ POST    /profile                                OperateUsersProfiles.update
 GET     /edit-password                          OperateUsersPassword.index
 POST    /edit-password                          OperateUsersPassword.update
 
+#运营商
+GET     /operators                              Operators.index
+GET     /operators/new                          Operators.add
+POST    /operators/checkName                    Operators.checkName
+
+
 
 GET     /ws-logs                                WebServiceCallLogs.index
 

@@ -1,5 +1,6 @@
 package models.accounts;
 
+import models.operator.Operator;
 import play.Logger;
 import play.db.jpa.Model;
 
@@ -7,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
@@ -51,6 +53,9 @@ public class Account extends Model {
 
     @Column(name = "created_at")
     public Date createdAt;
+
+    @ManyToOne
+    public Operator operator;
 
     @Transient
     public String info;

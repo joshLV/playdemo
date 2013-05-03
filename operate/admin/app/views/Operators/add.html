@@ -1,0 +1,65 @@
+#{extends 'layout_operate/layout.html' /}
+
+#{set 'topbar-nav'}
+    #{include 'share/topbar-nav.html'/}
+#{/set}
+#{set 'sidebar-nav'}
+    #{include 'share/sidebar-nav.html'/}
+#{/set}
+
+#{set title:'运营商添加' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/operators.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{form @operators.create() , id:'operForm',class:"form-horizontal" }
+<legend>运营商添加</legend>
+<div class="control-group">
+    <label for="input01" class="control-label"><span style="color: red; ">*</span>姓名</label>
+
+    <div class="controls">
+        <input type="text" name="operator.name" class="input-large" id="name" value="${operator?.name}"/>
+        <span class="error" id="checkName">#{error 'operator.name' /}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label for="input01" class="control-label">手机</label>
+
+    <div class="controls">
+        <input type="text" name="operator.mobile" class="input-large" id="mobile" maxlength="11"
+               value="${operator?.mobile}"/>
+        <span class="error" id="checkMobile">#{error 'operator.mobile' /}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label for="input01" class="control-label">电话</label>
+
+    <div class="controls">
+        <input type="text" name="operator.phone" class="input-large" id="phone"
+               value="${operator?.phone}"/>
+        <span class="error" id="checkPhone">#{error 'operator.phone' /}</span>
+    </div>
+</div>
+
+<div class="control-group">
+    <label for="input01" class="control-label"> 邮箱</label>
+
+    <div class="controls">
+        <input type="text" name="operator.email" class="input-large" id="email" maxlength="50"
+               value="${operator?.email}"/>
+        <span class="error" id="checkEmail">#{error 'operator.email' /}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label for="input01" class="control-label"> 备注</label>
+
+    <div class="controls">
+        <input type="text" name="operator.remark" class="input-large" id="remark" maxlength="50"
+               value="${operator?.remark}"/>
+        <span class="error" id="checkRemark">#{error 'operator.remark' /}</span>
+    </div>
+</div>
+
+<div class="form-actions">
+    <button class="btn btn-primary" id="save" type="button">保 存</button>
+</div>
+#{/form}

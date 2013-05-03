@@ -19,6 +19,7 @@ import models.kangou.KangouUtil;
 import models.ktv.KtvRoomOrderInfo;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
+import models.operator.Operator;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsCouponType;
@@ -46,6 +47,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Query;
@@ -202,6 +204,9 @@ public class Order extends Model {
     @Version
     @Column(name = "lock_version")
     public int lockVersion;
+
+    @ManyToOne
+    public Operator operator;
 
     public String description;          //订单描述
 
