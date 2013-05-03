@@ -177,7 +177,7 @@ public class Resaler extends Model {
     }
 
     public boolean isBatchExportCoupons() {
-        return this.batchExportCoupons == batchExportCoupons.YES;
+        return this.batchExportCoupons == ResalerBatchExportCoupons.YES;
     }
 
     /**

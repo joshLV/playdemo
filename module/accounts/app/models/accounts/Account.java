@@ -1,6 +1,7 @@
 package models.accounts;
 
 import models.operator.Operator;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import play.Logger;
 import play.db.jpa.Model;
 
@@ -82,6 +83,10 @@ public class Account extends Model {
     }
 
     public Account(long uid, AccountType type) {
+        this(uid, type, Operator.defaultOperator());
+    }
+
+    public Account(long uid, AccountType type, Operator operator) {
         this.uid = uid;
         this.accountType = type;
         this.amount = BigDecimal.ZERO;
@@ -89,6 +94,7 @@ public class Account extends Model {
         this.status = AccountStatus.NORMAL;
         this.createdAt = new Date();
         this.creditable = AccountCreditable.NO;
+        this.operator = Operator.defaultOperator();
     }
 
     /**
@@ -122,5 +128,17 @@ public class Account extends Model {
 
     public boolean isCreditable() {
         return this.creditable == AccountCreditable.YES;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("uid", uid)
+                .append("accountType", accountType)
+                .append("creditable", creditable)
+                .append("amount", amount)
+                .append("operator", operator)
+                .append("status", status)
+                .toString();
     }
 }

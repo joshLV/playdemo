@@ -307,6 +307,9 @@ public class Order extends Model {
      * @param userType
      */
     private Order(Long userId, AccountType userType) {
+        this(userId, userType, Operator.defaultOperator());
+    }
+    private Order(Long userId, AccountType userType, Operator operator) {
         // FIXME: 检查一下新浪微博钱包 是调用哪个接口
         if (userType == AccountType.CONSUMER) {
             User user = User.findById(userId);
@@ -322,6 +325,7 @@ public class Order extends Model {
             this.userId = userId;   //分销商
         }
 
+        this.operator = operator;
         this.status = OrderStatus.UNPAID;
         this.deleted = DeletedStatus.UN_DELETED;
         this.orderNumber = generateOrderNumber();

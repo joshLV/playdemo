@@ -2,6 +2,7 @@ package controllers;
 
 import models.mail.MailMessage;
 import models.mail.MailUtil;
+import models.operator.Operator;
 import models.resale.Resaler;
 import models.resale.ResalerCreditable;
 import models.resale.ResalerLevel;
@@ -69,6 +70,9 @@ public class ResalerRegister extends Controller {
         resaler.createdAt = new Date();
         resaler.loginName = resaler.loginName.toLowerCase().trim();
         resaler.creditable = ResalerCreditable.NO;
+
+        //这里注册的分销商都是默认运营商的
+        resaler.operator = Operator.defaultOperator();
         resaler.save();
 
         sendNotification(resaler);

@@ -1,6 +1,8 @@
 package models.operator;
 
 import com.uhuila.common.constants.DeletedStatus;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import play.Play;
 import play.data.validation.Match;
 import play.data.validation.MaxSize;
 import play.data.validation.MinSize;
@@ -29,9 +31,11 @@ import java.util.List;
 @Table(name = "operators")
 public class Operator extends Model {
     @Required
+    @Column(unique = true)
     public String name;
 
     @Required
+    @Column(unique = true)
     public String code;
 
     @Column(name = "company_name")
@@ -82,4 +86,39 @@ public class Operator extends Model {
         return returnFlag;
     }
 
+    public final static String DEFAULT_OPERATOR_CODE = "SHIHUI";
+    public static Operator _defaultOperator = null;
+
+    /**
+     * 得到默认的运营商平台，即code为SHIHUI
+     *
+     * @return
+     */
+    public static Operator defaultOperator() {
+        if (Play.runingInTestMode()) {
+            _defaultOperator = null;
+        }
+        if (_defaultOperator == null) {
+            synchronized (Operator.class) {
+                if (_defaultOperator != null) {
+                    return _defaultOperator;
+                }
+                _defaultOperator = Operator.find("code=? order by id", DEFAULT_OPERATOR_CODE).first();
+                if (_defaultOperator == null) {
+                    _defaultOperator = new Operator();
+                    _defaultOperator.name = "上海视惠运营平台";
+                    _defaultOperator.code = DEFAULT_OPERATOR_CODE;
+                    _defaultOperator.save();
+                }
+            }
+        }
+        return _defaultOperator;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("code", code)
+                .toString();
+    }
 }
