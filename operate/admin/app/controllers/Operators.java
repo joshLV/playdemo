@@ -1,7 +1,6 @@
 package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.operator.OperateRole;
 import models.operator.Operator;
 import operate.rbac.annotations.ActiveNavigation;
 import play.data.validation.Valid;
@@ -23,14 +22,20 @@ import java.util.List;
 @ActiveNavigation("operator_search")
 public class Operators extends Controller {
     @ActiveNavigation("operator_search")
-    public static void index(String name) {
-        render();
+    public static void index(String name, String code) {
+        List<Operator> operators = Operator.findByCondition(name, code);
+        render(operators);
     }
 
     @ActiveNavigation("operator_search")
     public static void add() {
-        List rolesList = OperateRole.findAll();
-        render(rolesList);
+        render();
+    }
+
+    @ActiveNavigation("operator_search")
+    public static void edit(Long id) {
+        Operator operator = Operator.findById(id);
+        render(operator);
     }
 
 
@@ -48,11 +53,31 @@ public class Operators extends Controller {
         operator.createdAt = new Date();
         operator.deleted = DeletedStatus.UN_DELETED;
         operator.save();
-        index(null);
+        index(null, null);
     }
 
-    public static void checkName(Long id, String name) {
-        String returnFlag = Operator.checkValue(id, name);
+    @ActiveNavigation("user_search")
+    public static void update(Long id, @Valid Operator operator) {
+        if (Validation.hasErrors()) {
+//            operator.id = id;
+            render("Operators/edit.html", operator);
+        }
+        // 更新用户信息
+        Operator.update(id, operator, OperateRbac.currentUser().loginName);
+
+        index(null, null);
+    }
+
+    @ActiveNavigation("user_search")
+    public static void delete(Long id) {
+        Operator operator = Operator.findById(id);
+        operator.deleted = DeletedStatus.DELETED;
+        operator.save();
+        index(null, null);
+    }
+
+    public static void checkNameAndCode(Long id, String name, String code) {
+        String returnFlag = Operator.checkNameAndCode(id, name, code);
         renderJSON(returnFlag);
     }
 }
