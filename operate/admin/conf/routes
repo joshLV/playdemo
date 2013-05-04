@@ -27,6 +27,10 @@ GET     /sql/secret                             WebSqlExcutors.secret
 POST    /sql/secret                             WebSqlExcutors.secret
 GET     /sql/history                            WebSqlExcutors.history
 
+# jobs
+GET     /jobs                                   OperateJobs.index
+GET     /jobs/{id}                              OperateJobs.detail
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

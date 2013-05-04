@@ -48,7 +48,7 @@ repositories:
 
     - customModules:
         type:       local
-        artifact:   "${application.path}/../module/[module]"
+        artifact:   "${application.path}/../../module/[module]"
         contains:
             - sms -> *
             - cms -> *
