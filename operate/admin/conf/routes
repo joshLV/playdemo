@@ -34,6 +34,7 @@ GET     /favicon.ico                            404
 GET     /public/                                staticDir:public
 
 *       /                                       module:operate_rbac
+*       /                                       module:useragentcheck
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}
