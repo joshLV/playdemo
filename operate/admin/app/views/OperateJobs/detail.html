@@ -1,0 +1,84 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'查看定时任务-运行历史' /}
+#{set 'topbar-nav'}
+    #{include 'share/topbar-nav.html'/}
+#{/set}
+#{set 'sidebar-nav'}
+    #{include 'share/sidebar-nav.html'/}
+#{/set}
+
+#{set 'moreStyles'}
+<style type="text/css">
+    .form-inline ul {
+        display: inline-block;
+        margin-bottom: -15px;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0px;
+    }
+
+    .tab-content {
+        border-left: 1px solid #DDD;
+        border-right: 1px solid #DDD;
+        border-bottom: 1px solid #DDD;
+        clear: both;
+    }
+
+    .tab-content .binary {
+        width: 40%;
+        float: left;
+        text-align: center;
+        margin: 5px 1%;
+    }
+
+    .seq {
+        margin-top: 20px;
+    }
+
+    .alert {
+        margin-bottom: 0px;
+    }
+
+    .seq thead tr :first {
+        background-color: #f5f5f5;
+    }
+
+    footer {
+        margin-top: 20px;
+    }
+</style>
+#{/set}
+
+<div class="well">
+    Jobs类型： ${jobsDefine.className} <br/>
+    名称： ${jobsDefine.title}
+</div>
+
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <tr>
+        <th width="20%">Jobs类型</th>
+        <th width="20%">名称</th>
+        <th width="20%">运行时间</th>
+        <th width="10%">状态</th>
+        <th width="30%">运行信息</th>
+    </tr>
+    </thead>
+#{paginate.list items:runHistoryPage, as:'row'}
+    <tr>
+        <td>${row.jobsDefine?.className}</td>
+        <td>${row.jobsDefine?.title}</td>
+        <td>${row.runnedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+        <td>${row.status}</td>
+        <td style="word-break: break-all;">${row.remark?.raw().nl2br()}</td>
+    </tr>
+#{/paginate.list}
+</table>
+#{if runHistoryPage.pageCount > 1}
+<div class="pagination">
+    <ul>
+        #{paginate.controls items:runHistoryPage /}
+    </ul>
+</div>
+#{/if}
