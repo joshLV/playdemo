@@ -407,7 +407,7 @@ public class LogisticImportData implements Cloneable {
             Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
             return null;
         }
-        Goods goods = ResalerProduct.getGoodsByPartnerProductId(outerGoodsNo, partner);
+        Goods goods = ResalerProduct.getGoodsByPartnerProductId(resaler, outerGoodsNo, partner);
         if (goods == null) {
             Logger.info("goods not found: %s,", outerGoodsNo);
             return null;

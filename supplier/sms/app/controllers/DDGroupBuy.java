@@ -16,7 +16,6 @@ import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
 import models.resale.Resaler;
-import models.resale.ResalerStatus;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import org.apache.commons.lang.StringUtils;
@@ -88,7 +87,7 @@ public class DDGroupBuy extends Controller {
             renderError(DDErrorCode.VERIFY_FAILED, "sign验证失败！");
         }
         //定位请求者
-        Resaler resaler = Resaler.find("loginName=? and status=?", Resaler.DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.DD_LOGIN_NAME);
         Long resalerId = null;
         if (resaler == null) {
             renderError(DDErrorCode.USER_NOT_EXITED, "当当分销商用户不存在！");
@@ -141,7 +140,7 @@ public class DDGroupBuy extends Controller {
                 if(StringUtils.isEmpty(arrGoodsItem[0])){
                     renderError(DDErrorCode.ORDER_EXCEPTION, "传参数据信息格式不对！请确认检查无误！");
                 }
-                Goods goods = ResalerProduct.getGoods(Long.parseLong(arrGoodsItem[0]), OuterOrderPartner.DD);
+                Goods goods = ResalerProduct.getGoods(resaler, Long.parseLong(arrGoodsItem[0]), OuterOrderPartner.DD);
                 if (goods==null){
                     renderError(DDErrorCode.ORDER_EXCEPTION, "没有对应的商品信息！");
                 }
@@ -208,7 +207,7 @@ public class DDGroupBuy extends Controller {
         if (outerOrder == null || outerOrder.ybqOrder == null) {
             renderError(DDErrorCode.ORDER_NOT_EXITED, "没找到对应的当当订单!");
         }
-        Resaler resaler = Resaler.find("loginName=? and status=?", Resaler.DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.DD_LOGIN_NAME);
 
         if (resaler == null) {
             renderError(DDErrorCode.USER_NOT_EXITED, "当当用户不存在！");
@@ -220,7 +219,7 @@ public class DDGroupBuy extends Controller {
         }
 
         //从对应商品关系表中取得商品
-        Goods goods = ResalerProduct.getGoods(spgid, OuterOrderPartner.DD);
+        Goods goods = ResalerProduct.getGoods(resaler, spgid, OuterOrderPartner.DD);
         if (goods == null) {
             goods = Goods.findById(spgid);
         }

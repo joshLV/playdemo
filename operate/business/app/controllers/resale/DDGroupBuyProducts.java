@@ -6,6 +6,7 @@ import models.operator.OperateUser;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.dangdang.groupbuy.DDResponse;
 import models.order.OuterOrderPartner;
+import models.resale.Resaler;
 import models.sales.*;
 import operate.rbac.annotations.ActiveNavigation;
 import org.w3c.dom.Node;
@@ -48,7 +49,9 @@ public class DDGroupBuyProducts extends Controller {
         Map<String, Object> templateParams = new HashMap<>();
         templateParams.putAll(groupbuyInfoParams);
 
-        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.DD, goods);
+        Resaler.getSina();
+        Resaler ddResaler = Resaler.findApprovedByLoginName(Resaler.DD_LOGIN_NAME);
+        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.DD, ddResaler, goods);
         templateParams.put("linkId", String.valueOf(product.goodsLinkId));
         String jsonData =  new Gson().toJson(templateParams);//添加shop前先把参数给输出了
 

@@ -6,6 +6,7 @@ import factory.resale.ResalerFactory;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountType;
+import models.accounts.util.AccountUtil;
 import models.dangdang.groupbuy.DDErrorCode;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.order.ECoupon;
@@ -13,11 +14,13 @@ import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
+import models.resale.ResalerCreditable;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.ResalerProduct;
 import org.junit.Before;
 import org.junit.Test;
+import play.Logger;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 
@@ -37,10 +40,19 @@ import java.util.TreeMap;
 public class DDOrderApiTest extends FunctionalTest {
     ResalerProduct product;
     Resaler yibaiquanResaler;
+    Resaler resaler;
 
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        Resaler.cleanResalerCache();
+        resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+            @Override
+            public void build(Resaler target) {
+                target.loginName = Resaler.DD_LOGIN_NAME;
+                target.creditable = ResalerCreditable.YES;
+            }
+        });
         product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
             @Override
             public void build(ResalerProduct target) {
@@ -48,6 +60,7 @@ public class DDOrderApiTest extends FunctionalTest {
             }
         });
         yibaiquanResaler = ResalerFactory.getYibaiquanResaler();
+        AccountUtil.getCreditableAccount(resaler.id, AccountType.RESALER);
     }
 
     @Test
@@ -105,6 +118,7 @@ public class DDOrderApiTest extends FunctionalTest {
 
     @Test
     public void 测试创建订单() {
+        Logger.info("resaler.id=" + resaler.id + ", ybqResaler.id=" + yibaiquanResaler.id);
         Goods goods = product.goods;
         goods.materialType = MaterialType.ELECTRONIC;
         goods.save();

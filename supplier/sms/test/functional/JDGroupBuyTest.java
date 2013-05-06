@@ -37,6 +37,12 @@ public class JDGroupBuyTest extends FunctionalTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+            @Override
+            public void build(Resaler target) {
+                target.loginName = Resaler.JD_LOGIN_NAME;
+            }
+        });
         product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
             @Override
             public void build(ResalerProduct target) {
@@ -44,12 +50,6 @@ public class JDGroupBuyTest extends FunctionalTest {
             }
         });
 
-        Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
-            @Override
-            public void build(Resaler target) {
-                target.loginName = Resaler.JD_LOGIN_NAME;
-            }
-        });
         //创建可欠款账户
         AccountUtil.getCreditableAccount(resaler.id, AccountType.RESALER);
         ResalerFactory.getYibaiquanResaler(); //必须存在一百券

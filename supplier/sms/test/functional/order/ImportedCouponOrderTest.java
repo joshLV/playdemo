@@ -41,10 +41,21 @@ public class ImportedCouponOrderTest extends FunctionalTest {
     ResalerProduct product;
     Goods goods;
     ImportedCoupon importedCoupon;
+    Resaler resaler;
 
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        Resaler.cleanResalerCache();
+
+        resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+            @Override
+            public void build(Resaler target) {
+                target.loginName = Resaler.JD_LOGIN_NAME;
+            }
+        });
+        //创建可欠款账户
+        AccountUtil.getCreditableAccount(resaler.id, AccountType.RESALER);
 
         supplierUser = FactoryBoy.create(SupplierUser.class);
         goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
@@ -59,17 +70,10 @@ public class ImportedCouponOrderTest extends FunctionalTest {
             @Override
             public void build(ResalerProduct target) {
                 target.partner = OuterOrderPartner.JD;
+                target.resaler = resaler;
             }
         });
 
-        Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
-            @Override
-            public void build(Resaler target) {
-                target.loginName = Resaler.JD_LOGIN_NAME;
-            }
-        });
-        //创建可欠款账户
-        AccountUtil.getCreditableAccount(resaler.id, AccountType.RESALER);
         ResalerFactory.getYibaiquanResaler(); //必须存在一百券
     }
 

@@ -4,10 +4,15 @@ import com.google.gson.Gson;
 import controllers.OperateRbac;
 import models.operator.OperateUser;
 import models.order.OuterOrderPartner;
-import models.sales.*;
+import models.resale.Resaler;
+import models.sales.Goods;
+import models.sales.ResalerProduct;
+import models.sales.ResalerProductJournal;
+import models.sales.ResalerProductJournalType;
+import models.sales.ResalerProductStatus;
+import models.yihaodian.YHDCategoryAPI;
 import models.yihaodian.YHDResponse;
 import models.yihaodian.YHDUtil;
-import models.yihaodian.YHDCategoryAPI;
 import operate.rbac.annotations.ActiveNavigation;
 import org.w3c.dom.Node;
 import play.Logger;
@@ -43,8 +48,8 @@ public class YHDProducts extends Controller {
         if (goods == null) {
             notFound();
         }
-
-        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.YHD, goods);
+        Resaler yhdResaler = Resaler.findApprovedByLoginName(Resaler.YHD_LOGIN_NAME);
+        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.YHD, yhdResaler, goods);
 
         Map<String, String> requestParams = request.params.allSimple();
         requestParams.remove("body");
