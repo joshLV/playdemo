@@ -1,15 +1,12 @@
 package factory.ktv;
 
 import com.uhuila.common.constants.DeletedStatus;
-import factory.FactoryBoy;
 import factory.ModelFactory;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvRoomType;
-import models.sales.Shop;
 import util.DateHelper;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 
 /**
  * User: tanglq
@@ -26,7 +23,7 @@ public class KtvPriceScheduleFactory extends ModelFactory<KtvPriceSchedule> {
         schedule.dayOfWeeks = "1,2,3,4,5,6,7";
         schedule.price = BigDecimal.TEN;
         schedule.deleted = DeletedStatus.UN_DELETED;
-        schedule.duration = 3;
+//        schedule.duration = 3;
         schedule.startTimes = "8,15";
         return schedule;
     }
