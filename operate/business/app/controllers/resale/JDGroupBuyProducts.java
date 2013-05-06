@@ -7,6 +7,7 @@ import models.jingdong.groupbuy.JDGroupBuyHelper;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JingdongMessage;
 import models.order.OuterOrderPartner;
+import models.resale.Resaler;
 import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
@@ -51,7 +52,8 @@ public class JDGroupBuyProducts extends Controller{
         }
 
         //申请商品ID并准备参数
-        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.JD, goods);
+        Resaler jdResaler = Resaler.findApprovedByLoginName(Resaler.JD_LOGIN_NAME);
+        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.JD, jdResaler, goods);
         Map<String, Object> params = new HashMap<>();
         for (Map.Entry<String, String> entry : request.params.allSimple().entrySet()) {
             params.put(entry.getKey(), entry.getValue());

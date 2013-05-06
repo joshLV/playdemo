@@ -1,14 +1,25 @@
 package models.sales;
 
-import com.google.gson.Gson;
 import com.uhuila.common.constants.DeletedStatus;
 import models.order.OuterOrderPartner;
-import models.supplier.Supplier;
 import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.util.*;
+import models.resale.Resaler;
+import org.hibernate.annotations.Index;
+import play.db.jpa.Model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+import java.util.Date;
 
 /**
  * 发布到第三方产品的信息
@@ -24,6 +35,12 @@ public class ResalerProduct extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "partner")
     public OuterOrderPartner partner;       //合作伙伴
+
+    /**
+     * 对应的分销商.
+     */
+    @ManyToOne
+    public Resaler resaler;
 
     @ManyToOne
     public Goods goods;                     //关联的一百券商品
@@ -77,7 +94,7 @@ public class ResalerProduct extends Model {
         this.deleted = DeletedStatus.UN_DELETED;
     }
 
-    public static ResalerProduct generate(OuterOrderPartner partner, Goods goods) {
+    private static ResalerProduct generate(OuterOrderPartner partner, Goods goods) {
         ResalerProduct product = new ResalerProduct().save();
         product.partner = partner;
         product.goods = goods;
@@ -85,25 +102,28 @@ public class ResalerProduct extends Model {
         return product.save();
     }
 
-    public static ResalerProduct alloc(OuterOrderPartner partner, Goods goods) {
-        ResalerProduct product = ResalerProduct.find("byPartnerAndGoodsAndStatusAndDeleted",
-                partner, goods, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).first();
+    public static ResalerProduct alloc(OuterOrderPartner partner, Resaler resaler, Goods goods) {
+        ResalerProduct product = ResalerProduct.find("partner=? and goods=? and status=? and deleted=? and resaler=?",
+                partner, goods, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED, resaler).first();
         if (product == null) {
             product = generate(partner, goods);
         }
         return product;
     }
 
-    public static Goods getGoods(Long goodsLinkId, OuterOrderPartner partner) {
-        ResalerProduct product = ResalerProduct.find("byGoodsLinkIdAndPartner", goodsLinkId, partner).first();
+    public static Goods getGoods(Resaler resaler, Long goodsLinkId, OuterOrderPartner partner) {
+        ResalerProduct product = ResalerProduct.find("goodsLinkId=? and partner=? and resaler=?",
+                goodsLinkId, partner, resaler).first();
         if (product == null && goodsLinkId < BASE_LINK_ID) {
             return Goods.findById(goodsLinkId);
         }
         return product == null ? null : product.goods;
     }
 
-    public static Goods getGoodsByPartnerProductId(String partnerProductId, OuterOrderPartner partner) {
-        ResalerProduct product = ResalerProduct.find("byPartnerProductIdAndPartner", partnerProductId, partner).first();
+    public static Goods getGoodsByPartnerProductId(Resaler resaler, String partnerProductId,
+                                                   OuterOrderPartner partner) {
+        ResalerProduct product = ResalerProduct.find("partnerProductId=? and partner=? and resaler=?",
+                partnerProductId, partner, resaler).first();
         return product == null ? null : product.goods;
     }
 

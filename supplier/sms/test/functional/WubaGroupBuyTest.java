@@ -31,19 +31,21 @@ import java.util.Map;
  */
 public class WubaGroupBuyTest extends FunctionalTest {
     ResalerProduct product;
+    Resaler resaler;
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+            @Override
+            public void build(Resaler target) {
+                target.loginName = Resaler.WUBA_LOGIN_NAME;
+            }
+        });
         product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
             @Override
             public void build(ResalerProduct target) {
                 target.partner = OuterOrderPartner.WB;
-            }
-        });
-        Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
-            @Override
-            public void build(Resaler target) {
-                target.loginName = "wuba";
+                target.resaler = resaler;
             }
         });
         AccountUtil.getCreditableAccount(resaler.getId(), AccountType.RESALER);

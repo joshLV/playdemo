@@ -12,13 +12,12 @@ import com.taobao.api.response.ItemImgUploadResponse;
 import com.taobao.api.response.ItemSkuAddResponse;
 import controllers.OperateRbac;
 import models.accounts.AccountType;
-import models.operator.OperateUser;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
+import models.operator.OperateUser;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.Goods;
-import models.sales.MaterialType;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductStatus;
 import models.supplier.Supplier;
@@ -70,8 +69,8 @@ public class TaobaoProducts extends Controller {
         if (goods == null) {
             notFound();
         }
-
-        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.TB, goods);
+        Resaler taobaoResaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.TB, taobaoResaler, goods);
 
         ItemAddRequest addRequest = new ItemAddRequest();
         addRequest.setNum(num > 999999 ? 999999 : num);// 商品数量

@@ -754,6 +754,7 @@ public class Order extends Model {
      * 订单已支付，修改支付状态、时间，更改库存，发送电子券密码
      */
     public boolean paid(Account account) {
+        System.out.println(  "《into paid()=========:");
         if (this.status != OrderStatus.UNPAID) {
             throw new RuntimeException("can not pay order:" + this.getId() + " since it's already been processed");
         }
@@ -802,7 +803,7 @@ public class Order extends Model {
                 //忽略，此时订单没有支付，但余额已经保存
             }
         }
-
+        System.out.println(  "after paid()《=========:");
         this.status = OrderStatus.PAID;
         this.paidAt = new Date();
         this.save();
@@ -813,6 +814,8 @@ public class Order extends Model {
      * 发送电子券相关短信/邮件/通知
      */
     private void generateECoupon() {
+        System.out.println(this.orderItems + "《=========this.orderItems:");
+
         if (this.status != OrderStatus.PAID) {
             return;
         }
@@ -888,6 +891,7 @@ public class Order extends Model {
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
+                    System.out.println(eCoupon + "《====111=====(eCoupon:");
 
                 }
 
@@ -1331,6 +1335,7 @@ public class Order extends Model {
             ebankPaymentAmount = needPayExceptVoucher;
         }
         //余额支付中再分一下可提现和不可提现支付
+        System.out.println(order.discountPay + "《=inital========order.discountPay:");
         order.accountPay = balancePaymentAmount.subtract(account.promotionAmount.min(balancePaymentAmount));
         order.promotionBalancePay = balancePaymentAmount.subtract(order.accountPay);
         order.discountPay = ebankPaymentAmount;
@@ -1338,10 +1343,18 @@ public class Order extends Model {
 
         //创建订单交易
         //如果使用余额足以支付，则付款直接成功
+        System.out.println(  "《=========:");
+        System.out.println( order.discountPay+ "《===order.discountPay======:");
+        System.out.println(order.accountPay + "《=========order.accountPay:");
+        System.out.println(order.promotionBalancePay + "《=========order.promotionBalancePay:");
+        System.out.println(order.voucherValue + "《=========order.voucherValue:");
+        System.out.println(order.needPay + "《=========order.needPay:");
+
         if (order.discountPay.compareTo(BigDecimal.ZERO) == 0
                 && order.accountPay.add(order.promotionBalancePay).add(order.voucherValue)
                 .compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
+            System.out.println(  "before send coupon《=========:");
             order.payAndSendECoupon();
             useVouchers(validVouchers, order);
             return true;

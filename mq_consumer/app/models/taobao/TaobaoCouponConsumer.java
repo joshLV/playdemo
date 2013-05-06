@@ -141,7 +141,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage.T
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
-        Goods goods = ResalerProduct.getGoods(outerGroupId, OuterOrderPartner.TB);
+        Goods goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.TB);
         try {
             if (goods == null) {
                 Logger.info("goods not found: %s", outerGroupId);

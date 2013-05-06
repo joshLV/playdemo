@@ -1,15 +1,12 @@
 package factory.ktv;
 
 import com.uhuila.common.constants.DeletedStatus;
-import factory.FactoryBoy;
 import factory.ModelFactory;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvRoomType;
-import models.sales.Shop;
 import util.DateHelper;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 
 /**
  * User: tanglq

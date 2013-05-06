@@ -112,6 +112,7 @@ public class ImportPartnerOrders extends Controller {
             if (partner == OuterOrderPartner.WB) {
                 //先取得订单总金额
                 BigDecimal orderAmount = logistic.salePrice;
+                Resaler wubaResaler = Resaler.findApprovedByLoginName(Resaler.WUBA_LOGIN_NAME);
                 List<LogisticImportData> wubaLogistics = logistic.processWubaLogistic();
                 Order ybqOrder = logistic.createYbqOrderByWB(partner);
                 //save ybqOrder info
@@ -127,7 +128,8 @@ public class ImportPartnerOrders extends Controller {
                 OrderShippingInfo orderShipInfo = logistic.createOrderShipInfo();
                 BigDecimal nowOrderAmount = BigDecimal.ZERO;
                 for (LogisticImportData wubaGoodsInfo : wubaLogistics) {
-                    Goods goods = ResalerProduct.getGoodsByPartnerProductId(wubaGoodsInfo.outerGoodsNo, partner);
+                    Goods goods = ResalerProduct.getGoodsByPartnerProductId(wubaResaler, wubaGoodsInfo.outerGoodsNo,
+                            partner);
                     if (goods == null) {
                         //未映射商品
                         Logger.info("未映射商品NO=" + logistic.outerGoodsNo + " NOT Found!");

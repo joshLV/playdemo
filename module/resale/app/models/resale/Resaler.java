@@ -309,6 +309,9 @@ public class Resaler extends Model {
         updResaler.save();
     }
 
+    public static Resaler findApprovedByLoginName(String loginName) {
+        return Resaler.find("loginName=? and status=?", loginName, ResalerStatus.APPROVED).first();
+    }
     /**
      * 得到一百券分销帐号，用于代替之前的CONSUMER检查.
      */
