@@ -89,12 +89,13 @@ public class BatchExportCoupons extends Controller {
             GoodsCondition goodsCond = new GoodsCondition();
 //            JPAExtPaginator<models.sales.Goods> goodsList = models.sales
 //                    .Goods.findByResaleCondition(user, goodsCond, pageNumber, PAGE_SIZE);
+            Goods goods = null;
 
             List<Goods> goodsList = new ArrayList<>();
             String goodsName = null;
             Resaler resaler = SecureCAS.getResaler();
             if (goodsId != null) {
-                Goods goods = Goods.findById(goodsId);
+                goods = Goods.findById(goodsId);
                 goodsName = goods.shortName;
             }
             List<ResalerFav> favs = ResalerFav.findFavs(resaler, null, null,
@@ -102,7 +103,8 @@ public class BatchExportCoupons extends Controller {
             for (ResalerFav r : favs) {
                 goodsList.add(r.goods);
             }
-            render(goodsList, account, noPermissionError, count, name, goodsId, err, consumed);
+            System.out.println(goods + "《=========goods:");
+            render(goodsList, account, noPermissionError, count, name, goodsId, err, consumed, goods);
         } else {
             noPermissionError = "此账户没有批量发券的权限";
             render(noPermissionError);
