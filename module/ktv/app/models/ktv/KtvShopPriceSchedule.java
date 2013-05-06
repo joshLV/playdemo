@@ -10,7 +10,7 @@ import javax.persistence.*;
  *         Date: 13-4-27
  */
 @Entity
-@Table(name = "ktv_shop_price_schedule")
+@Table(name = "ktv_shop_price_schedules")
 public class KtvShopPriceSchedule extends Model {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")

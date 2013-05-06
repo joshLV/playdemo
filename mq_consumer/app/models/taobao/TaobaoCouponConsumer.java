@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  *         Date: 12-11-29
  */
 @OnApplicationStart(async = true)
-public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMessage> {
+public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage.TaobaoCouponMessage> {
     public static String PHONE_REGEX = "^1\\d{10}$";
 
     @Override
@@ -43,7 +43,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     }
 
     @Override
-    public void consumeWithTx(TaobaoCouponMessage taobaoCouponMessage) {
+    public void consumeWithTx(KtvSkuMessage.TaobaoCouponMessage taobaoCouponMessage) {
         OuterOrder outerOrder = OuterOrder.findById(taobaoCouponMessage.outerOrderId);
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             //订单接收到，开始创建一百券订单，并告诉淘宝我们的订单信息
@@ -182,11 +182,11 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
 
     @Override
     protected Class getMessageType() {
-        return TaobaoCouponMessage.class;
+        return KtvSkuMessage.TaobaoCouponMessage.class;
     }
 
     @Override
     protected String queue() {
-        return TaobaoCouponMessageUtil.QUEUE_NAME;
+        return KtvSkuMessage.TaobaoCouponMessageUtil.QUEUE_NAME;
     }
 }

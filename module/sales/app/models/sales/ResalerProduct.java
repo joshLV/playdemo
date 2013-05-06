@@ -8,10 +8,7 @@ import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 发布到第三方产品的信息
@@ -164,7 +161,7 @@ public class ResalerProduct extends Model {
         return this;
     }
 
-    public static ResalerProduct getGoodsByShop(Shop shop, Supplier supplier) {
-        return ResalerProduct.find("select r from ResalerProduct r join r.goods.shops s where s.id=? and r.goods.supplierId=? and r.partner=?", shop.id, supplier.id, OuterOrderPartner.TB).first();
+    public static List<ResalerProduct> getPartnerProductIdByGoods(Goods goods, OuterOrderPartner partner) {
+        return ResalerProduct.find("goods=? and partner=?", goods, partner).fetch();
     }
 }

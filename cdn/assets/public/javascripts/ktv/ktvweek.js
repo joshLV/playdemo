@@ -88,7 +88,7 @@ var KTVWeek = (function  () {
             var startDay = new XDate(strategy.startDay);
             var endDay = new XDate(strategy.endDay);
             var diffDays = startDay.diffDays(endDay);
-            var weekdays = strategy.useWeekdays.split(",");
+            var weekdays = strategy.dayOfWeeks.split(",");
 
             var startTimes = data[i].startTimes.split(",");
             var duration = data[i].duration;

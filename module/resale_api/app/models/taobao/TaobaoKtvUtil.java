@@ -113,13 +113,13 @@ public class TaobaoKtvUtil {
         if (goods == null) {
             return;
         }
-        ResalerProduct product = ResalerProduct.getGoodsByShop(shop, supplierUser.supplier);
+//        ResalerProduct product = ResalerProduct.getGoodsByShop(shop, supplierUser.supplier);
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
         //找到淘宝的token
         Resaler resaler = Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME);
         OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
         ItemSkuUpdateRequest req = new ItemSkuUpdateRequest();
-        req.setNumIid(Long.valueOf(product.partnerProductId));
+//        req.setNumIid(Long.valueOf(product.partnerProductId));
         req.setProperties("$时间:12：00至15：00;");
         req.setQuantity(3L);
         req.setPrice("9");
