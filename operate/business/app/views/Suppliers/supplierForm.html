@@ -64,14 +64,17 @@ error:'supplier.operator'}
 
 <div class="control-group">
     <label class="control-label">商户菜单控制</label>
+#{if "edit".equals(action)}
 %{
-    sellECoupon=supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON)?:'0';
-    canSaleReal=supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL)?:'0';
-    ktvSupplier=supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER)?:'0';
+    sellECoupon=sellECoupon?:supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON)?:'0';
+    canSaleReal=canSaleReal?:supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL)?:'0';
+    ktvSupplier=ktvSupplier?:supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER)?:'0';
     }%
+#{/if}
     <div class="controls">
         <input type="checkbox" name="sellECoupon" id="supplier_sellECoupon"
-               value="${sellECoupon}"${"1".equals(sellECoupon)?'checked':''}/>&{'supplier.sellECoupon'}&nbsp;&nbsp;
+               value="${sellECoupon}"${"1".equals(sellECoupon)?'checked':''}/>&{'supplier.sellECoupon'}
+        &nbsp;&nbsp;
         <input type="checkbox" name="canSaleReal" id="supplier_canSaleReal"
                value="${canSaleReal}" ${"1".equals(canSaleReal)?'checked':''}/> &{'supplier.canSaleReal'}&nbsp;&nbsp;
         <input type="checkbox" name="ktvSupplier" id="supplier_ktvSupplier"
