@@ -18,4 +18,5 @@ public class SupplierLinkTest extends UnitTest {
 //        assertEquals("http://localhost.uhuila.net/users", SupplierLink.getKtvLink("/ktv"));
 
     }
+
 }

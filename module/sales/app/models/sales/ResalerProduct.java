@@ -3,6 +3,7 @@ package models.sales;
 import com.google.gson.Gson;
 import com.uhuila.common.constants.DeletedStatus;
 import models.order.OuterOrderPartner;
+import models.supplier.Supplier;
 import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
 
@@ -10,6 +11,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 发布到第三方产品的信息
@@ -144,7 +146,7 @@ public class ResalerProduct extends Model {
                 this.url = "http://t.58.com/sh/" + partnerProductId + "/";
                 break;
             case SINA:
-                this.url="http://yibaiquan.com/weibo/product/"+partnerProductId;
+                this.url = "http://yibaiquan.com/weibo/product/" + partnerProductId;
                 break;
             default:
                 break;
@@ -160,5 +162,9 @@ public class ResalerProduct extends Model {
     public ResalerProduct status(ResalerProductStatus status) {
         this.status = status;
         return this;
+    }
+
+    public static ResalerProduct getGoodsByShop(Shop shop, Supplier supplier) {
+        return ResalerProduct.find("select r from ResalerProduct r join r.goods.shops s where s.id=? and r.goods.supplierId=? and r.partner=?", shop.id, supplier.id, OuterOrderPartner.TB).first();
     }
 }

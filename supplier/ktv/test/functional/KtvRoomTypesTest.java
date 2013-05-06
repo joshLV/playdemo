@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import play.test.FunctionalTest;
+
 /**
  * User: yan
  * Date: 13-4-11

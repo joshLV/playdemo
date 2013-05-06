@@ -1282,6 +1282,10 @@ public class Goods extends Model {
         return find("supplierId=? and deleted=? and isLottery=?", supplierId, DeletedStatus.UN_DELETED, Boolean.FALSE).fetch();
     }
 
+    public static Goods findKtvGood(Supplier supplier, Shop shop) {
+        return find("select g from Goods g join g.shops s where g.supplierId=? and g.deleted=? and s.id=? and g.status =?", supplier.id, DeletedStatus.UN_DELETED, shop.id, GoodsStatus.ONSALE).first();
+    }
+
     public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition, int pageNumber, int pageSize) {
 
         JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>("Goods g", "g", Goods.class, condition.getFilter(), condition.getParamMap()).orderBy(condition.getOrderByExpress());

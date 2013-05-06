@@ -2,15 +2,26 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.taobao.api.ApiException;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.request.ItemSkuAddRequest;
+import com.taobao.api.response.ItemSkuAddResponse;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
+import models.accounts.AccountType;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvRoom;
 import models.ktv.KtvRoomType;
+import models.oauth.OAuthToken;
+import models.oauth.WebSite;
+import models.resale.Resaler;
 import models.sales.Shop;
 import models.supplier.Supplier;
+import models.taobao.TaobaoKtvUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
+import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
@@ -45,6 +56,7 @@ public class KtvPriceSchedules extends Controller {
 
 
     public static void add() {
+        TaobaoKtvUtil.addGoodsSku(null, SupplierRbac.currentUser());
         initParams(null, null, null);
         render();
     }
@@ -69,6 +81,7 @@ public class KtvPriceSchedules extends Controller {
     }
 
     public static void create(@Valid KtvPriceSchedule priceSchedule, List<String> useWeekDays) {
+        Supplier supplier = SupplierRbac.currentUser().supplier;
         priceSchedule.useWeekDay = StringUtils.join(useWeekDays, ",");
         checkTime(null, priceSchedule);
         if (Validation.hasErrors()) {
@@ -78,6 +91,8 @@ public class KtvPriceSchedules extends Controller {
         priceSchedule.createdAt = new Date();
         priceSchedule.deleted = DeletedStatus.UN_DELETED;
         priceSchedule.save();
+
+
         index(null, null);
     }
 
@@ -129,6 +144,7 @@ public class KtvPriceSchedules extends Controller {
 
     public static void edit(Long id) {
         KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(id);
+        TaobaoKtvUtil.updateSku(priceSchedule, SupplierRbac.currentUser());
         if (priceSchedule == null) {
             error("没有该时间段的价格信息！请确认!");
             return;
