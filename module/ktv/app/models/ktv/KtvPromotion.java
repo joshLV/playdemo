@@ -7,21 +7,7 @@ import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -39,10 +25,10 @@ public class KtvPromotion extends Model {
             joinColumns = @JoinColumn(name = "promotion_id"))
     public Set<Shop> shops;
 
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinTable(name = "ktv_promotions_room_types",
-            inverseJoinColumns = @JoinColumn(name = "room_type_id"),
-            joinColumns = @JoinColumn(name = "ktv_promotion_id"))
+    @ElementCollection(targetClass=KtvRoomType.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name="ktv_promotions_room_types")
+    @Column(name="room_type")
     public Set<KtvRoomType> roomTypes;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "promotion")

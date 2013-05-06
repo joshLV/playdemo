@@ -1,5 +1,6 @@
 var KTVOrder = (function  () {
     var weekNames = ["一", "二", "三", "四", "五", "六", "日"];
+    var roomTypes = ["mini", "small", "middle", "large", "deluxe"];
 
     function KTVOrder(){
         return  init(
@@ -9,17 +10,15 @@ var KTVOrder = (function  () {
 
     function init(ktv, args) {
         if (args.length != 1) { return ktv}
-        ktv.wrapperId = args[0].wrapperId;
-        ktv.viewMode = args[0].viewMode;
-        ktv.summaryId = args[0].summaryId;
-        ktv.amountId = args[0].amountId;
+        var arg = args[0]; 
+        ktv.wrapperId = arg.wrapperId;
+        ktv.viewMode = arg.viewMode;
+        ktv.summaryId = arg.summaryId;
+        ktv.amountId = arg.amountId;
 
-        ktv.day = new XDate(new XDate(args[0].day).toString("yyyy-MM-dd"));
-        ktv.dataUrl = args[0].dataUrl;
-        ktv.shopId = args[0].shopId;
-
-        ktv.rooms = [];
-        ktv.selected = [];
+        ktv.day = new XDate(new XDate(arg.day).toString("yyyy-MM-dd"));
+        ktv.dataUrl = arg.dataUrl;
+        ktv.shopId = arg.shopId;
 
         $("#" + ktv.wrapperId + " .wk-order-days .wk-order-day").each(function(index){
             var ele = $(this);
@@ -32,6 +31,31 @@ var KTVOrder = (function  () {
                 ktv.loadScheduleDataFor(dataDay);
             });
         });
+
+        ktv.rooms =  {};
+        /* ktv.rooms like this:
+        {
+            "mini":{
+                "wrapperDiv":"<div>",
+                "rooms":[
+                    {
+                        "div":"<div>",
+                        "holders":[8,11]
+                    },
+                ]
+            }
+        }
+        */
+        for (var i = 0; i < roomTypes.length; i++) {
+            var roomType = roomTypes[i];
+            ktv.rooms[roomType] = {
+                "wrapperDiv": $("#"+ktv.wrapperId + " room-"+roomType).first(),
+                "rooms":[]
+            };
+        };
+
+        ktv.selected = [];
+
 
         ktv.loadScheduleDataFor(ktv.day);
         return ktv;
@@ -62,7 +86,7 @@ var KTVOrder = (function  () {
         $.post(
             ktv.dataUrl,
             {
-                shopId:ktv.shopId,
+                "shop.id":ktv.shopId,
                 day:ktv.day.toString("yyyy-MM-dd")
             },
             function(data){
@@ -148,18 +172,25 @@ var KTVOrder = (function  () {
         }
     }
 
+    proto.findAvaliableRoom = function(roomType, startTime, duration) {
+
+    }
+
     proto.dataLoaded = function (data) {
         //你好
         var ktv = this;
-        var roomsEle = $("#" + ktv.wrapperId + " .rooms");
+        //清空所有房间大类下面的子房间，及相关数据
+        for (var i = 0; i < roomTypes.length; i++) {
+            var roomType = roomTypes[i];
+            ktv.rooms[roomType]["rooms"] = [];
+        };
 
-        roomsEle.empty();
         $("#" + ktv.summaryId).empty();
         ktv.selected = [];
-        ktv.rooms = [];
 
         //创建房间
-        for (var i = 0; i < data.rooms.length; i++) {
+        /*
+        for (i = 0; i < data.rooms.length; i++) {
             var room = data.rooms[i];
             ktv.rooms[room.id] = [];
             roomsEle.append(
@@ -174,9 +205,14 @@ var KTVOrder = (function  () {
                 })
             );
         }
+        */
         //先画上已预订的格子
         for (i = 0; i < data.schedules.length; i++) {
             var schedule = data.schedules[i];
+            for (var j = 0; i < schedule.roomCount; i++) {
+
+            };
+
             var time = Number(schedule.roomTime.substring(0, schedule.roomTime.indexOf(":")));
             ktv.rooms[schedule.roomId].push(time);
             $("#" + ktv.wrapperId + " [data-room-id='" + schedule.roomId + "']").append(

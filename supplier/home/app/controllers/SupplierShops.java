@@ -2,14 +2,12 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
-import models.ktv.KtvRoom;
 import models.ktv.KtvRoomType;
 import models.sales.Area;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-import play.data.binding.As;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
@@ -55,11 +53,6 @@ public class SupplierShops extends Controller {
         shop.createdAt = new Date();
         shop.create();
         Supplier supplier = SupplierRbac.currentUser().supplier;
-        //有ktv属性才可以编辑
-        if ("1".equals(supplier.getProperty(Supplier.KTV_SUPPLIER))) {
-            //添加ktv包厢数量
-            addKtvRooms(roomTypeIds, shop);
-        }
         index(null);
     }
 
@@ -75,8 +68,7 @@ public class SupplierShops extends Controller {
     private static void renderParams(Shop shop) {
 
         Supplier supplier = SupplierRbac.currentUser().supplier;
-        List<KtvRoomType> ktvRoomTypeList = KtvRoomType.findRoomTypeList(supplier);
-        renderArgs.put("ktvRoomTypeList", ktvRoomTypeList);
+        renderArgs.put("ktvRoomTypeList", KtvRoomType.values());
         renderArgs.put("supplier", supplier);
 
         Area district = Area.findParent(shop.areaId);
@@ -145,35 +137,8 @@ public class SupplierShops extends Controller {
         sp.save();
 
         Supplier supplier = SupplierRbac.currentUser().supplier;
-        //有ktv属性才可以编辑
-        if ("1".equals(supplier.getProperty(Supplier.KTV_SUPPLIER))) {
-            addKtvRooms(roomTypeIds, sp);
-        }
 
         index(null);
-    }
-
-    /**
-     * 添加或修改ktv包厢数量
-     */
-    private static void addKtvRooms(List<Long> roomTypeIds, Shop sp) {
-        for (Long roomTypeId : roomTypeIds) {
-            KtvRoomType ktvRoomType = KtvRoomType.findById(roomTypeId);
-            long number = Long.valueOf(params.get("roomTypeNumber" + roomTypeId));
-
-            List<KtvRoom> ktvRoomList = KtvRoom.findKtvRoom(ktvRoomType, sp);
-            long roomNumber = KtvRoom.getRoomNumber(ktvRoomType, sp);
-            if (ktvRoomList.size() == 0 || number > roomNumber) {
-                new KtvRoom(ktvRoomType, sp).save();
-            } else {
-                //如果数量小于包厢数量，则标记为deleted,否则增加
-                if (number < roomNumber) {
-                    KtvRoom ktvRoom = ktvRoomList.get(0);
-                    ktvRoom.deleted = DeletedStatus.DELETED;
-                    ktvRoom.save();
-                }
-            }
-        }
     }
 
     /**

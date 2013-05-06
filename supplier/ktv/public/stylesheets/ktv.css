@@ -85,8 +85,6 @@
 .wk-pricecell {
     position: absolute;
     width: 90px;
-    height: 30px;
-    line-height: 30px;
     color: #fff;
     text-align: center;
     z-index: 10;

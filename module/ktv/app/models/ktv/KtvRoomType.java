@@ -1,35 +1,40 @@
 package models.ktv;
 
-import models.supplier.Supplier;
-import play.db.jpa.Model;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import java.util.List;
-
-
 /**
  * KTV房间类型.
  */
-@Entity
-@Table(name = "ktv_room_types")
-public class KtvRoomType extends Model {
+public enum KtvRoomType {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "supplier_id", nullable = false)
-    public Supplier supplier;
+    MINI("MINI", "迷你包", "123"),
+    SMALL("SMALL", "小包", "456"),
+    MIDDLE("MIDDLE", "中包", "789"),
+    LARGE("LARGE", "大包", "198"),
+    DELUXE("DELUXE", "豪华包", "432");
 
-    public String name;
+    private String type;
+    private String name;
+    private String taobaoId;
 
+    private KtvRoomType(String type, String name, String taobaoId) {
+        this.type = type;
+        this.name = name;
+        this.taobaoId = taobaoId;
+    }
 
-    /**
-     * 取得包厢类型的列表
-     */
-    public static List<KtvRoomType> findRoomTypeList(Supplier supplier) {
-        return KtvRoomType.find("supplier=?", supplier).fetch();
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getTaobaoId() {
+        return taobaoId;
+    }
+
+    @Override
+    public String toString(){
+        return this.type;
     }
 }

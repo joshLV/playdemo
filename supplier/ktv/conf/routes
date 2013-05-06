@@ -15,9 +15,11 @@ PUT     /ktv/room-type/{id}                         KtvRoomTypes.update
 
 #ktv 价格设置
 GET     /ktv/price-schedule                              KtvPriceSchedules.index
-GET     /ktv/price-schedule/new                          KtvPriceSchedules.add
+GET     /ktv/price-schedule/new                          KtvPriceSchedules.showAdd
+POST    /ktv/price-schedule/collision-detect            KtvPriceSchedules.jsonCollisionDetection
+
 POST    /ktv/price-schedule                              KtvPriceSchedules.create
-POST    /ktv/price-schedule/json-search                  KtvPriceSchedules.jsonSearch
+*    /ktv/price-schedule/json-search                  KtvPriceSchedules.jsonSearch
 GET     /ktv/price-schedule/{id}/edit                    KtvPriceSchedules.edit
 DELETE  /ktv/price-schedule/{id}                         KtvPriceSchedules.delete
 PUT     /ktv/price-schedule/{id}                         KtvPriceSchedules.update
