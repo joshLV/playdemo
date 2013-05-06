@@ -1,9 +1,7 @@
 package controllers;
 
 import controllers.supplier.SupplierInjector;
-import models.ktv.KtvRoom;
 import models.ktv.KtvRoomType;
-import models.supplier.Supplier;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -16,6 +14,7 @@ import java.util.List;
  */
 @With({SupplierRbac.class, SupplierInjector.class})
 public class KtvRoomTypes extends Controller {
+    /*
     public static void index() {
         List<KtvRoomType> ktvRoomTypeList = KtvRoomType.findRoomTypeList(SupplierRbac.currentUser().supplier);
         render(ktvRoomTypeList);
@@ -52,4 +51,5 @@ public class KtvRoomTypes extends Controller {
         index();
 
     }
+    */
 }

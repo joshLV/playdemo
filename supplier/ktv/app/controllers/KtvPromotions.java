@@ -97,8 +97,8 @@ public class KtvPromotions extends Controller {
         renderArgs.put("shopIds", shopIds);
 
         //初始化适用包厢
-        List<KtvRoomType> roomsList = KtvRoomType.findRoomTypeList(supplier);
-        renderArgs.put("roomsList", roomsList);
+//        List<KtvRoomType> roomsList = KtvRoomType.findRoomTypeList(supplier);
+//        renderArgs.put("roomsList", roomsList);
 
         String roomTypeIds = setRoomTypeIds(promotion);
         renderArgs.put("roomTypeIds", roomTypeIds);
@@ -117,7 +117,7 @@ public class KtvPromotions extends Controller {
         String roomTypeIds = ",";
         if (promotion.roomTypes != null && promotion.roomTypes.size() > 0) {
             for (KtvRoomType roomType : promotion.roomTypes) {
-                roomTypeIds += roomType.id + ",";
+//                roomTypeIds += roomType.id + ",";
             }
         }
         return roomTypeIds;

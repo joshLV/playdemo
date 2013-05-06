@@ -1,18 +1,11 @@
 package controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.uhuila.common.util.DateUtil;
 import controllers.modules.website.cas.OAuthType;
 import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.Security;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import controllers.modules.website.cas.annotations.TargetOAuth;
-import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.consumer.User;
-import models.ktv.KtvPriceSchedule;
-import models.ktv.KtvRoom;
 import models.ktv.KtvRoomOrderInfo;
 import models.ktv.KtvRoomType;
 import models.order.*;
@@ -27,11 +20,9 @@ import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
-import play.classloading.enhancers.LocalvariablesNamesEnhancer;
 import play.data.validation.Validation;
 import play.mvc.Before;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.With;
 
 import java.math.BigDecimal;
@@ -172,18 +163,18 @@ public class WebSinaVouchers extends Controller {
                 String[] values = request.params.getAll(key);
                 String[] scheduledTimes = values[0].split(",");
                 Long roomId = Long.valueOf(key.substring("roomId".length()));
-                KtvRoom ktvRoom = KtvRoom.findById(roomId);
+//                KtvRoom ktvRoom = KtvRoom.findById(roomId);
                 BigDecimal salePrice = BigDecimal.ZERO;
                 OrderItems orderItems = new OrderItems(order, goods, 1L, phone, salePrice, salePrice).save();
 
                 for (String scheduledTime : scheduledTimes) {
-                    List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(scheduledDay, shop, ktvRoom, scheduledTime);
-                    if (scheduledRoomList.size() > 0) {
-                        error("该包厢已被他人预定！");
-                    }
-                    KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
-                    salePrice = salePrice.add(ktvPriceSchedule.price);
-                    new KtvRoomOrderInfo(goods, orderItems, ktvRoom, ktvRoom.roomType, scheduledDay, scheduledTime).save();
+//                    List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(scheduledDay, shop, ktvRoom, scheduledTime);
+//                    if (scheduledRoomList.size() > 0) {
+//                        error("该包厢已被他人预定！");
+//                    }
+//                    KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
+//                    salePrice = salePrice.add(ktvPriceSchedule.price);
+                    new KtvRoomOrderInfo(goods, orderItems, KtvRoomType.MIDDLE, scheduledDay, scheduledTime).save();
                 }
 
                 //eCoupon.originalPrice=eCoupon.salePrice*(goods.originalPrice/goods.salePrice)

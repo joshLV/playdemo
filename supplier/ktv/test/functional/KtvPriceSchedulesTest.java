@@ -1,28 +1,6 @@
 package functional;
 
-import com.uhuila.common.util.DateUtil;
-import controllers.KtvPriceSchedules;
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import models.admin.SupplierUser;
-import models.ktv.KtvPriceSchedule;
-import models.ktv.KtvRoom;
-import models.ktv.KtvRoomType;
-import models.sales.Shop;
-import models.supplier.Supplier;
-import models.supplier.SupplierProperty;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import play.data.validation.*;
-import play.data.validation.Error;
-import play.mvc.Http;
-import play.mvc.Router;
 import play.test.FunctionalTest;
-import util.DateHelper;
-
-import java.util.*;
 
 /**
  * User: yan
@@ -30,9 +8,10 @@ import java.util.*;
  * Time: 下午1:57
  */
 public class KtvPriceSchedulesTest extends FunctionalTest {
+    /*
     Supplier supplier;
     SupplierUser supplierUser;
-    KtvRoomType ktvRoomType;
+//    KtvRoomType ktvRoomType;
     Shop shop;
     SupplierProperty property;
 
@@ -200,5 +179,6 @@ public class KtvPriceSchedulesTest extends FunctionalTest {
         assertEquals("2198-01-01", DateUtil.dateToString(ktvPriceSchedule.endDay,0));
         assertEquals("23:00", ktvPriceSchedule.endTime);
     }
+    */
 
 }
