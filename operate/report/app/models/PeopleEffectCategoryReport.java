@@ -478,18 +478,18 @@ public class PeopleEffectCategoryReport {
             }
 
         }
-//        for (PeopleEffectCategoryReport cheatedItem : cheatedOrderResultList) {
-//            PeopleEffectCategoryReport item = map.get(getReportKey(cheatedItem));
-//            if (item == null) {
-////                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
-//                map.put(getReportKey(cheatedItem), cheatedItem);
-//            } else {
-//                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
-//                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
-////                item.profit = item.salePrice.subtract(cheatedItem.cheatedOrderAmount)
-////                        .subtract(item.goodsCost).add(cheatedItem.cheatedOrderCost);
-//            }
-//        }
+        for (PeopleEffectCategoryReport cheatedItem : cheatedOrderResultList) {
+            PeopleEffectCategoryReport item = map.get(getReportKey(cheatedItem));
+            if (item == null) {
+//                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+                map.put(getReportKey(cheatedItem), cheatedItem);
+            } else {
+                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
+                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
+                item.profit = item.salePrice.subtract(cheatedItem.cheatedOrderAmount)
+                        .subtract(item.goodsCost).add(cheatedItem.cheatedOrderCost);
+            }
+        }
 
         for (PeopleEffectCategoryReport refundItem : refundResultList) {
             PeopleEffectCategoryReport item = map.get(getReportKey(refundItem));
@@ -591,9 +591,9 @@ public class PeopleEffectCategoryReport {
         BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
         BigDecimal cheatedOrderCost = item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost;
         BigDecimal amountCommissionAmount = item.amountCommissionAmount == null ? BigDecimal.ZERO : item.amountCommissionAmount;
-//        item.profit = salePrice.subtract(cheatedOrderAmount).subtract(refundPrice)
-//                .subtract(amountCommissionAmount).add(totalCommission)
-//                .subtract(goodsCost).add(refundCost).add(cheatedOrderCost);
+        item.profit = salePrice.subtract(cheatedOrderAmount).subtract(refundPrice)
+                .subtract(amountCommissionAmount).add(totalCommission)
+                .subtract(goodsCost).add(refundCost).add(cheatedOrderCost);
     }
 
     /**
@@ -614,7 +614,7 @@ public class PeopleEffectCategoryReport {
         BigDecimal refundPrice = item.refundPrice == null ? BigDecimal.ZERO : item.refundPrice;
         BigDecimal goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost;
         BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
-//        item.profit = salePrice.subtract(refundPrice).subtract(goodsCost).add(refundCost);
+        item.profit = salePrice.subtract(refundPrice).subtract(goodsCost).add(refundCost);
     }
 
 
@@ -638,9 +638,9 @@ public class PeopleEffectCategoryReport {
         BigDecimal goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost;
         BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
         BigDecimal cheatedOrderCost = item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost;
-//        item.profit = salePrice.subtract(cheatedOrderAmount).subtract(refundPrice)
-//                .subtract(amountCommissionAmount).add(refundCommissionAmount)
-//                .subtract(goodsCost).add(refundCost).add(cheatedOrderCost);
+        item.profit = salePrice.subtract(cheatedOrderAmount).subtract(refundPrice)
+                .subtract(amountCommissionAmount).add(refundCommissionAmount)
+                .subtract(goodsCost).add(refundCost).add(cheatedOrderCost);
     }
 
     private static void mergeResultList(PeopleEffectCategoryReportCondition condition, Map<String, PeopleEffectCategoryReport> map, List<PeopleEffectCategoryReport> resultList) {
@@ -806,18 +806,18 @@ public class PeopleEffectCategoryReport {
             }
 
         }
-//        for (PeopleEffectCategoryReport cheatedItem : cheatedOrderResultList) {
-//            PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(cheatedItem));
-//            if (item == null) {
-////                cheatedItem.netProfit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
-//                map.put(getReportKeyOfPeopleEffect(cheatedItem), cheatedItem);
-//            } else {
-//                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
-//                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
-////                item.netProfit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
-////                        .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
-//            }
-//        }
+        for (PeopleEffectCategoryReport cheatedItem : cheatedOrderResultList) {
+            PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(cheatedItem));
+            if (item == null) {
+//                cheatedItem.netProfit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+                map.put(getReportKeyOfPeopleEffect(cheatedItem), cheatedItem);
+            } else {
+                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
+                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
+                item.netProfit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
+                        .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
+            }
+        }
 
         for (PeopleEffectCategoryReport refundItem : refundList) {
             PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(refundItem));
@@ -851,16 +851,16 @@ public class PeopleEffectCategoryReport {
         }
 
 
-//        totalCommission = BigDecimal.ZERO;
-//        for (PeopleEffectCategoryReport cheatedResalerItem : cheatedOrderResalerResultList) {
-//            PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(cheatedResalerItem));
-//            if (item == null) {
-//                map.put(getReportKeyOfPeopleEffect(cheatedResalerItem), cheatedResalerItem);
-//            } else {
-//                setTotalCheatedOrderItem(cheatedResalerItem, item);
-//
-//            }
-//        }
+        totalCommission = BigDecimal.ZERO;
+        for (PeopleEffectCategoryReport cheatedResalerItem : cheatedOrderResalerResultList) {
+            PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(cheatedResalerItem));
+            if (item == null) {
+                map.put(getReportKeyOfPeopleEffect(cheatedResalerItem), cheatedResalerItem);
+            } else {
+                setTotalCheatedOrderItem(cheatedResalerItem, item);
+
+            }
+        }
         totalCommission = BigDecimal.ZERO;
         for (PeopleEffectCategoryReport refundResalerItem : refundResalerResultList) {
             PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(refundResalerItem));
@@ -909,8 +909,8 @@ public class PeopleEffectCategoryReport {
         BigDecimal cheatedOrderCost = item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost;
         BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
         //净利润
-//        item.netProfit = totalAmount.subtract(totalRefundPrice).subtract(cheatedOrderAmount)
-//                .subtract(totalCost).add(cheatedOrderCost).add(refundCost);
+        item.netProfit = totalAmount.subtract(totalRefundPrice).subtract(cheatedOrderAmount)
+                .subtract(totalCost).add(cheatedOrderCost).add(refundCost);
     }
 
     /**
@@ -947,9 +947,9 @@ public class PeopleEffectCategoryReport {
         BigDecimal cheatedOrderCost = item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost;
         BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
         BigDecimal totalAmountCommissionAmount = item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount;
-//        item.netProfit = totalAmount.subtract(cheatedOrderAmount).subtract(totalRefundPrice)
-//                .subtract(totalAmountCommissionAmount).add(cheatedOrderCommissionAmount)
-//                .subtract(totalCost).add(refundCost).add(cheatedOrderCost);
+        item.netProfit = totalAmount.subtract(cheatedOrderAmount).subtract(totalRefundPrice)
+                .subtract(totalAmountCommissionAmount).add(cheatedOrderCommissionAmount)
+                .subtract(totalCost).add(refundCost).add(cheatedOrderCost);
     }
 
     /**
@@ -967,9 +967,9 @@ public class PeopleEffectCategoryReport {
         BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
         BigDecimal totalAmountCommissionAmount = item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount;
 
-//        item.netProfit = totalAmount.subtract(cheatedOrderAmount).subtract(totalRefundPrice)
-//                .subtract(totalAmountCommissionAmount).add(refundCommissionAmount)
-//                .subtract(totalCost).add(refundCost).add(cheatedOrderCost);
+        item.netProfit = totalAmount.subtract(cheatedOrderAmount).subtract(totalRefundPrice)
+                .subtract(totalAmountCommissionAmount).add(refundCommissionAmount)
+                .subtract(totalCost).add(refundCost).add(cheatedOrderCost);
     }
 
     /**
