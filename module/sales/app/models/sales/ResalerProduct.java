@@ -2,6 +2,11 @@ package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.order.OuterOrderPartner;
+import org.hibernate.annotations.Index;
+import play.db.jpa.Model;
+
+import javax.persistence.*;
+import java.util.*;
 import models.resale.Resaler;
 import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
@@ -174,5 +179,9 @@ public class ResalerProduct extends Model {
     public ResalerProduct status(ResalerProductStatus status) {
         this.status = status;
         return this;
+    }
+
+    public static List<ResalerProduct> getPartnerProductIdByGoods(Goods goods, OuterOrderPartner partner) {
+        return ResalerProduct.find("goods=? and partner=?", goods, partner).fetch();
     }
 }

@@ -5,16 +5,17 @@ import models.sales.Shop;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author likang
- * Date: 13-5-6
- *
- * 商品与 KTV产品的对应关系
+ *         Date: 13-5-6
+ *         <p/>
+ *         商品与 KTV产品的对应关系
  */
 @Entity
 @Table(name = "ktv_product_goods")        //定义联合唯一约束
-public class KtvProductGoods extends Model{
+public class KtvProductGoods extends Model {
     @ManyToOne
     @JoinColumn(name = "shop_id")
     public Shop shop;
@@ -26,4 +27,8 @@ public class KtvProductGoods extends Model{
     @ManyToOne
     @JoinColumn(name = "product_id")
     public KtvProduct product;
+
+    public static List<Goods> findGoods(Shop shop, KtvProduct product) {
+        return KtvProductGoods.find("shop=? and product=? ", shop, product).fetch();
+    }
 }

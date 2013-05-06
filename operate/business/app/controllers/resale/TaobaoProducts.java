@@ -6,8 +6,10 @@ import com.taobao.api.FileItem;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.ItemAddRequest;
 import com.taobao.api.request.ItemImgUploadRequest;
+import com.taobao.api.request.ItemSkuAddRequest;
 import com.taobao.api.response.ItemAddResponse;
 import com.taobao.api.response.ItemImgUploadResponse;
+import com.taobao.api.response.ItemSkuAddResponse;
 import controllers.OperateRbac;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
@@ -18,6 +20,7 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductStatus;
+import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
@@ -34,7 +37,7 @@ import java.math.BigDecimal;
  */
 @With(OperateRbac.class)
 @ActiveNavigation("resale_partner_product")
-public class TaobaoProducts extends Controller{
+public class TaobaoProducts extends Controller {
     private static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
     private static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "21293912");
     private static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "1781d22a1f06c4f25f1f679ae0633400");
@@ -49,11 +52,16 @@ public class TaobaoProducts extends Controller{
         if (goods == null) {
             notFound();
         }
+        //ktv商户直接展示ktv上传页面
+        if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
+            render("resale/TaobaoProducts/showKtvUpload.html", goods);
+        }
         render(goods);
     }
+
     @ActiveNavigation("resale_partner_product")
     public static void upload(Long num, Long goodsId, BigDecimal price, BigDecimal faceValue, String type,
-                              String stuffStatus,String title, String desc, String locationState,
+                              String stuffStatus, String title, String desc, String locationState,
                               String locationCity, Long cid, String props, String approveStatus,
                               String[] sellerCids) {
         OperateUser operateUser = OperateRbac.currentUser();
