@@ -45,7 +45,7 @@ public class KtvDailySchedule extends Controller {
             priceScheduleMap.put("endDay", shopPriceSchedule.schedule.endDay);
             priceScheduleMap.put("dayOfWeeks", shopPriceSchedule.schedule.dayOfWeeks);
             priceScheduleMap.put("roomType", shopPriceSchedule.schedule.roomType);
-            priceScheduleMap.put("duration", shopPriceSchedule.schedule.duration);
+            priceScheduleMap.put("duration", shopPriceSchedule.schedule.product.duration);
             priceScheduleMap.put("price", shopPriceSchedule.schedule.price);
             priceScheduleMap.put("startTimes", shopPriceSchedule.schedule.startTimes);
             priceScheduleMap.put("roomCount", shopPriceSchedule.roomCount);

@@ -86,7 +86,7 @@ public class KtvPriceSchedules extends Controller {
         }
         Set<Integer> startTimes = priceSchedule.getStartTimesAsSet();
         //检测参数合法性
-        String error = validStrategy(priceSchedule.duration, priceSchedule.startDay, priceSchedule.endDay,
+        String error = validStrategy(priceSchedule.product.duration, priceSchedule.startDay, priceSchedule.endDay,
                 priceSchedule.roomType, shopCountMap.keySet(), useWeekDays, startTimes);
 
         if (error != null) {
@@ -95,7 +95,7 @@ public class KtvPriceSchedules extends Controller {
 
         //时间碰撞检测
         Map<String, Object> collisions = collisionDetection(
-                priceSchedule.duration, priceSchedule.startDay, priceSchedule.endDay,
+                priceSchedule.product.duration, priceSchedule.startDay, priceSchedule.endDay,
                 priceSchedule.roomType, shopCountMap.keySet(), useWeekDays, startTimes);
         if (collisions != null) {
             error("价格策略有冲突，请重新选择");
@@ -129,7 +129,7 @@ public class KtvPriceSchedules extends Controller {
         }
 
         //检测参数合法性
-        String error = validStrategy(priceSchedule.duration, priceSchedule.startDay, priceSchedule.endDay,
+        String error = validStrategy(priceSchedule.product.duration, priceSchedule.startDay, priceSchedule.endDay,
                 priceSchedule.roomType, shops, useWeekDays, startTimes);
 
         if (error != null) {
@@ -138,7 +138,7 @@ public class KtvPriceSchedules extends Controller {
 
         //时间碰撞检测
         Map<String, Object> collisions = collisionDetection(
-                priceSchedule.duration, priceSchedule.startDay, priceSchedule.endDay,
+                priceSchedule.product.duration, priceSchedule.startDay, priceSchedule.endDay,
                 priceSchedule.roomType, shops, useWeekDays, startTimes);
         if (collisions != null) {
             Shop shop = (Shop)collisions.get("shop");
@@ -178,7 +178,7 @@ public class KtvPriceSchedules extends Controller {
             Set<Shop> shops, Set<Integer> useWeekDaysSet, Set<Integer> startTimesSet) {
 
         //查出所有 时间交叉、欢唱时长相同、包厢类型相同、门店交叉的门店策略
-        Query query = JPA.em().createQuery("select k from KtvShopPriceSchedule k where k.schedule.duration = :duration " +
+        Query query = JPA.em().createQuery("select k from KtvShopPriceSchedule k where k.schedule.product.duration = :duration " +
                 "and k.schedule.startDay <= :endDay and k.schedule.endDay >= :startDay and k.schedule.roomType = :roomType " +
                 "and k.shop in :shops");
         query.setParameter("duration", duration);

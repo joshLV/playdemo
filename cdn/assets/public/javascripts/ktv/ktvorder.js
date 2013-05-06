@@ -31,17 +31,27 @@ var KTVOrder = (function  () {
                 ktv.loadScheduleDataFor(dataDay);
             });
         });
-        //不同类型的房间类型分开，每种有一个独立的父div元素，方便随时添加某一类型的房间
-        ktv.roomTypeEles = {};//{"mini":<div>,"small":<div>}
-        //房间div元素
-        ktv.roomEles =  {};//{"mini":[<div>,<div>],"small":[<div>,<div>]}
-        //每个房间的方块占用情况(已预订或者可预订，非占用的稍后统一画上空的元素)
-        ktv.roomBlockHolders = {};//{"mini":[[8,11],[8,9]], "small":[[11,13,15],[]]}
+
+        ktv.rooms =  {};
+        /* ktv.rooms like this:
+        {
+            "mini":{
+                "wrapperDiv":"<div>",
+                "rooms":[
+                    {
+                        "div":"<div>",
+                        "holders":[8,11]
+                    },
+                ]
+            }
+        }
+        */
         for (var i = 0; i < roomTypes.length; i++) {
             var roomType = roomTypes[i];
-            ktv.roomTypeEles[roomType] = $("#"+ktv.wrapperId + " room-"+roomType).first();
-            ktv.roomEles[roomType] = [];
-            ktv.roomBlockHolders[roomType] = [];
+            ktv.rooms[roomType] = {
+                "wrapperDiv": $("#"+ktv.wrapperId + " room-"+roomType).first(),
+                "rooms":[]
+            };
         };
 
         ktv.selected = [];
@@ -162,20 +172,21 @@ var KTVOrder = (function  () {
         }
     }
 
+    proto.findAvaliableRoom = function(roomType, startTime, duration) {
+
+    }
+
     proto.dataLoaded = function (data) {
         //你好
         var ktv = this;
         //清空所有房间大类下面的子房间，及相关数据
         for (var i = 0; i < roomTypes.length; i++) {
             var roomType = roomTypes[i];
-            ktv.roomTypeEles[roomType].empty();
-            ktv.roomEles[roomType] = [];
-            ktv.roomBlockHolders[roomType] = [];
+            ktv.rooms[roomType]["rooms"] = [];
         };
 
         $("#" + ktv.summaryId).empty();
         ktv.selected = [];
-        ktv.rooms = [];
 
         //创建房间
         /*
@@ -199,7 +210,7 @@ var KTVOrder = (function  () {
         for (i = 0; i < data.schedules.length; i++) {
             var schedule = data.schedules[i];
             for (var j = 0; i < schedule.roomCount; i++) {
-                
+
             };
 
             var time = Number(schedule.roomTime.substring(0, schedule.roomTime.indexOf(":")));

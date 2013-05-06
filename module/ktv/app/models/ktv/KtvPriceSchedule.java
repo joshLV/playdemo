@@ -5,17 +5,13 @@ import models.sales.Shop;
 import play.Logger;
 import play.db.jpa.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.beans.Transient;
 import java.math.BigDecimal;
 import java.util.*;
 
 /**
- * KTV价格策略.
+ * KTV价格排期.
  */
 @Entity
 @Table(name = "ktv_price_schedules")
@@ -36,8 +32,9 @@ public class KtvPriceSchedule extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
-    @Column(name = "duration")
-    public int duration;//欢唱时长
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    public KtvProduct product;
 
     @Column(name = "start_times")// 例如"9,13"
     public String startTimes;
