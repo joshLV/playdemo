@@ -881,7 +881,7 @@ public class Order extends Model {
 
                         String appointmentRemark = KtvRoomOrderInfo.getRoomOrderTime(ktvRoomOrderInfoList);
                         eCoupon.appointmentDate = ktvRoomOrderInfoList.get(0).scheduledDay;
-                        eCoupon.appointmentRemark = ktvRoomOrderInfoList.get(0).ktvRoomType.name + appointmentRemark;
+                        eCoupon.appointmentRemark = ktvRoomOrderInfoList.get(0).ktvRoomType.getName() + appointmentRemark;
                         eCoupon.save();
                     }
                     //记录券历史信息

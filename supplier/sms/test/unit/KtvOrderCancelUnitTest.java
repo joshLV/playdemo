@@ -1,11 +1,9 @@
 package unit;
 
 import factory.FactoryBoy;
-import factory.callback.BuildCallback;
 import models.job.resale.KtvOrderCancel;
 import models.ktv.KtvOrderStatus;
 import models.ktv.KtvPriceSchedule;
-import models.ktv.KtvRoom;
 import models.ktv.KtvRoomOrderInfo;
 import models.order.OrderItems;
 import models.order.OrderStatus;
@@ -13,8 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import play.test.UnitTest;
 import util.DateHelper;
-
-import java.util.List;
 
 /**
  * User: yan
@@ -31,10 +27,10 @@ public class KtvOrderCancelUnitTest extends UnitTest {
     public void setup() {
         FactoryBoy.deleteAll();
         orderItems = FactoryBoy.create(OrderItems.class);
-        KtvRoom ktvRoomA = FactoryBoy.create(KtvRoom.class);
+//        KtvRoom ktvRoomA = FactoryBoy.create(KtvRoom.class);
 
         KtvPriceSchedule schedule = FactoryBoy.create(KtvPriceSchedule.class);
-        schedule.roomType = ktvRoomA.roomType;
+//        schedule.roomType = ktvRoomA.roomType;
         schedule.save();
 
         orderInfo1 = FactoryBoy.create(KtvRoomOrderInfo.class);

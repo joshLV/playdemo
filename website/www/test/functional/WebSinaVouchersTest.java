@@ -8,14 +8,12 @@ import factory.resale.ResalerFactory;
 import models.accounts.PaymentSource;
 import models.consumer.User;
 import models.ktv.KtvPriceSchedule;
-import models.ktv.KtvRoom;
 import models.ktv.KtvRoomOrderInfo;
+import models.ktv.KtvRoomType;
 import models.order.*;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
-import models.sms.SMSMessage;
-import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,10 +21,8 @@ import play.data.validation.Error;
 import play.mvc.Http;
 import play.mvc.Router;
 import play.test.FunctionalTest;
-import util.mq.MockMQ;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * User: yan
@@ -188,11 +184,9 @@ public class WebSinaVouchersTest extends FunctionalTest {
         product.goods.supplierId = supplier.id;
         product.goods.save();
         product.save();
-        KtvRoom ktvRoomA = FactoryBoy.create(KtvRoom.class);
-        KtvRoom ktvRoomB = FactoryBoy.create(KtvRoom.class);
 
         KtvPriceSchedule schedule = FactoryBoy.create(KtvPriceSchedule.class);
-        schedule.roomType = ktvRoomA.roomType;
+        schedule.roomType = KtvRoomType.MIDDLE;
         schedule.save();
 
 //        KtvPriceSchedule scheduleB = FactoryBoy.create(KtvPriceSchedule.class);
@@ -203,8 +197,6 @@ public class WebSinaVouchersTest extends FunctionalTest {
         params.put("productId", product.partnerProductId);
         params.put("scheduledDay", DateUtil.dateToString(new Date(), 0));
         params.put("phone", "13231283912");
-        params.put("roomId" + ktvRoomA.id, "08:00");
-        params.put("roomId" + ktvRoomB.id, "09:00");
         Http.Response response = POST(Router.reverse("WebSinaVouchers.order"), params);
         assertStatus(200, response);
         assertEquals(1, Order.count());
@@ -221,17 +213,17 @@ public class WebSinaVouchersTest extends FunctionalTest {
         product.goods.supplierId = supplier.id;
         product.goods.save();
         product.save();
-        KtvRoom ktvRoomA = FactoryBoy.create(KtvRoom.class);
+//        KtvRoom ktvRoomA = FactoryBoy.create(KtvRoom.class);
 
         KtvPriceSchedule schedule = FactoryBoy.create(KtvPriceSchedule.class);
-        schedule.roomType = ktvRoomA.roomType;
+        schedule.roomType = KtvRoomType.MIDDLE;
         schedule.save();
 
         Map<String, String> params = new HashMap<>();
         params.put("productId", product.partnerProductId);
         params.put("scheduledDay", DateUtil.dateToString(new Date(), 0));
         params.put("phone", "13231283912");
-        params.put("roomId" + ktvRoomA.id, "08:00,09:00");
+//        params.put("roomId" + ktvRoomA.id, "08:00,09:00");
         Http.Response response = POST(Router.reverse("WebSinaVouchers.order"), params);
         assertStatus(200, response);
         assertEquals(1, Order.count());
