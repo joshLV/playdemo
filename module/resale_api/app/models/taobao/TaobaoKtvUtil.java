@@ -2,15 +2,10 @@ package models.taobao;
 
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
-import com.taobao.api.FileItem;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.ItemAddRequest;
-import com.taobao.api.request.ItemImgUploadRequest;
-import com.taobao.api.request.ItemSkuAddRequest;
 import com.taobao.api.request.ItemSkuUpdateRequest;
 import com.taobao.api.response.ItemAddResponse;
-import com.taobao.api.response.ItemImgUploadResponse;
-import com.taobao.api.response.ItemSkuAddResponse;
 import com.taobao.api.response.ItemSkuUpdateResponse;
 import models.accounts.AccountType;
 import models.admin.SupplierUser;
@@ -25,12 +20,8 @@ import models.sales.ResalerProduct;
 import models.sales.ResalerProductStatus;
 import models.sales.Shop;
 import models.supplier.Supplier;
-import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
-
-import java.io.File;
-import java.math.BigDecimal;
 
 /**
  * User: yan
@@ -57,12 +48,13 @@ public class TaobaoKtvUtil {
             return;
         }
 
-        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.TB, goods);
+        Resaler resaler = Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.TB, resaler, goods);
 
 //        String property = setSkuProperty(schedule);
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
         //找到淘宝的token
-        Resaler resaler = Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+
         OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
         ItemAddRequest addRequest = new ItemAddRequest();
         addRequest.setNum(100l);// 商品数量
