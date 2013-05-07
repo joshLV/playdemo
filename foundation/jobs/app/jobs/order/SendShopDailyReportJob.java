@@ -1,6 +1,7 @@
-package models.job;
+package jobs.order;
 
 import com.uhuila.common.constants.DeletedStatus;
+import models.jobs.JobWithHistory;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
@@ -8,7 +9,6 @@ import models.supplier.SupplierStatus;
 import play.Logger;
 import play.Play;
 import play.db.DB;
-import play.jobs.Job;
 import play.jobs.On;
 
 import java.math.BigDecimal;
@@ -18,14 +18,15 @@ import java.util.regex.Pattern;
 
 /**
  * @author likang
- * Date: 12-7-30
+ *         Date: 12-7-30
  */
 @On("0 0 9 * * ?")
-public class SendShopDailyReportJob extends Job{
+public class SendShopDailyReportJob extends JobWithHistory {
     private static final String MOBILE_PATTERN = "^1\\d{10}$";
+
     @Override
-    public void doJob(){
-        if(Play.runingInTestMode()){
+    public void doJobWithHistory() {
+        if (Play.runingInTestMode()) {
             return;
         }
         String sql = "select shop_id, count(*), sum(face_value) " +
@@ -33,7 +34,7 @@ public class SendShopDailyReportJob extends Job{
                 "and consumed_at >= CURRENT_DATE-INTERVAL 1 DAY " +
                 "and consumed_at < CURRENT_DATE " +
                 "group by shop_id";
-        try{
+        try {
             ResultSet rs = DB.executeQuery(sql);
             if (rs != null) {
                 while (rs.next()) {
@@ -50,12 +51,12 @@ public class SendShopDailyReportJob extends Job{
 
     }
 
-    private void sendReport(Long shopId, int totalCount, BigDecimal totalValue){
-        if(totalCount == 0) {
+    private void sendReport(Long shopId, int totalCount, BigDecimal totalValue) {
+        if (totalCount == 0) {
             return;
         }
         Shop shop = Shop.findById(shopId);
-        if(shop == null) {
+        if (shop == null) {
             Logger.error("send shop daily report error. can not find shop: " + shopId);
             return;
         }
@@ -64,12 +65,12 @@ public class SendShopDailyReportJob extends Job{
             Logger.error("send shop daily report error. Invalid supplier: " + shop.supplierId);
             return;
         }
-        if (shop.managerMobiles == null || shop.managerMobiles.trim().length() == 0){
+        if (shop.managerMobiles == null || shop.managerMobiles.trim().length() == 0) {
             return;
         }
         String mobiles[] = shop.managerMobiles.split(",");
         for (String mobile : mobiles) {
-            if(Pattern.compile(MOBILE_PATTERN).matcher(mobile).matches()){
+            if (Pattern.compile(MOBILE_PATTERN).matcher(mobile).matches()) {
                 SMSUtil.send("", mobile);
             }
         }

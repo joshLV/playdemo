@@ -1,11 +1,11 @@
-package unit;
+package unit.jobs.order;
 
 import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
 import models.consumer.User;
 import models.consumer.UserGoldenCoin;
-import models.job.SendGoldenCoinsJob;
+import jobs.order.SendGoldenCoinsJob;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.UnitTest;
@@ -27,7 +27,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
     }
 
     @Test
-    public void testJob_测试签到10天() {
+    public void testJob_测试签到10天() throws Exception {
         final User user = FactoryBoy.lastOrCreate(User.class);
         FactoryBoy.batchCreate(10, UserGoldenCoin.class,
                 new SequenceCallback<UserGoldenCoin>() {
@@ -47,7 +47,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
     }
 
     @Test
-    public void testJob_测试签到21天() {
+    public void testJob_测试签到21天() throws Exception {
         final User user3 = FactoryBoy.create(User.class);
         FactoryBoy.batchCreate(21, UserGoldenCoin.class,
                 new SequenceCallback<UserGoldenCoin>() {
@@ -72,7 +72,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
     }
 
     @Test
-    public void testJob_测试签到20天() {
+    public void testJob_测试签到20天() throws Exception {
         final User user3 = FactoryBoy.create(User.class);
         FactoryBoy.batchCreate(20, UserGoldenCoin.class,
                 new SequenceCallback<UserGoldenCoin>() {
@@ -97,7 +97,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
     }
 
     @Test
-    public void testJob_测试满勤31天() {
+    public void testJob_测试满勤31天() throws Exception {
         final User user2 = FactoryBoy.create(User.class);
         FactoryBoy.batchCreate(31, UserGoldenCoin.class,
                 new SequenceCallback<UserGoldenCoin>() {
@@ -121,7 +121,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
     }
 
     @Test
-    public void testJob_测试满勤30天() {
+    public void testJob_测试满勤30天() throws Exception {
         final User user1 = FactoryBoy.create(User.class);
         FactoryBoy.batchCreate(30, UserGoldenCoin.class,
                 new SequenceCallback<UserGoldenCoin>() {

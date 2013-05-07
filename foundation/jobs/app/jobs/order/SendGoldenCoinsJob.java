@@ -1,10 +1,10 @@
-package models.job;
+package jobs.order;
 
 import com.uhuila.common.util.DateUtil;
 import models.consumer.UserGoldenCoin;
+import models.jobs.JobWithHistory;
 import models.sales.CheckinRelations;
 import play.db.jpa.JPA;
-import play.jobs.Job;
 import play.jobs.On;
 
 import javax.persistence.Query;
@@ -18,9 +18,9 @@ import java.util.List;
  * Time: 下午3:51
  */
 @On("0 0 3 1 * ?")
-public class SendGoldenCoinsJob extends Job {
+public class SendGoldenCoinsJob extends JobWithHistory {
     @Override
-    public void doJob() {
+    public void doJobWithHistory() {
         String sql = "select new models.sales.CheckinRelations(count(u.id),user) from UserGoldenCoin u where u.isPresent = 0 and u.createdAt >=:createdAtBegin and u.createdAt <=:createdAtEnd group by u.user";
         Query query = JPA.em().createQuery(sql);
         query.setParameter("createdAtBegin", DateUtil.lastMonthOfFirstDay());

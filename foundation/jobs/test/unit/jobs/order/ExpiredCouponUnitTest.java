@@ -1,9 +1,9 @@
-package unit;
+package unit.jobs.order;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.job.ExpiredCouponNotice;
-import models.job.ExpiredNoRefundCouponNotice;
+import jobs.order.ExpiredCouponNotice;
+import jobs.order.ExpiredNoRefundCouponNotice;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.ECoupon;
@@ -41,7 +41,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
     }
 
     @Test
-    public void testNoRefundCouponJob_一个分销商相同产品产生多个券号的测试() {
+    public void testNoRefundCouponJob_一个分销商相同产品产生多个券号的测试() throws Exception {
         final Goods goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {
@@ -74,7 +74,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
     }
 
     @Test
-    public void testNoRefundCouponJob() {
+    public void testNoRefundCouponJob() throws Exception {
         Goods goods0 = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {
@@ -120,7 +120,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
     }
 
     @Test
-    public void testJob() {
+    public void testJob() throws Exception {
         Goods goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {
@@ -160,7 +160,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
     }
 
     @Test
-    public void testJobWhenNoNeedSendCouponIn8() {
+    public void testJobWhenNoNeedSendCouponIn8() throws Exception {
 
         Goods goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
@@ -184,7 +184,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
     }
 
     @Test
-    public void testJobWhenNoNeedSendCouponIn6() {
+    public void testJobWhenNoNeedSendCouponIn6() throws Exception {
         Goods goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {

@@ -1,8 +1,8 @@
-package unit;
+package unit.jobs.order;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.job.RetrySendFailedOrderSMSJob;
+import jobs.order.RetrySendFailedOrderSMSJob;
 import models.order.ECoupon;
 import models.order.OrderECouponMessage;
 import org.junit.Before;

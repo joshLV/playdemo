@@ -1,10 +1,11 @@
-package models.job;
+package jobs.order;
 
 import com.uhuila.common.util.DateUtil;
+import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.order.CancelUnpaidOrders;
 import models.order.Order;
 import models.order.OrderStatus;
-import play.jobs.Job;
 import play.jobs.On;
 
 import javax.persistence.Query;
@@ -17,11 +18,12 @@ import java.util.List;
  * Date: 12-6-20
  * Time: 上午11:09
  */
+@JobDefine(title = "取消未付款订单", description = "自动取消过期两天的未付款的订单")
 @On("0 0 1 * * ?")  //每天凌晨执行,自动取消过期两天的未付款的订单
-public class CancelUnPaidOrderJob extends Job {
+public class CancelUnPaidOrderJob extends JobWithHistory {
 
     @Override
-    public void doJob() throws Exception {
+    public void doJobWithHistory() throws Exception {
         String sql = "select o from Order o where o.orderNumber not in (select c.orderNumber from CancelUnpaidOrders " +
                 "c ) and o.status =:status and o.createdAt <=:createdAtEnd order by o.id";
         Query query = Order.em().createQuery(sql);

@@ -1,13 +1,13 @@
-package models.job;
+package jobs.order;
 
 import com.uhuila.common.util.DateUtil;
+import models.jobs.JobWithHistory;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import play.Play;
-import play.jobs.Job;
 import play.jobs.On;
 
 import java.util.ArrayList;
@@ -22,11 +22,11 @@ import java.util.Map;
  * Time: 下午1:32
  */
 @On("0 0 1 * * ?")
-public class ExpiredNoRefundCouponNotice extends Job {
+public class ExpiredNoRefundCouponNotice extends JobWithHistory {
     public static String MAIL_RECEIVER = Play.configuration.getProperty("mail.receiver", "dev@uhuila.com");
 
     @Override
-    public void doJob() {
+    public void doJobWithHistory() {
         CouponsCondition condition = new CouponsCondition();
         condition.expiredAtBegin = DateUtil.getBeginExpiredDate(3);
         condition.expiredAtEnd = DateUtil.getEndExpiredDate(3);

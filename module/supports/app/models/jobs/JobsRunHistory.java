@@ -2,6 +2,7 @@ package models.jobs;
 
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
+import util.DateHelper;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -50,4 +51,10 @@ public class JobsRunHistory extends Model {
         jobsRunHistoryPage.setBoundaryControlsEnabled(true);
         return jobsRunHistoryPage;
     }
+
+    public static void deleteBeforeItem(JobsDefine jobsDefine, int retainHistoryMinutes) {
+        JobsRunHistory.delete("jobsDefine=? and runnedAt<?", jobsDefine,
+                DateHelper.beforeMinuts(retainHistoryMinutes));
+    }
+
 }

@@ -1,9 +1,10 @@
-package unit;
+package unit.jobs.order;
 
 import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
-import models.job.PrepaymentNotice;
+import jobs.order.PrepaymentNotice;
 import models.mail.MailMessage;
+import models.mail.MailUtil;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Prepayment;
@@ -11,10 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import play.test.UnitTest;
 import util.mq.MockMQ;
-import models.mail.MailUtil;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 
 /**
  * TODO.
@@ -42,7 +41,7 @@ public class PrepaymentNoticeUnitTest extends UnitTest {
     }
 
     @Test
-    public void testNoticeJob() throws ParseException {
+    public void testNoticeJob() throws Exception {
         new PrepaymentNotice().doJob();
         prepayment.refresh();
         assertTrue(prepayment.warning);
@@ -54,7 +53,7 @@ public class PrepaymentNoticeUnitTest extends UnitTest {
     }
 
     @Test
-    public void testNoNoticeJob() throws ParseException {
+    public void testNoNoticeJob() throws Exception {
         eCoupon.originalPrice = new BigDecimal(9);
         eCoupon.save();
         new PrepaymentNotice().doJob();
