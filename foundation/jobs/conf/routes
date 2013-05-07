@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                                       JobsApplication.index
+GET     /                                       FoundationJobsApplication.index
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

@@ -3,14 +3,14 @@ package consumer.jobs;
 import models.jobs.JobsDefine;
 import models.jobs.JobsMessage;
 import models.jobs.JobsRunHistory;
-import models.jobs.RabbitMQConsumerWithTx;
+import models.jobs.RabbitMQConsumerWithTxOnJobs;
 import play.jobs.OnApplicationStart;
 
 /**
  * 保存Job运行历史的MQ Consumer.
  */
 @OnApplicationStart(async = true)
-public class JobsRunHistoryConsumer extends RabbitMQConsumerWithTx<JobsMessage> {
+public class JobsRunHistoryConsumer extends RabbitMQConsumerWithTxOnJobs<JobsMessage> {
     @Override
     public void consumeWithTx(JobsMessage jobsMessage) {
         JobsDefine jobsDefine = jobsMessage.toJobsDefine().load();
