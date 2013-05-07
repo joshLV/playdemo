@@ -4,14 +4,8 @@ import com.google.gson.JsonObject;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
-import com.taobao.api.request.VmarketEticketConsumeRequest;
-import com.taobao.api.request.VmarketEticketResendRequest;
-import com.taobao.api.request.VmarketEticketReverseRequest;
-import com.taobao.api.request.VmarketEticketSendRequest;
-import com.taobao.api.response.VmarketEticketConsumeResponse;
-import com.taobao.api.response.VmarketEticketResendResponse;
-import com.taobao.api.response.VmarketEticketReverseResponse;
-import com.taobao.api.response.VmarketEticketSendResponse;
+import com.taobao.api.request.*;
+import com.taobao.api.response.*;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
 import models.order.*;
@@ -220,6 +214,20 @@ public class TaobaoCouponUtil {
             Logger.info("tell taobao coupon verify response raise exception. ", e);
         }
         return ExtensionResult.code(102).message("调用淘宝接口出现异常");
+    }
+
+    public static TradeGetResponse tradeInfo(Long tid, String fields) {
+        TradeGetRequest request = new TradeGetRequest();
+        request.setFields(fields);
+        request.setTid(tid);
+
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
+        OAuthToken oAuthToken = getToken();
+        try {
+            return taobaoClient.execute(request, oAuthToken.accessToken);
+        }catch (ApiException e) {
+            throw new RuntimeException("request taobao trade info error", e);
+        }
     }
 
     /**

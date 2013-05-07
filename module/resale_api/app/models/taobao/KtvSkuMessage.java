@@ -17,29 +17,20 @@ import java.util.Map;
 public class KtvSkuMessage implements Serializable {
     private static final long serialVersionUID = -8179923251882104351L;
 
-    public String partnerProductId;
-
-    private Map<String, Object> params;
-
-    public String getPartnerProductId() {
-        return partnerProductId;
+    public Long getScheduledId() {
+        return scheduledId;
     }
 
-    public void setPartnerProductId(String partnerProductId) {
-        this.partnerProductId = partnerProductId;
-    }
-    public void setParams(Map<String, Object> params) {
-        this.params = params;
-    }
-    public Map<String, Object> getParams() {
-        return params;
-    }
-    public void putParam(String key, Object obj) {
-        this.params.put(key, obj);
+    public void setScheduledId(Long scheduledId) {
+        this.scheduledId = scheduledId;
     }
 
-    public KtvSkuMessage(String partnerProductId, Map<String, Object> params) {
-        this.partnerProductId = partnerProductId;
-        this.params = params;
+    /**
+     * 价格策略ID
+     */
+    public Long scheduledId;
+
+    public KtvSkuMessage(Long scheduledId) {
+        this.scheduledId = scheduledId;
     }
 }

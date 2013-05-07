@@ -5,11 +5,11 @@ package models.ktv;
  */
 public enum KtvRoomType {
 
-    MINI("MINI", "迷你包", "123"),
-    SMALL("SMALL", "小包", "456"),
-    MIDDLE("MIDDLE", "中包", "789"),
-    LARGE("LARGE", "大包", "198"),
-    DELUXE("DELUXE", "豪华包", "432");
+    MINI("MINI", "迷你包", "27426219:6312905"),
+    SMALL("SMALL", "小包", "27426219:3442354"),
+    MIDDLE("MIDDLE", "中包", "27426219:6769368"),
+    LARGE("LARGE", "大包", "27426219:3374388"),
+    DELUXE("DELUXE", "豪华包", "27426219:40867986");
 
     private String type;
     private String name;

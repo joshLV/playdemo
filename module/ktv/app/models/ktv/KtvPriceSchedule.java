@@ -1,8 +1,10 @@
 package models.ktv;
 
+import com.google.gson.annotations.Expose;
 import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Shop;
 import play.Logger;
+import play.db.jpa.GenericModel;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
@@ -15,7 +17,20 @@ import java.util.*;
  */
 @Entity
 @Table(name = "ktv_price_schedules")
-public class KtvPriceSchedule extends Model {
+public class KtvPriceSchedule extends GenericModel {
+    @Id
+    @GeneratedValue
+    public Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public Object _key() {
+        return getId();
+    }
+
     @Column(name = "day_of_weeks")
     public String dayOfWeeks;
 

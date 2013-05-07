@@ -3,7 +3,7 @@ package models.job.taobao;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
-import models.taobao.KtvSkuMessage;
+import models.taobao.TaobaoCouponMessageUtil;
 import play.Logger;
 import play.Play;
 import play.jobs.Every;
@@ -28,7 +28,7 @@ public class TaobaoCouponJob extends Job{
                 OuterOrderStatus.ORDER_DONE,
                 OuterOrderStatus.RESEND_COPY).fetch();
         for (OuterOrder outerOrder : outerOrders) {
-            KtvSkuMessage.TaobaoCouponMessageUtil.send(outerOrder.id);
+            TaobaoCouponMessageUtil.send(outerOrder.id);
         }
     }
 }

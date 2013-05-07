@@ -16,6 +16,7 @@ import models.sales.Goods;
 import models.sales.ResalerProduct;
 import models.supplier.Supplier;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.data.validation.Error;
 import play.mvc.Http;
@@ -29,6 +30,7 @@ import java.util.*;
  * Date: 13-4-1
  * Time: 下午4:58
  */
+@Ignore
 public class WebSinaVouchersTest extends FunctionalTest {
 
     ResalerProduct product;
