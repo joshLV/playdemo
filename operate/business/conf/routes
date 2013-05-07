@@ -28,6 +28,18 @@ DELETE  /goods_images/{id}                      OperateGoods.deleteImage
 POST    /goods/filemanager                      OperateUploadFiles.fileManagerJson
 GET     /category/sub/{id}                      OperateCategories.showSubs
 
+#Ktv产品
+GET     /ktv-products                           KtvProducts.index
+GET     /ktv-products/new                       KtvProducts.add
+GET     /ktv-products/{id}/edit                 KtvProducts.edit
+PUT     /ktv-products/{id}                      KtvProducts.update
+POST    /ktv-products                           KtvProducts.create
+DELETE  /ktv-products/{id}                      KtvProducts.delete
+
+
+
+
+
 # 上传合同的电子版本
 GET     /suppliers_contracts                               SuppliersContracts.index
 GET     /supplier_contract/new                             SuppliersContracts.add

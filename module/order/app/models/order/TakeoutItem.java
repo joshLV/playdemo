@@ -31,6 +31,7 @@ public class TakeoutItem extends Model {
 
     public Long count;
 
+
     public TakeoutItem(Goods goods, Long count) {
         this.sku = goods.sku;
         this.count = count * goods.skuCount;
