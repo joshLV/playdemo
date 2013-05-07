@@ -2,6 +2,7 @@ package jobs.order;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
@@ -20,6 +21,7 @@ import java.util.regex.Pattern;
  * @author likang
  *         Date: 12-7-30
  */
+@JobDefine(title="每日门店报表", description="每天向店长发送前一天的验证情况")
 @On("0 0 9 * * ?")
 public class SendShopDailyReportJob extends JobWithHistory {
     private static final String MOBILE_PATTERN = "^1\\d{10}$";

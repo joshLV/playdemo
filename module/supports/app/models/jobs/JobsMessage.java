@@ -45,6 +45,7 @@ public class JobsMessage implements Serializable {
     public static JobsMessage forClass(String className) {
         JobsMessage jobsMessage = new JobsMessage();
         jobsMessage.className = className;
+        jobsMessage.retainHistoryMinutes = 6600;
         return jobsMessage;
     }
 

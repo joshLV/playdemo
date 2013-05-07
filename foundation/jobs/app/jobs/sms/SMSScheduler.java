@@ -1,13 +1,14 @@
-package models.job;
+package jobs.sms;
 
+import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.sales.SendSMSInfo;
 import models.sales.SendSMSTask;
 import models.sms.SMSUtil;
 import org.apache.commons.collections.CollectionUtils;
+import play.Play;
 import play.jobs.Every;
-import play.jobs.Job;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -16,26 +17,22 @@ import java.util.List;
  * Date: 12-9-12
  * Time: 上午11:34
  */
-@Every("1mn")
-public class SMSScheduler extends Job {
+@JobDefine(title="定时发送批量短信", description="定时发送批量短信")
+@Every("5mn")
+public class SMSScheduler extends JobWithHistory {
     @Override
-    public void doJob() throws ParseException {
+    public void doJobWithHistory() throws Exception {
+        if (Play.runingInTestMode()) {
+            // 没写单元测试，这里就不跑了。这个逻辑如果要继续使用，可以放到Q里做。
+            return;
+        }
         List<SendSMSTask> smsTaskList = SendSMSTask.findUnDeleted();
         Date currentDate;
         if (CollectionUtils.isEmpty(smsTaskList)) {
             return;
         }
-        for (int i = 0; i < smsTaskList.size(); i++) {
-            Object obj = smsTaskList.get(i);
-            if (!(obj instanceof SendSMSTask)){
-                continue;
-            }
-            SendSMSTask st = smsTaskList.get(i);
-            if (st == null) {
-                continue;
-            }
+        for (SendSMSTask st : smsTaskList) {
             currentDate = new Date();
-
             if (st.finished.longValue() != st.total.longValue() && st.scheduledTime != null && st.scheduledTime.before(currentDate)) {
                 List<SendSMSInfo> smsList = SendSMSInfo.findUnDeleted(st.taskNo);
                 for (SendSMSInfo smsInfo : smsList) {

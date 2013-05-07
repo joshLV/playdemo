@@ -4,6 +4,7 @@ import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.sales.Goods;
 import models.sales.GoodsSchedule;
 import models.sales.GoodsStatus;
@@ -20,6 +21,7 @@ import java.util.List;
  * Date: 12-11-19
  * Time: 上午11:22
  */
+@JobDefine(title="更新商品缓存", description="查询三分钟内即将按上架或下架、排期的商品，清除商品缓存", retainHistoryMinutes = 1200)
 @Every("1mn")
 public class ClearGoodsCacheJob extends JobWithHistory {
 

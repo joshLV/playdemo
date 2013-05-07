@@ -1,8 +1,8 @@
-package unit;
+package unit.jobs.order;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.job.ScannerResalerProductStatusJob;
+import jobs.order.ScannerResalerProductStatusJob;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.ResalerProduct;

@@ -3,6 +3,7 @@ package jobs.order;
 import com.uhuila.common.util.DateUtil;
 import models.consumer.UserGoldenCoin;
 import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.sales.CheckinRelations;
 import play.db.jpa.JPA;
 import play.jobs.On;
@@ -13,10 +14,12 @@ import java.util.List;
 /**
  * 金币发放job(每月1号凌晨3点执行).
  * <p/>
+ * 保留3个月的执行记录
  * User: yanjy
  * Date: 12-12-17
  * Time: 下午3:51
  */
+@JobDefine(title="网站金币发放", description="每月1号凌晨3点执行，发放网站金币", retainHistoryMinutes = 138240)
 @On("0 0 3 1 * ?")
 public class SendGoldenCoinsJob extends JobWithHistory {
     @Override

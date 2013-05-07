@@ -1,4 +1,4 @@
-package unit.job;
+package unit.jobs.account;
 
 import factory.FactoryBoy;
 import models.accounts.Account;
@@ -7,7 +7,7 @@ import models.accounts.AccountSequence;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
-import models.job.FinanceCheckJob;
+import jobs.account.FinanceCheckJob;
 import models.resale.Resaler;
 import models.supplier.Supplier;
 import org.junit.Before;
