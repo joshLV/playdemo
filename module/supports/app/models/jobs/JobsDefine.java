@@ -6,6 +6,7 @@ import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -30,10 +31,10 @@ public class JobsDefine extends Model {
     @Column
     public String description;
 
-    @Column
+    @Column(name="scheduled_info")
     public String scheduledInfo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="last_run_history_id")
     public JobsRunHistory lastRunHistory;
 

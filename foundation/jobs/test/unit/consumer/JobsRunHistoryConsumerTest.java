@@ -8,6 +8,7 @@ import models.jobs.JobsRunHistory;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.UnitTest;
+import util.DateHelper;
 
 import java.util.Date;
 
@@ -36,5 +37,25 @@ public class JobsRunHistoryConsumerTest extends UnitTest {
 
         assertEquals(1, JobsDefine.count());
         assertEquals(1, JobsRunHistory.count());
+
+        // 加一张History记录
+        JobsDefine jobsDefine = (JobsDefine) JobsDefine.findAll().get(0);
+        JobsRunHistory history = new JobsRunHistory();
+        history.jobsDefine = jobsDefine;
+        history.runnedAt = DateHelper.beforeMinuts(50);
+        history.save();
+
+        assertEquals(2, JobsRunHistory.count());
+
+
+        JobsMessage message2 = JobsMessage.forClass("test.Class")
+                .title("测试").description("Hello")
+                .runnedAt(new Date())
+                .runStatus("SUCCESS")
+                .retainHistoryMinutes(48)
+                .runRemark("测试运行成功");
+        consumer.consumeWithTx(message2);
+        assertEquals(1, JobsDefine.count());
+        assertEquals(2, JobsRunHistory.count());
     }
 }

@@ -1,12 +1,12 @@
-package models.job;
+package jobs.order;
 
 import com.uhuila.common.util.DateUtil;
+import models.jobs.JobWithHistory;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.SentCouponMessage;
 import models.sms.SMSUtil;
 import play.Logger;
-import play.jobs.Job;
 
 import javax.persistence.Query;
 import java.text.SimpleDateFormat;
@@ -19,10 +19,10 @@ import java.util.List;
  *         Time: 下午1:57
  */
 // @ O n("0 0 12 * * ?")
-public class ExpiredCouponNotice extends Job {
+public class ExpiredCouponNotice extends JobWithHistory {
 
     @Override
-    public void doJob() {
+    public void doJobWithHistory() {
         String sql = "select e from ECoupon e where e.eCouponSn not in (select m.couponNumber from SentCouponMessage " +
                 "m ) and e.isFreeze=0 and e.goods.isLottery=false and status =:status and (e.expireAt > :expireBeginAt and e.expireAt <= " +
                 ":expireEndAt) order by e.id";

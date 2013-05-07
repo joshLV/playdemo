@@ -1,8 +1,8 @@
-package unit;
+package unit.jobs.order;
 
 import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
-import models.job.ClearGoodsCacheJob;
+import jobs.order.ClearGoodsCacheJob;
 import models.sales.Goods;
 import models.sales.GoodsSchedule;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public class ClearGoodsCacheJobTest extends UnitTest {
     }
 
     @Test
-    public void testJob() {
+    public void testJob() throws Exception {
         Goods goods = FactoryBoy.create(Goods.class);
         goods.effectiveAt = DateHelper.beforeDays(2);
         goods.beginOnSaleAt = DateHelper.afterMinuts(10);

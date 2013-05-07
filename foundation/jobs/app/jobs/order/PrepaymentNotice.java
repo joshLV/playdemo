@@ -1,12 +1,12 @@
-package models.job;
+package jobs.order;
 
+import models.jobs.JobWithHistory;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.ECoupon;
 import models.order.Prepayment;
 import models.supplier.Supplier;
 import play.Play;
-import play.jobs.Job;
 import play.jobs.On;
 
 import java.math.BigDecimal;
@@ -21,7 +21,7 @@ import java.util.List;
  * Time: 11:34 AM
  */
 @On("0 0 12 * * ?")
-public class PrepaymentNotice extends Job {
+public class PrepaymentNotice extends JobWithHistory {
     private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("prepayment_notification.email.receiver", "tangliqun@uhuila.com,sujie@uhuila.com").split(",");
 
     /**
@@ -32,7 +32,7 @@ public class PrepaymentNotice extends Job {
      * @throws ParseException
      */
     @Override
-    public void doJob() throws ParseException {
+    public void doJobWithHistory() throws ParseException {
         List<Supplier> suppliers = Supplier.findUnDeleted();
         for (Supplier supplier : suppliers) {
             List<Prepayment> prepayments = Prepayment.findNotExpiredBySupplier(supplier);

@@ -1,13 +1,13 @@
-package models.job;
+package jobs.order;
 
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
+import models.jobs.JobWithHistory;
 import models.sales.Goods;
 import models.sales.GoodsSchedule;
 import models.sales.GoodsStatus;
 import play.jobs.Every;
-import play.jobs.Job;
 import util.DateHelper;
 
 import javax.persistence.Query;
@@ -21,13 +21,13 @@ import java.util.List;
  * Time: 上午11:22
  */
 @Every("1mn")
-public class ClearGoodsCacheJob extends Job {
+public class ClearGoodsCacheJob extends JobWithHistory {
 
     /**
      * 清除缓存
      */
     @Override
-    public void doJob() {
+    public void doJobWithHistory() {
         //查询三分钟内即将按上架时间显示的商品，清除缓存
         List<Goods> onsaleGoodsList = getBeginSaleList();
         clearGoodsCache(onsaleGoodsList, "onsale");

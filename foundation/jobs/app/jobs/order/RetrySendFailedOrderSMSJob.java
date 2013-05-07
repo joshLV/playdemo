@@ -1,12 +1,12 @@
-package models.job;
+package jobs.order;
 
+import models.jobs.JobWithHistory;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.OrderECouponMessage;
 import models.order.OrderItems;
 import play.Logger;
 import play.jobs.Every;
-import play.jobs.Job;
 import util.DateHelper;
 
 import java.util.HashSet;
@@ -21,9 +21,9 @@ import java.util.Set;
  * Time: 下午1:32
  */
 @Every("5mn")
-public class RetrySendFailedOrderSMSJob extends Job {
+public class RetrySendFailedOrderSMSJob extends JobWithHistory {
     @Override
-    public void doJob() throws Exception {
+    public void doJobWithHistory() throws Exception {
         // 找出5分钟前，2小时内的券号
         List<ECoupon> eCoupons = ECoupon.find("createdAt>=? and createdAt<=? and status=? and smsSentCount=0",
                 DateHelper.beforeHours(2), DateHelper.beforeMinuts(5), ECouponStatus.UNCONSUMED).fetch();

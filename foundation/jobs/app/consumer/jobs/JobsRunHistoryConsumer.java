@@ -4,6 +4,7 @@ import models.jobs.JobsDefine;
 import models.jobs.JobsMessage;
 import models.jobs.JobsRunHistory;
 import models.jobs.RabbitMQConsumerWithTxOnJobs;
+import play.Logger;
 import play.jobs.OnApplicationStart;
 
 /**
@@ -11,9 +12,14 @@ import play.jobs.OnApplicationStart;
  */
 @OnApplicationStart(async = true)
 public class JobsRunHistoryConsumer extends RabbitMQConsumerWithTxOnJobs<JobsMessage> {
+
     @Override
     public void consumeWithTx(JobsMessage jobsMessage) {
+        Logger.info("JobsRunHistoryConsumer: job run:" + jobsMessage.className);
         JobsDefine jobsDefine = jobsMessage.toJobsDefine().load();
+
+        // 删除指定分钟数以前的记录
+        JobsRunHistory.deleteBeforeItem(jobsDefine, jobsMessage.retainHistoryMinutes);
 
         JobsRunHistory history = new JobsRunHistory();
         history.jobsDefine = jobsDefine;

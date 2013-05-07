@@ -48,7 +48,9 @@ public class JobWithHistory<V> extends Job<V> {
         long beginAt = System.currentTimeMillis();
         try {
             doJobWithHistory();
+            message.runStatus = "SUCCESS";
         } catch (Exception e) {
+            message.runStatus = "FAIL";
             addRemark("Exception:" + e.getMessage());
             throw e;
         } finally {

@@ -1,9 +1,9 @@
-package unit;
+package unit.jobs.order;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.consumer.User;
-import models.job.CancelUnPaidOrderJob;
+import jobs.order.CancelUnPaidOrderJob;
 import models.order.CancelUnpaidOrders;
 import models.order.Order;
 import models.order.OrderItems;
