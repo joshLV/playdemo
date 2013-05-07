@@ -15,5 +15,5 @@ import java.lang.annotation.Target;
 public @interface JobDefine {
     String title() default "";
     int retainHistoryMinutes() default 30000;
-    String description();
+    String description() default "";
 }

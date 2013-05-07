@@ -56,6 +56,7 @@ public class JobWithHistory<V> extends Job<V> {
             message.runTimes = endAt - beginAt;
             message.runRemark(StringUtil.join(safeGetRemarks(), ""));
             MQPublisher.publish(JobsMessage.MQ_KEY, message);
+            cleanRemarks();
         }
 
     }

@@ -8,7 +8,7 @@ import play.modules.rabbitmq.consumer.RabbitMQConsumer;
  * Date: 13-5-4
  * Time: 下午1:47
  */
-public abstract class RabbitMQConsumerWithTx<T> extends RabbitMQConsumer<T> {
+public abstract class RabbitMQConsumerWithTxOnJobs<T> extends RabbitMQConsumer<T> {
 
     @Override
     protected final void consume(T t) {
