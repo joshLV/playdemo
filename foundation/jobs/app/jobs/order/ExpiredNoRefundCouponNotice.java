@@ -2,6 +2,7 @@ package jobs.order;
 
 import com.uhuila.common.util.DateUtil;
 import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.CouponsCondition;
@@ -21,6 +22,7 @@ import java.util.Map;
  * Date: 13-1-25
  * Time: 下午1:32
  */
+@JobDefine(title="虚拟验证券到期提醒", description="查询三天后京东，WB未消费并且是不可退款的券，做虚拟虚证用")
 @On("0 0 1 * * ?")
 public class ExpiredNoRefundCouponNotice extends JobWithHistory {
     public static String MAIL_RECEIVER = Play.configuration.getProperty("mail.receiver", "dev@uhuila.com");
@@ -31,7 +33,7 @@ public class ExpiredNoRefundCouponNotice extends JobWithHistory {
         condition.expiredAtBegin = DateUtil.getBeginExpiredDate(3);
         condition.expiredAtEnd = DateUtil.getEndExpiredDate(3);
         List<ECoupon> resultList = ECoupon.findVirtualCoupons(condition);
-        String subject = "券号到期提醒";
+        String subject = "虚拟验证券到期提醒";
         List<Map<String, String>> couponList = new ArrayList<>();
         Map<String, String> couponMap;
         Long goodsId = null;

@@ -1,6 +1,7 @@
 package jobs.order;
 
 import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.ECoupon;
@@ -20,6 +21,7 @@ import java.util.List;
  * Date: 12/3/12
  * Time: 11:34 AM
  */
+@JobDefine(title="预付款销售检查", description="每天整点检查预付款销售情况，发送短信提醒10%剩余金额的供应商", retainHistoryMinutes = 12000)
 @On("0 0 12 * * ?")
 public class PrepaymentNotice extends JobWithHistory {
     private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("prepayment_notification.email.receiver", "tangliqun@uhuila.com,sujie@uhuila.com").split(",");

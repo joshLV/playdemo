@@ -66,7 +66,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
         ExpiredNoRefundCouponNotice job = new ExpiredNoRefundCouponNotice();
         job.doJob();
         MailMessage msg = (MailMessage) MockMQ.getLastMessage(MailUtil.COMMON_QUEUE);
-        assertTrue(msg.getSubject().contains("券号到期提醒"));
+        assertTrue(msg.getSubject().contains("虚拟验证券到期提醒"));
         List<Map<String, String>> couponList = (ArrayList) msg.getParam("couponList");
         assertEquals(1, couponList.size());
         assertEquals(coupon1.eCouponSn + "," + coupon.eCouponSn, couponList.get(0).get("p_couponSn"));
@@ -111,7 +111,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
         ExpiredNoRefundCouponNotice job = new ExpiredNoRefundCouponNotice();
         job.doJob();
         MailMessage msg = (MailMessage) MockMQ.getLastMessage(MailUtil.COMMON_QUEUE);
-        assertTrue(msg.getSubject().contains("券号到期提醒"));
+        assertTrue(msg.getSubject().contains("虚拟验证券到期提醒"));
         List<Map<String, String>> couponList = (ArrayList) msg.getParam("couponList");
         assertEquals(3, couponList.size());
         assertEquals(coupon.eCouponSn, couponList.get(2).get("p_couponSn"));

@@ -1,6 +1,7 @@
 package jobs.order;
 
 import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.OrderECouponMessage;
@@ -20,6 +21,7 @@ import java.util.Set;
  * Date: 13-1-31
  * Time: 下午1:32
  */
+@JobDefine(title="重试发送订单短信", description="如果ECoupon.smsSentCount为0，批此券从未发送成功过短信，重试发送2小时内的此类券")
 @Every("5mn")
 public class RetrySendFailedOrderSMSJob extends JobWithHistory {
     @Override

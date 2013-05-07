@@ -2,6 +2,7 @@ package jobs.order;
 
 import com.uhuila.common.util.DateUtil;
 import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.SentCouponMessage;
@@ -18,6 +19,7 @@ import java.util.List;
  * @author 12-5-30
  *         Time: 下午1:57
  */
+@JobDefine(title="消费者券到期短信提醒", description="每天12点向消费者发送短信提醒1周后过期的券")
 // @ O n("0 0 12 * * ?")
 public class ExpiredCouponNotice extends JobWithHistory {
 

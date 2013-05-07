@@ -1,9 +1,10 @@
-package models.job;
+package jobs.account;
 
 import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.util.AccountSequenceUtil;
-import play.jobs.Job;
+import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 
 import java.util.Date;
 import java.util.List;
@@ -20,10 +21,11 @@ import static play.Logger.warn;
  */
 // @On("0 0 4 * * ?")  //每天凌晨四点执行
 // @Every("1h")
-public class FinanceCheckJob extends Job {
+@JobDefine(title="财务核帐并修正", description="财务核帐并修正")
+public class FinanceCheckJob extends JobWithHistory {
 
     @Override
-    public void doJob() throws Exception {
+    public void doJobWithHistory() throws Exception {
         info(")))))))))         Enter FinanceCheckJob.doJob");
 
         List<Account> accounts = Account.findAll();

@@ -1,25 +1,24 @@
 package models.job.yihaodian.listener;
 
+import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
-import models.yihaodian.*;
+import models.yihaodian.YHDResponse;
 import models.yihaodian.YHDUtil;
 import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
 import play.jobs.Every;
-import play.jobs.Job;
 import play.libs.XPath;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author likang
@@ -28,13 +27,14 @@ import java.util.*;
  *
  * Date: 12-8-29
  */
+@JobDefine(title="一号店订单记录", description="拉取新的订单，与本地比较，若从未记录，则记录下来")
 @Every("1mn")
-public class OrderListener extends Job{
+public class OrderListener extends JobWithHistory {
     private static String ORDER_DATE = "yyyy-MM-dd HH:mm:ss";
     public static final boolean ON = Play.configuration.getProperty("yihaodian.listener", "off").toLowerCase().equals("on");
 
     @Override
-    public void doJob(){
+    public void doJobWithHistory(){
         if (!ON && !Play.runingInTestMode()){
             Logger.info("yihaodian order listener aborted");
             return;
