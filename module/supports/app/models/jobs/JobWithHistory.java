@@ -1,6 +1,7 @@
 package models.jobs;
 
 import models.jobs.annotation.JobDefine;
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.helper.StringUtil;
 import play.jobs.Every;
 import play.jobs.Job;
@@ -22,11 +23,13 @@ public class JobWithHistory<V> extends Job<V> {
 
     public void addRemark(String remark) {
         List<String> remarks = _threadLocalRemark.get();
-        if (remark == null) {
+        if (remarks == null) {
             remarks = new ArrayList<>();
             _threadLocalRemark.set(remarks);
         }
-        remarks.add(remark);
+        if (StringUtils.isNotBlank(remark)) {
+            remarks.add(remark);
+        }
     }
 
     public List<String> safeGetRemarks() {
