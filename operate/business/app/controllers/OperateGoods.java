@@ -7,6 +7,8 @@ package controllers;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
+import models.ktv.KtvProduct;
+import models.ktv.KtvProductGoods;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.operator.OperateUser;
@@ -112,7 +114,8 @@ public class OperateGoods extends Controller {
     public static void add() {
         Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         renderInit(null);
-        render(hasApproveGoodsPermission);
+        Boolean ktvSupplier = false;
+        render(hasApproveGoodsPermission, ktvSupplier);
     }
 
     /**
@@ -235,12 +238,19 @@ public class OperateGoods extends Controller {
         checkSalePrice(goods);
         checkShops(goods.supplierId);
         checkUseWeekDay(goods);
-
+        System.out.println(request.params.get("goods.shops.id").charAt(1) + "《=========request.params.get(:");
+        System.out.println(goods.shops + "《=========goods.shops:");
         if (Validation.hasErrors()) {
             boolean selectAll = false;
+            Supplier supplier = Supplier.findById(goods.supplierId);
+            boolean ktvSupplier = false;
+            if (supplier.getProperty("ktvSupplier").equals("1")) {
+                ktvSupplier = true;
+            }
+            List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
             renderInit(goods);
 
-            render("OperateGoods/add.html", selectAll, hasApproveGoodsPermission);
+            render("OperateGoods/add.html", productList, ktvSupplier, selectAll, hasApproveGoodsPermission);
         }
         //预览
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
@@ -257,14 +267,30 @@ public class OperateGoods extends Controller {
         }
         goods.createdBy = OperateRbac.currentUser().loginName;
         goods.create();
+
+
         try {
             goods.imagePath = uploadImagePath(imagePath, goods.id, null);
         } catch (IOException e) {
             error(500, "goods.image_upload_failed");
         }
+
         goods.save();
+        System.out.println(goods.id + "《=========goods.i.d:");
         String createdFrom = "Op";
         goods.createHistory(createdFrom);
+        Supplier suppleir = Supplier.findById(goods.supplierId);
+
+        if (suppleir.getProperty("ktvSupplier").equals("1")) {
+            KtvProductGoods productGoods = new KtvProductGoods();
+            Shop shop = Shop.findById(request.params.get("goods.shops.id"));
+            productGoods.shop = shop;
+            KtvProduct product = KtvProduct.findById(goods.product.id);
+            productGoods.product = product;
+            productGoods.goods = goods;
+            productGoods.save();
+        }
+
         index(null);
     }
 
@@ -382,11 +408,21 @@ public class OperateGoods extends Controller {
         String queryString = StringUtils.trimToEmpty(getQueryString());
         models.sales.Goods goods = models.sales.Goods.findById(id);
         checkShops(goods.supplierId);
-        renderInit(goods);
+
         renderArgs.put("imageLargePath", goods.getImageLargePath());
         renderArgs.put("page", page);
         renderArgs.put("queryString", queryString);
-        render(id, hasApproveGoodsPermission);
+        Supplier supplier = Supplier.findById(goods.supplierId);
+        boolean ktvSupplier = false;
+        if (supplier.getProperty("ktvSupplier").equals("1")) {
+            ktvSupplier = true;
+        }
+        List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
+
+        KtvProductGoods productGoods = KtvProductGoods.find("goods=? and shop=?", goods, goods.shops.iterator().next()).first();
+        goods.product = productGoods.product;
+        renderInit(goods);
+        render(id, hasApproveGoodsPermission, ktvSupplier, productList);
 
     }
 
@@ -533,7 +569,13 @@ public class OperateGoods extends Controller {
         if (Validation.hasErrors()) {
             renderArgs.put("imageLargePath", imageLargePath);
             renderInit(goods);
-            render("OperateGoods/edit2.html", goods, id, page, queryString, hasApproveGoodsPermission);
+            Supplier supplier = Supplier.findById(goods.supplierId);
+            boolean ktvSupplier = false;
+            if (supplier.getProperty("ktvSupplier").equals("1")) {
+                ktvSupplier = true;
+            }
+            List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
+            render("OperateGoods/edit2.html", productList, ktvSupplier, goods, id, page, queryString, hasApproveGoodsPermission);
         }
 
         //添加商品处理
@@ -566,9 +608,26 @@ public class OperateGoods extends Controller {
         goods.updatedBy = supplierUser;
         models.sales.Goods.update(id, goods);
         Goods goodsItem = models.sales.Goods.findById(id);
+
         goodsItem.refresh();
         String createdFrom = "Op";
         goodsItem.createHistory(createdFrom);
+        Supplier suppleir = Supplier.findById(goods.supplierId);
+        if (suppleir.getProperty("ktvSupplier").equals("1")) {
+            KtvProductGoods productGoods = new KtvProductGoods();
+            System.out.println(goods.shops.iterator().next() + "《=========shop:");
+            productGoods.shop = goods.shops.iterator().next();
+            System.out.println(goods.name + "《=========goods.name:");
+            KtvProduct product = KtvProduct.findById(goods.product.id);
+
+            productGoods.product = product;
+
+
+            productGoods.goods = goodsItem;
+            System.out.println(productGoods.product + "《=========goods.product.name:");
+
+            productGoods.save();
+        }
         redirectUrl(page, queryString);
     }
 

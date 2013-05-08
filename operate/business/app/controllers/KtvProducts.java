@@ -29,14 +29,14 @@ public class KtvProducts extends Controller {
     public static void index(String name, Long supplierId) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        List<Supplier> supplierList = Supplier.findUnDeleted();
+        List<Supplier> supplierList = Supplier.findUnDeletedAndKtvSupplier();
         ModelPaginator productPage = KtvProduct.getProductPage(pageNumber, PAGE_SIZE, supplierId, name);
 
         render(supplierList, productPage, name, supplierId);
     }
 
     public static void add() {
-        List<Supplier> supplierList = Supplier.findUnDeleted();
+        List<Supplier> supplierList = Supplier.findUnDeletedAndKtvSupplier();
         render(supplierList);
     }
 
@@ -45,8 +45,8 @@ public class KtvProducts extends Controller {
             Validation.addError("product.supplier", "validation.selected");
         }
         if (Validation.hasErrors()) {
-            List<Supplier> supplierList = Supplier.findUnDeleted();
-            render("KtvProducts/add.html", supplierList,product);
+            List<Supplier> supplierList = Supplier.findUnDeletedAndKtvSupplier();
+            render("KtvProducts/add.html", supplierList, product);
         }
 
         product.createdAt = new Date();
@@ -59,11 +59,11 @@ public class KtvProducts extends Controller {
 
     public static void edit(Long id) {
         KtvProduct product = KtvProduct.findById(id);
-        List<Supplier> supplierList = Supplier.findUnDeleted();
+        List<Supplier> supplierList = Supplier.findUnDeletedAndKtvSupplier();
         render(product, supplierList, id);
     }
 
-    public static void update(Long id, @Valid KtvProduct product, String name ) {
+    public static void update(Long id, @Valid KtvProduct product, String name) {
         if (Validation.hasErrors()) {
             render("KtvProducts/edit.html", product, id, name);
         }
@@ -81,6 +81,17 @@ public class KtvProducts extends Controller {
             product.save();
         }
         index(null, null);
+    }
+
+    public static void showKtvProducts(Long supplierId) {
+        Supplier supplier = Supplier.findById(supplierId);
+        boolean ktvSupplier = false;
+        if (supplier.getProperty("ktvSupplier").equals("1")) {
+            ktvSupplier = true;
+        }
+        List<KtvProduct> productList = KtvProduct.findProductBySupplier(supplierId);
+        System.out.println(productList.size() + "《=========productList.size():");
+        render(productList, ktvSupplier);
     }
 
 

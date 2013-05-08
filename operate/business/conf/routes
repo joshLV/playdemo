@@ -29,12 +29,14 @@ POST    /goods/filemanager                      OperateUploadFiles.fileManagerJs
 GET     /category/sub/{id}                      OperateCategories.showSubs
 
 #Ktv产品
-GET     /ktv-products                           KtvProducts.index
-GET     /ktv-products/new                       KtvProducts.add
-GET     /ktv-products/{id}/edit                 KtvProducts.edit
-PUT     /ktv-products/{id}                      KtvProducts.update
-POST    /ktv-products                           KtvProducts.create
-DELETE  /ktv-products/{id}                      KtvProducts.delete
+GET     /ktv-products                               KtvProducts.index
+GET     /ktv-products/new                           KtvProducts.add
+GET     /ktv-products/{id}/edit                     KtvProducts.edit
+PUT     /ktv-products/{id}                          KtvProducts.update
+POST    /ktv-products                               KtvProducts.create
+DELETE  /ktv-products/{id}                          KtvProducts.delete
+GET     /ktv-products/{supplierId}/showKtvProducts  KtvProducts.showKtvProducts
+
 
 
 

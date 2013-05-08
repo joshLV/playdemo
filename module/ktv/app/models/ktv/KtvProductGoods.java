@@ -2,9 +2,16 @@ package models.ktv;
 
 import models.sales.Goods;
 import models.sales.Shop;
+import play.data.validation.Unique;
 import play.db.jpa.Model;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.List;
 
 /**
@@ -20,7 +27,7 @@ public class KtvProductGoods extends Model {
     @JoinColumn(name = "shop_id")
     public Shop shop;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
     public Goods goods;
 

@@ -1,7 +1,7 @@
 package models.ktv;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.sales.Brand;
+import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
@@ -91,6 +91,11 @@ public class KtvProduct extends Model {
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         return page;
+    }
+
+    public static List<KtvProduct> findProductBySupplier(Long supplierId) {
+        Supplier supplier = Supplier.findById(supplierId);
+        return KtvProduct.find("bySupplierAndDeleted", supplier, DeletedStatus.UN_DELETED).fetch();
     }
 
 
