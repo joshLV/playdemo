@@ -31,7 +31,7 @@ import static com.uhuila.common.util.DateUtil.getBeginOfDay;
  * Time: 3:41 PM
  */
 @With({SupplierRbac.class, SupplierInjector.class})
-public class  when extends Controller {
+public class SupplierWithdraws extends Controller {
     private static final int PAGE_SIZE = 20;
     private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("withdraw_notification.email.receiver", "tangliqun@uhuila.com").split(",");
     private static String[] NOTIFICATION_MOBILES = Play.configuration.getProperty("withdraw_notification.mobile", "").trim().split(",");
