@@ -22,20 +22,20 @@ import java.util.Map;
 
 /**
  * @author likang
- *
- * 拉取新的订单，与本地比较，若从未记录，则记录下来
- *
- * Date: 12-8-29
+ *         <p/>
+ *         拉取新的订单，与本地比较，若从未记录，则记录下来
+ *         <p/>
+ *         Date: 12-8-29
  */
-@JobDefine(title="一号店订单记录", description="拉取新的订单，与本地比较，若从未记录，则记录下来")
+@JobDefine(title = "一号店订单记录", description = "拉取新的订单，与本地比较，若从未记录，则记录下来")
 @Every("1mn")
 public class OrderListener extends JobWithHistory {
     private static String ORDER_DATE = "yyyy-MM-dd HH:mm:ss";
     public static final boolean ON = Play.configuration.getProperty("yihaodian.listener", "off").toLowerCase().equals("on");
 
     @Override
-    public void doJobWithHistory(){
-        if (!ON && !Play.runingInTestMode()){
+    public void doJobWithHistory() {
+        if (!ON && !Play.runingInTestMode()) {
             Logger.info("yihaodian order listener aborted");
             return;
         }
@@ -45,9 +45,9 @@ public class OrderListener extends JobWithHistory {
             return;
         }
         //筛选出我们没有处理过的
-        for(Node order : orders ){
+        for (Node order : orders) {
             String orderCode = XPath.selectText("./orderCode", order).trim();
-            if(OuterOrder.find("byOrderIdAndPartner", orderCode, OuterOrderPartner.YHD).first() == null){
+            if (OuterOrder.find("byOrderIdAndPartner", orderCode, OuterOrderPartner.YHD).first() == null) {
                 OuterOrder outerOrder = new OuterOrder();
                 //此处不保存outerOrder的message，等处理的时候会再去一号店拉取最新的订单信息并保存
                 outerOrder.status = OuterOrderStatus.ORDER_COPY;
@@ -63,7 +63,7 @@ public class OrderListener extends JobWithHistory {
      *
      * @return 已付款未发货的订单摘要
      */
-    public List<Node> newOrders(){
+    public List<Node> newOrders() {
         Date end = new Date(System.currentTimeMillis() + 600000);//当前时间往后10分钟
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(end);
@@ -79,7 +79,7 @@ public class OrderListener extends JobWithHistory {
 
         YHDResponse response = YHDUtil.sendRequest(params, "yhd.orders.get", "orderList");
 
-        if(response.isOk()) {
+        if (response.isOk()) {
             return XPath.selectNodes("./order", response.data);
         }
         return null;

@@ -23,7 +23,7 @@ public class YHDOrderListenerTest extends FunctionalTest {
     }
 
     @Test
-    public void testJob() {
+    public void testJob() throws Exception {
         VirtualFile vf =  VirtualFile.fromRelativePath("test/data/yhd.orders.detail.get.xml");
         String mockOrderDetail = vf.contentAsString();
         vf = VirtualFile.fromRelativePath("test/data/yhd.orders.get.xml");
