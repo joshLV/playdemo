@@ -111,7 +111,7 @@ public class SkuTakeouts extends Controller {
             for (OrderItems orderItem : dbOrder.orderItems) {
                 orderItem.status = OrderStatus.PREPARED;
                 orderItem.orderBatch = orderBatch;
-                TakeoutItem takeoutItem = new TakeoutItem(orderItem, orderItem.goods.sku, takeoutSkuMap.get(orderItem.goods.sku));
+                TakeoutItem takeoutItem = new TakeoutItem(orderItem, orderItem.goods.sku, orderItem.buyNumber * orderItem.goods.skuCount);
                 takeoutItem.save();
                 orderItem.takeOutItems.add(takeoutItem);
                 orderItem.save();
