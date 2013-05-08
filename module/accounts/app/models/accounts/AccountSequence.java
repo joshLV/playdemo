@@ -229,6 +229,13 @@ public class AccountSequence extends Model {
         return amount != null ? amount : BigDecimal.ZERO;
     }
 
+    public static BigDecimal getWithdrawnAmount(Account account, Date toDate) {
+        BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
+                " account=? and tradeType=? and createdAt<?",
+                account, TradeType.WITHDRAW, toDate).first();
+        return amount;
+    }
+
     /**
      * 提现处理.
      *

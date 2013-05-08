@@ -100,6 +100,12 @@ public class Account extends Model {
         return vostroAmount.subtract(uncashAmount);
     }
 
+    public BigDecimal getWithdrawnAmount(Date date) {
+        BigDecimal withdrawnAmount = AccountSequence.getWithdrawnAmount(this, date);
+        Logger.info("Account.getWithdrawnAmount withdrawnAmount=" + withdrawnAmount);
+        return withdrawnAmount;
+    }
+
     /**
      * 账户可提现余额
      *
@@ -108,11 +114,20 @@ public class Account extends Model {
      * @return
      */
     public BigDecimal getSupplierWithdrawAmount(BigDecimal prepaymentBalance, Date date) {
+        //本周期券消费金额(总商户的本周期提现金额已经计算在内）
         BigDecimal withdrawAmount = getWithdrawAmount(date);
+
+        //本周期提现金额（针对独立门店）
+        BigDecimal withdrawnAmount = BigDecimal.ZERO;
+        if (this.accountType == AccountType.SHOP) {
+            withdrawnAmount = getWithdrawnAmount(date);
+        }
         if (prepaymentBalance.compareTo(withdrawAmount) > 0) {
             return BigDecimal.ZERO;
         }
-        return withdrawAmount.subtract(prepaymentBalance);
+
+        //剩余未提现金额
+        return withdrawAmount.add(withdrawnAmount).subtract(prepaymentBalance);
     }
 
     public boolean isCreditable() {
