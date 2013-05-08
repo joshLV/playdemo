@@ -2,6 +2,8 @@ package models.job.dangdang.listener;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
+import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.order.OuterOrderPartner;
 import models.sales.GoodsStatus;
 import models.sales.MaterialType;
@@ -9,7 +11,6 @@ import models.sales.ResalerProduct;
 import play.Logger;
 import play.Play;
 import play.jobs.Every;
-import play.jobs.Job;
 
 import java.util.Date;
 import java.util.List;
@@ -21,11 +22,12 @@ import java.util.List;
  * Date: 12-9-13
  * Time: 下午2:31
  */
+@JobDefine(title="当当商品销量同步", description="每三小时更新同步当当的商品售出数量")
 @Every("3h")
-public class DDSyncSellGoodsCountJob extends Job {
+public class DDSyncSellGoodsCountJob extends JobWithHistory {
 
     @Override
-    public void doJob() {
+    public void doJobWithHistory() {
         if(Play.runingInTestMode()){
             return;
         }
