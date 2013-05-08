@@ -4,8 +4,10 @@ import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.ItemSkuAddRequest;
+import com.taobao.api.request.ItemSkuDeleteRequest;
 import com.taobao.api.request.ItemSkuUpdateRequest;
 import com.taobao.api.response.ItemSkuAddResponse;
+import com.taobao.api.response.ItemSkuDeleteResponse;
 import com.taobao.api.response.ItemSkuUpdateResponse;
 import com.uhuila.common.constants.DeletedStatus;
 import models.RabbitMQConsumerWithTx;
@@ -33,15 +35,15 @@ import java.util.*;
  * Time: 下午3:18
  */
 @OnApplicationStart(async = true)
-public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
+public class KtvSkuConsumer extends RabbitMQConsumerWithTx<Long> {
     // 淘宝电子凭证的secret
     public static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "21293912");
     public static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "1781d22a1f06c4f25f1f679ae0633400");
     public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
 
     @Override
-    public void consumeWithTx(KtvSkuMessage message) {
-        KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(message.scheduledId);
+    public void consumeWithTx(Long scheduledId) {
+        KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(scheduledId);
         List<KtvShopPriceSchedule> shopPriceSchedules = KtvShopPriceSchedule.find("bySchedule", priceSchedule).fetch();
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
         //找到淘宝的token
@@ -55,11 +57,10 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
                     shopPriceSchedule.shop, shopPriceSchedule.schedule.product).fetch();
             for (KtvProductGoods productGoods : productGoodsList) {
                 //这个产品所对应的所有价格策略
+                List<KtvTaobaoSku> newSaleProperties = buildKtvTaobaoSaleProperties(shopPriceSchedule, productGoods);
 
-                List<KtvTaobaoSaleProperty> newSaleProperties = buildKtvTaobaoSaleProperties(shopPriceSchedule, productGoods);
-
-                List<KtvTaobaoSaleProperty> oldSaleProperties = KtvTaobaoSaleProperty.find("byGoods", productGoods.goods).fetch();
-                Map<String, List<KtvTaobaoSaleProperty>> diffResult = diffTaobaoSaleProperties(newSaleProperties, oldSaleProperties);
+                List<KtvTaobaoSku> oldSaleProperties = KtvTaobaoSku.find("byGoods", productGoods.goods).fetch();
+                Map<String, List<KtvTaobaoSku>> diffResult = diffTaobaoSaleProperties(newSaleProperties, oldSaleProperties);
 
                 //更新每一个该ktv产品所对应的分销渠道上的商品
                 List<ResalerProduct> resalerProductList = ResalerProduct.find("byGoodsAndPartner", productGoods.goods, OuterOrderPartner.TB).fetch();
@@ -69,21 +70,21 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
                         continue;
                     }
 
-                    for (Map.Entry<String, List<KtvTaobaoSaleProperty>> entry : diffResult.entrySet()) {
+                    for (Map.Entry<String, List<KtvTaobaoSku>> entry : diffResult.entrySet()) {
 
                         switch (entry.getKey()) {
                             case "add":
-                                for (KtvTaobaoSaleProperty p : entry.getValue()) {
+                                for (KtvTaobaoSku p : entry.getValue()) {
                                     addSalePropertyOnTaobao(taobaoClient, token, resalerProduct, p);
                                 }
                                 break;
                             case "update":
-                                for (KtvTaobaoSaleProperty p : entry.getValue()) {
+                                for (KtvTaobaoSku p : entry.getValue()) {
                                     updateSalePropertyOnTaobao(taobaoClient, token, resalerProduct, p);
                                 }
                                 break;
                             case "delete":
-                                for (KtvTaobaoSaleProperty p : entry.getValue()) {
+                                for (KtvTaobaoSku p : entry.getValue()) {
                                     deleteSalePropertyOnTaobao(taobaoClient, token, resalerProduct, p);
                                 }
                                 break;
@@ -101,32 +102,31 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
     /**
      * 请求taobao删除商品对应的sku
      */
-    private static void deleteSalePropertyOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSaleProperty p) {
-        ItemSkuUpdateRequest req = new ItemSkuUpdateRequest();
+    private static void deleteSalePropertyOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSku p) {
+        ItemSkuDeleteRequest req = new ItemSkuDeleteRequest();
         req.setNumIid(Long.valueOf(resalerProduct.partnerProductId));
 
-        req.setProperties(p.roomType + ";$日期:" + p.date + ";$欢唱时间:" + p.timeRange);
-        req.setQuantity((long) p.quantity);
-        req.setPrice(p.price.toString());
+        req.setProperties(p.getProperties());
+
 
         try {
-            ItemSkuUpdateResponse response = taobaoClient.execute(req, token.accessToken);
+            ItemSkuDeleteResponse response = taobaoClient.execute(req, token.accessToken);
             if (StringUtils.isBlank(response.getErrorCode())) {
                 p.delete();
             }
         } catch (ApiException e) {
-            Logger.info(e, "add sku to taobao failed");
+            Logger.info(e, "delete sku to taobao failed");
         }
     }
 
     /**
      * 请求taobao更新商品对应的sku
      */
-    private static void updateSalePropertyOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSaleProperty p) {
+    private static void updateSalePropertyOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSku p) {
         ItemSkuUpdateRequest req = new ItemSkuUpdateRequest();
         req.setNumIid(Long.valueOf(resalerProduct.partnerProductId));
 
-        req.setProperties(p.roomType + ";$日期:" + p.date + ";$欢唱时间:" + p.timeRange);
+        req.setProperties(p.getProperties());
         req.setQuantity((long) p.quantity);
         req.setPrice(p.price.toString());
 
@@ -136,18 +136,18 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
                 p.save();
             }
         } catch (ApiException e) {
-            Logger.info(e, "add sku to taobao failed");
+            Logger.info(e, "update sku to taobao failed");
         }
     }
 
     /**
      * 请求taobao添加商品对应的sku
      */
-    private static void addSalePropertyOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSaleProperty p) {
+    private static void addSalePropertyOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSku p) {
         ItemSkuAddRequest req = new ItemSkuAddRequest();
         req.setNumIid(Long.valueOf(resalerProduct.partnerProductId));
 
-        req.setProperties(p.roomType + ";$日期:" + p.date + ";$欢唱时间:" + p.timeRange);
+        req.setProperties(p.getProperties());
         req.setQuantity((long) p.quantity);
         req.setPrice(p.price.toString());
 
@@ -165,31 +165,26 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
     /**
      * 比较两个淘宝销售属性列表，区分出需新建、需更新、需删除的三个列表.(以后者为基准【后者在此处一般指数据库中的数据】)
      */
-    private static Map<String, List<KtvTaobaoSaleProperty>> diffTaobaoSaleProperties(
-            List<KtvTaobaoSaleProperty> newSaleProperties, List<KtvTaobaoSaleProperty> oldSaleProperties) {
-        for (KtvTaobaoSaleProperty property : newSaleProperties) {
-            property.makeIdentity();
+    private static Map<String, List<KtvTaobaoSku>> diffTaobaoSaleProperties(
+            List<KtvTaobaoSku> newSaleProperties, List<KtvTaobaoSku> oldSaleProperties) {
+
+        Map<String, List<KtvTaobaoSku>> result = new HashMap<>();
+        List<KtvTaobaoSku> tobeUpdated = new ArrayList<>();
+        List<KtvTaobaoSku> tobeAdded = new ArrayList<>();
+        List<KtvTaobaoSku> tobeDeleted = new ArrayList<>(oldSaleProperties.size());
+        for (KtvTaobaoSku oldSaleProperty : oldSaleProperties) {
+            tobeDeleted.add(oldSaleProperty);
         }
-        for (KtvTaobaoSaleProperty property : oldSaleProperties) {
-            property.makeIdentity();
-        }
 
-        Map<String, List<KtvTaobaoSaleProperty>> result = new HashMap<>();
-        List<KtvTaobaoSaleProperty> tobeUpdated = new ArrayList<>();
-        List<KtvTaobaoSaleProperty> tobeAdded = new ArrayList<>();
-        List<KtvTaobaoSaleProperty> tobeDeleted = new ArrayList<>(oldSaleProperties);
-
-
-        for (KtvTaobaoSaleProperty newProperty : newSaleProperties) {
+        for (KtvTaobaoSku newProperty : newSaleProperties) {
             boolean found = false;
-            for (KtvTaobaoSaleProperty oldProperty : tobeDeleted) {
-                //如果有相同的，把新值赋给旧值（旧值在数据库中，方便之后的save），然后将旧值从tobeDeleted转移到tobeUpdated
-                if (newProperty.identity.equals(oldProperty.identity)) {
+            for (int i = 0; i < tobeDeleted.size(); i++) {
+                if (newProperty.getProperties().equals(tobeDeleted.get(i).getProperties())) {
+                    KtvTaobaoSku oldProperty = tobeDeleted.remove(i);
                     oldProperty.quantity = newProperty.quantity;
                     oldProperty.price = newProperty.price;
 
                     tobeUpdated.add(oldProperty);
-                    tobeDeleted.remove(oldProperty);
                     found = true;
                     break;
                 }
@@ -209,7 +204,7 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
     /**
      * 根据价格策略，构建ktv商品所有门店的对应策略类型的sku属性信息
      */
-    private static List<KtvTaobaoSaleProperty> buildKtvTaobaoSaleProperties(KtvShopPriceSchedule shopPriceSchedule, KtvProductGoods productGoods) {
+    private static List<KtvTaobaoSku> buildKtvTaobaoSaleProperties(KtvShopPriceSchedule shopPriceSchedule, KtvProductGoods productGoods) {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
         Date today = DateUtils.truncate(new Date(), Calendar.DATE);
@@ -227,7 +222,7 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         List<KtvPriceSchedule> priceScheduleList = query.getResultList();
 
-        List<KtvTaobaoSaleProperty> saleProperties = new ArrayList<>();
+        List<KtvTaobaoSku> saleProperties = new ArrayList<>();
 
         List<KtvRoomOrderInfo> roomOrderInfoList = KtvRoomOrderInfo.find("goods=? and shop=? and scheduledDay = ?",
                 productGoods.goods, shopPriceSchedule.shop, today).fetch();
@@ -250,10 +245,10 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
                 //取出该房型下的时间安排
                 Set<Integer> startTimeArray = ps.getStartTimesAsSet();
                 for (Integer startTime : startTimeArray) {
-                    KtvTaobaoSaleProperty property = new KtvTaobaoSaleProperty();
+                    KtvTaobaoSku property = new KtvTaobaoSku();
                     property.goods = productGoods.goods;
-                    property.roomType = ps.roomType.getTaobaoId();
-                    property.date = dateFormat.format(day);
+                    property.setRoomType(ps.roomType.getTaobaoId());
+                    property.setDate(dateFormat.format(day));
                     property.price = ps.price;
                     property.quantity = shopPriceSchedule.roomCount;
 
@@ -269,9 +264,8 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
                         continue;
                     }
 
-                    property.timeRange = startTime + "点至" + (startTime + productGoods.product.duration - 1) + "点";
+                    property.setTimeRange(startTime + "点至" + (startTime + productGoods.product.duration - 1) + "点");
                     property.createdAt = new Date();
-                    property.save();
                     saleProperties.add(property);
                 }
             }
@@ -281,7 +275,7 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
 
     @Override
     protected Class getMessageType() {
-        return KtvSkuMessage.class;
+        return Long.class;
     }
 
     @Override

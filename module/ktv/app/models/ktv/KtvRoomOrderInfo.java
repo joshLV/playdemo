@@ -21,6 +21,7 @@ import java.util.*;
 @Entity
 @Table(name = "ktv_room_order_info")
 public class KtvRoomOrderInfo extends Model {
+    public static int LOCK_MINUTE = 15;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id", nullable = false)

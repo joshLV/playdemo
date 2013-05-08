@@ -129,8 +129,8 @@ GET     /send_sms/suc_send                              SendSMS.sucSend
 GET     /send_sms/{id}                                  SendSMS.details
 
 #solr
-GET     /solr-init                              SolrLoadData.initSolr
-GET     /index                                  SolrLoadData.index
+GET     /solr-load                              SolrLoadData.load
+GET     /solr                                   SolrLoadData.index
 
  #秒杀商品
 GET     /seckill_goods/{seckillId}/item        SecKillGoodsItems.index
