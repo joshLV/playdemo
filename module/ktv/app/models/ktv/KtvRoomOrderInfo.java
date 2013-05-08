@@ -40,6 +40,7 @@ public class KtvRoomOrderInfo extends Model {
 
     @Enumerated(EnumType.STRING)
     public KtvOrderStatus status;
+
     /**
      * 预定日期
      */
@@ -50,8 +51,12 @@ public class KtvRoomOrderInfo extends Model {
      * 预定时间
      */
     @Column(name = "scheduled_time")
-    public String scheduledTime;
+    public int scheduledTime;
 
+    /**
+     * 时长
+     */
+    public int duration;
     /**
      * 锁定时间
      */
@@ -64,7 +69,7 @@ public class KtvRoomOrderInfo extends Model {
     @Column(name = "deal_at")
     public Date dealAt;
 
-    public KtvRoomOrderInfo(Goods goods, OrderItems orderItem, KtvRoomType ktvRoomType, Date scheduledDay, String scheduledTime) {
+    public KtvRoomOrderInfo(Goods goods, OrderItems orderItem, KtvRoomType ktvRoomType, Date scheduledDay, int scheduledTime) {
         this.goods = goods;
         this.orderItem = orderItem;
         this.ktvRoomType = ktvRoomType;
@@ -90,6 +95,7 @@ public class KtvRoomOrderInfo extends Model {
                 "and (o.status = ? or (o.status = ? and o.createdAt >= ?))",
                 shop, scheduledDay, KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, tenMinutesAgo).fetch();
     }
+
 
     /**
      * 取消订单
@@ -144,11 +150,10 @@ public class KtvRoomOrderInfo extends Model {
 
     }
     */
-
     public static String getRoomOrderTime(List<KtvRoomOrderInfo> ktvRoomOrderInfoList) {
         List<Integer> orderTimeList = new ArrayList<>();
         for (KtvRoomOrderInfo ktvRoomOrderInfo : ktvRoomOrderInfoList) {
-            orderTimeList.add(Integer.parseInt(ktvRoomOrderInfo.scheduledTime.substring(0, 2)));
+            orderTimeList.add(ktvRoomOrderInfo.scheduledTime);
 
         }
         Collections.sort(orderTimeList);

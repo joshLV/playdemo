@@ -1,6 +1,7 @@
 package models.taobao;
 
 import com.google.gson.JsonObject;
+import com.taobao.api.response.TradeGetResponse;
 import models.RabbitMQConsumerWithTx;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -34,7 +35,7 @@ import java.util.regex.Pattern;
  *         Date: 12-11-29
  */
 @OnApplicationStart(async = true)
-public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage.TaobaoCouponMessage> {
+public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMessage> {
     public static String PHONE_REGEX = "^1\\d{10}$";
 
     @Override
@@ -43,26 +44,34 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage.T
     }
 
     @Override
-    public void consumeWithTx(KtvSkuMessage.TaobaoCouponMessage taobaoCouponMessage) {
+    public void consumeWithTx(TaobaoCouponMessage taobaoCouponMessage) {
         OuterOrder outerOrder = OuterOrder.findById(taobaoCouponMessage.outerOrderId);
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             //订单接收到，开始创建一百券订单，并告诉淘宝我们的订单信息
             Logger.info("start taobao coupon consumer send order");
             if (outerOrder.ybqOrder != null) {
                 Logger.info("our order already created");
-            } else if (send(outerOrder)) {
-                List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-                Date now = new Date();
-                for (ECoupon coupon : couponList) {
-                    coupon.partner = ECouponPartner.TB;
-                    coupon.effectiveAt = now;//淘宝卖出去就直接可消费
-                    coupon.save();
+            } else{
+                //淘宝订单是否是等待发货
+                if (!taobaoOrderReadyToSend(outerOrder)){
+                    outerOrder.status = OuterOrderStatus.ORDER_IGNORE;
+                    outerOrder.save();
+                    return;
                 }
-                outerOrder.status = OuterOrderStatus.ORDER_DONE;
-                outerOrder.save();
-            } else {
-                Logger.info("taobao coupon job failed: create our order failed %s", taobaoCouponMessage.outerOrderId);
-                throw new RuntimeException("taobao coupon job failed: create our order failed " + taobaoCouponMessage.outerOrderId);
+                if (send(outerOrder)) {
+                    List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
+                    Date now = new Date();
+                    for (ECoupon coupon : couponList) {
+                        coupon.partner = ECouponPartner.TB;
+                        coupon.effectiveAt = now;//淘宝卖出去就直接可消费
+                        coupon.save();
+                    }
+                    outerOrder.status = OuterOrderStatus.ORDER_DONE;
+                    outerOrder.save();
+                } else {
+                    Logger.info("taobao coupon job failed: create our order failed %s", taobaoCouponMessage.outerOrderId);
+                    throw new RuntimeException("taobao coupon job failed: create our order failed " + taobaoCouponMessage.outerOrderId);
+                }
             }
         } else if (outerOrder.status == OuterOrderStatus.RESEND_COPY) {
             Logger.info("start taobao coupon consumer resend order");
@@ -79,6 +88,12 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage.T
             TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder);
             outerOrder.save();
         }
+    }
+
+    //淘宝订单是否是等待发货
+    private boolean taobaoOrderReadyToSend(OuterOrder outerOrder) {
+        TradeGetResponse response = TaobaoCouponUtil.tradeInfo(Long.parseLong(outerOrder.orderId), "status");
+        return response.getTrade().getStatus().equals("WAIT_SELLER_SEND_GOODS");
     }
 
     private boolean send(OuterOrder outerOrder) {
@@ -182,11 +197,11 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage.T
 
     @Override
     protected Class getMessageType() {
-        return KtvSkuMessage.TaobaoCouponMessage.class;
+        return TaobaoCouponMessage.class;
     }
 
     @Override
     protected String queue() {
-        return KtvSkuMessage.TaobaoCouponMessageUtil.QUEUE_NAME;
+        return TaobaoCouponMessageUtil.QUEUE_NAME;
     }
 }

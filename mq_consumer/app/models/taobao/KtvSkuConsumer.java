@@ -1,41 +1,27 @@
-package controllers;
+package models.taobao;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
-import com.taobao.api.TaobaoRequest;
 import com.taobao.api.request.ItemSkuAddRequest;
 import com.taobao.api.request.ItemSkuUpdateRequest;
 import com.taobao.api.response.ItemSkuAddResponse;
 import com.taobao.api.response.ItemSkuUpdateResponse;
 import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import controllers.supplier.SupplierInjector;
+import models.RabbitMQConsumerWithTx;
 import models.accounts.AccountType;
-import models.ktv.KtvPriceSchedule;
-import models.ktv.KtvRoomType;
+import models.ktv.*;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.ResalerProduct;
-import models.sales.Shop;
-import models.supplier.Supplier;
-import models.taobao.KtvSkuMessageUtil;
 import org.apache.commons.lang.StringUtils;
-import models.ktv.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
 import play.Play;
-import play.data.binding.As;
-import play.data.validation.Valid;
 import play.db.jpa.JPA;
-import play.mvc.Controller;
-import play.mvc.With;
+import play.jobs.OnApplicationStart;
 
 import javax.persistence.Query;
 import java.text.SimpleDateFormat;
@@ -43,125 +29,19 @@ import java.util.*;
 
 /**
  * User: yan
- * Date: 13-4-12
- * Time: 下午2:09
+ * Date: 13-5-6
+ * Time: 下午3:18
  */
-@With({SupplierRbac.class, SupplierInjector.class})
-public class KtvPriceSchedules extends Controller {
+@OnApplicationStart(async = true)
+public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
     // 淘宝电子凭证的secret
     public static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "21293912");
     public static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "1781d22a1f06c4f25f1f679ae0633400");
     public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
 
-    public static void index(Long shopId, KtvRoomType roomType) {
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
-        List<Shop> shops = Shop.findShopBySupplier(supplierId);
-
-        Shop shop = null;
-        if (shopId != null) {
-            shop = Shop.find("bySupplierIdAndId", supplierId, shopId).first();
-        }
-        if (shop == null && shops.size() > 0) {
-            shop = shops.get(0);
-        }
-        if (roomType == null) {
-            roomType = KtvRoomType.values()[0];
-        }
-        render(shops, shop, roomType);
-    }
-
-    public static void jsonSearch(Date startDay, Date endDay, Shop shop, KtvRoomType roomType) {
-        if (startDay.after(endDay)) {
-            error();
-        }
-        List<KtvPriceSchedule> priceSchedules = KtvShopPriceSchedule.find(
-                "select k.schedule from KtvShopPriceSchedule k where k.shop = ? and k.schedule.roomType = ? " +
-                        "and k.schedule.startDay <= ? and k.schedule.endDay >= ?",
-                shop, roomType, endDay, startDay).fetch();
-        List<Map<String, Object>> result = new ArrayList<>();
-        for (KtvPriceSchedule schedule : priceSchedules) {
-            Map<String, Object> o = new HashMap<>();
-            o.put("startDay", schedule.startDay);
-            o.put("endDay", schedule.endDay);
-            o.put("duration", schedule.product.duration);
-            o.put("startTimes", schedule.startTimes);
-            o.put("roomType", schedule.roomType);
-            o.put("dayOfWeeks", schedule.dayOfWeeks);
-            o.put("price", schedule.price);
-            o.put("id", schedule.getId());
-            result.add(o);
-        }
-
-
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-        renderJSON(gson.toJson(result));
-
-    }
-
-    public static void showAdd() {
-        Supplier supplier = SupplierRbac.currentUser().supplier;
-        List<Shop> shops = Shop.findShopBySupplier(supplier.id);
-        List<KtvProduct> ktvProductList = KtvProduct.find("supplier=?", supplier).fetch();
-        render(shops, ktvProductList);
-    }
-
-    public static void create(KtvPriceSchedule priceStrategy, Set<Integer> useWeekDays) {
-        Map<Shop, Integer> shopCountMap = new HashMap<>();
-
-        //组装门店和门店的包厢数量
-        Map<String, String> allParams = params.allSimple();
-        for (Map.Entry<String, String> param : allParams.entrySet()) {
-            String key = param.getKey();
-            if (key.startsWith("shop-")) {
-                String shopIdStr = key.substring(5);
-                String shopCount = param.getValue();
-                if (NumberUtils.isDigits(shopIdStr) && NumberUtils.isDigits(shopCount)) {
-                    Long shopId = Long.parseLong(shopIdStr);
-                    Shop shop = Shop.findById(shopId);
-                    if (shop != null) {
-                        shopCountMap.put(shop, Integer.parseInt(shopCount));
-                    }
-                }
-            }
-        }
-        Set<Integer> startTimes = priceStrategy.getStartTimesAsSet();
-        //检测参数合法性
-        String error = validStrategy(priceStrategy.product.duration, priceStrategy.startDay, priceStrategy.endDay,
-                priceStrategy.roomType, shopCountMap.keySet(), useWeekDays, startTimes);
-
-
-        if (error != null) {
-            error(error);
-        }
-
-        //时间碰撞检测
-        Map<String, Object> collisions = collisionDetection(
-                priceStrategy.product.duration, priceStrategy.startDay, priceStrategy.endDay,
-                priceStrategy.roomType, shopCountMap.keySet(), useWeekDays, startTimes);
-        if (collisions != null) {
-            error("价格策略有冲突，请重新选择");
-        }
-
-        //保存策略
-        priceStrategy.dayOfWeeks = StringUtils.join(useWeekDays, ",");
-        priceStrategy.save();
-
-        //保存门店策略
-        for (Map.Entry<Shop, Integer> entry : shopCountMap.entrySet()) {
-            KtvShopPriceSchedule strategy = new KtvShopPriceSchedule();
-            strategy.shop = entry.getKey();
-            strategy.roomCount = entry.getValue();
-            strategy.schedule = priceStrategy;
-            strategy.save();
-
-        }
-        KtvSkuMessageUtil.send(priceStrategy.id);
-
-        index(shopCountMap.keySet().iterator().next().id, priceStrategy.roomType);
-    }
-
-    public static void make(Long priceScheduleId) {
-        KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(priceScheduleId);
+    @Override
+    public void consumeWithTx(KtvSkuMessage message) {
+        KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(message.scheduledId);
         List<KtvShopPriceSchedule> shopPriceSchedules = KtvShopPriceSchedule.find("bySchedule", priceSchedule).fetch();
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
         //找到淘宝的token
@@ -214,8 +94,13 @@ public class KtvPriceSchedules extends Controller {
                 }
             }
         }
+
     }
 
+
+    /**
+     * 请求taobao删除商品对应的sku
+     */
     private static void deleteSalePropertyOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSaleProperty p) {
         ItemSkuUpdateRequest req = new ItemSkuUpdateRequest();
         req.setNumIid(Long.valueOf(resalerProduct.partnerProductId));
@@ -234,6 +119,9 @@ public class KtvPriceSchedules extends Controller {
         }
     }
 
+    /**
+     * 请求taobao更新商品对应的sku
+     */
     private static void updateSalePropertyOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSaleProperty p) {
         ItemSkuUpdateRequest req = new ItemSkuUpdateRequest();
         req.setNumIid(Long.valueOf(resalerProduct.partnerProductId));
@@ -252,6 +140,9 @@ public class KtvPriceSchedules extends Controller {
         }
     }
 
+    /**
+     * 请求taobao添加商品对应的sku
+     */
     private static void addSalePropertyOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSaleProperty p) {
         ItemSkuAddRequest req = new ItemSkuAddRequest();
         req.setNumIid(Long.valueOf(resalerProduct.partnerProductId));
@@ -271,6 +162,9 @@ public class KtvPriceSchedules extends Controller {
     }
 
 
+    /**
+     * 比较两个淘宝销售属性列表，区分出需新建、需更新、需删除的三个列表.(以后者为基准【后者在此处一般指数据库中的数据】)
+     */
     private static Map<String, List<KtvTaobaoSaleProperty>> diffTaobaoSaleProperties(
             List<KtvTaobaoSaleProperty> newSaleProperties, List<KtvTaobaoSaleProperty> oldSaleProperties) {
         for (KtvTaobaoSaleProperty property : newSaleProperties) {
@@ -312,6 +206,9 @@ public class KtvPriceSchedules extends Controller {
         return result;
     }
 
+    /**
+     * 根据价格策略，构建ktv商品所有门店的对应策略类型的sku属性信息
+     */
     private static List<KtvTaobaoSaleProperty> buildKtvTaobaoSaleProperties(KtvShopPriceSchedule shopPriceSchedule, KtvProductGoods productGoods) {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
@@ -382,143 +279,13 @@ public class KtvPriceSchedules extends Controller {
         return saleProperties;
     }
 
-
-    public static void jsonCollisionDetection(KtvPriceSchedule priceStrategy, @As(",") Set<Integer> useWeekDays,
-                                              @As(",") Set<Integer> startTimes, @As(",") Set<Long> shopIds) {
-        //构建商店列表
-        Set<Shop> shops = new HashSet<>();
-        for (Long shopId : shopIds) {
-            Shop shop = Shop.findById(shopId);
-            if (shop != null) {
-                shops.add(shop);
-            }
-        }
-
-        //检测参数合法性
-        String error = validStrategy(priceStrategy.product.duration, priceStrategy.startDay, priceStrategy.endDay,
-                priceStrategy.roomType, shops, useWeekDays, startTimes);
-
-        if (error != null) {
-            renderJSON("{\"error\":\"" + error + "\"}");
-        }
-
-        //时间碰撞检测
-        Map<String, Object> collisions = collisionDetection(
-                priceStrategy.product.duration, priceStrategy.startDay, priceStrategy.endDay,
-                priceStrategy.roomType, shops, useWeekDays, startTimes);
-        if (collisions != null) {
-            Shop shop = (Shop) collisions.get("shop");
-            List<Integer> weekDays = (ArrayList<Integer>) collisions.get("weekdays");
-            Integer startTime = (Integer) collisions.get("startTime");
-            renderJSON("{\"shopName\":\"" + shop.name + "\"," +
-                    "\"weekDays\":\"" + StringUtils.join(weekDays, ",") + "\"," +
-                    "\"startTime\":\"" + startTime + "\"}");
-        }
-        renderJSON("{\"isOk\":true}");
+    @Override
+    protected Class getMessageType() {
+        return KtvSkuMessage.class;
     }
 
-    private static String validStrategy(
-            int duration, Date startDay, Date endDay, KtvRoomType roomType,
-            Set<Shop> shops, Set<Integer> useWeekDaysSet, Set<Integer> startTimesSet) {
-        if (duration <= 0 || duration > 6) {
-            return "无效的欢唱时长";
-        }
-        if (startDay == null) {
-            return "无效的起始日期";
-        }
-        if (endDay == null) {
-            return "无效的结束日期";
-        }
-
-        startDay = DateUtils.truncate(startDay, Calendar.DATE);
-        endDay = DateUtils.truncate(endDay, Calendar.DATE);
-        Date today = DateUtils.truncate(new Date(), Calendar.DATE);
-        if (startDay.before(today)) {
-            return "起始日期不能早于今日";
-        }
-        if (startDay.after(endDay)) {
-            return "起始日期不能晚于结束日期";
-        }
-
-        if (roomType == null) {
-            return "无效的房型";
-        }
-        if (shops.size() == 0) {
-            return "无效的门店列表";
-        }
-        if (useWeekDaysSet.size() == 0) {
-            return "未设置可使用日期";
-        }
-        if (startTimesSet.size() == 0) {
-            return "未设置使用时间段";
-        }
-
-
-        return null;
-    }
-
-    //检测新建的价格策略有无时间上的碰撞
-    private static Map<String, Object> collisionDetection(
-            int duration, Date startDay, Date endDay, KtvRoomType roomType,
-            Set<Shop> shops, Set<Integer> useWeekDaysSet, Set<Integer> startTimesSet) {
-
-        //查出所有 时间交叉、欢唱时长相同、包厢类型相同、门店交叉的门店策略
-        Query query = JPA.em().createQuery("select k from KtvShopPriceSchedule k where k.schedule.product.duration = :duration " +
-                "and k.schedule.startDay <= :endDay and k.schedule.endDay >= :startDay and k.schedule.roomType = :roomType " +
-                "and k.shop in :shops");
-        query.setParameter("duration", duration);
-        query.setParameter("endDay", endDay);
-        query.setParameter("startDay", startDay);
-        query.setParameter("roomType", roomType);
-        query.setParameter("shops", shops);
-        List<KtvShopPriceSchedule> shopStrategies = query.getResultList();
-
-        //维护一个已知的 没有冲突的策略列表
-        Set<Long> okStrategies = new HashSet<>();
-        for (KtvShopPriceSchedule shopStrategy : shopStrategies) {
-            if (okStrategies.contains(shopStrategy.schedule.id)) {
-                continue;
-            }
-            //判断使用的星期有没有交叉
-            List<Integer> weekDayIntersections = (ArrayList<Integer>) CollectionUtils.intersection(
-                    shopStrategy.schedule.getDayOfWeeksAsSet(), useWeekDaysSet);
-            //如果所选的星期都没有交叉，那将其假如到安全列表后直接跳过
-            if (weekDayIntersections.size() == 0) {
-                okStrategies.add(shopStrategy.schedule.id);
-                continue;
-            }
-            for (Integer startTime : shopStrategy.schedule.getStartTimesAsSet()) {
-                for (Integer i : startTimesSet) {
-                    if ((startTime - duration) < i && i < (startTime + duration)) {
-                        //冲突了
-                        Map<String, Object> result = new HashMap<>();
-                        result.put("shop", shopStrategy.shop);
-                        result.put("weekdays", weekDayIntersections);
-                        result.put("startTime", startTime);
-                        return result;
-                    }
-                }
-            }
-            okStrategies.add(shopStrategy.schedule.id);
-        }
-        return null;
-    }
-
-    public static void showEdit(Long id) {
-    }
-
-
-    public static void update(Long id, @Valid KtvPriceSchedule priceSchedule, List<String> useWeekDays) {
-    }
-
-    public static void delete(Long id) {
-        KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(id);
-        if (priceSchedule == null) {
-            index(null, null);
-            return;
-        }
-        priceSchedule.delete();
-
-        index(null, null);
+    @Override
+    protected String queue() {
+        return KtvSkuMessageUtil.QUEUE_NAME;
     }
 }

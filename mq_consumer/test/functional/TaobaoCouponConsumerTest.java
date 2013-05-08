@@ -14,8 +14,8 @@ import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.sales.ResalerProduct;
-import models.taobao.KtvSkuMessage;
 import models.taobao.TaobaoCouponConsumer;
+import models.taobao.TaobaoCouponMessage;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -85,7 +85,7 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
         long couponCount = ECoupon.count();
 
 
-        KtvSkuMessage.TaobaoCouponMessage taobaoCouponMessage = new KtvSkuMessage.TaobaoCouponMessage(outerOrder.id);
+        TaobaoCouponMessage taobaoCouponMessage = new TaobaoCouponMessage(outerOrder.id);
 
         TaobaoCouponConsumer taobaoCouponConsumer = new TaobaoCouponConsumer();
         taobaoCouponConsumer.consumeWithTx(taobaoCouponMessage);
@@ -110,7 +110,7 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
 
         int smsSendCount = ((ECoupon) ECoupon.findAll().get(0)).smsSentCount;
 
-        KtvSkuMessage.TaobaoCouponMessage taobaoCouponMessage = new KtvSkuMessage.TaobaoCouponMessage(outerOrder.id);
+        TaobaoCouponMessage taobaoCouponMessage = new TaobaoCouponMessage(outerOrder.id);
 
         TaobaoCouponConsumer taobaoCouponConsumer = new TaobaoCouponConsumer();
         taobaoCouponConsumer.consumeWithTx(taobaoCouponMessage);
@@ -132,7 +132,7 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
         outerOrder.save();
 
 
-        KtvSkuMessage.TaobaoCouponMessage taobaoCouponMessage = new KtvSkuMessage.TaobaoCouponMessage(outerOrder.id);
+        TaobaoCouponMessage taobaoCouponMessage = new TaobaoCouponMessage(outerOrder.id);
 
         TaobaoCouponConsumer taobaoCouponConsumer = new TaobaoCouponConsumer();
         taobaoCouponConsumer.consumeWithTx(taobaoCouponMessage);

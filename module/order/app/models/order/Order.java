@@ -891,8 +891,6 @@ public class Order extends Model {
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
-                    System.out.println(eCoupon + "《====111=====(eCoupon:");
-
                 }
 
                 //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
