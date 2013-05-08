@@ -6,6 +6,7 @@ import factory.ModelFactory;
 import factory.annotation.Factory;
 import factory.resale.ResalerFactory;
 import models.consumer.User;
+import models.operator.Operator;
 import models.order.Order;
 import models.order.OrderStatus;
 import models.order.OrderType;
@@ -38,6 +39,7 @@ public class OrderFactory extends ModelFactory<Order> {
         order.deleted = DeletedStatus.UN_DELETED;
         order.createdAt = new Date();
         order.status = OrderStatus.UNPAID;
+        order.operator = Operator.defaultOperator();
         return order;
     }
 

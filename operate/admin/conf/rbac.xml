@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <application text="系统管理">
-    <role key="admin" text="系统管理员" />
+    <role key="admin" text="系统管理员"/>
     <role key="developer" text="开发人员"/>
 
-    <permission key="SYSTEM_HOME" text="系统管理主页" roles="admin" />
+    <permission key="SYSTEM_HOME" text="系统管理主页" roles="admin"/>
     <permission key="USER" text="视惠员工管理" roles="admin,editor,customservice,account">
-        <permission key="USER_ADD" text="新增视惠员工" roles="admin" />
-        <permission key="USER_EDIT" text="修改视惠员工" roles="admin" />
+        <permission key="USER_EDIT" text="修改视惠员工" roles="admin"/>
+        <permission key="OPERATOR_EDIT" text="修改运营商" roles="admin"/>
     </permission>
     <permission key="APPLICATION_LOGS" text="系统日志" roles="developer" />
-    <permission key="SQL_EXECUTOR" text="SQL命令" roles="developer" />
+    <permission key="SQL_EXECUTOR" text="SQL命令" roles="developer"/>
     <permission key="JOBS_VIEW" text="查看定时任务" roles="developer" />
 
     <navigation key="main" text="系统管理" action="OperateUsers.index" permissions="SYSTEM_HOME" display-order="1000">
-        <navigation key="user" text="操作员" permissions="USER">
-          <navigation key="user_add" text="新增操作员" action="OperateUsers.add" permissions="USER_ADD"/>
-          <navigation key="user_search" text="操作员管理" action="OperateUsers.index" permissions="USER_EDIT"/>
+        <navigation key="user" text="系统管理" permissions="USER">
+            <navigation key="user_search" text="操作员管理" action="OperateUsers.index" permissions="USER_EDIT"/>
+            <navigation key="operator_search" text="运营商管理" action="Operators.index" permissions="OPERATOR_EDIT"/>
         </navigation>
         <navigation key="application_logs_view" text="开发辅助">
           <navigation key="ws_call_logs" text="Web服务调用日志" 

@@ -3,6 +3,7 @@ package models.resale;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.util.AccountUtil;
+import models.operator.Operator;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.annotations.Index;
 import play.data.validation.Email;
@@ -21,6 +22,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
@@ -48,6 +50,9 @@ public class Resaler extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "account_type")
     public AccountType accountType;
+
+    @ManyToOne
+    public Operator operator;
 
     /**
      * 是否可欠款
@@ -155,6 +160,7 @@ public class Resaler extends Model {
     //商品下架状态的关键词
     @Column(name = "offsale_key")
     public String offSaleKey;
+
     /**
      * 佣金比例
      */
@@ -171,7 +177,7 @@ public class Resaler extends Model {
     }
 
     public boolean isBatchExportCoupons() {
-        return this.batchExportCoupons == batchExportCoupons.YES;
+        return this.batchExportCoupons == ResalerBatchExportCoupons.YES;
     }
 
     /**

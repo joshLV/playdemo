@@ -7,6 +7,7 @@ import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountStatus;
 import models.accounts.AccountType;
+import models.operator.Operator;
 import models.resale.Resaler;
 
 import java.math.BigDecimal;
@@ -31,6 +32,7 @@ public class AccountFactory extends ModelFactory<Account> {
         account.status = AccountStatus.NORMAL;
         account.createdAt = new Date();
         account.creditable = AccountCreditable.NO;
+        account.operator = Operator.defaultOperator();
         return account;
     }
 
