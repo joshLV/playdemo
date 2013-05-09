@@ -1,11 +1,7 @@
 package models.ktv;
 
-import com.google.gson.annotations.Expose;
 import com.uhuila.common.constants.DeletedStatus;
-import models.sales.Shop;
-import play.Logger;
 import play.db.jpa.GenericModel;
-import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.beans.Transient;
