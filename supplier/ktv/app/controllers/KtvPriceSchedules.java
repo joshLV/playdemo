@@ -163,12 +163,12 @@ public class KtvPriceSchedules extends Controller {
 
         index(shopCountMap.keySet().iterator().next().id, priceStrategy.roomType);
     }
-
-    public static void make(long priceScheduleId) {
-//       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
-        KtvUpdateSkuJob job = new KtvUpdateSkuJob();
-        job.doJob();
-    }
+//
+//    public static void make(long priceScheduleId) {
+////       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
+//        KtvUpdateSkuJob job = new KtvUpdateSkuJob();
+//        job.doJob();
+//    }
 
 
     public static void jsonCollisionDetection(KtvPriceSchedule priceStrategy, @As(",") Set<Integer> useWeekDays,
