@@ -1,0 +1,14 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'修改Ktv产品' /}
+#{get 'moreScripts'/}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @KtvProducts.update(id), id:'form',enctype:'multipart/form-data',
+class:"form-horizontal", method:'PUT' }
+    <legend>${title}</legend>
+    #{set action:"edit"/}
+    #{include '/KtvProducts/ktvProductsForm.html'/}
+#{/form}
+</div>
+
+

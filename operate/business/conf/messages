@@ -18,6 +18,9 @@ goods.TAOBAO=淘宝网
 goods.YIHAODIAN=一号店
 goods.DANGDANG=当当网
 
+
+product.supplier=商户名称
+product.name=名称
 contract.supplierId= 商户
 contract.description=商户说明
 

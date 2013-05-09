@@ -1,0 +1,28 @@
+#{if "add".equals(action)}
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>商户</label>
+
+    <div class="controls">
+        #{layout_operate.selectInputField name:"supplierName", id:"product.supplier.id", list:supplierList/}
+        <span class="error">#{error 'product.supplier'/}</span>
+    </div>
+</div>
+#{/if}
+#{else}
+<input type="hidden" name="product.supplier.id" value="${product?.supplier?.id}">
+    #{layout_operate.textField name:'product.supplier', value:product?.supplier?.fullName, disabled:true/}
+#{/else}
+#{layout_operate.textField name:'product.name', value:product?.name, required:true/}
+#{layout_operate.labelText name:"欢唱时长", required:_required/}
+&nbsp;     &nbsp;   &nbsp;   &nbsp;
+<input type="radio" name="product.duration" value="1" #{if product?.duration == null || product?.duration == 1} checked #{/if}> 1小时
+<input type="radio" name="product.duration" value="2" #{if product?.duration == 2} checked #{/if}> 2小时
+<input type="radio" name="product.duration" value="3" #{if product?.duration == 3} checked #{/if}> 3小时
+<input type="radio" name="product.duration" value="4" #{if product?.duration == 4} checked #{/if}> 4小时
+<input type="radio" name="product.duration" value="5" #{if product?.duration == 5} checked #{/if}> 5小时
+<input type="radio" name="product.duration" value="6" #{if product?.duration == 6} checked #{/if}> 6小时
+
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
+#{vx.cancelButton url:'/ktv-products', class:'btn btn-primary'/}
+</div>
