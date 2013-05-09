@@ -238,8 +238,6 @@ public class OperateGoods extends Controller {
         checkSalePrice(goods);
         checkShops(goods.supplierId);
         checkUseWeekDay(goods);
-        System.out.println(request.params.get("goods.shops.id").charAt(1) + "《=========request.params.get(:");
-        System.out.println(goods.shops + "《=========goods.shops:");
         if (Validation.hasErrors()) {
             boolean selectAll = false;
             Supplier supplier = Supplier.findById(goods.supplierId);
@@ -276,14 +274,16 @@ public class OperateGoods extends Controller {
         }
 
         goods.save();
-        System.out.println(goods.id + "《=========goods.i.d:");
         String createdFrom = "Op";
         goods.createHistory(createdFrom);
         Supplier suppleir = Supplier.findById(goods.supplierId);
 
         if (suppleir.getProperty("ktvSupplier").equals("1")) {
             KtvProductGoods productGoods = new KtvProductGoods();
-            Shop shop = Shop.findById(request.params.get("goods.shops.id"));
+            Shop shop = Shop.findById(Long.valueOf(request.params.getAll("goods.shops.id")[0]));
+            goods.shops = new HashSet<>();
+            goods.shops.add(shop);
+            goods.save();
             productGoods.shop = shop;
             KtvProduct product = KtvProduct.findById(goods.product.id);
             productGoods.product = product;
@@ -414,13 +414,16 @@ public class OperateGoods extends Controller {
         renderArgs.put("queryString", queryString);
         Supplier supplier = Supplier.findById(goods.supplierId);
         boolean ktvSupplier = false;
-        if (supplier.getProperty("ktvSupplier").equals("1")) {
+        if (supplier.getProperty("ktvSupplier") != null && supplier.getProperty("ktvSupplier").equals("1")) {
             ktvSupplier = true;
         }
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
 
-        KtvProductGoods productGoods = KtvProductGoods.find("goods=? and shop=?", goods, goods.shops.iterator().next()).first();
-        goods.product = productGoods.product;
+        Supplier suppleir = Supplier.findById(goods.supplierId);
+        if (ktvSupplier) {
+            KtvProductGoods productGoods = KtvProductGoods.find("goods=? and shop=?", goods, goods.shops.iterator().next()).first();
+            goods.product = productGoods.product;
+        }
         renderInit(goods);
         render(id, hasApproveGoodsPermission, ktvSupplier, productList);
 
@@ -443,9 +446,20 @@ public class OperateGoods extends Controller {
     public static void copy(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
         checkShops(goods.supplierId);
+        Supplier supplier = Supplier.findById(goods.supplierId);
+        boolean ktvSupplier = false;
+        if (supplier.getProperty("ktvSupplier") != null && supplier.getProperty("ktvSupplier").equals("1")) {
+            ktvSupplier = true;
+        }
+        if (ktvSupplier) {
+            KtvProductGoods productGoods = KtvProductGoods.find("goods=? and shop=?", goods, goods.shops.iterator().next()).first();
+            goods.product = productGoods.product;
+        }
         renderInit(goods);
+
         renderArgs.put("imageLargePath", goods.getImageLargePath());
-        render(id);
+        List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
+        render(id, ktvSupplier, productList);
 
     }
 
@@ -615,17 +629,14 @@ public class OperateGoods extends Controller {
         Supplier suppleir = Supplier.findById(goods.supplierId);
         if (suppleir.getProperty("ktvSupplier").equals("1")) {
             KtvProductGoods productGoods = new KtvProductGoods();
-            System.out.println(goods.shops.iterator().next() + "《=========shop:");
-            productGoods.shop = goods.shops.iterator().next();
-            System.out.println(goods.name + "《=========goods.name:");
+            Shop shop = Shop.findById(Long.valueOf(request.params.getAll("goods.shops.id")[0]));
+            goods.shops = new HashSet<>();
+            goods.shops.add(shop);
+            goods.save();
+            productGoods.shop = shop;
             KtvProduct product = KtvProduct.findById(goods.product.id);
-
             productGoods.product = product;
-
-
             productGoods.goods = goodsItem;
-            System.out.println(productGoods.product + "《=========goods.product.name:");
-
             productGoods.save();
         }
         redirectUrl(page, queryString);

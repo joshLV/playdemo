@@ -36,17 +36,24 @@
 </tr>
 #{/list}
 <input type="hidden" id="ktv_supplier" name="ktvSupplier" value="${ktvSupplier}"/>
+<input type="hidden" id="action" name="action" value="${action}"/>
 
 
 </tbody>
 <script type="text/javascript">
     $(function () {
         ktvSupplier = $("#ktv_supplier").val();
+        action = $("#action").val();
         if (ktvSupplier == 'false' || ktvSupplier == null) {
             $("#select_all_shops").show();
             $("#ktv_supplier_shops").hide();
-            $("#shop").hide();
-
+//            if (action == 'edit') {
+            if ($("input[name='goods.isAllShop']:checked").val() == 'false') {
+                $("#shop").show()
+            }
+            else {
+                $("#shop").hide();
+            }
         }
         else {
             $("#select_all_shops").hide();
