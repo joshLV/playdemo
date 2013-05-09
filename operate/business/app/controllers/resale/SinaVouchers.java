@@ -3,19 +3,26 @@ package controllers.resale;
 import com.google.gson.Gson;
 import controllers.OperateRbac;
 import models.operator.OperateUser;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
 import models.order.OuterOrderPartner;
-import models.sales.*;
+import models.resale.Resaler;
+import models.sales.Goods;
+import models.sales.ResalerProduct;
+import models.sales.ResalerProductJournal;
+import models.sales.ResalerProductJournalType;
+import models.sales.ResalerProductStatus;
+import models.sales.Shop;
 import models.sina.SinaVoucherResponse;
 import models.sina.SinaVoucherUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
-import org.apache.commons.lang.StringUtils;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: yan
@@ -66,7 +73,8 @@ public class SinaVouchers extends Controller {
         if (response.isOk()) {
             OperateUser operateUser = OperateRbac.currentUser();
             Goods goods = Goods.findById(goodsId);
-            ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.SINA, goods);
+            Resaler sinaResaler = Resaler.findApprovedByLoginName(Resaler.SINA_LOGIN_NAME);
+            ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.SINA, sinaResaler, goods);
             String contentId = response.content.getAsJsonObject().get("id").getAsString();
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id);
             product.partnerProduct(contentId).save();

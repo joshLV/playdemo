@@ -22,9 +22,9 @@ public class SolrLoadData extends Controller {
     }
 
     /**
-     * 初始化solr
+     * 加载solr
      */
-    public static void initSolr() {
+    public static void load() {
         String deleteFlag = request.params.get("delete");
         try {
             //是否增量加载的标志

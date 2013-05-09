@@ -22,6 +22,9 @@
     <permission key="INVENTORY" text="库存管理" roles="inventory_manager"/>
     <permission key="RETURN_GOODS" text="退货操作" roles="inventory_manager,customservice"/>
 
+    <permission key="KTVPRODUCTS" text="Ktv产品管理" roles="editor"/>
+
+
     <permission key="VIEW_RETURN" text="退货单查询" roles="customservice,inventory_manager"/>
     <permission key="VIEW_TAKE_OUTS" text="查看根据订单出库" roles="inventory_manager,customservice"/>
 
@@ -157,6 +160,7 @@
             <navigation key="category_admin_index" action="CategoryAdmin.index" text="类别管理" permissions="GOODS"/>
             <navigation key="hot_keywords" action="OperateSearchHotKeywords.index" text="热门搜索词查询"
                         permissions="HOT_KEYWORDS"/>
+            <navigation key="ktv_products_index" action="KtvProducts.index" text="Ktv产品管理" permissions="KTVPRODUCTS"/>
         </navigation>
         <navigation key="sku" text="货品">
             <navigation key="sku_add" action="Skus.add" text="货品添加" permissions="SKU_NEW"/>

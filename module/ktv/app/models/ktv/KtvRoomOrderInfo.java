@@ -21,6 +21,7 @@ import java.util.*;
 @Entity
 @Table(name = "ktv_room_order_info")
 public class KtvRoomOrderInfo extends Model {
+    public static int LOCK_MINUTE = 15;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id", nullable = false)
@@ -31,15 +32,16 @@ public class KtvRoomOrderInfo extends Model {
     public OrderItems orderItem;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ktv_room_id", nullable = false)
-    public KtvRoom ktvRoom;
+    @JoinColumn(name = "shop_id")
+    public Shop shop;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ktv_room_type_id", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "room_type")
     public KtvRoomType ktvRoomType;
 
     @Enumerated(EnumType.STRING)
     public KtvOrderStatus status;
+
     /**
      * 预定日期
      */
@@ -50,8 +52,12 @@ public class KtvRoomOrderInfo extends Model {
      * 预定时间
      */
     @Column(name = "scheduled_time")
-    public String scheduledTime;
+    public int scheduledTime;
 
+    /**
+     * 时长
+     */
+    public int duration;
     /**
      * 锁定时间
      */
@@ -64,10 +70,9 @@ public class KtvRoomOrderInfo extends Model {
     @Column(name = "deal_at")
     public Date dealAt;
 
-    public KtvRoomOrderInfo(Goods goods, OrderItems orderItem, KtvRoom ktvRoom, KtvRoomType ktvRoomType, Date scheduledDay, String scheduledTime) {
+    public KtvRoomOrderInfo(Goods goods, OrderItems orderItem, KtvRoomType ktvRoomType, Date scheduledDay, int scheduledTime) {
         this.goods = goods;
         this.orderItem = orderItem;
-        this.ktvRoom = ktvRoom;
         this.ktvRoomType = ktvRoomType;
         this.scheduledDay = scheduledDay;
         this.scheduledTime = scheduledTime;
@@ -76,10 +81,22 @@ public class KtvRoomOrderInfo extends Model {
 
     }
 
+    /*
     public static List<KtvRoomOrderInfo> findScheduledInfos(Date scheduleDay, Shop shop) {
         return KtvRoom.find("select k from KtvRoomOrderInfo k join k.goods.shops s where k.scheduledDay = ? and s.id=? and (k.status = ? or (k.status=?  and k.createdAt >= ?))",
                 DateUtils.truncate(scheduleDay, Calendar.DATE), shop.id, KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, DateUtils.addMinutes(new Date(), -10)).fetch();
     }
+    */
+
+    public static List<KtvRoomOrderInfo> findScheduled(Date scheduledDay, Shop shop) {
+        scheduledDay = DateUtils.truncate(scheduledDay, Calendar.DATE);
+        Date tenMinutesAgo = DateUtils.addMinutes(new Date(), -10);
+
+        return KtvRoomOrderInfo.find("select o from KtvRoomOrderInfo o where o.shop = ? and o.scheduledDay = ? " +
+                "and (o.status = ? or (o.status = ? and o.createdAt >= ?))",
+                shop, scheduledDay, KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, tenMinutesAgo).fetch();
+    }
+
 
     /**
      * 取消订单
@@ -125,17 +142,19 @@ public class KtvRoomOrderInfo extends Model {
     /**
      * 查找10分钟内的锁定Room或出售的Room
      */
+    /*
     public static List<KtvRoomOrderInfo> findScheduledInfos(Date scheduledDay, Shop shop, KtvRoom ktvRoom, String scheduledTime) {
         return KtvRoom.find("select k from KtvRoomOrderInfo k join k.goods.shops s where k.scheduledDay = ? and s.id=? and k.ktvRoom=? and k.scheduledTime =? and " +
                 "(k.status = ? or (k.status=?  and k.createdAt >= ?))",
                 DateUtils.truncate(scheduledDay, Calendar.DATE), shop.id, ktvRoom, scheduledTime,
                 KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, DateUtils.addMinutes(new Date(), -10)).fetch();
-    }
 
+    }
+    */
     public static String getRoomOrderTime(List<KtvRoomOrderInfo> ktvRoomOrderInfoList) {
         List<Integer> orderTimeList = new ArrayList<>();
         for (KtvRoomOrderInfo ktvRoomOrderInfo : ktvRoomOrderInfoList) {
-            orderTimeList.add(Integer.parseInt(ktvRoomOrderInfo.scheduledTime.substring(0, 2)));
+            orderTimeList.add(ktvRoomOrderInfo.scheduledTime);
 
         }
         Collections.sort(orderTimeList);

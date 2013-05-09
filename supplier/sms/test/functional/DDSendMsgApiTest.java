@@ -3,6 +3,8 @@ package functional;
 import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
+import models.accounts.AccountType;
+import models.accounts.util.AccountUtil;
 import models.dangdang.groupbuy.DDErrorCode;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.order.ECoupon;
@@ -16,6 +18,7 @@ import models.sales.Goods;
 import models.sales.ResalerProduct;
 import org.junit.Before;
 import org.junit.Test;
+import play.Logger;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import util.DateHelper;
@@ -46,8 +49,10 @@ public class DDSendMsgApiTest extends FunctionalTest {
             @Override
             public void build(Resaler target) {
                 target.loginName = Resaler.DD_LOGIN_NAME;
+                target.status = ResalerStatus.APPROVED;
             }
         });
+        AccountUtil.getCreditableAccount(resaler.id, AccountType.RESALER);
         order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
             @Override
             public void build(Order target) {
@@ -58,6 +63,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
             @Override
             public void build(ResalerProduct target) {
                 target.partner = OuterOrderPartner.DD;
+                target.resaler = resaler;
             }
         });
         g = product.goods;
@@ -103,6 +109,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
         assertStatus(200, response);
 
         assertContentType("text/xml", response);
+        Logger.info("response=" + getContent(response));
         String desc = (String)renderArgs("desc");
         assertNotNull(desc);
     }

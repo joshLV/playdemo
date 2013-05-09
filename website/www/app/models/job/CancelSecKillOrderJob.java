@@ -1,7 +1,6 @@
 package models.job;
 
 import play.jobs.Job;
-import play.jobs.On;
 
 import java.text.ParseException;
 
@@ -12,7 +11,7 @@ import java.text.ParseException;
  * Date: 8/16/12
  * Time: 7:47 PM
  */
-@On("0 * * * * ?")  //每分钟执行一次,自动取消15分钟还未付款的订单
+// @On("0 * * * * ?")  //每分钟执行一次,自动取消15分钟还未付款的订单
 public class CancelSecKillOrderJob extends Job {
 
     @Override

@@ -24,13 +24,14 @@ import java.util.Map;
  */
 public class JingDongGroupByRequestTest extends FunctionalTest {
     ResalerProduct product;
+    Resaler resaler;
     @Before
     public void setUp() throws Exception {
         FactoryBoy.deleteAll();
-        FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+        resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
             @Override
             public void build(Resaler target) {
-                target.loginName = "jingdong";
+                target.loginName = Resaler.JD_LOGIN_NAME;
             }
         });
         product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
@@ -38,6 +39,7 @@ public class JingDongGroupByRequestTest extends FunctionalTest {
             public void build(ResalerProduct target) {
                 target.partner = OuterOrderPartner.JD;
                 target.partnerProductId = "1234";
+                target.resaler = resaler;
             }
         });
 

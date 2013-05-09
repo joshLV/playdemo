@@ -210,8 +210,13 @@ public class OperateShops extends Controller {
 
     @ActiveNavigation("goods_add")
     public static void showGoodsShops(Long supplierId) {
+        Supplier supplier = Supplier.findById(supplierId);
+        boolean ktvSupplier = false;
+        if (supplier.getProperty("ktvSupplier").equals("1")) {
+            ktvSupplier = true;
+        }
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-        render(shopList);
+        render(shopList, ktvSupplier);
     }
 
     @ActiveNavigation("supplierUsers_add")

@@ -3,6 +3,7 @@ package factory.resale;
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
+import models.operator.Operator;
 import models.resale.AccountType;
 import models.resale.Resaler;
 import models.resale.ResalerLevel;
@@ -50,6 +51,7 @@ public class ResalerFactory extends ModelFactory<Resaler> {
         resaler.password = "123456";
         resaler.confirmPassword = "123456";
         resaler.identityNo = "310106197812234089";
+        resaler.operator = Operator.defaultOperator();
         resaler.save();
         return resaler;
 

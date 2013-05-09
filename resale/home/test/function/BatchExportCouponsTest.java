@@ -1,22 +1,24 @@
 package function;
 
 import controllers.modules.resale.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.order.BatchCoupons;
 import models.order.ECoupon;
 import models.resale.Resaler;
 import models.resale.ResalerBatchExportCoupons;
+import models.resale.ResalerFav;
 import models.sales.Goods;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
 import play.test.FunctionalTest;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +32,7 @@ public class BatchExportCouponsTest extends FunctionalTest {
     ECoupon coupon;
     BatchCoupons batchCoupons;
     Resaler resaler;
+    ResalerFav resalerFav;
 
     @org.junit.Before
     public void setup() {
@@ -41,6 +44,8 @@ public class BatchExportCouponsTest extends FunctionalTest {
                 r.batchExportCoupons = ResalerBatchExportCoupons.YES;
             }
         });
+        resalerFav = FactoryBoy.create(ResalerFav.class);
+
         batchCoupons = FactoryBoy.create(BatchCoupons.class);
         coupon = FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
             @Override
@@ -74,7 +79,7 @@ public class BatchExportCouponsTest extends FunctionalTest {
     public void testGenerator() {
         Http.Response response = GET("/coupons/batchexport/generator");
         assertIsOk(response);
-        assertEquals(1, ((JPAExtPaginator<models.sales.Goods>) renderArgs("goodsList")).size());
+        assertEquals(1, ((List<Goods>) renderArgs("goodsList")).size());
     }
 
 

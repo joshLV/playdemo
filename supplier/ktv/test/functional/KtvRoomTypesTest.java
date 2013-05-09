@@ -16,12 +16,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import play.test.FunctionalTest;
+
 /**
  * User: yan
  * Date: 13-4-11
  * Time: 下午6:16
  */
 public class KtvRoomTypesTest extends FunctionalTest {
+    /*
     Supplier supplier;
     SupplierUser supplierUser;
     KtvRoomType ktvRoomType;
@@ -90,5 +93,6 @@ public class KtvRoomTypesTest extends FunctionalTest {
         assertStatus(302, response);
         assertEquals(0, KtvRoomType.count());
     }
+    */
 
 }

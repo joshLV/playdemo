@@ -1,7 +1,6 @@
 package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
-import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.AccountType;
 import models.accounts.WithdrawAccount;
 import models.accounts.util.AccountUtil;
@@ -10,7 +9,6 @@ import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
 import models.operator.OperateUser;
 import models.sales.Shop;
-import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierCategory;
 import models.supplier.SupplierStatus;
@@ -61,6 +59,7 @@ public class Suppliers extends Controller {
         List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
         renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
         List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
+        renderArgs.put("sellECoupon","1");
         render(operateUserList, supplierCategoryList);
     }
 
@@ -87,7 +86,7 @@ public class Suppliers extends Controller {
 
         checkItems(supplier);
         //随机产生6位数字密码
-        String password = RandomNumberUtil.generateSerialNumber(6);
+        String password = "123456";
         admin.encryptedPassword = password;
         admin.confirmPassword = password;
 
@@ -97,7 +96,10 @@ public class Suppliers extends Controller {
             List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
             renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
             List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
-            render("Suppliers/add.html", supplier, operateUserList, supplierCategoryList);
+            String canSaleReal = request.params.get(Supplier.CAN_SALE_REAL);
+            String sellECoupon = request.params.get(Supplier.SELL_ECOUPON);
+            String ktvSupplier = request.params.get(Supplier.KTV_SUPPLIER);
+            render("Suppliers/add.html", supplier, operateUserList, supplierCategoryList, sellECoupon, canSaleReal, ktvSupplier);
         }
         supplier.loginName = admin.loginName;
         supplier.create();
@@ -116,10 +118,10 @@ public class Suppliers extends Controller {
         AccountUtil.getSupplierAccount(supplier.id);
 
         //发送密码给商户管理员手机
-        String comment = Play.configuration.getProperty("message.comment", "【券市场】 恭喜您已开通券市场账号，用户名：username，密码：password。（请及时修改密码）客服热线：4006865151");
-        comment = comment.replace("username", admin.loginName);
-        comment = comment.replace("password", password);
-        SMSUtil.send(comment, admin.mobile, "0000");
+//        String comment = Play.configuration.getProperty("message.comment", "【券市场】 恭喜您已开通券市场账号，用户名：username，密码：password。（请及时修改密码）客服热线：4006865151");
+//        comment = comment.replace("username", admin.loginName);
+//        comment = comment.replace("password", password);
+//        SMSUtil.send(comment, admin.mobile, "0000");
         index(null, null, null, null);
     }
 
@@ -270,7 +272,10 @@ public class Suppliers extends Controller {
         if (Validation.hasErrors()) {
             List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
             renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
-            render("/Suppliers/edit.html", supplier, id, operateUserList, page);
+            String sellECoupon = request.params.get(Supplier.SELL_ECOUPON);
+            String canSaleReal = request.params.get(Supplier.CAN_SALE_REAL);
+            String ktvSupplier = request.params.get(Supplier.KTV_SUPPLIER);
+            render("/Suppliers/edit.html", supplier, id, operateUserList, page, sellECoupon, canSaleReal, ktvSupplier);
         }
 
         Supplier.update(id, supplier);

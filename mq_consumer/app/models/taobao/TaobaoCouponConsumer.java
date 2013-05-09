@@ -1,6 +1,7 @@
 package models.taobao;
 
 import com.google.gson.JsonObject;
+import com.taobao.api.response.TradeGetResponse;
 import models.RabbitMQConsumerWithTx;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -50,19 +51,27 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             Logger.info("start taobao coupon consumer send order");
             if (outerOrder.ybqOrder != null) {
                 Logger.info("our order already created");
-            } else if (send(outerOrder)) {
-                List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-                Date now = new Date();
-                for (ECoupon coupon : couponList) {
-                    coupon.partner = ECouponPartner.TB;
-                    coupon.effectiveAt = now;//淘宝卖出去就直接可消费
-                    coupon.save();
+            } else{
+                //淘宝订单是否是等待发货
+                if (!taobaoOrderReadyToSend(outerOrder)){
+                    outerOrder.status = OuterOrderStatus.ORDER_IGNORE;
+                    outerOrder.save();
+                    return;
                 }
-                outerOrder.status = OuterOrderStatus.ORDER_DONE;
-                outerOrder.save();
-            } else {
-                Logger.info("taobao coupon job failed: create our order failed %s", taobaoCouponMessage.outerOrderId);
-                throw new RuntimeException("taobao coupon job failed: create our order failed " + taobaoCouponMessage.outerOrderId);
+                if (send(outerOrder)) {
+                    List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
+                    Date now = new Date();
+                    for (ECoupon coupon : couponList) {
+                        coupon.partner = ECouponPartner.TB;
+                        coupon.effectiveAt = now;//淘宝卖出去就直接可消费
+                        coupon.save();
+                    }
+                    outerOrder.status = OuterOrderStatus.ORDER_DONE;
+                    outerOrder.save();
+                } else {
+                    Logger.info("taobao coupon job failed: create our order failed %s", taobaoCouponMessage.outerOrderId);
+                    throw new RuntimeException("taobao coupon job failed: create our order failed " + taobaoCouponMessage.outerOrderId);
+                }
             }
         } else if (outerOrder.status == OuterOrderStatus.RESEND_COPY) {
             Logger.info("start taobao coupon consumer resend order");
@@ -79,6 +88,12 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder);
             outerOrder.save();
         }
+    }
+
+    //淘宝订单是否是等待发货
+    private boolean taobaoOrderReadyToSend(OuterOrder outerOrder) {
+        TradeGetResponse response = TaobaoCouponUtil.tradeInfo(Long.parseLong(outerOrder.orderId), "status");
+        return response.getTrade().getStatus().equals("WAIT_SELLER_SEND_GOODS");
     }
 
     private boolean send(OuterOrder outerOrder) {
@@ -141,7 +156,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
-        Goods goods = ResalerProduct.getGoods(outerGroupId, OuterOrderPartner.TB);
+        Goods goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.TB);
         try {
             if (goods == null) {
                 Logger.info("goods not found: %s", outerGroupId);

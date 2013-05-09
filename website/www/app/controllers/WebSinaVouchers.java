@@ -1,21 +1,18 @@
 package controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.uhuila.common.util.DateUtil;
 import controllers.modules.website.cas.OAuthType;
 import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.Security;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import controllers.modules.website.cas.annotations.TargetOAuth;
-import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.consumer.User;
-import models.ktv.KtvPriceSchedule;
-import models.ktv.KtvRoom;
 import models.ktv.KtvRoomOrderInfo;
 import models.ktv.KtvRoomType;
-import models.order.*;
+import models.order.DeliveryType;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderItems;
+import models.order.OuterOrderPartner;
 import models.payment.PaymentFlow;
 import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
@@ -27,16 +24,16 @@ import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
-import play.classloading.enhancers.LocalvariablesNamesEnhancer;
 import play.data.validation.Validation;
 import play.mvc.Before;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.With;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * User: yan
@@ -54,7 +51,8 @@ public class WebSinaVouchers extends Controller {
      */
     @SkipCAS
     public static void showProduct(String productId, String source) {
-        Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.SINA_LOGIN_NAME);
+        Goods goods = ResalerProduct.getGoodsByPartnerProductId(resaler, productId, OuterOrderPartner.SINA);
         Collection<Shop> shops = goods.getShopList();
 
 
@@ -68,7 +66,8 @@ public class WebSinaVouchers extends Controller {
      * @param productId 商品ID
      */
     public static void showOrder(String productId) {
-        Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.SINA_LOGIN_NAME);
+        Goods goods = ResalerProduct.getGoodsByPartnerProductId(resaler, productId, OuterOrderPartner.SINA);
         if (goods == null || goods.status != GoodsStatus.ONSALE) {
             error("no goods!");
         }
@@ -98,7 +97,8 @@ public class WebSinaVouchers extends Controller {
      */
     public static void order(String productId, Long buyCount, String phone, Date scheduledDay, String source) {
         User user = SecureCAS.getUser();
-        Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.SINA_LOGIN_NAME);
+        Goods goods = ResalerProduct.getGoodsByPartnerProductId(resaler, productId, OuterOrderPartner.SINA);
         Validation.required("phone", phone);
         Validation.match("phone", phone, "^1\\d{10}$");
         String pageUrl = "ktvorder.html";
@@ -114,7 +114,6 @@ public class WebSinaVouchers extends Controller {
             initKtvPage(productId, goods, user);
             render("WebSinaVouchers/" + pageUrl, goods, productId);
         }
-        Resaler resaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
         if (resaler == null) {
             error("not found this resaler!");
         }
@@ -172,18 +171,18 @@ public class WebSinaVouchers extends Controller {
                 String[] values = request.params.getAll(key);
                 String[] scheduledTimes = values[0].split(",");
                 Long roomId = Long.valueOf(key.substring("roomId".length()));
-                KtvRoom ktvRoom = KtvRoom.findById(roomId);
+//                KtvRoom ktvRoom = KtvRoom.findById(roomId);
                 BigDecimal salePrice = BigDecimal.ZERO;
                 OrderItems orderItems = new OrderItems(order, goods, 1L, phone, salePrice, salePrice).save();
 
                 for (String scheduledTime : scheduledTimes) {
-                    List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(scheduledDay, shop, ktvRoom, scheduledTime);
-                    if (scheduledRoomList.size() > 0) {
-                        error("该包厢已被他人预定！");
-                    }
-                    KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
-                    salePrice = salePrice.add(ktvPriceSchedule.price);
-                    new KtvRoomOrderInfo(goods, orderItems, ktvRoom, ktvRoom.roomType, scheduledDay, scheduledTime).save();
+//                    List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(scheduledDay, shop, ktvRoom, scheduledTime);
+//                    if (scheduledRoomList.size() > 0) {
+//                        error("该包厢已被他人预定！");
+//                    }
+//                    KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
+//                    salePrice = salePrice.add(ktvPriceSchedule.price);
+                    new KtvRoomOrderInfo(goods, orderItems, KtvRoomType.MIDDLE, scheduledDay, Integer.parseInt(scheduledTime)).save();
                 }
 
                 //eCoupon.originalPrice=eCoupon.salePrice*(goods.originalPrice/goods.salePrice)

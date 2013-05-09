@@ -1,5 +1,7 @@
 package models.accounts;
 
+import models.operator.Operator;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import play.Logger;
 import play.db.jpa.Model;
 
@@ -7,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
@@ -52,6 +55,9 @@ public class Account extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
+    @ManyToOne
+    public Operator operator;
+
     @Transient
     public String info;
 
@@ -77,6 +83,10 @@ public class Account extends Model {
     }
 
     public Account(long uid, AccountType type) {
+        this(uid, type, Operator.defaultOperator());
+    }
+
+    public Account(long uid, AccountType type, Operator operator) {
         this.uid = uid;
         this.accountType = type;
         this.amount = BigDecimal.ZERO;
@@ -84,6 +94,7 @@ public class Account extends Model {
         this.status = AccountStatus.NORMAL;
         this.createdAt = new Date();
         this.creditable = AccountCreditable.NO;
+        this.operator = Operator.defaultOperator();
     }
 
     /**
@@ -128,5 +139,17 @@ public class Account extends Model {
 
     public boolean isCreditable() {
         return this.creditable == AccountCreditable.YES;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("uid", uid)
+                .append("accountType", accountType)
+                .append("creditable", creditable)
+                .append("amount", amount)
+                .append("operator", operator)
+                .append("status", status)
+                .toString();
     }
 }

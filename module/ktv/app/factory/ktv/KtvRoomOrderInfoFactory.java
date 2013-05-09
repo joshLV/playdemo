@@ -4,12 +4,10 @@ import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.ktv.KtvOrderStatus;
-import models.ktv.KtvRoom;
 import models.ktv.KtvRoomOrderInfo;
 import models.ktv.KtvRoomType;
 import models.order.OrderItems;
 import models.sales.Goods;
-import models.sales.Shop;
 
 import java.util.Date;
 
@@ -22,10 +20,9 @@ public class KtvRoomOrderInfoFactory extends ModelFactory<KtvRoomOrderInfo> {
 
     @Override
     public KtvRoomOrderInfo define() {
-        KtvRoom ktvRoom = FactoryBoy.lastOrCreate(KtvRoom.class);
         KtvRoomOrderInfo roomOrderInfo = new KtvRoomOrderInfo(FactoryBoy.lastOrCreate(Goods.class),
-                FactoryBoy.create(OrderItems.class), ktvRoom,
-                ktvRoom.roomType, new Date(), "09:00");
+                FactoryBoy.create(OrderItems.class),
+                KtvRoomType.MIDDLE, new Date(), 9);
         roomOrderInfo.scheduledDay=new Date();
         roomOrderInfo.status = KtvOrderStatus.LOCK;
         roomOrderInfo.createdAt = new Date();
@@ -34,25 +31,25 @@ public class KtvRoomOrderInfoFactory extends ModelFactory<KtvRoomOrderInfo> {
 
     @Factory(name = "time1")
     public KtvRoomOrderInfo roomOrderWithT1(KtvRoomOrderInfo orderInfo) {
-        orderInfo.scheduledTime = "10:00";
+        orderInfo.scheduledTime = 10;
         return orderInfo;
     }
 
     @Factory(name = "time2")
     public KtvRoomOrderInfo roomOrderWithT2(KtvRoomOrderInfo orderInfo) {
-        orderInfo.scheduledTime = "12:00";
+        orderInfo.scheduledTime = 12;
         return orderInfo;
     }
 
     @Factory(name = "time3")
     public KtvRoomOrderInfo roomOrderWithT3(KtvRoomOrderInfo orderInfo) {
-        orderInfo.scheduledTime = "11:00";
+        orderInfo.scheduledTime = 11;
         return orderInfo;
     }
 
     @Factory(name = "time4")
     public KtvRoomOrderInfo roomOrderWithT4(KtvRoomOrderInfo orderInfo) {
-        orderInfo.scheduledTime = "15:00";
+        orderInfo.scheduledTime =15;
         return orderInfo;
     }
 }

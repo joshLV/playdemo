@@ -86,13 +86,14 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
             }
 
             //挑选出电子券的orderItem
+            Resaler resaler = Resaler.findApprovedByLoginName(Resaler.YHD_LOGIN_NAME);
             List<Node> orderItems = response.selectNodes("./orderItemList/orderItem");
             List<Node> couponItems = new ArrayList<>();
             for (Node orderItem : orderItems) {
                 String outerId = XPath.selectText("./outerId", orderItem);
                 if (outerId != null) {
                     outerId = outerId.trim();
-                    Goods goods = ResalerProduct.getGoods(Long.parseLong(outerId), OuterOrderPartner.YHD);
+                    Goods goods = ResalerProduct.getGoods(resaler, Long.parseLong(outerId), OuterOrderPartner.YHD);
                     if (goods != null && goods.materialType == MaterialType.ELECTRONIC) {
                         couponItems.add(orderItem);
                     }else {
@@ -178,7 +179,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
         try {
             for (Node orderItem : couponItems){
                 String outerId = XPath.selectText("./outerId", orderItem).trim();
-                Goods goods = ResalerProduct.getGoods(Long.parseLong(outerId), OuterOrderPartner.YHD);
+                Goods goods = ResalerProduct.getGoods(resaler, Long.parseLong(outerId), OuterOrderPartner.YHD);
 
                 BigDecimal orderItemPrice = new BigDecimal(XPath.selectText("./orderItemPrice", orderItem).trim());
                 OrderItems uhuilaOrderItem  = uhuilaOrder.addOrderItem(

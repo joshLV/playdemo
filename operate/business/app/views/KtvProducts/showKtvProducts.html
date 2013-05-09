@@ -1,0 +1,29 @@
+<tr>
+    <td>商户名称</td>
+    <td>Ktv产品名称</td>
+    <td>欢唱时长</td>
+</tr>
+#{list items:productList, as:'product' }
+<tr>
+    <td><input type="radio" id="products_${product?.id}" value="${product?.id}"
+               name="goods.product.id"
+        #{if goods?.product?.id == product?.id} checked="true" #{/if}/> ${product?.supplier?.otherName}</td>
+    <td>${product?.name}</td>
+    <td>${product?.duration}</td>
+</tr>
+#{/list}
+<input type="hidden" name="ktvSupplier" value="${ktvSupplier}"/>
+
+<script type="text/javascript">
+    $(function () {
+        ktvSupplier = $("#ktv_supplier").val();
+        if (ktvSupplier == 'false' || ktvSupplier == null) {
+            $("#ktv_products").hide();
+            $("#ktv_products_label").hide();
+        }
+        else {
+            $("#ktv_products").show();
+            $("#ktv_products_label").show();
+        }
+    });
+</script>

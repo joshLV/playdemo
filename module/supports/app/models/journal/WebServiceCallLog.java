@@ -106,7 +106,7 @@ public class WebServiceCallLog extends Model {
     public static JPAExtPaginator<WebServiceCallLog> query(
             WebServiceCallLog log,
             int pageNumber, int pageSize) {
-        StringBuffer sql = new StringBuffer("1=1");
+        StringBuilder sql = new StringBuilder("1=1");
         Map params = new HashMap();
 
         if (StringUtils.isNotBlank(log.callType)) {
