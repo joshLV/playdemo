@@ -7,10 +7,8 @@ import models.sales.Goods;
 import models.sales.Shop;
 import org.apache.commons.lang.time.DateUtils;
 import play.db.jpa.Model;
-import util.DateHelper;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -29,7 +27,7 @@ public class KtvRoomOrderInfo extends Model {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_id")
-    public OrderItems orderItem;
+    public OrderItems orderItem;//目前设计的是一个orderItem对应一个KtvRoomOrderInfo 如果变成了多个，请考虑修改发券时的文本逻辑
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
@@ -70,15 +68,18 @@ public class KtvRoomOrderInfo extends Model {
     @Column(name = "deal_at")
     public Date dealAt;
 
+    public KtvRoomOrderInfo() {
+        this.status = KtvOrderStatus.LOCK;
+        this.createdAt = new Date();
+    }
+
     public KtvRoomOrderInfo(Goods goods, OrderItems orderItem, KtvRoomType ktvRoomType, Date scheduledDay, int scheduledTime) {
+        this();
         this.goods = goods;
         this.orderItem = orderItem;
         this.ktvRoomType = ktvRoomType;
         this.scheduledDay = scheduledDay;
         this.scheduledTime = scheduledTime;
-        this.status = KtvOrderStatus.LOCK;
-        this.createdAt = new Date();
-
     }
 
     /*

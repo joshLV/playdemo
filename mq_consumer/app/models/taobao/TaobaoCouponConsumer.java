@@ -2,9 +2,13 @@ package models.taobao;
 
 import com.google.gson.JsonObject;
 import com.taobao.api.response.TradeGetResponse;
+import com.uhuila.common.util.DateUtil;
 import models.RabbitMQConsumerWithTx;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
+import models.ktv.KtvProductGoods;
+import models.ktv.KtvRoomOrderInfo;
+import models.ktv.KtvRoomType;
 import models.order.DeliveryType;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
@@ -18,6 +22,7 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.ResalerProduct;
+import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.jobs.OnApplicationStart;
@@ -25,6 +30,7 @@ import play.jobs.OnApplicationStart;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -37,6 +43,11 @@ import java.util.regex.Pattern;
 @OnApplicationStart(async = true)
 public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMessage> {
     public static String PHONE_REGEX = "^1\\d{10}$";
+
+//    public static Pattern skuPattern = Pattern.compile("(\\d+:\\d+);欢唱时间:(\\d+)点至(\\d+)点;日期:(\\d+)月(\\d+)日;?");
+
+    public static Pattern skuDatePattern = Pattern.compile("(\\d+)月(\\d+)日");
+    public static Pattern skuTimePattern = Pattern.compile("(\\d+)点至(\\d+)点");
 
     @Override
     protected int retries() {
@@ -100,12 +111,14 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         Long outerIid;
         String mobile, sellerNick;
         Long num;
+        Long taobaoOrderId;
         try {
             JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
             mobile = jsonObject.get("mobile").getAsString(); //买家手机号
             num = jsonObject.get("num").getAsLong();//购买的数量
             sellerNick = jsonObject.get("seller_nick").getAsString();//淘宝卖家用户名（旺旺号）
             outerIid = jsonObject.get("outer_iid").getAsLong();//商家发布商品时填写的外部商品ID
+            taobaoOrderId = jsonObject.get("order_id").getAsLong();//淘宝的订单号
         } catch (Exception e) {
             Logger.error(e, "taobao coupon request failed: invalid params");
             return false;
@@ -131,7 +144,9 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         }
 
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
-            Order ybqOrder = createYbqOrder(outerIid, num, mobile);
+            TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(taobaoOrderId, "orders.price,orders.num,orders.sku_properties_name");
+
+            Order ybqOrder = createYbqOrder(outerIid, mobile, taobaoTrade);
             if (ybqOrder == null) {
                 return false;//解析错误
             } else {
@@ -148,7 +163,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     }
 
     // 创建一百券订单
-    private Order createYbqOrder(Long outerGroupId, Long productNum, String userPhone) {
+    private Order createYbqOrder(Long outerGroupId, String userPhone, TradeGetResponse taobaoTrade) {
         Resaler resaler = Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME);
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", Resaler.TAOBAO_LOGIN_NAME);
@@ -157,15 +172,24 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
         Goods goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.TB);
+
         try {
             if (goods == null) {
                 Logger.info("goods not found: %s", outerGroupId);
                 return null;
             }
+            List<com.taobao.api.domain.Order> orders = taobaoTrade.getTrade().getOrders();
+            for (com.taobao.api.domain.Order order : orders) {
+                OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, order.getNum(),
+                        userPhone, new BigDecimal(order.getPrice()), new BigDecimal(order.getPrice()));
+                uhuilaOrderItem.save();
 
-            OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, productNum, userPhone, goods.getResalePrice(), goods.getResalePrice());
+                if (createSkuOrderInfo(uhuilaOrderItem, order, goods) == null){
+                    JPA.em().getTransaction().rollback();
+                    return null;
+                }
+            }
 
-            uhuilaOrderItem.save();
             if (goods.materialType.equals(MaterialType.REAL)) {
                 ybqOrder.deliveryType = DeliveryType.LOGISTICS;
             } else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
@@ -173,6 +197,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             }
         } catch (NotEnoughInventoryException e) {
             Logger.error("enventory not enough: goods.id=" + goods.id, e);
+            JPA.em().getTransaction().rollback();
             return null;
         }
 
@@ -184,6 +209,72 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         ybqOrder.save();
 
         return ybqOrder;
+    }
+
+    private KtvRoomOrderInfo createSkuOrderInfo(OrderItems uhuilaOrderItem, com.taobao.api.domain.Order order, Goods goods) {
+        KtvProductGoods productGoods = KtvProductGoods.find("byGoods", goods).first();
+        if (productGoods == null) {
+            return null;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        Matcher matcher;
+
+        KtvRoomOrderInfo roomOrderInfo = new KtvRoomOrderInfo();
+        roomOrderInfo.goods = goods;
+        roomOrderInfo.orderItem = uhuilaOrderItem;
+        roomOrderInfo.dealAt = roomOrderInfo.createdAt;
+        roomOrderInfo.shop = productGoods.shop;
+
+        String[] properties = order.getSkuPropertiesName().split(";");
+        for (String  property : properties) {
+            String[] map = property.split(":");
+            if (map.length != 2) {
+                Logger.error("parse taobao sku failed(1): " + property);
+                return null;
+            }
+            switch (map[0]) {
+                case "日期":
+                    matcher = skuDatePattern.matcher(map[1]);
+                    if (matcher.matches()) {
+                        calendar.setTime(new Date());
+                        int year = calendar.get(Calendar.YEAR);
+                        int month = calendar.get(Calendar.MONTH);
+                        int skuMonth = Integer.parseInt(matcher.group(1));
+                        //如果跨年了，要加一年
+                        if (month == 12 && skuMonth == 1) {
+                            year += 1;
+                        }
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, skuMonth);
+                        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(matcher.group(2)));
+
+                        roomOrderInfo.scheduledDay = DateUtils.truncate(calendar.getTime(), Calendar.DATE);
+                    }else {
+                        Logger.error("parse taobao sku failed(2): " + property);
+                        return null;
+                    }
+                    break;
+                case "欢唱时间":
+                    matcher = skuTimePattern.matcher(map[1]);
+                    if (matcher.matches()) {
+
+                        int startTime = Integer.parseInt(matcher.group(1));
+                        int endTime = Integer.parseInt(matcher.group(2));
+
+                        roomOrderInfo.scheduledTime = startTime;
+                        roomOrderInfo.duration = endTime - startTime + 1;
+                    }else {
+                        Logger.error("parse taobao sku failed(3): " + property);
+                        return null;
+                    }
+                    break;
+                default:
+                    roomOrderInfo.ktvRoomType = KtvRoomType.getRoomTypeByTaobaoId(property);
+                    break;
+            }
+        }
+        return roomOrderInfo.save();
     }
 
     private boolean checkPhone(String phone) {

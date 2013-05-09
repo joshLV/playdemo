@@ -33,6 +33,16 @@ public enum KtvRoomType {
         return taobaoId;
     }
 
+    public static KtvRoomType getRoomTypeByTaobaoId(String taobaoId)  {
+        for (KtvRoomType roomType : KtvRoomType.values()) {
+            if (roomType.getTaobaoId().equals(taobaoId)) {
+                return roomType;
+            }
+        }
+        return null;
+    }
+
+
     @Override
     public String toString(){
         return this.type;
