@@ -2,6 +2,8 @@ package models.job.qingtuan;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
+import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
@@ -20,7 +22,6 @@ import org.dom4j.Element;
 import play.Logger;
 import play.Play;
 import play.i18n.Messages;
-import play.jobs.Job;
 import play.libs.IO;
 import play.libs.WS;
 
@@ -35,12 +36,13 @@ import java.util.List;
 
 /**
  * @author likang
- * 定时抓取青团的商品API
- * 每天凌晨三点执行
- * Date: 12-11-8
+ *         定时抓取青团的商品API
+ *         每天凌晨三点执行
+ *         Date: 12-11-8
  */
+@JobDefine(title = "定时抓取青团的商品API", description = "定时抓取青团的商品API")
 // @On("0 0 3 * * ?")
-public class QTSpider extends Job{
+public class QTSpider extends JobWithHistory {
     private static final String GATEWAY = "http://www.tsingtuan.com/api/team.php";
     private static final int PAGE_SIZE = 200;
 
@@ -50,10 +52,10 @@ public class QTSpider extends Job{
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
 
     @Override
-    public void doJob(){
+    public void doJobWithHistory() {
 
         int offset = 0;
-        while (true){
+        while (true) {
             WS.HttpResponse response = WS.url(GATEWAY
                     + "?size=" + PAGE_SIZE
                     + "&offset=" + offset
@@ -61,7 +63,7 @@ public class QTSpider extends Job{
 
             offset += PAGE_SIZE;
             int totalCount = parseQtXml(response.getString());
-            if(totalCount != PAGE_SIZE){
+            if (totalCount != PAGE_SIZE) {
                 break;
             }
         }
@@ -69,35 +71,36 @@ public class QTSpider extends Job{
 
     /**
      * 解析青团返回的xml数据
+     *
      * @param xmlString 青团xml数据
      * @return xml中包含的子条目数
      */
     public static int parseQtXml(String xmlString) {
-        supplier= Supplier.find("byDomainName", "tsingtuan").first();
+        supplier = Supplier.find("byDomainName", "tsingtuan").first();
         brand = Brand.find("bySupplier", supplier).first();
-        if(supplier == null || brand == null){
+        if (supplier == null || brand == null) {
             Logger.error("qingtuan spider error: no supplier(tsingtuan) or brand found");
             return 0;
         }
 
         Document document = null;
-        try{
+        try {
             document = DocumentHelper.parseText(xmlString);
-        }catch (DocumentException e){
+        } catch (DocumentException e) {
             Logger.error("failed to parse QingTuan request");
             return 0;
         }
 
         Element root = document.getRootElement();
         List<Element> urlElements = (List<Element>) root.elements();
-        for(Element urlElement : urlElements){
+        for (Element urlElement : urlElements) {
             Element teamElement = urlElement.element("team");
-            if(teamElement == null){
+            if (teamElement == null) {
                 continue;
             }
             Long teamId = Long.parseLong(teamElement.elementTextTrim("team_id"));
             Goods goods = Goods.find("bySupplierGoodsId", teamId).first();
-            if(goods != null){
+            if (goods != null) {
                 continue;
             }
             createGoods(teamElement);
@@ -108,13 +111,14 @@ public class QTSpider extends Job{
 
     /**
      * 创建一百券商品
+     *
      * @param element 清团的team element
      */
     private static void createGoods(Element element) {
         Goods goods = new Goods();
 
         Shop shop = createShop(element);
-        if(shop == null){
+        if (shop == null) {
             Logger.error("qingtuan create goods failed: can not find the area: %s", element.elementTextTrim("citys"));
             return;
         }
@@ -122,7 +126,7 @@ public class QTSpider extends Job{
         goods.shops.add(shop);
 
         Category category = getCategory(element);
-        if(category == null){
+        if (category == null) {
             Logger.error("qingtuan find category failed: %s - %s",
                     element.elementTextTrim("group"), element.elementTextTrim("promotion"));
             return;
@@ -149,9 +153,9 @@ public class QTSpider extends Job{
         goods.isAllShop = false;
 
         //如果是餐饮的
-        if(goods.getParentCategoryIds().equals("1")){
+        if (goods.getParentCategoryIds().equals("1")) {
             goods.originalPrice = goods.salePrice.multiply(new BigDecimal("0.94")).setScale(2, RoundingMode.FLOOR);
-        }else {
+        } else {
             goods.originalPrice = goods.salePrice.multiply(new BigDecimal("0.92")).setScale(2, RoundingMode.FLOOR);
         }
 
@@ -172,8 +176,8 @@ public class QTSpider extends Job{
 
         goods.brand = brand;
         String imageUrl = element.elementTextTrim("image");
-        if(!StringUtils.isBlank(imageUrl) && !Play.runingInTestMode()){
-            InputStream is =  WS.url(imageUrl).get().getStream();
+        if (!StringUtils.isBlank(imageUrl) && !Play.runingInTestMode()) {
+            InputStream is = WS.url(imageUrl).get().getStream();
             try {
                 File file = File.createTempFile("qingtuan", "." + FilenameUtils.getExtension(imageUrl));
                 IO.write(is, file);
@@ -188,23 +192,23 @@ public class QTSpider extends Job{
     private static Shop createShop(Element element) {
         String areaName = element.elementTextTrim("citys");
         Area area = Area.find("byName", areaName).first();
-        if(area == null){
+        if (area == null) {
             return null;
         }
         Shop shop = new Shop();
         shop.supplierId = supplier.id;
         shop.areaId = area.id;
         shop.cityId = area.id;
-        shop.name =  area.name;
+        shop.name = area.name;
         shop.address = element.elementTextTrim("address");
         shop.phone = element.elementTextTrim("partner_phone");
         String longLat = element.elementTextTrim("longlat");
-        if(StringUtils.isNotBlank(longLat)){
+        if (StringUtils.isNotBlank(longLat)) {
             String tmp[] = longLat.split(",");
-            if(tmp.length > 0) {
+            if (tmp.length > 0) {
                 shop.longitude = tmp[0];
             }
-            if(tmp.length > 1) {
+            if (tmp.length > 1) {
                 shop.latitude = tmp[1];
             }
         }
@@ -214,7 +218,7 @@ public class QTSpider extends Job{
     private static Category getCategory(Element element) {
         String subCategoryKey = "qingtuan." + element.elementTextTrim("group") + "." + element.elementTextTrim("promotion");
         String scgIdStr = Messages.get(subCategoryKey);
-        if(scgIdStr.equals(subCategoryKey)){
+        if (scgIdStr.equals(subCategoryKey)) {
             scgIdStr = "1032";//未找到分类的就放在 生活服务->其他
         }
 

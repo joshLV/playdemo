@@ -1,0 +1,90 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'查看定时任务' /}
+#{set 'topbar-nav'}
+    #{include 'share/topbar-nav.html'/}
+#{/set}
+#{set 'sidebar-nav'}
+    #{include 'share/sidebar-nav.html'/}
+#{/set}
+
+#{set 'moreStyles'}
+<style type="text/css">
+    .form-inline ul {
+        display: inline-block;
+        margin-bottom: -15px;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0px;
+    }
+
+    .tab-content {
+        border-left: 1px solid #DDD;
+        border-right: 1px solid #DDD;
+        border-bottom: 1px solid #DDD;
+        clear: both;
+    }
+
+    .tab-content .binary {
+        width: 40%;
+        float: left;
+        text-align: center;
+        margin: 5px 1%;
+    }
+
+    .seq {
+        margin-top: 20px;
+    }
+
+    .alert {
+        margin-bottom: 0px;
+    }
+
+    .seq thead tr :first {
+        background-color: #f5f5f5;
+    }
+
+    footer {
+        margin-top: 20px;
+    }
+</style>
+#{/set}
+
+<form class="well form-inline" action="@{OperateJobs.index()}" method="GET" id="form"
+      name="form">
+    Jobs类型：<input type="text" name="jobs.className" value="${jobs.className}" class="input-large"/>
+    名称：<input type="text" name="jobs.title" value="${jobs.title}" class="input-large"/>
+    <button type="submit" class="btn btn-primary" id="search">搜索</button>
+</form>
+
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <th width="25%">Jobs类型</th>
+    <th width="15%">名称</th>
+    <th width="10%">定时计划</th>
+    <th width="25%">描述</th>
+    <th width="15%">最后运行时间</th>
+    <th width="10%"></th>
+    </thead>
+#{paginate.list items:jobsPage, as:'job'}
+    <tr>
+        <td>${job.className}</td>
+        <td>${job.title}</td>
+        <td>${job.scheduledInfo}</td>
+        <td style="word-break: break-all;">${job.description}</td>
+        <td>
+            ${job.lastRunHistory?.runnedAt?.format("yyyy-MM-dd HH:mm:ss")}
+            (${job.lastRunHistory?.runTimes} ms)
+        </td>
+        <td>#{a @OperateJobs.detail(job.id)}明细#{/a}</td>
+    </tr>
+#{/paginate.list}
+</table>
+#{if jobsPage.pageCount > 1}
+<div class="pagination">
+    <ul>
+        #{paginate.controls items:jobsPage /}
+    </ul>
+</div>
+#{/if}
+
