@@ -3,6 +3,7 @@ package controllers;
 import com.uhuila.common.constants.DeletedStatus;
 import models.operator.Operator;
 import operate.rbac.annotations.ActiveNavigation;
+import play.Logger;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;

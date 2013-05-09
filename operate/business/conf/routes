@@ -108,6 +108,9 @@ POST    /resaler-products/dd/upload                     resale.DDGroupBuyProduct
 GET     /resaler-products/tb/upload/{goodsId}           resale.TaobaoProducts.showUpload
 POST    /resaler-products/tb/upload                     resale.TaobaoProducts.upload
 
+# 银乐迪
+GET     /resaler-products/yld/upload/{goodsId}/{resalerLoginName}           resale.TaobaoProducts.showUpload
+
 # 新浪卡券
 GET     /resaler-products/sina/upload/{goodsId}         resale.SinaVouchers.showUpload
 POST    /resaler-products/sina/upload                   resale.SinaVouchers.upload

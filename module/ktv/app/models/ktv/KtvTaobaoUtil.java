@@ -275,7 +275,7 @@ public class KtvTaobaoUtil {
      * 比较两组SKU，得出三个列表，分别是：1、应该添加到淘宝的SKU列表；2、应该更新的淘宝SKU列表；3、应该删除的淘宝SKU列表
      * 以后者(oldSkuList)为基准【后者在此处一般指数据库中的数据】)
      */
-    private static Map<String, List<KtvTaobaoSku>> diffTaobaoSku(
+    public static Map<String, List<KtvTaobaoSku>> diffTaobaoSku(
             List<KtvTaobaoSku> newSkuList, List<KtvTaobaoSku> oldSkuList) {
 
         Map<String, List<KtvTaobaoSku>> result = new HashMap<>();
