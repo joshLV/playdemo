@@ -40,16 +40,21 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
         FactoryBoy.deleteAll();
         MockMQ.clear();
 
-        Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+        final Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
             @Override
             public void build(Resaler target) {
-                target.loginName = "taobao";
+                target.loginName = Resaler.TAOBAO_LOGIN_NAME;
             }
         });
 
         AccountUtil.getCreditableAccount(resaler.id, AccountType.RESALER);
 
-        product = FactoryBoy.create(ResalerProduct.class);
+        product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
+            @Override
+            public void build(ResalerProduct target) {
+                target.resaler = resaler;
+            }
+        });
         ecoupon = FactoryBoy.create(ECoupon.class);
 
         outerOrder = FactoryBoy.create(OuterOrder.class, new BuildCallback<OuterOrder>() {

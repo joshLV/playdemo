@@ -34,6 +34,13 @@ public class YihaodianJobConsumerTest extends FunctionalTest {
     public void setup() {
         FactoryBoy.deleteAll();
 
+        Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+            @Override
+            public void build(Resaler target) {
+                target.loginName = Resaler.YHD_LOGIN_NAME;
+            }
+        });
+
         //电子券商品
         goodsE = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
@@ -76,13 +83,6 @@ public class YihaodianJobConsumerTest extends FunctionalTest {
                 target.orderId = orderId;
                 target.createdAt = new Date(System.currentTimeMillis() - 600000);
                 target.ybqOrder = null;
-            }
-        });
-
-        Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
-            @Override
-            public void build(Resaler target) {
-                target.loginName = Resaler.YHD_LOGIN_NAME;
             }
         });
 
