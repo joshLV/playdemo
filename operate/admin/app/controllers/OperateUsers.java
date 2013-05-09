@@ -59,7 +59,7 @@ public class OperateUsers extends Controller {
     /**
      * 操作员添加页面
      */
-    @ActiveNavigation("user_add")
+    @ActiveNavigation("user_search")
     public static void add() {
         List rolesList = OperateRole.findAll();
         render(rolesList);
@@ -70,7 +70,7 @@ public class OperateUsers extends Controller {
      *
      * @param operateUser 操作员信息
      */
-    @ActiveNavigation("user_add")
+    @ActiveNavigation("user_search")
     public static void create(@Valid OperateUser operateUser) {
         if (operateUser.roles == null) {
             Validation.addError("operateUser.roles", "validation.selected");
@@ -100,7 +100,7 @@ public class OperateUsers extends Controller {
     /**
      * 逻辑删除操作员
      */
-    @ActiveNavigation("user_add")
+    @ActiveNavigation("user_search")
     public static void delete(Long id) {
         OperateUser supplierUser = OperateUser.findById(id);
         supplierUser.deleted = DeletedStatus.DELETED;
@@ -111,7 +111,7 @@ public class OperateUsers extends Controller {
     /**
      * 操作员编辑页面
      */
-    @ActiveNavigation("user_add")
+    @ActiveNavigation("user_search")
     public static void edit(Long id) {
         OperateUser operateUser = OperateUser.findById(id);
         Set<Long> roleIds = getRoleIdSet(operateUser.roles);
@@ -128,7 +128,7 @@ public class OperateUsers extends Controller {
      * @param id          ID
      * @param operateUser 用户信息
      */
-    @ActiveNavigation("user_add")
+    @ActiveNavigation("user_search")
     public static void update(Long id, @Valid OperateUser operateUser) {
         if (operateUser.roles == null) {
             Validation.addError("operateUser.roles", "validation.selected");

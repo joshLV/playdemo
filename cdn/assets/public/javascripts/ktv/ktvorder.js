@@ -1,5 +1,7 @@
 var KTVOrder = (function  () {
     var weekNames = ["一", "二", "三", "四", "五", "六", "日"];
+    var roomTypes = ["mini", "small", "middle", "large", "deluxe"];
+    var roomTypeNames = {"mini":"迷你包","small":"小包","middle":"中包","large":"大包","deluxe":"豪华包"}
 
     function KTVOrder(){
         return  init(
@@ -9,17 +11,15 @@ var KTVOrder = (function  () {
 
     function init(ktv, args) {
         if (args.length != 1) { return ktv}
-        ktv.wrapperId = args[0].wrapperId;
-        ktv.viewMode = args[0].viewMode;
-        ktv.summaryId = args[0].summaryId;
-        ktv.amountId = args[0].amountId;
+        var arg = args[0]; 
+        ktv.wrapperId = arg.wrapperId;
+        ktv.viewMode = arg.viewMode;
+        ktv.summaryId = arg.summaryId;
+        ktv.amountId = arg.amountId;
 
-        ktv.day = new XDate(new XDate(args[0].day).toString("yyyy-MM-dd"));
-        ktv.dataUrl = args[0].dataUrl;
-        ktv.shopId = args[0].shopId;
-
-        ktv.rooms = [];
-        ktv.selected = [];
+        ktv.day = new XDate(new XDate(arg.day).toString("yyyy-MM-dd"));
+        ktv.dataUrl = arg.dataUrl;
+        ktv.shopId = arg.shopId;
 
         $("#" + ktv.wrapperId + " .wk-order-days .wk-order-day").each(function(index){
             var ele = $(this);
@@ -32,6 +32,31 @@ var KTVOrder = (function  () {
                 ktv.loadScheduleDataFor(dataDay);
             });
         });
+
+        ktv.rooms =  {};
+        /* ktv.rooms like this:
+        {
+            "mini":{
+                "wrapperDiv":"<div>",
+                "rooms":[
+                    {
+                        "div":"<div>",
+                        "holders":[8,11]
+                    },
+                ]
+            }
+        }
+        */
+        for (var i = 0; i < roomTypes.length; i++) {
+            var roomType = roomTypes[i];
+            ktv.rooms[roomType] = {
+                "wrapperDiv": $("#"+ktv.wrapperId + " .room-"+roomType).first(),
+                "rooms":[]
+            };
+        };
+
+        ktv.selected = [];
+
 
         ktv.loadScheduleDataFor(ktv.day);
         return ktv;
@@ -62,7 +87,7 @@ var KTVOrder = (function  () {
         $.post(
             ktv.dataUrl,
             {
-                shopId:ktv.shopId,
+                "shop.id":ktv.shopId,
                 day:ktv.day.toString("yyyy-MM-dd")
             },
             function(data){
@@ -148,18 +173,64 @@ var KTVOrder = (function  () {
         }
     }
 
+    /**
+        找到一个可以依靠的room。在所有指定roomType的rooms中，从上到下找到第一个avaliable的
+    **/
+    proto.findAvaliableRoom = function(roomType, startTime, duration) {
+        var ktv = this; 
+        var rt = ktv.rooms[roomType];
+        var room;
+        //遍历该类型的rooms
+        for (var i = 0; i < rt.rooms.length; i++) {
+            var r = rt.rooms[i];
+            var conflict = false;
+            for (var j = 0; j < duration; j++) {
+                if ($.inArray(startTime+j, r.holders)) {
+                    conflict = true;
+                    break;
+                };
+            };
+            if (!conflict) {
+                room = r;
+                break;
+            };
+        };
+        //没找到可用的room，就新建一个
+        if (!room) {
+            room = {
+                "holders":[],
+                "div" : rt.wrapperDiv.append(
+                    $("<div/>", {
+                        "class": "wk-order-room",
+                        // "data-room-id": room.id,
+                        "data-room-type": roomType,
+                        html: $("<div/>", {
+                            "class": "wk-pri",
+                            text: roomTypeNames[roomType]
+                        })
+                    })
+                )
+            };
+            rt.rooms.push(room);
+        };
+        return room;
+    }
+
     proto.dataLoaded = function (data) {
         //你好
         var ktv = this;
-        var roomsEle = $("#" + ktv.wrapperId + " .rooms");
+        //清空所有房间大类下面的子房间，及相关数据
+        for (var i = 0; i < roomTypes.length; i++) {
+            var roomType = roomTypes[i];
+            ktv.rooms[roomType]["rooms"] = [];
+        };
 
-        roomsEle.empty();
         $("#" + ktv.summaryId).empty();
         ktv.selected = [];
-        ktv.rooms = [];
 
         //创建房间
-        for (var i = 0; i < data.rooms.length; i++) {
+        /*
+        for (i = 0; i < data.rooms.length; i++) {
             var room = data.rooms[i];
             ktv.rooms[room.id] = [];
             roomsEle.append(
@@ -174,20 +245,30 @@ var KTVOrder = (function  () {
                 })
             );
         }
+        */
         //先画上已预订的格子
         for (i = 0; i < data.schedules.length; i++) {
             var schedule = data.schedules[i];
-            var time = Number(schedule.roomTime.substring(0, schedule.roomTime.indexOf(":")));
-            ktv.rooms[schedule.roomId].push(time);
-            $("#" + ktv.wrapperId + " [data-room-id='" + schedule.roomId + "']").append(
-                $("<div/>", {
-                    "class": "wk-order-room-cell wk-order-room-reserved",
-                    css:{
-                        "top":"2px",
-                        "left": (60 + 4 + (time-8)*44) + "px"
-                    }
-                })
-            );
+            var startTimes = schedule.startTimes.split(",");
+
+            for (var k = 0; k < startTimes.length; k++) {
+                var startTime = Number(startTimes[k]);
+                for (var j = 0; j < schedule.roomCount; j++) {
+                    var room = ktv.findAvaliableRoom(schedule.roomType.toLowerCase(), startTime, schedule.duration);
+                    room["div"].append(
+                        $("<div/>", {
+                            "class": "wk-order-room-cell wk-order-room-reserved",
+                            css:{
+                                "top":"2px",
+                                "left": (60 + 4 + (startTime-8)*44) + "px"
+                            }
+                        })
+                    );
+                    room["holders"].push(startTime);
+                };
+            };
+
+
         }
 
         //画上有价格的格子

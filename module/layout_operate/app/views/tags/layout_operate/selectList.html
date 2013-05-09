@@ -4,8 +4,10 @@
 *{list:      选项列表}*
 #{field _name}
     #{select field.name, id:field.id, class:'input-small', value:params[field.name]?.escape()?.raw() ?: field.error?.message == 'validation.required' ? '' :_value?.escape()?.raw()}
-    #{list items:_list, as:'row' }
-        #{option row.id}${row.name}#{/option}
-    #{/list}
-#{/select}
+        #{list items:_list, as:'row' }
+            #{option row.id}${row.name}#{/option}
+        #{/list}
+    #{/select}
 #{/field}
+
+

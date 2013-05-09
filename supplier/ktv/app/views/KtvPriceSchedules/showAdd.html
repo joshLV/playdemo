@@ -1,0 +1,336 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'价格策略' /}
+#{set menu:"ktv_price" /}
+#{set 'moreStyles'}
+<style type="text/css">
+    .hour {
+        width: 36px;
+        line-height: 30px;
+        background-color: #eaf6fd;
+        border: 1px solid #b4d3eb;
+        position: absolute;
+        font-size: 12px;
+        text-align: center;
+        font-weight: normal;
+        cursor: pointer;
+        overflow: hidden;
+        white-space: nowrap;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+
+    .hour-selected {
+        background-color: #1ABC9C;
+        color: #fff;
+    }
+
+    #roomCountTable tr {
+        height: 35px;
+    }
+</style>
+#{/set}
+<div class="body">
+#{form @KtvPriceSchedules.create() , id:'creationForm',class:"form-horizontal" }
+    <div class="bd">
+        <h2>${title}</h2>
+
+        <div class="field-group">
+            <label>可预订日期</label>
+            <input type="text" class="time" id="startDay" name="priceStrategy.startDay"
+                   onfocus="WdatePicker({readOnly:true})"
+                   value="${new java.util.Date().format()}">
+            <span>到</span>
+            <input type="text" class="time" id="endDay" name="priceStrategy.endDay"
+                   onfocus="WdatePicker({readOnly:true})" value="">(包括)
+        </div>
+
+        <div class="field-group">
+            <label>筛选日期</label>
+        %{ useWeekNames=["一","二","三","四","五","六","日"]; }%
+            #{list items:1..7, as:'i'}
+                <input type="checkbox" name="useWeekDays" class="input-medium" value="${i}" checked>
+                星期${useWeekNames[i-1]}
+            #{/list}
+        </div>
+
+        <div class="field-group">
+            <label>适用包厢</label>
+            #{list items:models.ktv.KtvRoomType.values(), as:'roomType'}
+                <input type="radio" name="priceStrategy.roomType" value="${roomType}" #{if roomType.type=='MIDDLE'}
+                       checked #{/if} />${roomType.name} &nbsp;&nbsp;
+            #{/list}
+        </div>
+
+        <div class="field-group">
+            <label>欢唱时长</label>
+            <select name="priceStrategy.product.id" id="priceStrategy_product_id" style="width: auto">
+                #{list ktvProductList,as :'product'}
+                    <option value="${product.id}"
+                            data-duration="${product.duration}">${product.name}</option>
+                *{<input type="radio" name="priceStrategy.product.id" data-duration="${product.duration}"}*
+                *{value="${product.id}"> ${product.name}}*
+                #{/list}
+            </select>
+        </div>
+
+        <div class="field-group">
+            <label>包厢价格</label>
+            <input type="text" id="price" name="priceStrategy.price"/> 元 / 每 <span id="durationPer">3</span> 小时
+        </div>
+
+        <div class="field-group">
+            <label>可预订时段</label>
+
+            <div style="position:relative; height:30px">
+                <div class="hour" style="z-index:50;left:0px" data-hour="08:00">08:00</div>
+                <div class="hour" style="z-index:49;left:40px" data-hour="09:00">09:00</div>
+                <div class="hour" style="z-index:48;left:80px" data-hour="10:00">10:00</div>
+                <div class="hour" style="z-index:47;left:120px" data-hour="11:00">11:00</div>
+                <div class="hour" style="z-index:46;left:160px" data-hour="12:00">12:00</div>
+                <div class="hour" style="z-index:45;left:200px" data-hour="13:00">13:00</div>
+                <div class="hour" style="z-index:44;left:240px" data-hour="14:00">14:00</div>
+                <div class="hour" style="z-index:43;left:280px" data-hour="15:00">15:00</div>
+                <div class="hour" style="z-index:42;left:320px" data-hour="16:00">16:00</div>
+                <div class="hour" style="z-index:41;left:360px" data-hour="17:00">17:00</div>
+                <div class="hour" style="z-index:40;left:400px" data-hour="18:00">18:00</div>
+                <div class="hour" style="z-index:19;left:440px" data-hour="19:00">19:00</div>
+                <div class="hour" style="z-index:18;left:480px" data-hour="20:00">20:00</div>
+                <div class="hour" style="z-index:17;left:520px" data-hour="21:00">21:00</div>
+                <div class="hour" style="z-index:16;left:560px" data-hour="22:00">22:00</div>
+                <div class="hour" style="z-index:15;left:600px" data-hour="23:00">23:00</div>
+            </div>
+            <input type="hidden" name="priceStrategy.startTimes" id="inputStartTimes">
+        </div>
+
+        <div class="field-group">
+            <label>选择适用门店</label>
+            #{list items:shops,as:'shop'}
+                <input type="checkbox" class="shops" data-shop-id="${shop.id}" data-name="${shop.name}"/>${shop.name}
+                &nbsp;&nbsp;
+            #{/list}
+        </div>
+
+        <div class="field-group">
+            <label>包厢数量</label>
+            <table cellpadding="0" cellspacing="0" id="roomCountTable">
+                <tr>
+                    <td>统一设置 &nbsp;&nbsp;</td>
+                    <td><input type="text" size="3" id="roomCountAll"/>个</td>
+                </tr>
+                <tr style="height:20px;">
+                    <td colspan="2"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="field-group">
+            <input type="button" class="btn" value="创建" id="createButton"/>
+        </div>
+
+    </div>
+#{/form}
+</div>
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    var selectedHours = [];
+    function resetSelectedHours() {
+        selectedHours = [];
+        $(".hour").each(function () {
+            var ele = $(this);
+            ele.removeClass("hour-selected");
+            ele.removeClass("hour-selected");
+            ele.text(ele.attr("data-hour"));
+            ele.animate({width: "36px"}, 100);
+        });
+    }
+    $(function () {
+        //选择门店
+        $("input[data-shop-id]").change(function () {
+            var roomCountAll = $("#roomCountAll").val();
+            var ele = $(this);
+            if (ele.is(":checked")) {
+                $("#roomCountTable").append(
+                        $("<tr/>").attr("row-shop-id", ele.attr("data-shop-id")).append(
+                                        $("<td/>").text(ele.attr("data-name"))
+                                ).append(
+                                        $("<td/>").append(
+                                                $("<input/>", {
+                                                    type: "text",
+                                                    name: "shop-" + ele.attr("data-shop-id"),
+                                                    size: "3",
+                                                    "data-shop-name": ele.attr("data-name"),
+                                                    "data-shop-id": ele.attr("data-shop-id"),
+                                                    value: roomCountAll})
+                                        ).append($("<span/>").text("个"))
+                                )
+                )
+            } else {
+                $("#roomCountTable tr[row-shop-id='" + $(this).attr("data-shop-id") + "']").remove();
+            }
+        });
+        //设置统一的门店数量
+        $("#roomCountAll").keyup(function () {
+            $("#roomCountTable input[data-shop-id]").val($(this).val());
+        });
+        //切换时长radio
+        $("#priceStrategy_product_id").change(function () {
+            var ele = $("#priceStrategy_product_id option:selected");
+            $("#durationPer").text(ele.attr("data-duration"));
+            if (ele.attr("id") == "customDuration") {
+                $("#customDurationText").hide();
+                $("#customDurationSelect").show();
+            } else {
+                $("#customDurationSelect").hide();
+                $("#customDurationText").show();
+            }
+            resetSelectedHours();
+        });
+        //切换时长select
+        $("#customDurationSelect").change(function () {
+            $("#durationPer").text($(this).val());
+            $("#customDuration").val($(this).val());
+            resetSelectedHours();
+        });
+        //点击时间点
+        $(".hour").click(function () {
+            var ele = $(this);
+            var hour = Number(ele.attr("data-hour").substring(0, 2));
+
+            var index = $.inArray(hour, selectedHours);
+            if (index >= 0) {
+                selectedHours.splice(index, 1);
+                ele.removeClass("hour-selected");
+                ele.text(ele.attr("data-hour"));
+                ele.animate({width: "36px"}, 100);
+            } else {
+                var eleSelectedDuration = $("#priceStrategy_product_id option:selected");
+                var duration = Number(eleSelectedDuration.attr("data-duration"));
+                if (hour + duration > 24) {
+                    return;
+                }
+                for (var i = 1; i < duration; i++) {
+                    var j = $.inArray(hour + i, selectedHours);
+                    if (j >= 0) {
+                        return;
+                    }
+                }
+                selectedHours.push(hour);
+                ele.addClass("hour-selected");
+                ele.text(hour + ":00 - " + (hour + duration - 1) + ":00");
+                ele.animate({width: (duration * 40 - 4) + "px"}, 100);
+            }
+            $("#inputStartTimes").val(selectedHours.join(","));
+        });
+        $("#createButton").click(function () {
+            var startDay = $("#startDay").val();
+            if (!startDay) {
+                alert("请选择起始日期");
+                return;
+            }
+            ;
+
+            var endDay = $("#endDay").val();
+            if (!endDay) {
+                alert("请选择结束日期");
+                return;
+            }
+            ;
+
+            var useWeekDayInputs = $("input[name='useWeekDays']:checked");
+            if (useWeekDayInputs.length == 0) {
+                alert("请筛选日期");
+                return;
+            }
+            ;
+
+            var roomType = $("input[name='priceStrategy.roomType']:checked").val();
+            if (!roomType) {
+                alert("请选择包厢类型");
+                return;
+            }
+            ;
+
+            var price = $("#price").val();
+            if (!price) {
+                alert("请填写价格");
+                return;
+            }
+            ;
+
+            var inputStartTimes = $("#inputStartTimes").val();
+            if (!inputStartTimes) {
+                alert("请选择预订时段");
+                return;
+            }
+            ;
+
+            var shopInputs = $(".shops:checked");
+            if (shopInputs.length == 0) {
+                alert("请选择适用门店");
+                return;
+            }
+            ;
+            var allRoomCountSet = true;
+            $("input[name^='shop-']").each(function () {
+                var ele = $(this);
+                if (!ele.val()) {
+                    allRoomCountSet = false;
+                    alert("请设置 [" + ele.attr("data-shop-name") + "] 的包厢数量");
+                    return false;
+                }
+                ;
+            });
+            if (!allRoomCountSet) {
+                return
+            }
+            ;
+            var shopIds = [];
+            shopInputs.each(function () {
+                shopIds.push($(this).attr("data-shop-id"));
+            });
+            var useWeekDays = [];
+            useWeekDayInputs.each(function () {
+                useWeekDays.push($(this).val());
+            });
+
+            //检查是否有冲突
+            var noCollision = true;
+            $.ajax({
+                type: 'POST',
+                async: false,
+                url: '/ktv/price-schedule/collision-detect',
+                data: {
+                    "priceStrategy.product.id": $("#priceStrategy_product_id").val(),
+                    "priceStrategy.startDay": startDay,
+                    "priceStrategy.endDay": endDay,
+                    "priceStrategy.roomType": roomType,
+                    "shopIds": shopIds.join(","),
+                    "useWeekDays": useWeekDays.join(","),
+                    "startTimes": inputStartTimes
+                },
+                success: function (data) {
+                    if (!data.isOk) {
+                        noCollision = false;
+                        if (data.error) {
+                            alert(data.error);
+                        } else if (data.shopName) {
+                            alert("价格设置在时间上有冲突：\n门店：" + data.shopName
+                                    + "\n星期：" + data.weekDays
+                                    + "\n起始时间：" + data.startTime);
+                        }
+                        ;
+                    }
+                }
+            });
+            if (!noCollision) {
+                return;
+            }
+            ;
+            $("#creationForm").submit();
+        });
+    });
+</script>
+#{/set}

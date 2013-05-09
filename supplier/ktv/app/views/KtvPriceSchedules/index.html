@@ -10,13 +10,13 @@
             <table cellspacing="0" cellpadding="0" border="0">
                 <tr>
                     <td>适用门店:<select name="shop.id" value="${shop?.id}" style="width: auto">
-                        #{list items:shops,as:'shopa'}
-                            <option value="${shopa?.id}" ${shop?.id==shopa?.id ?'selected':''}/>${shopa.name}&nbsp;&nbsp;
+                        #{list items:shops,as:'s'}
+                            <option value="${s.id}" ${shop?.id==s?.id ?'selected':''}/>${s.name}&nbsp;&nbsp;
                         #{/list}
                     </select>
-                        包厢类型：<select name="roomType.id" value="${roomType.id}" style="width: auto">
-                            #{list items:roomTypeList,as:'roomTypes'}
-                                <option value="${roomTypes?.id}" ${roomTypes?.id==roomType?.id?'selected':''}/>${roomTypes.name}
+                        包厢类型：<select name="roomType" style="width: auto">
+                            #{list items:models.ktv.KtvRoomType.values(),as:'r'}
+                                <option value="${r}" ${roomType == r ? 'selected':''}/>${r.name}
                                 &nbsp;&nbsp;
                             #{/list}
                         </select>
@@ -27,15 +27,107 @@
                 </tr>
             </table>
         </div>
-        <input type="hidden" id="shopId" value="${shop.id?:shops?.get(0).id}">
-        #{if roomTypeList}
-            <input type="hidden" id="roomTypeId" value="${roomType?.id?:roomTypeList.get(0).id}">
-        #{/if}
-        #{if ktvRoomList.size()==0}
+        <input type="hidden" id="shopId" value="${shop?.id}">
+        <input type="hidden" id="roomType" value="${roomType}">
+        #{if shops.size()==0}
             <div class="error">请到左边菜单【我的门店】的新增门店页面，添加该门店的包厢数量！</div>
         #{/if}
         #{else}
-            <div class="wk-ktvwrapper" id="wk-ktvwrapper"></div>
+            <div class="wk-ktvwrapper" id="wk-ktvwrapper">
+                <div class="wk-pagination">
+                    <div class="wk-topLeftNav">
+                        <table  cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td><div class="wk-button wk-button-thisweek">本周</div></td>
+                                <td><div class="wk-button wk-button-previous">&lt;</div></td>
+                                <td><div class="wk-button wk-button-next">&gt;</div></td>
+                                <td><div class="wk-show-range"></div></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="wk-topRightNav">
+                        <table cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td><a class="wk-button wk-button-add" href="@{KtvPriceSchedules.showAdd()}">添加</a></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="wk-topwrapper">
+                    <table class="wk-weektop" cellpadding="0" cellspacing="0">
+                        <tr class="wk-daynames">
+                            <td style="width:60px;">&nbsp;</td>
+                            <th> <div class="wk-dayname"></div> </th>
+                            <th> <div class="wk-dayname"></div> </th>
+                            <th> <div class="wk-dayname"></div> </th>
+                            <th> <div class="wk-dayname"></div> </th>
+                            <th> <div class="wk-dayname"></div> </th>
+                            <th> <div class="wk-dayname"></div> </th>
+                            <th> <div class="wk-dayname"></div> </th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="wk-mainwrapper" style="margin-top:0px;">
+                    <table class="wk-timeprices" cellpadding="0" cellspacing="0">
+                        <!--行-->
+                        <tr height="1">
+                            <td style="width:60px;"></td>
+                            <td colspan="7">
+                                <div class="wk-spanningwrapper">
+                                    <div class="wk-hourmarkers">
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                        <div class="wk-markercell"> <div class="wk-dualmarker"></div> </div>
+                                    </div>
+                                </div>
+                                <div class="wk-spanningwrapper wk-chipspanningwrapper"></div>
+                            </td>
+                        </tr>
+                        <tr> <!-- 时间 -->
+                            <td class="wk-times-pri">
+                                <div style="height:40px;">  <div class="wk-time-pri">08:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">09:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">10:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">11:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">12:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">13:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">14:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">15:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">16:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">17:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">18:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">19:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">20:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">21:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri">22:00</div> </div>
+                                <div style="height:40px;"> <div class="wk-time-pri wk-time-pri-last">23:00</div> </div>
+                            </td> <!-- 7 列 周一到周日 -->
+                            <td class="wk-col">  <div class="wk-col-pricewrapper"></div> </td>
+                            <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td>
+                            <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td>
+                            <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td>
+                            <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td>
+                            <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td>
+                            <td class="wk-col"> <div class="wk-col-pricewrapper"></div> </td>
+                        </tr>
+                    </table>
+                    <!-- 价格 -->
+                    <div class="wk-pricecells"> </div>
+                </div>
+            </div>
         #{/else}
     </div>
 #{/form}
@@ -69,10 +161,9 @@
         var ktvWeek = KTVWeek({
             wrapperId: "wk-ktvwrapper",
             dataUrl: "/ktv/price-schedule/json-search",
-            addLink: "@{KtvPriceSchedules.add()}",
             startDay: new Date(),
             shop: $("#shopId").val(),
-            roomType: $("#roomTypeId").val()
+            roomType: $("#roomType").val()
         });
     });
 </script>

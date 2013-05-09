@@ -4,8 +4,9 @@ import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import models.order.OuterOrderPartner;
-import models.sales.ResalerProduct;
+import models.resale.Resaler;
 import models.sales.Goods;
+import models.sales.ResalerProduct;
 
 /**
  * @author likang
@@ -16,6 +17,7 @@ public class ResalerProductFactory extends ModelFactory<ResalerProduct> {
     public ResalerProduct define() {
         ResalerProduct resalerProduct = new ResalerProduct();
         resalerProduct.partner = OuterOrderPartner.TB;
+        resalerProduct.resaler = FactoryBoy.lastOrCreate(Resaler.class);
         resalerProduct.goods = FactoryBoy.lastOrCreate(Goods.class);
         resalerProduct.save();
         resalerProduct.goodsLinkId =  resalerProduct.id + 10000;
