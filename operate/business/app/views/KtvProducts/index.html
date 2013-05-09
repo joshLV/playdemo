@@ -1,0 +1,54 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'Ktv产品' /}
+#{include '/share/nav.html' /}
+<div class="body">
+    <legend>${title}</legend>
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{KtvProducts.index()}" method="GET">
+        <table width="100%">
+            <tr>
+                <td width="30%"> 商 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
+                #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:supplierList, array:"supplierArray",importJs:true/}
+
+                    名称：<input type="text" name="name" class="input-medium"
+                              value="${name}"/>
+                    <button class="btn btn-primary" id="searchbtn" type="submit"> 搜索</button>
+                    &nbsp;   &nbsp;&nbsp;&nbsp;
+                    <a href="/ktv-products/new" class="btn btn-primary">添加Ktv产品</a>
+
+                </td>
+            </tr>
+        </table>
+    </form>
+    <form class="form-horizontal" name="deletefrm" id="deletefrm">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th width="75">商户名称</th>
+                <th width="200">产品名称</th>
+                <th width="300">包厢数量</th>
+                <th width="80"> 操 作</th>
+            </tr>
+            </thead>
+            <tbody>
+            #{paginate.list items:productPage, as:'product'}
+            <tr>
+                <td align="center">${product?.supplier?.otherName}</td>
+                <td>
+                ${product?.name}
+                </td>
+                <td>
+                ${product?.duration}
+                </td>
+                <td><a href="@{KtvProducts.edit(product.id)}"> 修改 </a>
+                    / #{vx.deleteLink action:"ktv-products", id:product.id, name:product.name/}
+            </tr>
+            #{/paginate.list}
+            </tbody>
+        </table>
+    </form>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:productPage /}
+        </ul>
+    </div>
+</div>

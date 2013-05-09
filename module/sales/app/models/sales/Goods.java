@@ -11,6 +11,7 @@ import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.HtmlUtil;
 import com.uhuila.common.util.PathUtil;
+import models.ktv.KtvProduct;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.operator.OperateUser;
@@ -115,7 +116,6 @@ public class Goods extends Model {
     public static final String IMAGE_SLIDE = "nw";
     public static final String IMAGE_ORIGINAL = "nw";
     public static final String IMAGE_DEFAULT = "";
-
 
 
     public static final String[] value = {"99", "999", "9999", "99999", "999999"};
@@ -273,6 +273,9 @@ public class Goods extends Model {
 
     @Transient
     private String imageSmallPath;
+
+    @Transient
+    public KtvProduct product;
 
     @Transient
     @SolrField

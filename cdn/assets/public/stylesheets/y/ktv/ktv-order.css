@@ -87,6 +87,10 @@
     padding-top: 5px;
     padding-bottom: 5px;
 }
+.wk-order-room-duration {
+    padding-bottom:6px;
+    border-bottom:#ddd 1px solid;
+}
 .wk-order-room {
     height: 30px;
     line-height: 30px;

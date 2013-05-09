@@ -1,18 +1,16 @@
 package unit;
 
-import java.util.List;
-
+import factory.FactoryBoy;
 import models.operator.OperateNavigation;
 import models.operator.OperatePermission;
 import operate.rbac.RbacLoader;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.Play;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
-import factory.FactoryBoy;
+
+import java.util.List;
 
 public class RbacPermissionTest extends UnitTest {
 
@@ -23,12 +21,12 @@ public class RbacPermissionTest extends UnitTest {
         FactoryBoy.deleteAll();
         FactoryBoy.create(OperateNavigation.class);
         // 加载test/rbac.xml配置文件
-        VirtualFile file = VirtualFile.open("conf/rbac.xml");
+        VirtualFile file = VirtualFile.open("test/rbac.xml");
         RbacLoader.init(file);
     }
 
     @Test
-    public void canLoadPermissionYamlFile() {
+    public void canLoadPermissionFile() {
         // 加载后，数据库中必须有相关的记录
         List<OperatePermission> perms = OperatePermission.find("byApplicationName", applicationName).fetch();
         assertTrue(perms.size() > 0);

@@ -1,12 +1,18 @@
 <tbody>
 <tr>
-    <td>#{if "add".equals(action)}
-        #{vx.selectAllField listName:"goods.shops.id", selected:selectAll/}
-    #{/if}
+#{if ktvSupplier==false || ktvSupplier == null}
+    <td>
+        #{if "add".equals(action)}
+            #{vx.selectAllField listName:"goods.shops.id", selected:selectAll/}
+        #{/if}
     #{else}
         #{vx.selectAllField listName:"goods.shops.id"/}
-    #{/else}</td>
+    #{/else}
+    </td>
     <td colspan="3"></td>
+#{/if}
+
+
 </tr>
 <SCRIPT type=text/javascript>
     #{if shopList== null || shopList.size()==0}
@@ -18,11 +24,41 @@
 </SCRIPT>
 #{list items:shopList, as:'shop' }
 <tr>
-    <td><input type="checkbox" id="shops" value="${shop?.id}" name="goods.shops.id"
-               #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}/> ${shop.name}</td>
+    <td><input #{if ktvSupplier} type="radio" #{/if}#{else}type="checkbox"#{/else} id="shops"
+                                 value="${shop?.id}"
+                                 name="goods.shops.id"
+                                 #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}
+            /> ${shop.name}
+    </td>
     <td>${shop.address}</td>
     <td>${shop.phone}</td>
     <td><a href="/shops/${shop.id}/edit" target="_blank">修改门店</a></td>
 </tr>
 #{/list}
+<input type="hidden" id="ktv_supplier" name="ktvSupplier" value="${ktvSupplier}"/>
+<input type="hidden" id="action" name="action" value="${action}"/>
+
+
 </tbody>
+<script type="text/javascript">
+    $(function () {
+        ktvSupplier = $("#ktv_supplier").val();
+        action = $("#action").val();
+        if (ktvSupplier == 'false' || ktvSupplier == null) {
+            $("#select_all_shops").show();
+            $("#ktv_supplier_shops").hide();
+//            if (action == 'edit') {
+            if ($("input[name='goods.isAllShop']:checked").val() == 'false') {
+                $("#shop").show()
+            }
+            else {
+                $("#shop").hide();
+            }
+        }
+        else {
+            $("#select_all_shops").hide();
+            $("#ktv_supplier_shops").show();
+            $("#shop").show();
+        }
+    });
+</script>

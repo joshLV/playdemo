@@ -45,7 +45,6 @@ public class Operators extends Controller {
         if (Validation.hasErrors()) {
             render("Operators/add.html", operator);
         }
-
         operator.createdBy = OperateRbac.currentUser().loginName;
         operator.createdAt = new Date();
         operator.deleted = DeletedStatus.UN_DELETED;

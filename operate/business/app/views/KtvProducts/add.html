@@ -1,0 +1,14 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'添加Ktv产品' /}
+#{include '/share/nav.html' /}
+
+
+<div class="body">
+#{form @KtvProducts.create() , id:'creationForm',enctype:'multipart/form-data',class:"form-horizontal" }
+    <legend>添加Ktv产品</legend>
+    #{set action:"add"/}
+    #{include '/KtvProducts/ktvProductsForm.html'/}
+#{/form}
+</div>
+
+

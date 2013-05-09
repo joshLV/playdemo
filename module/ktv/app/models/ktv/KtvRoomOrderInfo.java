@@ -7,10 +7,8 @@ import models.sales.Goods;
 import models.sales.Shop;
 import org.apache.commons.lang.time.DateUtils;
 import play.db.jpa.Model;
-import util.DateHelper;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -29,7 +27,7 @@ public class KtvRoomOrderInfo extends Model {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_id")
-    public OrderItems orderItem;
+    public OrderItems orderItem;//目前设计的是一个orderItem对应一个KtvRoomOrderInfo 如果变成了多个，请考虑修改发券时的文本逻辑
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
@@ -70,15 +68,18 @@ public class KtvRoomOrderInfo extends Model {
     @Column(name = "deal_at")
     public Date dealAt;
 
+    public KtvRoomOrderInfo() {
+        this.status = KtvOrderStatus.LOCK;
+        this.createdAt = new Date();
+    }
+
     public KtvRoomOrderInfo(Goods goods, OrderItems orderItem, KtvRoomType ktvRoomType, Date scheduledDay, int scheduledTime) {
+        this();
         this.goods = goods;
         this.orderItem = orderItem;
         this.ktvRoomType = ktvRoomType;
         this.scheduledDay = scheduledDay;
         this.scheduledTime = scheduledTime;
-        this.status = KtvOrderStatus.LOCK;
-        this.createdAt = new Date();
-
     }
 
     /*
@@ -88,12 +89,35 @@ public class KtvRoomOrderInfo extends Model {
     }
     */
 
+    /**
+     * 查出某一门店的 [某一] 产品在某天 的已成交或已锁定订单
+     *
+     * @param scheduledDay 某天
+     * @param productGoods 某门店的某KTV产品
+     * @return 订单列表
+     */
+    public static List<KtvRoomOrderInfo> findScheduled(Date scheduledDay, KtvProductGoods productGoods) {
+        scheduledDay = DateUtils.truncate(scheduledDay, Calendar.DATE);
+        Date tenMinutesAgo = DateUtils.addMinutes(new Date(), -KtvRoomOrderInfo.LOCK_MINUTE);
+
+        return KtvRoomOrderInfo.find("goods=? and shop=? and scheduledDay = ? " +
+                "and (status =? or (status=? and createdAt >=?))",
+                productGoods.goods, productGoods.shop, scheduledDay,
+                KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, tenMinutesAgo).fetch();
+    }
+
+    /**
+     * 查出某一门店的 [所有] 产品 在某天 的已成交或已锁定订单
+     *
+     * @param scheduledDay 某天
+     * @param shop 某门店
+     * @return 订单列表
+     */
     public static List<KtvRoomOrderInfo> findScheduled(Date scheduledDay, Shop shop) {
         scheduledDay = DateUtils.truncate(scheduledDay, Calendar.DATE);
-        Date tenMinutesAgo = DateUtils.addMinutes(new Date(), -10);
+        Date tenMinutesAgo = DateUtils.addMinutes(new Date(), -KtvRoomOrderInfo.LOCK_MINUTE);
 
-        return KtvRoomOrderInfo.find("select o from KtvRoomOrderInfo o where o.shop = ? and o.scheduledDay = ? " +
-                "and (o.status = ? or (o.status = ? and o.createdAt >= ?))",
+        return KtvRoomOrderInfo.find("shop=? and scheduledDay = ? and (status =? or (status=? and createdAt >=?))",
                 shop, scheduledDay, KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, tenMinutesAgo).fetch();
     }
 

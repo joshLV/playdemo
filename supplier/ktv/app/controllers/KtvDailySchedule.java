@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
 import models.ktv.KtvPriceSchedule;
+import models.ktv.KtvProductGoods;
 import models.ktv.KtvRoomOrderInfo;
 import models.ktv.KtvShopPriceSchedule;
 import models.sales.Shop;
@@ -34,6 +35,7 @@ public class KtvDailySchedule extends Controller {
         day = DateUtils.truncate(day, Calendar.DATE);
         Map<String, Object> result = new HashMap<>();
 
+        //查出与该KTV商品有关联的当天的所有价格策略
         List<KtvShopPriceSchedule> shopPriceSchedules = KtvShopPriceSchedule.find(
                 "select k from KtvShopPriceSchedule k where k.shop = ? and " +
                         "k.schedule.startDay <= ? and k.schedule.endDay >= ? and k.schedule.deleted = ?",
@@ -55,6 +57,7 @@ public class KtvDailySchedule extends Controller {
 
         result.put("schedules", priceScheduleMaps);
 
+        //查出与该KTV商品有关联的当天的所有订单信息
         List<KtvRoomOrderInfo> orderInfoList = KtvRoomOrderInfo.findScheduled(day, shop);
         List<Map<String, Object>> orderInfoMaps = new ArrayList<>();
         for (KtvRoomOrderInfo orderInfo : orderInfoList) {

@@ -339,11 +339,7 @@ public class OrderItems extends Model {
     }
 
     public List<ECoupon> getECoupons() {
-        Query query = play.db.jpa.JPA.em().createQuery(
-                "select e from ECoupon e where e.order = :order and e.goods =:goods ");
-        query.setParameter("order", this.order);
-        query.setParameter("goods", this.goods);
-        return query.getResultList();
+        return ECoupon.find("orderItems=?", this).fetch();
     }
 
     /**

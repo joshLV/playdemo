@@ -63,7 +63,7 @@ public class ScannerResalerProductStatusTest extends UnitTest {
     }
 
     @Test
-    public void test_Job_from_onsale_to_onSale() {
+    public void test_Job_from_onsale_to_onSale() throws Exception {
         product.status = ResalerProductStatus.ONSALE;
         product.save();
         assertEquals(ResalerProductStatus.ONSALE, product.status);
@@ -77,7 +77,7 @@ public class ScannerResalerProductStatusTest extends UnitTest {
     }
 
     @Test
-    public void test_Job_from_null_to_onSale() {
+    public void test_Job_from_null_to_onSale() throws Exception {
         String resultXml = "<div class=\"buy_btn b_buy\"></div>";
         MockWebServiceClient.addMockHttpRequest(200, resultXml);
         ScannerResalerProductStatusJob job = new ScannerResalerProductStatusJob();
@@ -87,7 +87,7 @@ public class ScannerResalerProductStatusTest extends UnitTest {
     }
 
     @Test
-    public void test_Job_from_null_to_offSale() {
+    public void test_Job_from_null_to_offSale() throws Exception {
         String resultXml = "<div class=\"buy_btn b_end\"></div>";
         MockWebServiceClient.addMockHttpRequest(200, resultXml);
 
@@ -99,7 +99,7 @@ public class ScannerResalerProductStatusTest extends UnitTest {
 
 
     @Test
-    public void test_Job_from_offsale_to_offSale() {
+    public void test_Job_from_offsale_to_offSale() throws Exception {
         product.status = ResalerProductStatus.OFFSALE;
         product.save();
         String resultXml = "<div class=\"buy_btn b_end\"></div>";
