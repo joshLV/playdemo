@@ -52,6 +52,8 @@ public class KtvRoomOrderInfo extends Model {
     @Column(name = "scheduled_time")
     public String scheduledTime;
 
+    public int duration;
+
     /**
      * 锁定时间
      */
