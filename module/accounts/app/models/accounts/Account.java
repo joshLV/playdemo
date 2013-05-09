@@ -114,18 +114,14 @@ public class Account extends Model {
      * @return
      */
     public BigDecimal getSupplierWithdrawAmount(BigDecimal prepaymentBalance, Date date) {
-        //本周期券消费金额(总商户的本周期提现金额已经计算在内）
+        //本周期券消费金额  本周期可以提现的金额
         BigDecimal withdrawAmount = getWithdrawAmount(date);
-
-        //本周期提现金额（针对独立门店）
+        //本周期提现金额   本周期已经提出的提现需求
         BigDecimal withdrawnAmount = BigDecimal.ZERO;
-        if (this.accountType == AccountType.SHOP) {
-            withdrawnAmount = getWithdrawnAmount(date);
-        }
+        withdrawnAmount = getWithdrawnAmount(date);
         if (prepaymentBalance.compareTo(withdrawAmount) > 0) {
             return BigDecimal.ZERO;
         }
-
         //剩余未提现金额
         return withdrawAmount.add(withdrawnAmount).subtract(prepaymentBalance);
     }
