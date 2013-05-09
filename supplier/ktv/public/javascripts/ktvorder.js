@@ -280,7 +280,7 @@ var KTVOrder = (function  () {
         };
         ktv.selected = [];
 
-        //画上有价格的格子
+        //先画上有价格策略的格子
         for (i = 0; i < data.schedules.length; i++) {
             var schedule = data.schedules[i];
             var dayOfWeeks = schedule.dayOfWeeks.split(",");
@@ -305,7 +305,7 @@ var KTVOrder = (function  () {
             };
         };
 
-        //先画上已预订的格子
+        //再画上已预订的格子
         for (i = 0; i < data.orders.length; i++) {
             var order = data.orders[i];
             var scheduleTime = Number(order.scheduledTime);
@@ -313,30 +313,6 @@ var KTVOrder = (function  () {
             var holder = ktv.getAvaliableHolder(order.roomType.toLowerCase(), scheduleTime, order.duration, "order");
             holder.div.addClass("wk-order-room-reserved");
         }
-
-
-        /*
-        //补上空的格子
-        $("#" + ktv.wrapperId + " [data-room-type]").each(function(){
-            var ele = $(this);
-            var roomId = Number(ele.attr("data-room-id"));
-            for (var i = 8; i <= 23; i++) {
-                if ($.inArray(i, ktv.rooms[roomId]) >= 0) {
-                    continue;//已经有块了，或者是被预订，或者是有价格的
-                }
-                ele.append(
-                    $("<div/>", {
-                        "class": "wk-order-room-cell wk-order-room-blank",
-                        css:{
-                            "top":"2px",
-                            "left": (60 + 4 + (i-8)*44) + "px"
-                        }
-                    })
-                );
-            }
-
-        });
-        */
     };
     return KTVOrder;
 })();

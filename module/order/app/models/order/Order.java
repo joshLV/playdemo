@@ -723,6 +723,7 @@ public class Order extends Model {
         Account account = chargeAccount();
 
         //  ktv 一个room被两个消费者订购，只有一个成功，另外一个则进行如果也支付成功，则对其做退款处理，并且把订单状态和orderItem状态变为CANCELED
+        /*
         List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrder(this);
         if (ktvRoomOrderInfoList.size() > 0) {
             for (KtvRoomOrderInfo ktvRoomOrderInfo : ktvRoomOrderInfoList) {
@@ -732,6 +733,7 @@ public class Order extends Model {
             this.save();
             return;
         }
+        */
 
         if (paid(account)) {
             generateECoupon();
@@ -867,10 +869,10 @@ public class Order extends Model {
             if (MaterialType.ELECTRONIC == goods.materialType) {
                 boolean isKtvSupplier = false;
                 //ktv商户的场合
-                List<KtvRoomOrderInfo> ktvRoomOrderInfoList = null;
+                KtvRoomOrderInfo roomOrderInfo = null;
                 if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
                     isKtvSupplier = true;
-                    ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrderItem(orderItem);
+                    roomOrderInfo = KtvRoomOrderInfo.find("orderItem",orderItem).first();
                 }
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     //创建电子券
@@ -887,13 +889,14 @@ public class Order extends Model {
                     }
 
                     //ktv商户的话，更新券的价格信息
-                    if (isKtvSupplier && ktvRoomOrderInfoList.size() > 0) {
+                    if (isKtvSupplier && roomOrderInfo != null) {
                         eCoupon.originalPrice = orderItem.originalPrice;
                         eCoupon.faceValue = eCoupon.salePrice;
 
-                        String appointmentRemark = KtvRoomOrderInfo.getRoomOrderTime(ktvRoomOrderInfoList);
-                        eCoupon.appointmentDate = ktvRoomOrderInfoList.get(0).scheduledDay;
-                        eCoupon.appointmentRemark = ktvRoomOrderInfoList.get(0).ktvRoomType.getName() + appointmentRemark;
+                        eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
+                        eCoupon.appointmentRemark = roomOrderInfo.ktvRoomType.getName()+","
+                                + roomOrderInfo.scheduledTime + "点至"
+                                + (roomOrderInfo.scheduledTime + roomOrderInfo.duration - 1) + "点" ;
                         eCoupon.save();
                     }
                     //记录券历史信息
@@ -903,11 +906,8 @@ public class Order extends Model {
                 }
 
                 //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
-                if (isKtvSupplier && ktvRoomOrderInfoList.size() > 0) {
-                    for (KtvRoomOrderInfo orderInfo : ktvRoomOrderInfoList) {
-                        orderInfo.dealKtvRoom();
-                    }
-
+                if (isKtvSupplier && roomOrderInfo != null) {
+                    roomOrderInfo.dealKtvRoom();
                 }
             }
 

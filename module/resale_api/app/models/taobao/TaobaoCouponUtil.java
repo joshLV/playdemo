@@ -216,6 +216,12 @@ public class TaobaoCouponUtil {
         return ExtensionResult.code(102).message("调用淘宝接口出现异常");
     }
 
+    /**
+     * 调用淘宝的高性能版本的订单信息接口
+     * @param tid 淘宝订单ID
+     * @param fields 需要的参数
+     * @return 淘宝订单信息
+     */
     public static TradeGetResponse tradeInfo(Long tid, String fields) {
         TradeGetRequest request = new TradeGetRequest();
         request.setFields(fields);

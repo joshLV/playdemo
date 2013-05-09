@@ -7,7 +7,8 @@ import javax.persistence.*;
 
 /**
  * @author likang
- *         Date: 13-4-27
+ *
+ * shop&schedule 唯一
  */
 @Entity
 @Table(name = "ktv_shop_price_schedules")
