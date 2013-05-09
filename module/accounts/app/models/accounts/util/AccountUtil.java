@@ -6,11 +6,12 @@ import models.accounts.AccountCreditable;
 import models.accounts.AccountNotFoundException;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceFlag;
-import models.accounts.AccountType;
 import models.accounts.AccountStatus;
+import models.accounts.AccountType;
 import models.accounts.BalanceNotEnoughException;
 import models.accounts.SettlementStatus;
 import models.accounts.TradeType;
+import models.operator.Operator;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,11 +30,25 @@ public class AccountUtil {
     public static final String PARTNER_TESTPAY = "testpay";
     public static final String PARTNER_SINAPAY = "sina";
 
+    /**
+     * 一百券收款账户.
+     * @return
+     */
     public static Account getUhuilaAccount() {
-        return getCreditableAccount(Account.UHUILA_COMMISSION, AccountType.PLATFORM);
+        return getUhuilaAccount(Operator.defaultOperator());
+    }
+    public static Account getUhuilaAccount(Operator operator) {
+        return getCreditableAccount(Account.UHUILA_COMMISSION, AccountType.PLATFORM, operator);
     }
 
+    /**
+     * 平台收款账户.
+     * @return
+     */
     public static Account getPlatformIncomingAccount() {
+        return getPlatformIncomingAccount(Operator.defaultOperator());
+    }
+    public static Account getPlatformIncomingAccount(Operator operator) {
         return getAccount(Account.PLATFORM_INCOMING, AccountType.PLATFORM);
     }
 
@@ -124,7 +139,10 @@ public class AccountUtil {
      * @return 不可欠款账户
      */
     public static Account getAccount(long uid, AccountType type) {
-        return getAccount(uid, type, false);
+        return getAccount(uid, type, Operator.defaultOperator());
+    }
+    public static Account getAccount(long uid, AccountType type, Operator operator) {
+        return getAccount(uid, type, false, operator);
     }
 
     /**
@@ -140,12 +158,23 @@ public class AccountUtil {
     }
 
     public static Account getAccount(long uid, AccountType type, boolean creditable) {
-        Account account = Account.find("byUidAndAccountType", uid, type).first();
+        return getAccount(uid, type, creditable, Operator.defaultOperator());
+    }
+
+
+    public static Account getCreditableAccount(long uid, AccountType type, Operator operator) {
+        return getAccount(uid, type, true, operator);
+    }
+
+    public static Account getAccount(long uid, AccountType type, boolean creditable, Operator operator) {
+        Account account = Account.find("uid=? and accountType=? and operator=? order by id", uid, type,
+                operator).first();
         if (account == null) {
             synchronized (Account.class) {
-                account = Account.find("byUidAndAccountType", uid, type).first();
+                account = Account.find("uid=? and accountType=? and operator=? order by id", uid, type,
+                        operator).first();
                 if (account == null) {
-                    account = new Account(uid, type);
+                    account = new Account(uid, type, operator);
                     if (creditable) {
                         account.creditable = AccountCreditable.YES;
                     }
@@ -155,6 +184,7 @@ public class AccountUtil {
         }
         return account;
     }
+
 
     /*
      * 变更账户余额，同时不保存凭证相关信息.
@@ -223,20 +253,20 @@ public class AccountUtil {
         if (account.amount.add(cashAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()) {
             account.amount = account.amount.add(cashAugend);
         } else {
-            throw new BalanceNotEnoughException("error while add cash to account:account(uid:" + account.uid + ",isCreditable:" + account.isCreditable() + ",amount:" + account.amount + "),cashAugend:" + cashAugend + " balance not enough");
+            throw new BalanceNotEnoughException("error while add cash to account:account(" + account + "),cashAugend:" + cashAugend + " balance not enough");
         }
         if (account.uncashAmount.add(uncashAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()) {
             account.uncashAmount = account.uncashAmount.add(uncashAugend);
         } else {
             throw new BalanceNotEnoughException("error while add uncashAmount to account: balance not enough. " +
-                    "account.id=" + account.id);
+                    "account=" + account);
         }
 
         if (account.promotionAmount.add(promotionAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()) {
             account.promotionAmount = account.promotionAmount.add(promotionAugend);
         } else {
             throw new BalanceNotEnoughException("error while add promotionAmount to account: balance not enough. " +
-                    "account.id=" + account.id);
+                    "account=" + account);
         }
 
         account.save();

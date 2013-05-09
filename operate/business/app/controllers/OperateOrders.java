@@ -1,8 +1,10 @@
 package controllers;
 
 import models.consumer.User;
+import models.order.ExpressCompany;
 import models.order.Order;
 import models.order.OrderItems;
+import models.order.OrderShippingInfo;
 import models.order.OrdersCondition;
 import models.order.OuterOrder;
 import models.resale.Resaler;
@@ -35,8 +37,7 @@ public class OperateOrders extends Controller {
             condition = new OrdersCondition();
             condition.hidPaidAtBegin = DateHelper.beforeDays(1);
             condition.hidPaidAtEnd = new Date();
-        }
-        else if  ((StringUtils.isBlank(condition.searchKey)||StringUtils.isBlank(condition.searchItems)) && StringUtils.isBlank(condition.outerOrderId) && condition.paidAtBegin ==null && condition.paidAtEnd==null&&condition.refundAtBegin==null && condition.refundAtEnd==null) {
+        } else if (condition.shihuiSupplierId == null && (StringUtils.isBlank(condition.searchKey) || StringUtils.isBlank(condition.searchItems)) && StringUtils.isBlank(condition.outerOrderId) && condition.paidAtBegin == null && condition.paidAtEnd == null && condition.refundAtBegin == null && condition.refundAtEnd == null) {
             condition.paidAtBegin = DateHelper.beforeDays(7);
             condition.paidAtEnd = new Date();
         }
@@ -130,7 +131,16 @@ public class OperateOrders extends Controller {
 
         // 用于查看手机号的权限
         Boolean hasViewEcouponSnPermission = ContextedPermission.hasPermission("VIEW_ECOUPONSN");
-        render(orders, orderItems, loginName, hasViewEcouponSnPermission);
+        List<ExpressCompany> expressList = ExpressCompany.findAll();
+        render(orders, orderItems, loginName, hasViewEcouponSnPermission, expressList);
+    }
+
+    public static void updateExpress(Long id, OrderShippingInfo shippingInfo) {
+        OrderShippingInfo updateShippingInfo = OrderShippingInfo.findById(id);
+        updateShippingInfo.expressCompany = shippingInfo.expressCompany;
+        updateShippingInfo.expressNumber = shippingInfo.expressNumber;
+        updateShippingInfo.save();
+        details(updateShippingInfo.orderItems.get(0).order.id);
     }
 
 

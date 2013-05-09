@@ -53,14 +53,7 @@ public class KangouOrderTest extends FunctionalTest {
             }
         });
 
-        product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
-            @Override
-            public void build(ResalerProduct target) {
-                target.partner = OuterOrderPartner.JD;
-            }
-        });
-
-        Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+        final Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
             @Override
             public void build(Resaler target) {
                 target.loginName = Resaler.JD_LOGIN_NAME;
@@ -68,6 +61,14 @@ public class KangouOrderTest extends FunctionalTest {
         });
         //创建可欠款账户
         AccountUtil.getCreditableAccount(resaler.id, AccountType.RESALER);
+        product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
+            @Override
+            public void build(ResalerProduct target) {
+                target.partner = OuterOrderPartner.JD;
+                target.resaler = resaler;
+            }
+        });
+
         ResalerFactory.getYibaiquanResaler(); //必须存在一百券
     }
 

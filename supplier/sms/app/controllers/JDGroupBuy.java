@@ -182,7 +182,9 @@ public class JDGroupBuy extends Controller {
             String jdTeamId = message.selectTextTrim("./JdTeamId");
 
             Template template = TemplateLoader.load("jingdong/groupbuy/response/sendOrder.xml");
-            Goods goods = ResalerProduct.getGoods(venderTeamId, OuterOrderPartner.JD);
+
+            Resaler resaler = Resaler.findApprovedByLoginName(Resaler.JD_LOGIN_NAME);
+            Goods goods = ResalerProduct.getGoods(resaler, venderTeamId, OuterOrderPartner.JD);
             Map<String, Object> params = new HashMap<>();
             params.put("jdTeamId", jdTeamId);
             params.put("venderTeamId", venderTeamId);
@@ -213,7 +215,8 @@ public class JDGroupBuy extends Controller {
         Long venderTeamId = Long.parseLong(message.selectTextTrim("./VenderTeamId"));
 
         //查询商品
-        Goods goods = ResalerProduct.getGoods(venderTeamId, OuterOrderPartner.JD);
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.JD_LOGIN_NAME);
+        Goods goods = ResalerProduct.getGoods(resaler, venderTeamId, OuterOrderPartner.JD);
         if (goods == null) {
             finish(202, "goods not found");
         }
@@ -337,7 +340,7 @@ public class JDGroupBuy extends Controller {
         Order ybqOrder = Order.createConsumeOrder(resaler.id, AccountType.RESALER);
         ybqOrder.save();
         try {
-            Goods goods = ResalerProduct.getGoods(venderTeamId, OuterOrderPartner.JD);
+            Goods goods = ResalerProduct.getGoods(resaler, venderTeamId, OuterOrderPartner.JD);
             if (goods == null) {
                 finish(208, "can not find goods: " + venderTeamId);
             }

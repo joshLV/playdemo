@@ -17,6 +17,15 @@ POST    /profile                                OperateUsersProfiles.update
 GET     /edit-password                          OperateUsersPassword.index
 POST    /edit-password                          OperateUsersPassword.update
 
+#运营商
+GET     /operators                              Operators.index
+GET     /operators/new                          Operators.add
+POST    /operators/check-name-and-code          Operators.checkNameAndCode
+GET     /operators/{id}/edit                    Operators.edit
+POST    /operators/{id}                         Operators.update
+DELETE  /operators/{id}                         Operators.delete
+
+
 
 GET     /ws-logs                                WebServiceCallLogs.index
 
@@ -27,6 +36,10 @@ GET     /sql/secret                             WebSqlExcutors.secret
 POST    /sql/secret                             WebSqlExcutors.secret
 GET     /sql/history                            WebSqlExcutors.history
 
+# jobs
+GET     /jobs                                   OperateJobs.index
+GET     /jobs/{id}                              OperateJobs.detail
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
@@ -34,6 +47,7 @@ GET     /favicon.ico                            404
 GET     /public/                                staticDir:public
 
 *       /                                       module:operate_rbac
+*       /                                       module:useragentcheck
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}

@@ -7,13 +7,16 @@ import models.consumer.CRMCondition;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.Order;
-import models.sales.*;
+import models.sales.ConsultCondition;
+import models.sales.ConsultRecord;
+import models.sales.ConsultType;
+import models.sales.CouponCallBind;
+import models.sales.MemberCallBind;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
-import play.data.validation.Valid;
 import play.data.validation.Validation;
-import play.db.jpa.JPA;
+import play.modules.useragentcheck.NoUserAgentCheck;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -26,9 +29,9 @@ import java.util.List;
  * Date: 12-8-31
  * Time: 上午9:38
  */
-
 @With(OperateRbac.class)
 @ActiveNavigation("crm_app_consumers")
+@NoUserAgentCheck
 public class OperateCRM extends Controller {
 
     public static void index(String phone, CRMCondition condition, Long userId, Long consultId, ConsultRecord consult) {

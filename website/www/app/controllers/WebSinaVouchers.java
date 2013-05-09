@@ -8,7 +8,11 @@ import models.accounts.PaymentSource;
 import models.consumer.User;
 import models.ktv.KtvRoomOrderInfo;
 import models.ktv.KtvRoomType;
-import models.order.*;
+import models.order.DeliveryType;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderItems;
+import models.order.OuterOrderPartner;
 import models.payment.PaymentFlow;
 import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
@@ -27,7 +31,9 @@ import play.mvc.With;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * User: yan
@@ -45,7 +51,8 @@ public class WebSinaVouchers extends Controller {
      */
     @SkipCAS
     public static void showProduct(String productId, String source) {
-        Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.SINA_LOGIN_NAME);
+        Goods goods = ResalerProduct.getGoodsByPartnerProductId(resaler, productId, OuterOrderPartner.SINA);
         Collection<Shop> shops = goods.getShopList();
 
 
@@ -59,7 +66,8 @@ public class WebSinaVouchers extends Controller {
      * @param productId 商品ID
      */
     public static void showOrder(String productId) {
-        Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.SINA_LOGIN_NAME);
+        Goods goods = ResalerProduct.getGoodsByPartnerProductId(resaler, productId, OuterOrderPartner.SINA);
         if (goods == null || goods.status != GoodsStatus.ONSALE) {
             error("no goods!");
         }
@@ -89,7 +97,8 @@ public class WebSinaVouchers extends Controller {
      */
     public static void order(String productId, Long buyCount, String phone, Date scheduledDay, String source) {
         User user = SecureCAS.getUser();
-        Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.SINA_LOGIN_NAME);
+        Goods goods = ResalerProduct.getGoodsByPartnerProductId(resaler, productId, OuterOrderPartner.SINA);
         Validation.required("phone", phone);
         Validation.match("phone", phone, "^1\\d{10}$");
         String pageUrl = "ktvorder.html";
@@ -105,7 +114,6 @@ public class WebSinaVouchers extends Controller {
             initKtvPage(productId, goods, user);
             render("WebSinaVouchers/" + pageUrl, goods, productId);
         }
-        Resaler resaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
         if (resaler == null) {
             error("not found this resaler!");
         }
@@ -174,7 +182,7 @@ public class WebSinaVouchers extends Controller {
 //                    }
 //                    KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
 //                    salePrice = salePrice.add(ktvPriceSchedule.price);
-                    new KtvRoomOrderInfo(goods, orderItems, KtvRoomType.MIDDLE, scheduledDay, scheduledTime).save();
+                    new KtvRoomOrderInfo(goods, orderItems, KtvRoomType.MIDDLE, scheduledDay, Integer.parseInt(scheduledTime)).save();
                 }
 
                 //eCoupon.originalPrice=eCoupon.salePrice*(goods.originalPrice/goods.salePrice)

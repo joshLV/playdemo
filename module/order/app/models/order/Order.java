@@ -19,6 +19,7 @@ import models.kangou.KangouUtil;
 import models.ktv.KtvRoomOrderInfo;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
+import models.operator.Operator;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsCouponType;
@@ -46,6 +47,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Query;
@@ -203,6 +205,9 @@ public class Order extends Model {
     @Column(name = "lock_version")
     public int lockVersion;
 
+    @ManyToOne
+    public Operator operator;
+
     public String description;          //订单描述
 
     /**
@@ -302,6 +307,9 @@ public class Order extends Model {
      * @param userType
      */
     private Order(Long userId, AccountType userType) {
+        this(userId, userType, Operator.defaultOperator());
+    }
+    private Order(Long userId, AccountType userType, Operator operator) {
         // FIXME: 检查一下新浪微博钱包 是调用哪个接口
         if (userType == AccountType.CONSUMER) {
             User user = User.findById(userId);
@@ -317,6 +325,7 @@ public class Order extends Model {
             this.userId = userId;   //分销商
         }
 
+        this.operator = operator;
         this.status = OrderStatus.UNPAID;
         this.deleted = DeletedStatus.UN_DELETED;
         this.orderNumber = generateOrderNumber();
@@ -754,6 +763,7 @@ public class Order extends Model {
      * 订单已支付，修改支付状态、时间，更改库存，发送电子券密码
      */
     public boolean paid(Account account) {
+        System.out.println(  "《into paid()=========:");
         if (this.status != OrderStatus.UNPAID) {
             throw new RuntimeException("can not pay order:" + this.getId() + " since it's already been processed");
         }
@@ -802,7 +812,7 @@ public class Order extends Model {
                 //忽略，此时订单没有支付，但余额已经保存
             }
         }
-
+        System.out.println(  "after paid()《=========:");
         this.status = OrderStatus.PAID;
         this.paidAt = new Date();
         this.save();
@@ -813,6 +823,8 @@ public class Order extends Model {
      * 发送电子券相关短信/邮件/通知
      */
     private void generateECoupon() {
+        System.out.println(this.orderItems + "《=========this.orderItems:");
+
         if (this.status != OrderStatus.PAID) {
             return;
         }
@@ -888,7 +900,6 @@ public class Order extends Model {
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
-
                 }
 
                 //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
@@ -1331,6 +1342,7 @@ public class Order extends Model {
             ebankPaymentAmount = needPayExceptVoucher;
         }
         //余额支付中再分一下可提现和不可提现支付
+        System.out.println(order.discountPay + "《=inital========order.discountPay:");
         order.accountPay = balancePaymentAmount.subtract(account.promotionAmount.min(balancePaymentAmount));
         order.promotionBalancePay = balancePaymentAmount.subtract(order.accountPay);
         order.discountPay = ebankPaymentAmount;
@@ -1338,10 +1350,18 @@ public class Order extends Model {
 
         //创建订单交易
         //如果使用余额足以支付，则付款直接成功
+        System.out.println(  "《=========:");
+        System.out.println( order.discountPay+ "《===order.discountPay======:");
+        System.out.println(order.accountPay + "《=========order.accountPay:");
+        System.out.println(order.promotionBalancePay + "《=========order.promotionBalancePay:");
+        System.out.println(order.voucherValue + "《=========order.voucherValue:");
+        System.out.println(order.needPay + "《=========order.needPay:");
+
         if (order.discountPay.compareTo(BigDecimal.ZERO) == 0
                 && order.accountPay.add(order.promotionBalancePay).add(order.voucherValue)
                 .compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
+            System.out.println(  "before send coupon《=========:");
             order.payAndSendECoupon();
             useVouchers(validVouchers, order);
             return true;

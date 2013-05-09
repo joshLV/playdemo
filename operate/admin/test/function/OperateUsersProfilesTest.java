@@ -2,8 +2,7 @@ package function;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import models.operator.OperateRole;
+import factory.operator.OperateRoleFactory;
 import models.operator.OperateUser;
 import operate.rbac.RbacLoader;
 import org.junit.After;
@@ -23,20 +22,14 @@ import java.util.Map;
  */
 public class OperateUsersProfilesTest extends FunctionalTest {
     OperateUser operateUser;
-    OperateRole role;
 
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
-//        role = FactoryBoy.create(OperateRole.class);
 
-        operateUser = FactoryBoy.create(OperateUser.class, new BuildCallback<OperateUser>() {
-            @Override
-            public void build(OperateUser ou) {
-                ou.mobile = "13211111111";
-            }
-        });
+        OperateRoleFactory.createRoles("sales", "admin", "test", "editor", "customservice", "webop", "developer", "manager", "account", "virtual_verify", "inventory_manager");
 
+        operateUser = FactoryBoy.create(OperateUser.class, "role");
 
         // 加载test/rbac.xml配置文件
         VirtualFile file = VirtualFile.open("test/rbac.xml");

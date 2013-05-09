@@ -2,6 +2,7 @@ package models.order;
 
 import models.sales.Goods;
 import models.sales.Sku;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import play.db.jpa.Model;
 
 import javax.persistence.Entity;
@@ -43,5 +44,14 @@ public class TakeoutItem extends Model {
         this.orderItem = orderItem;
         this.sku = sku;
         this.count = count;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("orderItem", orderItem)
+                .append("sku", sku)
+                .append("count", count)
+                .toString();
     }
 }

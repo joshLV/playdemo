@@ -499,6 +499,8 @@ queryType.CLERK_JOB_NUMBER=店员工号
 queryType.SHOP_NAME=消费门店
 queryType.COUPON=券号
 queryType.UID=用户ID
+queryType.EXPRESS_NUMBER=物流单号
+
 
 
 resaler.creditable.true=可欠款
@@ -680,3 +682,7 @@ item.expireAt=过期时间
 item.price=进价
 item.count=采购数量
 item.sku.id=采购货品
+
+
+shippingInfo.expressCompany.id=快递公司
+shippingInfo.expressNumber=快递单号

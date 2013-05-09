@@ -6,6 +6,7 @@ import models.accounts.AccountType;
 import models.consumer.User;
 import models.resale.Resaler;
 import models.sales.Brand;
+import models.sales.MaterialType;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 
@@ -41,6 +42,14 @@ public class OrdersCondition {
     public Date hidPaidAtEnd;
     public String outerOrderId;
 
+    //根据订单出库 查看订单时
+    public MaterialType materialType;
+    public OrderType orderType;
+    public Date itemCreatedAt;
+    public OrderStatus itemStatus;
+    public Long shihuiSupplierId;
+
+
     /**
      * 查询条件hql.
      *
@@ -53,9 +62,21 @@ public class OrdersCondition {
         paramsMap.put("deleted", DeletedStatus.UN_DELETED);
 
         if (supplierId != null) {
-            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId = :supplierId)");
+            sql.append(" and o.id in (select oi.order.id from o.orderItems oi where oi.goods.supplierId = :supplierId)");
             paramsMap.put("supplierId", supplierId);
         }
+
+        //根据订单出库(实物） 查看订单时
+        if (shihuiSupplierId != null) {
+            sql.append(" and o.id in (select oi.order.id from OrderItems oi where oi.goods.supplierId=:shihuiSupplierId " +
+                    " and oi.goods.materialType=:materialType and oi.order.orderType=:orderType and oi.status=:itemStatus and oi.createdAt<=:itemCreatedAt  )");
+            paramsMap.put("shihuiSupplierId", Supplier.getShihui().id);
+            paramsMap.put("materialType", materialType);
+            paramsMap.put("orderType", orderType);
+            paramsMap.put("itemStatus", itemStatus);
+            paramsMap.put("itemCreatedAt", itemCreatedAt);
+        }
+
 
         if (hasSeeAllSupplierPermission != null && !hasSeeAllSupplierPermission) {
             List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
@@ -64,7 +85,7 @@ public class OrdersCondition {
                 supplierIds.add(s.id);
             }
             if (supplierIds != null && supplierIds.size() > 0) {
-                sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId in (:supplierIds))");
+                sql.append(" and o.id in (select oi.order.id from o.orderItems oi where oi.goods.supplierId in (:supplierIds))");
                 paramsMap.put("supplierIds", supplierIds);
             } else {
                 sql.append(" and 1=2");
@@ -152,6 +173,12 @@ public class OrdersCondition {
                 sql.append(" and o.userId = :user");
                 paramsMap.put("user", resaler.id);
             }
+        }
+
+        //按物流单号检索
+        if (QueryType.EXPRESS_NUMBER.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
+            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.shippingInfo.expressNumber = :expressNumber)");
+            paramsMap.put("expressNumber", searchItems);
         }
 
         if (StringUtils.isNotBlank(outerOrderId)) {

@@ -6,11 +6,9 @@ import factory.ModelFactory;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvProduct;
 import models.ktv.KtvRoomType;
-import models.sales.Shop;
 import util.DateHelper;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 
 /**
  * User: tanglq

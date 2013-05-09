@@ -2,14 +2,39 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.taobao.api.ApiException;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.TaobaoRequest;
+import com.taobao.api.request.ItemSkuAddRequest;
+import com.taobao.api.request.ItemSkuDeleteRequest;
+import com.taobao.api.request.ItemSkuUpdateRequest;
+import com.taobao.api.response.ItemSkuAddResponse;
+import com.taobao.api.response.ItemSkuDeleteResponse;
+import com.taobao.api.response.ItemSkuUpdateResponse;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import controllers.supplier.SupplierInjector;
-import models.ktv.*;
+import models.KtvUpdateSkuJob;
+import models.accounts.AccountType;
+import models.ktv.KtvPriceSchedule;
+import models.ktv.KtvRoomType;
+import models.oauth.OAuthToken;
+import models.oauth.WebSite;
+import models.order.OuterOrderPartner;
+import models.resale.Resaler;
+import models.sales.ResalerProduct;
 import models.sales.Shop;
 import models.supplier.Supplier;
-import org.apache.commons.collections.CollectionUtils;
+import models.taobao.KtvSkuMessageUtil;
+import net.sf.oval.internal.util.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import models.ktv.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.DateUtils;
+import play.Logger;
+import play.Play;
 import play.data.binding.As;
 import play.data.validation.Valid;
 import play.db.jpa.JPA;
@@ -17,6 +42,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import javax.persistence.Query;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -26,13 +52,18 @@ import java.util.*;
  */
 @With({SupplierRbac.class, SupplierInjector.class})
 public class KtvPriceSchedules extends Controller {
+    // 淘宝电子凭证的secret
+    public static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "21293912");
+    public static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "1781d22a1f06c4f25f1f679ae0633400");
+    public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
+
     public static void index(Long shopId, KtvRoomType roomType) {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         List<Shop> shops = Shop.findShopBySupplier(supplierId);
 
-        Shop shop  = null;
+        Shop shop = null;
         if (shopId != null) {
-            shop =  Shop.find("bySupplierIdAndId", supplierId, shopId).first();
+            shop = Shop.find("bySupplierIdAndId", supplierId, shopId).first();
         }
         if (shop == null && shops.size() > 0) {
             shop = shops.get(0);
@@ -51,21 +82,34 @@ public class KtvPriceSchedules extends Controller {
                 "select k.schedule from KtvShopPriceSchedule k where k.shop = ? and k.schedule.roomType = ? " +
                         "and k.schedule.startDay <= ? and k.schedule.endDay >= ?",
                 shop, roomType, endDay, startDay).fetch();
-
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (KtvPriceSchedule schedule : priceSchedules) {
+            Map<String, Object> o = new HashMap<>();
+            o.put("startDay", schedule.startDay);
+            o.put("endDay", schedule.endDay);
+            o.put("duration", schedule.product.duration);
+            o.put("startTimes", schedule.startTimes);
+            o.put("roomType", schedule.roomType);
+            o.put("dayOfWeeks", schedule.dayOfWeeks);
+            o.put("price", schedule.price);
+            o.put("id", schedule.getId());
+            result.add(o);
+        }
 
 
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-        renderJSON(gson.toJson(priceSchedules));
+        renderJSON(gson.toJson(result));
 
     }
 
-    public static void showAdd(){
+    public static void showAdd() {
         Supplier supplier = SupplierRbac.currentUser().supplier;
         List<Shop> shops = Shop.findShopBySupplier(supplier.id);
-        render(shops);
+        List<KtvProduct> ktvProductList = KtvProduct.find("supplier=?", supplier).fetch();
+        render(shops, ktvProductList);
     }
 
-    public static void create(KtvPriceSchedule priceSchedule, Set<Integer> useWeekDays ) {
+    public static void create(KtvPriceSchedule priceStrategy, Set<Integer> useWeekDays) {
         Map<Shop, Integer> shopCountMap = new HashMap<>();
 
         //组装门店和门店的包厢数量
@@ -75,7 +119,7 @@ public class KtvPriceSchedules extends Controller {
             if (key.startsWith("shop-")) {
                 String shopIdStr = key.substring(5);
                 String shopCount = param.getValue();
-                if ( NumberUtils.isDigits(shopIdStr) && NumberUtils.isDigits(shopCount)){
+                if (NumberUtils.isDigits(shopIdStr) && NumberUtils.isDigits(shopCount)) {
                     Long shopId = Long.parseLong(shopIdStr);
                     Shop shop = Shop.findById(shopId);
                     if (shop != null) {
@@ -84,10 +128,11 @@ public class KtvPriceSchedules extends Controller {
                 }
             }
         }
-        Set<Integer> startTimes = priceSchedule.getStartTimesAsSet();
+        Set<Integer> startTimes = priceStrategy.getStartTimesAsSet();
         //检测参数合法性
-        String error = validStrategy(priceSchedule.product.duration, priceSchedule.startDay, priceSchedule.endDay,
-                priceSchedule.roomType, shopCountMap.keySet(), useWeekDays, startTimes);
+        String error = validStrategy(priceStrategy.product.duration, priceStrategy.startDay, priceStrategy.endDay,
+                priceStrategy.roomType, shopCountMap.keySet(), useWeekDays, startTimes);
+
 
         if (error != null) {
             error(error);
@@ -95,30 +140,39 @@ public class KtvPriceSchedules extends Controller {
 
         //时间碰撞检测
         Map<String, Object> collisions = collisionDetection(
-                priceSchedule.product.duration, priceSchedule.startDay, priceSchedule.endDay,
-                priceSchedule.roomType, shopCountMap.keySet(), useWeekDays, startTimes);
+                priceStrategy.product.duration, priceStrategy.startDay, priceStrategy.endDay,
+                priceStrategy.roomType, shopCountMap.keySet(), useWeekDays, startTimes);
         if (collisions != null) {
             error("价格策略有冲突，请重新选择");
         }
 
         //保存策略
-        priceSchedule.dayOfWeeks = StringUtils.join(useWeekDays, ",");
-        priceSchedule.save();
+        priceStrategy.dayOfWeeks = StringUtils.join(useWeekDays, ",");
+        priceStrategy.save();
 
         //保存门店策略
         for (Map.Entry<Shop, Integer> entry : shopCountMap.entrySet()) {
             KtvShopPriceSchedule strategy = new KtvShopPriceSchedule();
             strategy.shop = entry.getKey();
             strategy.roomCount = entry.getValue();
-            strategy.schedule = priceSchedule;
+            strategy.schedule = priceStrategy;
             strategy.save();
+
         }
+        KtvSkuMessageUtil.send(priceStrategy.id);
 
-        index(shopCountMap.keySet().iterator().next().id , priceSchedule.roomType);
+        index(shopCountMap.keySet().iterator().next().id, priceStrategy.roomType);
     }
+//
+//    public static void make(long priceScheduleId) {
+////       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
+//        KtvUpdateSkuJob job = new KtvUpdateSkuJob();
+//        job.doJob();
+//    }
 
-    public static void jsonCollisionDetection( KtvPriceSchedule priceSchedule, @As(",") Set<Integer> useWeekDays,
-                              @As(",") Set<Integer> startTimes, @As(",") Set<Long> shopIds){
+
+    public static void jsonCollisionDetection(KtvPriceSchedule priceStrategy, @As(",") Set<Integer> useWeekDays,
+                                              @As(",") Set<Integer> startTimes, @As(",") Set<Long> shopIds) {
         //构建商店列表
         Set<Shop> shops = new HashSet<>();
         for (Long shopId : shopIds) {
@@ -129,8 +183,8 @@ public class KtvPriceSchedules extends Controller {
         }
 
         //检测参数合法性
-        String error = validStrategy(priceSchedule.product.duration, priceSchedule.startDay, priceSchedule.endDay,
-                priceSchedule.roomType, shops, useWeekDays, startTimes);
+        String error = validStrategy(priceStrategy.product.duration, priceStrategy.startDay, priceStrategy.endDay,
+                priceStrategy.roomType, shops, useWeekDays, startTimes);
 
         if (error != null) {
             renderJSON("{\"error\":\"" + error + "\"}");
@@ -138,15 +192,15 @@ public class KtvPriceSchedules extends Controller {
 
         //时间碰撞检测
         Map<String, Object> collisions = collisionDetection(
-                priceSchedule.product.duration, priceSchedule.startDay, priceSchedule.endDay,
-                priceSchedule.roomType, shops, useWeekDays, startTimes);
+                priceStrategy.product.duration, priceStrategy.startDay, priceStrategy.endDay,
+                priceStrategy.roomType, shops, useWeekDays, startTimes);
         if (collisions != null) {
-            Shop shop = (Shop)collisions.get("shop");
-            List<Integer> weekDays = (ArrayList<Integer>)collisions.get("weekdays");
+            Shop shop = (Shop) collisions.get("shop");
+            List<Integer> weekDays = (ArrayList<Integer>) collisions.get("weekdays");
             Integer startTime = (Integer) collisions.get("startTime");
-            renderJSON("{\"shopName\":\""+ shop.name+"\"," +
-                    "\"weekDays\":\"" + StringUtils.join(weekDays, ",")+"\"," +
-                    "\"startTime\":\"" + startTime+"\"}");
+            renderJSON("{\"shopName\":\"" + shop.name + "\"," +
+                    "\"weekDays\":\"" + StringUtils.join(weekDays, ",") + "\"," +
+                    "\"startTime\":\"" + startTime + "\"}");
         }
         renderJSON("{\"isOk\":true}");
     }
@@ -154,20 +208,39 @@ public class KtvPriceSchedules extends Controller {
     private static String validStrategy(
             int duration, Date startDay, Date endDay, KtvRoomType roomType,
             Set<Shop> shops, Set<Integer> useWeekDaysSet, Set<Integer> startTimesSet) {
-        if (duration <= 0 || duration > 6) { return "无效的欢唱时长"; }
-        if (startDay == null) { return "无效的起始日期"; }
-        if (endDay == null) {return "无效的结束日期";}
+        if (duration <= 0 || duration > 6) {
+            return "无效的欢唱时长";
+        }
+        if (startDay == null) {
+            return "无效的起始日期";
+        }
+        if (endDay == null) {
+            return "无效的结束日期";
+        }
 
         startDay = DateUtils.truncate(startDay, Calendar.DATE);
         endDay = DateUtils.truncate(endDay, Calendar.DATE);
         Date today = DateUtils.truncate(new Date(), Calendar.DATE);
-        if (startDay.before(today)){return "起始日期不能早于今日";}
-        if (startDay.after(endDay)){return "起始日期不能晚于结束日期";}
+        if (startDay.before(today)) {
+            return "起始日期不能早于今日";
+        }
+        if (startDay.after(endDay)) {
+            return "起始日期不能晚于结束日期";
+        }
 
-        if (roomType == null) {return "无效的房型";}
-        if (shops.size() == 0) {return "无效的门店列表";}
-        if (useWeekDaysSet.size() == 0) {return "未设置可使用日期";}
-        if (startTimesSet.size() == 0) {return "未设置使用时间段";}
+        if (roomType == null) {
+            return "无效的房型";
+        }
+        if (shops.size() == 0) {
+            return "无效的门店列表";
+        }
+        if (useWeekDaysSet.size() == 0) {
+            return "未设置可使用日期";
+        }
+        if (startTimesSet.size() == 0) {
+            return "未设置使用时间段";
+        }
+
 
         return null;
     }
@@ -195,10 +268,10 @@ public class KtvPriceSchedules extends Controller {
                 continue;
             }
             //判断使用的星期有没有交叉
-            List<Integer> weekDayIntersections = (ArrayList<Integer>)CollectionUtils.intersection(
-                    shopStrategy.schedule.getDayOfWeeksAsSet(), useWeekDaysSet );
+            List<Integer> weekDayIntersections = (ArrayList<Integer>) CollectionUtils.intersection(
+                    shopStrategy.schedule.getDayOfWeeksAsSet(), useWeekDaysSet);
             //如果所选的星期都没有交叉，那将其假如到安全列表后直接跳过
-            if( weekDayIntersections.size() == 0){
+            if (weekDayIntersections.size() == 0) {
                 okStrategies.add(shopStrategy.schedule.id);
                 continue;
             }
@@ -218,7 +291,6 @@ public class KtvPriceSchedules extends Controller {
         }
         return null;
     }
-
 
     public static void showEdit(Long id) {
     }

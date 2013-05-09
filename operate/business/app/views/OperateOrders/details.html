@@ -8,6 +8,14 @@
         $("#sendForm").attr("action", "/orders/" + id + "/send?x-http-method-override=PUT");
         $('#sendModal').modal('show');
     }
+    function updateExpress(id, expressCompanyId, expressNumber) {
+        console.log("inii")
+        $("#update_express_form").attr("action", "/orders/" + id + "/express?x-http-method-override=PUT");
+        $('#editExpressModal').modal('show');
+        $("#shippingInfo_expressCompany_id").val(expressCompanyId);
+        $("#shippingInfo_expressNumber").val(expressNumber);
+    }
+
     function prepareReturn(id, goodsName, count) {
         $("#entry_orderItems_id").val(id);
         $("#goodsName").html(goodsName);
@@ -129,6 +137,12 @@
             });
         #{/else}
     });
+
+    $("#sure").click(function () {
+        console.log("sure")
+        $("#update_express_form").submit();
+    });
+
 </script>
 #{/set}
 #{set 'moreStyles'}
@@ -241,10 +255,10 @@
             <td>${orderItem.amount?.formatCurrency('CNY')}</td>
         %{returnEntry = orderItem.getReturnEntry()}%
             <td>&{'order.'+orderItem.status} #{if orderItem.returnStatus!=null}<a id="returnEntry_${orderItem.id}"
-                                                                               href="#"
-                                                                               rel="popover"
-                                                                               data-html="true"
-                                                                               data-content="退货数量: ${returnEntry?.returnedCount}件<br/>
+                                                                                  href="#"
+                                                                                  rel="popover"
+                                                                                  data-html="true"
+                                                                                  data-content="退货数量: ${returnEntry?.returnedCount}件<br/>
                                                  退货原因: ${returnEntry?.reason}<br/>
                                                  制&nbsp;&nbsp;单&nbsp;&nbsp;人: ${returnEntry?.createdBy}<br/>
                                                  创建时间: ${returnEntry?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}<br/>
@@ -252,17 +266,17 @@
                                                  收&nbsp;&nbsp;货&nbsp;&nbsp;人: ${returnEntry?.returnedBy}<br/>
                                                  退回时间: ${returnEntry?.returnedAt?.format("yyyy-MM-dd HH:mm:ss")}
                                                  #{/if}"
-                                                                               data-placement="bottom"
-                                                                               data-original-title="退货单"
-                                                                               data-trigger="hover"
-                                                                               onmouseover="$('#returnEntry_${orderItem.id}').popover('show');">(${returnEntry.returnedCount}
+                                                                                  data-placement="bottom"
+                                                                                  data-original-title="退货单"
+                                                                                  data-trigger="hover"
+                                                                                  onmouseover="$('#returnEntry_${orderItem.id}').popover('show');">(${returnEntry.returnedCount}
                 件 &{'entry.'+
                 orderItem.returnStatus})</a>#{/if}</td>
             <td>#{if orderItem.goods.materialType == models.sales.MaterialType.REAL && returnEntry == null}
                 #{if orders.status == models.order.OrderStatus.PAID}
                     <a
-                        href="javascript:void(0);"
-                        onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}')">退货</a>#{/if}#{else}
+                            href="javascript:void(0);"
+                            onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}')">退货</a>#{/if}#{else}
                     <a
                             href="javascript:void(0);"
                             onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}')">申请退货</a>
@@ -291,7 +305,13 @@
 </ul>
 #{if orders.containsRealGoods()}
 <ul class="nav">
-    <li class="active"><a href="#"> 收货信息</a></li>
+    <li class="active">
+        <span><a href="#"> 收货信息</a>
+        <a class="btn" href="#" id="linkUpdateExpress_${orderItems?.get(0)?.shippingInfo?.id}"
+           onclick="updateExpress('${orderItems?.get(0)?.shippingInfo?.id}','${shippingInfo?.expressCompany?.id}','${shippingInfo?.expressNumber}')
+                   ">修改物流信息</a>
+            </span>
+    </li>
 %{ outerOrder = models.order.OuterOrder.getOuterOrder(orders) }%
 
     <table class="table table-bordered table-striped">
@@ -312,7 +332,7 @@
                 #{if outerOrder!=null}
                 ${orderItems?.get(0)?.shippingInfo?.address}
                     &nbsp; &nbsp; &nbsp; &nbsp;
-                    邮编: ${orderItems?.get(0)?.shippingInfo.zipCode}
+                    邮编: ${orderItems?.get(0)?.shippingInfo?.zipCode}
                 #{/if}
                 #{else }
                 ${orders?.receiverAddress} &nbsp; &nbsp; &nbsp; &nbsp;邮编:${orders?.postcode}
@@ -474,7 +494,34 @@
         <a href="#" id="return" class="btn btn-primary">退货</a>
         <a href="#" class="btn" data-dismiss="modal">取消</a>
     </div>
+
+
 </div>
+
+<div class="modal" id="editExpressModal" style="display: none;">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+
+        <h3>修改物流信息</h3>
+    </div>
+    <div class="modal-body">
+    #{form @OperateOrders.index(), id:"update_express_form", name:"update_express_form",class:"form-horizontal",method:"PUT"}
+          #{layout_operate.selectField name:'shippingInfo.expressCompany.id', value:goods?.brand?.id, error:'shippingInfo.expressCompany', required:true}
+        #{list items:expressList, as:'express'}
+            #{option express?.id}${express?.name}#{/option}
+        #{/list}
+    #{/layout_operate.selectField}
+
+    #{layout_operate.textField name:'shippingInfo.expressNumber', value:'',required:true /}
+    #{/form}
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="sure" class="btn btn-primary">确定</a>
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+    </div>
+</div>
+
+
 
 
 

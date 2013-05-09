@@ -1,6 +1,7 @@
 package models.admin;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.sales.Shop;
@@ -134,7 +135,7 @@ public class SupplierUser extends Model {
      * 用于标识一个用户，在关联微信，微博时使用。
      * 注意这个值会是一次性的使用，在绑定成功后会消失.
      */
-    @Column(name="idCode")
+    @Column(name = "idCode", unique = true)
     public String idCode;
 
     /**
@@ -438,5 +439,25 @@ public class SupplierUser extends Model {
             return AccountUtil.getSupplierAccount(supplier.id);
         }
         return null;
+    }
+
+    /**
+     * 生成商户操作员唯一的识别码.
+     */
+    public static String generateAvailableIdCode() {
+        String randomNumber;
+        do {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                // do nothing.
+            }
+            randomNumber = RandomNumberUtil.generateSerialNumber(6);
+        } while (isNotUniqueIdCode(randomNumber));
+        return randomNumber;
+    }
+
+    private static boolean isNotUniqueIdCode(String randomNumber) {
+        return SupplierUser.find("from SupplierUser where idCode=?", randomNumber).fetch().size() > 0;
     }
 }

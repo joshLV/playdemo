@@ -1,12 +1,17 @@
 package controllers.resale;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import controllers.OperateRbac;
 import models.operator.OperateUser;
 import models.order.OuterOrderPartner;
-import models.sales.*;
+import models.resale.Resaler;
+import models.sales.Goods;
+import models.sales.ResalerProduct;
+import models.sales.ResalerProductJournal;
+import models.sales.ResalerProductJournalType;
+import models.sales.ResalerProductStatus;
+import models.sales.Shop;
 import models.supplier.Supplier;
 import models.wuba.WubaResponse;
 import models.wuba.WubaUtil;
@@ -16,7 +21,11 @@ import play.data.binding.As;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author likang
@@ -53,7 +62,8 @@ public class WubaGroupBuyProducts extends Controller {
         Map<String, String> groupbuyInfoParams = params.allSimple();
         groupbuyInfoParams.remove("body");
         groupbuyInfoParams.remove("firstCity");
-        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.WB, goods);
+        Resaler wubaResaler = Resaler.findApprovedByLoginName(Resaler.WUBA_LOGIN_NAME);
+        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.WB, wubaResaler, goods);
         groupbuyInfoParams.put("groupbuyId", String.valueOf(product.goodsLinkId));
 
         Map<String, Object> prodModelJson = new HashMap<>();

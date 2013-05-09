@@ -481,9 +481,13 @@ public class SalesReport implements Comparable<SalesReport> {
                 totalCommission = totalCommission.add(refundResalerItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.refundCommissionAmount);
                 item.refundCommissionAmount = totalCommission;
                 item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
+                        .add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost)
+                        .add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost)
+                        .add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
             }
+
         }
 
         List resultList = new ArrayList();
@@ -588,7 +592,7 @@ public class SalesReport implements Comparable<SalesReport> {
         //refund from resaler
         sql = "select new models.SalesReport(ou,sum(r),sum(e.salePrice)*b.commissionRatio/100,b.commissionRatio) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o,Supplier s,OperateUser ou";
-        groupBy = " group by s.salesId";
+        groupBy = " group by s.salesId,b";
 
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRefundResalerOfPeopleEffect() + groupBy + " order by sum(e.salePrice) desc");
@@ -662,7 +666,7 @@ public class SalesReport implements Comparable<SalesReport> {
             }
         }
 
-
+        totalCommission = BigDecimal.ZERO;
         for (SalesReport cheatedResalerItem : cheatedOrderResalerResultList) {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(cheatedResalerItem));
             if (item == null) {
@@ -676,8 +680,7 @@ public class SalesReport implements Comparable<SalesReport> {
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
             }
         }
-
-
+        totalCommission = BigDecimal.ZERO;
         for (SalesReport refundResalerItem : refundResalerResultList) {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(refundResalerItem));
             if (item == null) {
@@ -686,12 +689,15 @@ public class SalesReport implements Comparable<SalesReport> {
                 totalCommission = item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount;
                 totalCommission = totalCommission.add(refundResalerItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.refundCommissionAmount);
                 item.refundCommissionAmount = totalCommission;
+
                 item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
+                        .add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost)
+                        .add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost)
+                        .add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
             }
         }
-
         List resultList = new ArrayList();
         for (OperateUser key : map.keySet()) {
             resultList.add(map.get(key));
@@ -701,24 +707,24 @@ public class SalesReport implements Comparable<SalesReport> {
     }
 
 
-    public static List<SalesReport> queryNoContributionPeopleEffectData(SalesReportCondition condition,Boolean hasSeeReportProfitRight) {
+    public static List<SalesReport> queryNoContributionPeopleEffectData(SalesReportCondition condition, Boolean hasSeeReportProfitRight) {
 
         String sql = "select new models.SalesReport(o)" +
                 " from Goods g,Supplier s,OperateUser o" +
                 "  where g.supplierId =s.id and s.deleted=0 and s.salesId=o.id and g.isLottery=false ";
 
-         Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         if (StringUtils.isNotBlank(condition.jobNumber)) {
-            sql=sql.concat("and o.jobNumber=:jobNumber");
-            params.put("jobNumber",condition.jobNumber);
+            sql = sql.concat("and o.jobNumber=:jobNumber");
+            params.put("jobNumber", condition.jobNumber);
         }
         if (!hasSeeReportProfitRight) {
-            sql=sql.concat("and o.id = :salesId");
-            params.put("salesId",condition.salesId);
+            sql = sql.concat("and o.id = :salesId");
+            params.put("salesId", condition.salesId);
         }
         if (StringUtils.isNotBlank(condition.userName)) {
-            sql=sql.concat("and o.userName like :userName" );
-            params.put("userName","%"+condition.userName.trim()+"%");
+            sql = sql.concat("and o.userName like :userName");
+            params.put("userName", "%" + condition.userName.trim() + "%");
         }
 
 

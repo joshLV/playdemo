@@ -222,6 +222,7 @@ public class OperationReports extends Controller {
     @ActiveNavigation("consumer_flow_reports")
     public static void showConsumerFlowReport(ConsumerFlowReportCondition condition, String desc) {
         int pageNumber = getPageNumber();
+
         if (condition == null) {
             condition = new ConsumerFlowReportCondition();
         }
