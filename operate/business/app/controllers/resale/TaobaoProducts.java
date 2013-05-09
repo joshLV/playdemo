@@ -47,14 +47,14 @@ public class TaobaoProducts extends Controller {
             "http://container.api.taobao.com/container?appkey=21293912&encode=utf-8");
 
     @ActiveNavigation("resale_partner_product")
-    public static void showUpload(Long goodsId) {
+    public static void showUpload(Long goodsId, String resalerLoginName) {
         Goods goods = Goods.findById(goodsId);
         if (goods == null) {
             notFound();
         }
         //ktv商户直接展示ktv上传页面
         if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
-            render("resale/TaobaoProducts/showKtvUpload.html", goods);
+            render("resale/TaobaoProducts/showKtvUpload.html", goods, resalerLoginName);
         }
         render(goods);
     }
@@ -63,13 +63,18 @@ public class TaobaoProducts extends Controller {
     public static void upload(Long num, Long goodsId, BigDecimal price, BigDecimal faceValue, String type,
                               String stuffStatus, String title, String desc, String locationState,
                               String locationCity, Long cid, String props, String approveStatus,
-                              String[] sellerCids) {
+                              String[] sellerCids, String resalerLoginName) {
         OperateUser operateUser = OperateRbac.currentUser();
         Goods goods = Goods.findById(goodsId);
         if (goods == null) {
             notFound();
         }
+
+        //默认是淘宝，如果是从其他ktv商户过来，则根据resalerLoginName取得相应的taobaoResaler
         Resaler taobaoResaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+        if (StringUtils.isNotBlank(resalerLoginName)) {
+            taobaoResaler = Resaler.findApprovedByLoginName(Resaler.YLD_LOGIN_NAME);
+        }
         ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.TB, taobaoResaler, goods);
 
         ItemAddRequest addRequest = new ItemAddRequest();
@@ -93,9 +98,7 @@ public class TaobaoProducts extends Controller {
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
 
         //找到淘宝的token
-        Resaler resaler = Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME);
-        OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
-
+        OAuthToken token = OAuthToken.getOAuthToken(taobaoResaler.id, AccountType.RESALER, WebSite.TAOBAO);
 
         try {
             ItemAddResponse addResponse = taobaoClient.execute(addRequest, token.accessToken);
