@@ -3,7 +3,6 @@ package models.accounts;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,7 +29,6 @@ public class SupplierWithdrawCondition implements Serializable {
     public String getFilterPurchaseCost() {
         StringBuilder filter = new StringBuilder(" where a.tradeType = :tradeType ");
         params.put("tradeType", TradeType.PURCHASE_COSTING);
-        System.out.println(account + "===condition-account>>");
 
         if (account != null) {
             filter.append(" and account = :account");
