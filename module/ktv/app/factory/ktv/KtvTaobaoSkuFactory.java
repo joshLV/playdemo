@@ -26,6 +26,11 @@ public class KtvTaobaoSkuFactory extends ModelFactory<KtvTaobaoSku> {
         return sku;
     }
 
+    @Factory(name = "update")
+    public KtvTaobaoSku update(KtvTaobaoSku sku) {
+        sku.price=BigDecimal.ONE;
+        return sku;
+    }
     @Factory(name = "date")
     public KtvTaobaoSku otherDate(KtvTaobaoSku sku) {
         sku.setDate("5月11");
