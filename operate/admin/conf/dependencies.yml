@@ -9,7 +9,7 @@ require:
     - play1 -> app-version 0.1
     - play1 -> rabbitmq 0.4
     - play1 -> factory-boy 1.0
-    - play1 -> play-useragentcheck 0.5.1
+    - play1 -> play-useragentcheck 0.5.2
     - layout_operate -> layout_operate
     - paginate_ext -> paginate_ext
     - operator -> operator
