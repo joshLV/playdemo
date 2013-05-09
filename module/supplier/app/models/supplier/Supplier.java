@@ -523,7 +523,7 @@ public class Supplier extends Model {
     }
 
     public static List<Supplier> findUnDeletedAndKtvSupplier() {
-        return find("deleted=? and id in (select supplier.id from SupplierProperty where name=? and value=? )  order by createdAt DESC", DeletedStatus.UN_DELETED, "ktvSupplier", "1").fetch();
+        return find("deleted=? and id in (select supplier.id from SupplierProperty where name=? and value=? )  order by createdAt DESC", DeletedStatus.UN_DELETED, KTV_SUPPLIER, "1").fetch();
     }
 
     public static void freeze(long id) {

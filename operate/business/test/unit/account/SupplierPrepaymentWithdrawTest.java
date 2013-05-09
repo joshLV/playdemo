@@ -22,6 +22,7 @@ import models.sales.Goods;
 import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Test;
+import play.Logger;
 import play.test.UnitTest;
 
 import java.math.BigDecimal;
@@ -145,6 +146,7 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
 
         结算预付款(prepayment, new BigDecimal(100), beforeDays(2));
         assertBigDecimalEquals(new BigDecimal(0), 现金结算款(beforeDays(2)));
+        Logger.info("=========================================== test 149");
         assertBigDecimalEquals(new BigDecimal(0), 账户余额());
         assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(1)));
         assertBigDecimalEquals(new BigDecimal(0), 预付款余额());
@@ -285,23 +287,31 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
 
 
     private BigDecimal 账户余额() {
-        return AccountUtil.getSupplierAccount(supplier.id).amount;
+        BigDecimal amount = AccountUtil.getSupplierAccount(supplier.id).amount;
+        Logger.info("账户余额=" + amount);
+        return amount;
     }
 
     private BigDecimal 可提现金额(Date date) {
         Prepayment lastPrepayment = Prepayment.getLastUnclearedPrepayments(supplier.id);
-
-        return Supplier.getWithdrawAmount(AccountUtil.getSupplierAccount(supplier.id), lastPrepayment, 可结算余额(date), date);
+        BigDecimal result = Supplier.getWithdrawAmount(AccountUtil.getSupplierAccount(supplier.id), lastPrepayment,
+                可结算余额(date), date);
+        Logger.info("可提现金额(" + date + ")=" + result + ", lastPrepayment=" + lastPrepayment);
+        return result;
     }
 
     private BigDecimal 可结算余额(Date date) {
         // T+1，返回前一天的账户余额
-        return supplierAccount.getWithdrawAmount(DateUtil.getBeginOfDay(date));
+        BigDecimal withdrawAmount = supplierAccount.getWithdrawAmount(DateUtil.getBeginOfDay(date));
+        Logger.info("可结算余额(" + date + ")=" + withdrawAmount);
+        return withdrawAmount;
     }
 
     private BigDecimal 预付款余额() {
         Prepayment lastPrepayment = Prepayment.getLastUnclearedPrepayments(supplier.id);
-        return lastPrepayment == null ? BigDecimal.ZERO : lastPrepayment.getBalance();
+        BigDecimal result = (lastPrepayment == null ? BigDecimal.ZERO : lastPrepayment.getBalance());
+        Logger.info("预付款余额=" + result);
+        return  result;
     }
 
     private BigDecimal 现金结算款(Date date) {

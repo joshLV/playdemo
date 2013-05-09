@@ -111,12 +111,6 @@ public class Account extends Model {
         return vostroAmount.subtract(uncashAmount);
     }
 
-    public BigDecimal getWithdrawnAmount(Date date) {
-        BigDecimal withdrawnAmount = AccountSequence.getWithdrawnAmount(this, date);
-        Logger.info("Account.getWithdrawnAmount withdrawnAmount=" + withdrawnAmount);
-        return withdrawnAmount;
-    }
-
     /**
      * 账户可提现余额
      *
@@ -127,14 +121,11 @@ public class Account extends Model {
     public BigDecimal getSupplierWithdrawAmount(BigDecimal prepaymentBalance, Date date) {
         //本周期券消费金额  本周期可以提现的金额
         BigDecimal withdrawAmount = getWithdrawAmount(date);
-        //本周期提现金额   本周期已经提出的提现需求
-        BigDecimal withdrawnAmount = BigDecimal.ZERO;
-        withdrawnAmount = getWithdrawnAmount(date);
         if (prepaymentBalance.compareTo(withdrawAmount) > 0) {
             return BigDecimal.ZERO;
         }
         //剩余未提现金额
-        return withdrawAmount.add(withdrawnAmount).subtract(prepaymentBalance);
+        return withdrawAmount.subtract(prepaymentBalance);
     }
 
     public boolean isCreditable() {

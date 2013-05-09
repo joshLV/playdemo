@@ -211,30 +211,34 @@ public class AccountSequence extends Model {
         return amount != null ? amount.abs() : BigDecimal.ZERO;
     }
 
+    /**
+     * 查询在指定日期前没有结算的account账户进账的钱，减去已经提现的钱总金额。
+     * @param account
+     * @param toDate
+     * @return
+     */
     public static BigDecimal getVostroAmountTo(Account account, Date toDate) {
-        //and settlementStatus=?    , SettlementStatus.UNCLEARED
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
-                " account=? and sequenceFlag=?  and createdAt<?",
-                account, AccountSequenceFlag.VOSTRO, toDate).first();
+                " account=? and sequenceFlag=? and settlementStatus=? and createdAt<?",
+                account, AccountSequenceFlag.VOSTRO, SettlementStatus.UNCLEARED, toDate).first();
+
         amount = (amount != null) ? amount : BigDecimal.ZERO;
         Logger.info("getVostroAmountTo: amount:" + amount + ", toDate=" + toDate);
-        BigDecimal refundAmount = getRefundAmountTo(account, toDate);
-        Logger.info("getVostroAmountTo: refundAmount:" + refundAmount);
+        BigDecimal refundAmount = getWithdrawAmountTo(account, toDate);
+        Logger.info("getVostroAmountTo: refundAmount:" + refundAmount);  // 提现金额，查出应为负数，所以下面用add
         return amount.add(refundAmount);
     }
 
-    private static BigDecimal getRefundAmountTo(Account account, Date toDate) {
+    /**
+     * 查询已经提钱但未结算的金额
+     * @param account
+     * @param toDate
+     * @return
+     */
+    private static BigDecimal getWithdrawAmountTo(Account account, Date toDate) {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
                 " account=? and tradeType<>? and sequenceFlag=? and settlementStatus=? and createdAt<?",
                 account, TradeType.WITHDRAW, AccountSequenceFlag.NOSTRO, SettlementStatus.UNCLEARED, toDate).first();
-        return amount != null ? amount : BigDecimal.ZERO;
-    }
-
-    public static BigDecimal getWithdrawnAmount(Account account, Date toDate) {
-        //and settlementStatus=?     , SettlementStatus.CLEARED
-        BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
-                " account=?  and tradeType=? and createdAt<?",
-                account, TradeType.WITHDRAW, toDate).first();
         return amount != null ? amount : BigDecimal.ZERO;
     }
 
