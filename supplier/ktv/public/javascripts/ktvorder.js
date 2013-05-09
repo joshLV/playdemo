@@ -34,24 +34,36 @@ var KTVOrder = (function  () {
         });
 
         ktv.rooms =  {};
-        /* ktv.rooms like this:
+         // ktv.rooms like this:
+         /*
         {
             "mini":{
-                "wrapperDiv":"<div>",
-                "rooms":[
-                    {
+                "div":"<div>",
+                "durations":{
+                    "3":{
                         "div":"<div>",
-                        "holders":[8,11]
-                    },
-                ]
+                        "rooms":[
+                            {
+                                "div":"<div>",
+                                "holders":[
+                                    {
+                                        "startTime":8,
+                                        "type": "ordered"
+                                    }
+                                ]
+                            },
+                        ]
+                    }
+                }
             }
         }
         */
+        
         for (var i = 0; i < roomTypes.length; i++) {
             var roomType = roomTypes[i];
             ktv.rooms[roomType] = {
-                "wrapperDiv": $("#"+ktv.wrapperId + " .room-"+roomType).first(),
-                "rooms":[]
+                "div": $("#"+ktv.wrapperId + " .room-"+roomType).first(),
+                "durations":{}
             };
         };
 
@@ -174,22 +186,52 @@ var KTVOrder = (function  () {
     }
 
     /**
-        找到一个可以依靠的room。在所有指定roomType的rooms中，从上到下找到第一个avaliable的
+        人生苦短，找到一个可以依靠的room。在所有指定roomType的rooms中，从上到下找到第一个avaliable的
     **/
-    proto.findAvaliableRoom = function(roomType, startTime, duration) {
+    proto.findAvaliableRoom = function(roomType, startTime, duration, replaceHolder) {
         var ktv = this; 
         var rt = ktv.rooms[roomType];
+        var dr = rt.durations[duration];
+        if (!dr) {
+            dr = {
+                "div":$("<div>",{duration:duration}),
+                "rooms":[]
+            }
+            rt.div.append(dr.div);
+            rt.durations[duration] = dr;
+        };
         var room;
         //遍历该类型的rooms
-        for (var i = 0; i < rt.rooms.length; i++) {
-            var r = rt.rooms[i];
+        for (var i = 0; i < dr.rooms.length; i++) {
+            var r = dr.rooms[i];
             var conflict = false;
+
+            for (var j = 0; j < r.holders.length; j++) {
+                Things[i]
+            };
+
+
             for (var j = 0; j < duration; j++) {
-                if ($.inArray(startTime+j, r.holders)) {
-                    conflict = true;
+                for (var m = 0; m < r.holders.length; m++) {
+                    var holder = r.holders[m];
+                    if ((startTime+j) == holder.startTime) {
+                        conflict = true;
+                        break;
+                    };
+                };
+                if (conflict) {
                     break;
                 };
             };
+
+/*
+            if (conflict && holderIgnore) {
+                if (holderIgnore == r.type) {
+
+                };
+            };
+            */
+
             if (!conflict) {
                 room = r;
                 break;
@@ -199,115 +241,104 @@ var KTVOrder = (function  () {
         if (!room) {
             room = {
                 "holders":[],
-                "div" : rt.wrapperDiv.append(
-                    $("<div/>", {
-                        "class": "wk-order-room",
-                        // "data-room-id": room.id,
-                        "data-room-type": roomType,
-                        html: $("<div/>", {
-                            "class": "wk-pri",
-                            text: roomTypeNames[roomType]
-                        })
+                "div" : $("<div/>", {
+                    "class": "wk-order-room",
+                    // "data-room-id": room.id,
+                    "data-room-type": roomType,
+                    html: $("<div/>", {
+                        "class": "wk-pri",
+                        text: roomTypeNames[roomType]
                     })
-                )
+                })
             };
-            rt.rooms.push(room);
+            dr.div.append(room.div);
+            dr.rooms.push(room);
         };
         return room;
     }
 
     proto.dataLoaded = function (data) {
-        //你好
         var ktv = this;
         //清空所有房间大类下面的子房间，及相关数据
         for (var i = 0; i < roomTypes.length; i++) {
             var roomType = roomTypes[i];
-            ktv.rooms[roomType]["rooms"] = [];
+            ktv.rooms[roomType]["div"].empty();
+            ktv.rooms[roomType]["durations"] = {};
         };
 
-        $("#" + ktv.summaryId).empty();
+        if (!ktv.viewMode) {
+            $("#" + ktv.summaryId).empty();
+        };
         ktv.selected = [];
 
-        //创建房间
-        /*
-        for (i = 0; i < data.rooms.length; i++) {
-            var room = data.rooms[i];
-            ktv.rooms[room.id] = [];
-            roomsEle.append(
-                $("<div/>", {
-                    "class": "wk-order-room",
-                    "data-room-id": room.id,
-                    "data-room-type": room.type,
-                    html: $("<div/>", {
-                        "class": "wk-pri",
-                        text: room.name                       
-                    })
-                })
-            );
-        }
-        */
-        //先画上已预订的格子
+        //画上有价格的格子
         for (i = 0; i < data.schedules.length; i++) {
             var schedule = data.schedules[i];
-            var startTimes = schedule.startTimes.split(",");
-
-            for (var k = 0; k < startTimes.length; k++) {
-                var startTime = Number(startTimes[k]);
-                for (var j = 0; j < schedule.roomCount; j++) {
-                    var room = ktv.findAvaliableRoom(schedule.roomType.toLowerCase(), startTime, schedule.duration);
-                    room["div"].append(
-                        $("<div/>", {
-                            "class": "wk-order-room-cell wk-order-room-reserved",
-                            css:{
-                                "top":"2px",
-                                "left": (60 + 4 + (startTime-8)*44) + "px"
-                            }
-                        })
-                    );
-                    room["holders"].push(startTime);
-                };
-            };
-
-
-        }
-
-        //画上有价格的格子
-        for (i = 0; i < data.prices.length; i++) {
-            var price = data.prices[i];
-            var weekdays = price.weekday.split(",");
-            if ($.inArray(dayStartsWithMonday(ktv.day.getDay()).toString(), weekdays) < 0) {
+            var dayOfWeeks = schedule.dayOfWeeks.split(",");
+            if ($.inArray(dayStartsWithMonday(ktv.day.getDay()).toString(), dayOfWeeks) < 0) {
                 continue;//星期不符
             }
-            var starTime = Number(price.startTime.substring(0, price.startTime.indexOf(":")));
-            var endTime = Number(price.endTime.substring(0, price.endTime.indexOf(":")));
+            var startTimes = schedule.startTimes.split(",");
 
-            for (var j = starTime; j < endTime; j++) {
-                $("#" + ktv.wrapperId + " [data-room-type='" + price.roomType + "']").each(function(){
-                    var ele = $(this);
-                    var roomId = Number(ele.attr("data-room-id"));
-                    if ($.inArray(j, ktv.rooms[roomId]) >= 0) {
-                        return;//已经被预订
-                    }
-                    ktv.rooms[roomId].push(j);
+            for (var j = 0; j < startTimes.length; j++) {
+                var startTime = Number(startTimes[j]);
+                for (var k = 0; k < schedule.roomCount; k++) {
+                    var room = ktv.findAvaliableRoom(schedule.roomType.toLowerCase(), startTime, schedule.duration);
 
                     var priceCell = $("<div/>", {
                         "class": "wk-order-room-cell wk-order-room-price",
-                        "data-room-id":roomId,
-                        "data-time":(j<10 ? "0"+j : j) + ":00",
-                        "data-price": price.price,
-                        text: "￥" + price.price,
+                        // "data-room-id":roomId,
+                        "data-time":(startTime<10 ? "0"+startTime : startTime) + ":00",
+                        "data-price": schedule.price,
+                        text: "￥" + schedule.price,
                         css:{
                             "top":"2px",
-                            "left": (60 + 4 + (j-8)*44) + "px"
+                            "left": (60 + 4 + (startTime-8)*44) + "px",
+                            "width":(44*schedule.duration - 4) + "px"
                         }
                     })
                     if (!ktv.viewMode) {
                         priceCell.click(function(){togglePriceCell(ktv, $(this))});
                     };
-                    ele.append(priceCell);
+
+                    room["div"].append(priceCell);
+                    for (var m = 0; m < schedule.duration; m++) {
+                        room["holders"].push({
+                            "startTime": startTime+m,
+                            "type":"schedule"
+                        });
+                    };
+                };
+            };
+        };
+
+        //先画上已预订的格子
+        for (i = 0; i < data.orders.length; i++) {
+            var order = data.orders[i];
+            var scheduleTime = Number(order.scheduledTime);
+
+            var room = ktv.findAvaliableRoom(order.roomType.toLowerCase(), scheduleTime, order.duration);
+            room["div"].append(
+                $("<div/>", {
+                    "class": "wk-order-room-cell wk-order-room-reserved",
+                    css:{
+                        "top":"2px",
+                        "left": (60 + 4 + (scheduleTime-8)*44) + "px",
+                        "width":(44*order.duration - 4) + "px"
+                    }
+                })
+            );
+            for (var m = 0; m < order.duration; m++) {
+                room["holders"].push(scheduleTime+m);
+                room["holders"].push({
+                    "startTime": scheduleTime+m,
+                    "type":"order"
                 });
-            }
+            };
         }
+
+
+        /*
         //补上空的格子
         $("#" + ktv.wrapperId + " [data-room-type]").each(function(){
             var ele = $(this);
@@ -328,6 +359,7 @@ var KTVOrder = (function  () {
             }
 
         });
+        */
     };
     return KTVOrder;
 })();

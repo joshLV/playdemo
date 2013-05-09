@@ -20,6 +20,7 @@ public class KtvProduct extends Model {
     @ManyToOne
     @JoinColumn(name = "supplier_id")
     public Supplier supplier;
+
     public String name;//产品名称
 
     public int duration;//欢唱时长

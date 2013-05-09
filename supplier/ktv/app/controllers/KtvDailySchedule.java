@@ -46,6 +46,7 @@ public class KtvDailySchedule extends Controller {
             priceScheduleMap.put("dayOfWeeks", shopPriceSchedule.schedule.dayOfWeeks);
             priceScheduleMap.put("roomType", shopPriceSchedule.schedule.roomType);
             priceScheduleMap.put("duration", shopPriceSchedule.schedule.product.duration);
+            priceScheduleMap.put("product", shopPriceSchedule.schedule.product.id);
             priceScheduleMap.put("price", shopPriceSchedule.schedule.price);
             priceScheduleMap.put("startTimes", shopPriceSchedule.schedule.startTimes);
             priceScheduleMap.put("roomCount", shopPriceSchedule.roomCount);
@@ -58,9 +59,10 @@ public class KtvDailySchedule extends Controller {
         List<Map<String, Object>> orderInfoMaps = new ArrayList<>();
         for (KtvRoomOrderInfo orderInfo : orderInfoList) {
             Map<String, Object> o = new HashMap<>();
-            o.put("ktvRoomType", orderInfo.ktvRoomType);
+            o.put("roomType", orderInfo.ktvRoomType);
             o.put("scheduledDay", orderInfo.scheduledDay);
             o.put("scheduledTime", orderInfo.scheduledTime);
+            o.put("duration", orderInfo.duration);
             orderInfoMaps.add(o);
         }
         result.put("orders", orderInfoMaps);
