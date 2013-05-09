@@ -1,23 +1,26 @@
 package models.job.taobao;
 
+import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
-import models.taobao.KtvSkuMessage;
+import models.taobao.TaobaoCouponMessageUtil;
 import play.Logger;
 import play.Play;
 import play.jobs.Every;
-import play.jobs.Job;
- import java.util.List;
+
+import java.util.List;
 
 /**
  * @author likang
  *         Date: 12-11-29
  */
+@JobDefine(title="淘宝券生成", description="处理OuterOrder中未生成的订单，生成券并发送")
 @Every("1mn")
-public class TaobaoCouponJob extends Job{
+public class TaobaoCouponJob extends JobWithHistory {
     @Override
-    public void doJob() {
+    public void doJobWithHistory() {
         if (Play.runingInTestMode()) {
             return;
         }
@@ -28,7 +31,7 @@ public class TaobaoCouponJob extends Job{
                 OuterOrderStatus.ORDER_DONE,
                 OuterOrderStatus.RESEND_COPY).fetch();
         for (OuterOrder outerOrder : outerOrders) {
-            KtvSkuMessage.TaobaoCouponMessageUtil.send(outerOrder.id);
+            TaobaoCouponMessageUtil.send(outerOrder.id);
         }
     }
 }

@@ -7,6 +7,7 @@ import controllers.modules.website.cas.annotations.TargetOAuth;
 import models.accounts.PaymentSource;
 import models.consumer.User;
 import models.ktv.KtvRoomOrderInfo;
+import models.ktv.KtvRoomType;
 import models.order.DeliveryType;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
@@ -181,7 +182,7 @@ public class WebSinaVouchers extends Controller {
 //                    }
 //                    KtvPriceSchedule ktvPriceSchedule = KtvPriceSchedule.findPrice(scheduledDay, scheduledTime, ktvRoom.roomType);
 //                    salePrice = salePrice.add(ktvPriceSchedule.price);
-                    new KtvRoomOrderInfo(goods, orderItems, KtvRoomType.MIDDLE, scheduledDay, scheduledTime).save();
+                    new KtvRoomOrderInfo(goods, orderItems, KtvRoomType.MIDDLE, scheduledDay, Integer.parseInt(scheduledTime)).save();
                 }
 
                 //eCoupon.originalPrice=eCoupon.salePrice*(goods.originalPrice/goods.salePrice)

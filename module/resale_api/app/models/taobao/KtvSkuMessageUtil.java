@@ -1,7 +1,5 @@
 package models.taobao;
 
-import models.ktv.KtvPriceSchedule;
-import models.sales.Shop;
 import play.Play;
 import util.mq.MQPublisher;
 
@@ -21,7 +19,7 @@ public class KtvSkuMessageUtil {
     /**
      * 淘宝商品ID
      */
-    public static void send(String partnerProductId,Map<String,Object> params) {
-        MQPublisher.publish(QUEUE_NAME, new KtvSkuMessage(partnerProductId, params));
+    public static void send(Long scheduledId) {
+        MQPublisher.publish(QUEUE_NAME,scheduledId);
     }
 }

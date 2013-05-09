@@ -19,6 +19,7 @@ import models.kangou.KangouUtil;
 import models.ktv.KtvRoomOrderInfo;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
+import models.operator.Operator;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsCouponType;
@@ -46,6 +47,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Query;
@@ -203,6 +205,9 @@ public class Order extends Model {
     @Column(name = "lock_version")
     public int lockVersion;
 
+    @ManyToOne
+    public Operator operator;
+
     public String description;          //订单描述
 
     /**
@@ -302,6 +307,9 @@ public class Order extends Model {
      * @param userType
      */
     private Order(Long userId, AccountType userType) {
+        this(userId, userType, Operator.defaultOperator());
+    }
+    private Order(Long userId, AccountType userType, Operator operator) {
         // FIXME: 检查一下新浪微博钱包 是调用哪个接口
         if (userType == AccountType.CONSUMER) {
             User user = User.findById(userId);
@@ -317,6 +325,7 @@ public class Order extends Model {
             this.userId = userId;   //分销商
         }
 
+        this.operator = operator;
         this.status = OrderStatus.UNPAID;
         this.deleted = DeletedStatus.UN_DELETED;
         this.orderNumber = generateOrderNumber();
@@ -891,8 +900,6 @@ public class Order extends Model {
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
-                    System.out.println(eCoupon + "《====111=====(eCoupon:");
-
                 }
 
                 //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间

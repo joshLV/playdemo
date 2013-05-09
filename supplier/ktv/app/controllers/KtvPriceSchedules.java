@@ -2,22 +2,39 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.taobao.api.ApiException;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.TaobaoRequest;
+import com.taobao.api.request.ItemSkuAddRequest;
+import com.taobao.api.request.ItemSkuDeleteRequest;
+import com.taobao.api.request.ItemSkuUpdateRequest;
+import com.taobao.api.response.ItemSkuAddResponse;
+import com.taobao.api.response.ItemSkuDeleteResponse;
+import com.taobao.api.response.ItemSkuUpdateResponse;
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import controllers.supplier.SupplierInjector;
+import models.KtvUpdateSkuJob;
+import models.accounts.AccountType;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvRoomType;
+import models.oauth.OAuthToken;
+import models.oauth.WebSite;
 import models.order.OuterOrderPartner;
-import models.sales.Goods;
+import models.resale.Resaler;
 import models.sales.ResalerProduct;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import models.taobao.KtvSkuMessageUtil;
-import models.taobao.OperateType;
+import net.sf.oval.internal.util.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import models.ktv.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.DateUtils;
+import play.Logger;
+import play.Play;
 import play.data.binding.As;
 import play.data.validation.Valid;
 import play.db.jpa.JPA;
@@ -25,6 +42,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import javax.persistence.Query;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -34,6 +52,11 @@ import java.util.*;
  */
 @With({SupplierRbac.class, SupplierInjector.class})
 public class KtvPriceSchedules extends Controller {
+    // 淘宝电子凭证的secret
+    public static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "21293912");
+    public static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "1781d22a1f06c4f25f1f679ae0633400");
+    public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
+
     public static void index(Long shopId, KtvRoomType roomType) {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         List<Shop> shops = Shop.findShopBySupplier(supplierId);
@@ -69,6 +92,7 @@ public class KtvPriceSchedules extends Controller {
             o.put("roomType", schedule.roomType);
             o.put("dayOfWeeks", schedule.dayOfWeeks);
             o.put("price", schedule.price);
+            o.put("id", schedule.getId());
             result.add(o);
         }
 
@@ -135,99 +159,17 @@ public class KtvPriceSchedules extends Controller {
             strategy.save();
 
         }
-        make(priceStrategy.id);
+        KtvSkuMessageUtil.send(priceStrategy.id);
 
         index(shopCountMap.keySet().iterator().next().id, priceStrategy.roomType);
     }
+//
+//    public static void make(long priceScheduleId) {
+////       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
+//        KtvUpdateSkuJob job = new KtvUpdateSkuJob();
+//        job.doJob();
+//    }
 
-    private static void make(Long priceScheduleId) {
-        KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(priceScheduleId);
-        List<KtvShopPriceSchedule> shopPriceSchedules = KtvShopPriceSchedule.find("bySchedule", priceSchedule).fetch();
-
-        Calendar calendar = Calendar.getInstance();
-        //此价格策略所涉及的所有门店
-        for (KtvShopPriceSchedule shopPriceSchedule : shopPriceSchedules) {
-            //每个门店所关联的所有ktv产品
-            List<KtvProductGoods> productGoodsList = KtvProductGoods.find("byShopAndProduct",
-                    shopPriceSchedule.shop, shopPriceSchedule.schedule.product).fetch();
-            for (KtvProductGoods productGoods : productGoodsList) {
-                //这个产品所对应的所有价格策略
-
-                Query query = JPA.em().createQuery("select s.schedule from KtvShopPriceSchedule s where s.shop = :shop "
-                        + "and s.schedule.product = :product and s.schedule.startDay <= :endDay and s.schedule.endDay >= :startDay and s.schedule.deleted = :deleted");
-
-                Date startDay = DateUtils.truncate(new Date(), Calendar.DATE);
-                Date endDay = DateUtils.addDays(startDay, 6);
-
-                query.setParameter("shop", productGoods.shop);
-                query.setParameter("product", productGoods.product);
-                query.setParameter("startDay", startDay);
-                query.setParameter("endDay", endDay);
-                query.setParameter("deleted", DeletedStatus.UN_DELETED);
-                List<KtvPriceSchedule> priceScheduleList = query.getResultList();
-                TreeMap<Date, Map<KtvRoomType, List<String>>> result = new TreeMap<>();
-
-                for (int i = 0; i < 7; i++) {
-                    Date day = DateUtils.addDays(startDay, i);
-                    for (KtvPriceSchedule ps : priceScheduleList) {
-                        calendar.setTime(day);
-                        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                        dayOfWeek = (dayOfWeek == 1) ? dayOfWeek + 6 : dayOfWeek - 1;
-                        //如果 当天 不在设置的星期范围内，跳过
-                        if (!ps.getDayOfWeeksAsSet().contains(dayOfWeek)) {
-                            continue;
-                        }
-                        //取出当天的所有ktv房型
-                        Map<KtvRoomType, List<String>> roomType = result.get(day);
-                        if (roomType == null) {
-                            roomType = new HashMap<>();
-                            result.put(day, roomType);
-                        }
-                        //取出该房型下所有的时间安排
-                        List<String> scheduleTimes = roomType.get(ps.roomType);
-                        if (scheduleTimes == null) {
-                            scheduleTimes = new ArrayList<>();
-                            roomType.put(ps.roomType, scheduleTimes);
-                        }
-                        scheduleTimes.add(ps.startTimes);
-                    }
-                }
-
-                Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-                System.out.println(gson.toJson(result)+"-----------");
-                //更新每一个该ktv产品所对应的分销渠道上的商品
-                List<ResalerProduct> resalerProductList = ResalerProduct.find("byGoods", productGoods.goods).fetch();
-                for (ResalerProduct resalerProduct : resalerProductList) {
-                }
-            }
-        }
-
-
-
-        /*
-        Map<String, Object> params = new HashMap<>();
-        params.put("type", OperateType.ADD);
-        params.put("shopId", entry.getKey().id);
-        params.put("roomCount", entry.getValue());
-        params.put("properties", getProperties(priceSchedule));
-        params.put("price", priceSchedule.price);
-
-        //添加淘宝sku
-        List<Goods> goodsList = KtvProductGoods.findGoods(entry.getKey(), priceSchedule.product);
-        for (Goods goods : goodsList) {
-            List<ResalerProduct> resalerProductList = ResalerProduct.getPartnerProductIdByGoods(goods, OuterOrderPartner.TB);
-            for (ResalerProduct resalerProduct : resalerProductList) {
-                KtvSkuMessageUtil.send(resalerProduct.partnerProductId, params);
-            }
-        }
-        */
-
-    }
-
-    private static String getProperties(KtvPriceSchedule priceSchedule) {
-
-        return "";
-    }
 
     public static void jsonCollisionDetection(KtvPriceSchedule priceStrategy, @As(",") Set<Integer> useWeekDays,
                                               @As(",") Set<Integer> startTimes, @As(",") Set<Long> shopIds) {
