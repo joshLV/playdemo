@@ -33,7 +33,6 @@ public class KtvTaobaoSku extends Model {
 
     public Integer quantity;
 
-
     @Column(name = "created_at")
     public Date createdAt;
 
@@ -45,9 +44,6 @@ public class KtvTaobaoSku extends Model {
         this.properties = StringUtils.defaultString(this.roomType) +
                 ";$欢唱时间:" + StringUtils.defaultString(this.timeRange) +
                 ";$日期:" + StringUtils.defaultString(this.date);
-//        this.properties = StringUtils.defaultString(this.roomType) + ";$日期:"
-//                + StringUtils.defaultString(this.date) + ";$欢唱时间:"
-//                + StringUtils.defaultString(this.timeRange);
     }
 
     public String getProperties() {
