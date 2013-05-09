@@ -3,6 +3,7 @@ package controllers;
 import com.uhuila.common.constants.DeletedStatus;
 import models.operator.Operator;
 import operate.rbac.annotations.ActiveNavigation;
+import play.Logger;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
@@ -44,11 +45,7 @@ public class Operators extends Controller {
         if (Validation.hasErrors()) {
             render("Operators/add.html", operator);
         }
-        System.out.println(operator.name + "《=========operator.name:");
-        System.out.println(operator.phone + "《=========operator.phone:");
-        System.out.println(operator.mobile + "《=========operator.mobile:");
-        System.out.println(operator.email + "《=========operator.email:");
-        System.out.println(operator.remark + "《=========operator.remark:");
+
         operator.createdBy = OperateRbac.currentUser().loginName;
         operator.createdAt = new Date();
         operator.deleted = DeletedStatus.UN_DELETED;
@@ -56,7 +53,7 @@ public class Operators extends Controller {
         index(null, null);
     }
 
-    @ActiveNavigation("user_search")
+    @ActiveNavigation("operator_search")
     public static void update(Long id, @Valid Operator operator) {
         if (Validation.hasErrors()) {
 //            operator.id = id;
@@ -68,7 +65,7 @@ public class Operators extends Controller {
         index(null, null);
     }
 
-    @ActiveNavigation("user_search")
+    @ActiveNavigation("operator_search")
     public static void delete(Long id) {
         Operator operator = Operator.findById(id);
         operator.deleted = DeletedStatus.DELETED;

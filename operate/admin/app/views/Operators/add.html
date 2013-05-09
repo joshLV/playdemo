@@ -14,7 +14,7 @@
 #{form @operators.create() , id:'operForm',class:"form-horizontal" }
 <legend>运营商添加</legend>
 <div class="control-group">
-    <label for="input01" class="control-label"><span style="color: red; ">*</span>名称</label>
+    <label for="name" class="control-label"><span style="color: red; ">*</span>名称</label>
 
     <div class="controls">
         <input type="text" name="operator.name" class="input-large" id="name" value="${operator?.name}"/>
@@ -22,7 +22,7 @@
     </div>
 </div>
 <div class="control-group">
-    <label for="input01" class="control-label"><span style="color: red; ">*</span>编码</label>
+    <label for="code" class="control-label"><span style="color: red; ">*</span>编码</label>
 
     <div class="controls">
         <input type="text" name="operator.code" class="input-large" id="code" value="${operator?.code}"/>
@@ -30,16 +30,16 @@
     </div>
 </div>
 <div class="control-group">
-    <label for="input01" class="control-label">公司名称</label>
+    <label for="companyName" class="control-label">公司名称</label>
 
     <div class="controls">
-        <input type="text" name="operator.companyName" class="input-large" id="mobile"
+        <input type="text" name="operator.companyName" class="input-large" id="companyName"
                value="${operator?.companyName}"/>
         <span class="error" id="checkCompanyName">#{error 'operator.companyName' /}</span>
     </div>
 </div>
 <div class="control-group">
-    <label for="input01" class="control-label">手机</label>
+    <label for="mobile" class="control-label">手机</label>
 
     <div class="controls">
         <input type="text" name="operator.mobile" class="input-large" id="mobile" maxlength="11"
@@ -48,7 +48,7 @@
     </div>
 </div>
 <div class="control-group">
-    <label for="input01" class="control-label">电话</label>
+    <label for="phone" class="control-label">电话</label>
 
     <div class="controls">
         <input type="text" name="operator.phone" class="input-large" id="phone"
@@ -58,7 +58,7 @@
 </div>
 
 <div class="control-group">
-    <label for="input01" class="control-label"> 邮箱</label>
+    <label for="email" class="control-label"> 邮箱</label>
 
     <div class="controls">
         <input type="text" name="operator.email" class="input-large" id="email" maxlength="50"
@@ -67,7 +67,7 @@
     </div>
 </div>
 <div class="control-group">
-    <label for="input01" class="control-label"> 备注</label>
+    <label for="remark" class="control-label"> 备注</label>
 
     <div class="controls">
         <input type="text" name="operator.remark" class="input-large" id="remark" maxlength="50"

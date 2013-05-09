@@ -2,38 +2,17 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.taobao.api.ApiException;
-import com.taobao.api.DefaultTaobaoClient;
-import com.taobao.api.TaobaoClient;
-import com.taobao.api.TaobaoRequest;
-import com.taobao.api.request.ItemSkuAddRequest;
-import com.taobao.api.request.ItemSkuDeleteRequest;
-import com.taobao.api.request.ItemSkuUpdateRequest;
-import com.taobao.api.response.ItemSkuAddResponse;
-import com.taobao.api.response.ItemSkuDeleteResponse;
-import com.taobao.api.response.ItemSkuUpdateResponse;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
 import controllers.supplier.SupplierInjector;
-import models.KtvUpdateSkuJob;
-import models.accounts.AccountType;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvRoomType;
-import models.oauth.OAuthToken;
-import models.oauth.WebSite;
-import models.order.OuterOrderPartner;
-import models.resale.Resaler;
-import models.sales.ResalerProduct;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import models.taobao.KtvSkuMessageUtil;
-import net.sf.oval.internal.util.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import models.ktv.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.DateUtils;
-import play.Logger;
 import play.Play;
 import play.data.binding.As;
 import play.data.validation.Valid;
@@ -42,7 +21,6 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import javax.persistence.Query;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -52,11 +30,9 @@ import java.util.*;
  */
 @With({SupplierRbac.class, SupplierInjector.class})
 public class KtvPriceSchedules extends Controller {
-    // 淘宝电子凭证的secret
-    public static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "21293912");
-    public static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "1781d22a1f06c4f25f1f679ae0633400");
-    public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
-
+    /**
+     * 价格策略页面
+     */
     public static void index(Long shopId, KtvRoomType roomType) {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         List<Shop> shops = Shop.findShopBySupplier(supplierId);
