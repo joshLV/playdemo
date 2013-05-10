@@ -3,6 +3,8 @@ package controllers;
 import models.sms.SMSFactory;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
+import models.taobao.TaobaoCouponConsumer;
+import models.taobao.TaobaoCouponMessage;
 import org.apache.commons.lang.StringUtils;
 import play.mvc.Controller;
 
@@ -32,4 +34,11 @@ public class SmsSenders extends Controller {
 
         renderText(smsProvider.getClass().getName() + " send success!");
     }
+    public static void make() {
+        TaobaoCouponMessage message = new TaobaoCouponMessage(24198L);
+        TaobaoCouponConsumer taobaoCouponConsumer = new TaobaoCouponConsumer();
+        taobaoCouponConsumer.consumeWithTx(message);
+
+    }
+
 }

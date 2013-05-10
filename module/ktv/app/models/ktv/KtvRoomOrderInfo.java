@@ -35,7 +35,7 @@ public class KtvRoomOrderInfo extends Model {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "room_type")
-    public KtvRoomType ktvRoomType;
+    public KtvRoomType roomType;
 
     @Enumerated(EnumType.STRING)
     public KtvOrderStatus status;
@@ -77,7 +77,7 @@ public class KtvRoomOrderInfo extends Model {
         this();
         this.goods = goods;
         this.orderItem = orderItem;
-        this.ktvRoomType = ktvRoomType;
+        this.roomType = ktvRoomType;
         this.scheduledDay = scheduledDay;
         this.scheduledTime = scheduledTime;
     }

@@ -22,8 +22,10 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.ResalerProduct;
+import models.supplier.Supplier;
 import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
+import play.Play;
 import play.db.jpa.JPA;
 import play.jobs.OnApplicationStart;
 
@@ -62,9 +64,9 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             Logger.info("start taobao coupon consumer send order");
             if (outerOrder.ybqOrder != null) {
                 Logger.info("our order already created");
-            } else{
+            } else {
                 //淘宝订单是否是等待发货
-                if (!taobaoOrderReadyToSend(outerOrder)){
+                if (!taobaoOrderReadyToSend(outerOrder)) {
                     outerOrder.status = OuterOrderStatus.ORDER_IGNORE;
                     outerOrder.save();
                     return;
@@ -145,7 +147,6 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
 
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(taobaoOrderId, "orders.price,orders.num,orders.sku_properties_name");
-
             Order ybqOrder = createYbqOrder(outerIid, mobile, taobaoTrade);
             if (ybqOrder == null) {
                 return false;//解析错误
@@ -184,7 +185,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                         userPhone, new BigDecimal(order.getPrice()), new BigDecimal(order.getPrice()));
                 uhuilaOrderItem.save();
 
-                if (createSkuOrderInfo(uhuilaOrderItem, order, goods) == null){
+                if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER) && createSkuOrderInfo(uhuilaOrderItem, order, goods) == null) {
                     JPA.em().getTransaction().rollback();
                     return null;
                 }
@@ -207,11 +208,11 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         ybqOrder.payMethod = PaymentSource.getBalanceSource().code;
         ybqOrder.payAndSendECoupon();
         ybqOrder.save();
-
         return ybqOrder;
     }
 
     private KtvRoomOrderInfo createSkuOrderInfo(OrderItems uhuilaOrderItem, com.taobao.api.domain.Order order, Goods goods) {
+
         KtvProductGoods productGoods = KtvProductGoods.find("byGoods", goods).first();
         if (productGoods == null) {
             return null;
@@ -219,7 +220,6 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
 
         Calendar calendar = Calendar.getInstance();
         Matcher matcher;
-
         KtvRoomOrderInfo roomOrderInfo = new KtvRoomOrderInfo();
         roomOrderInfo.goods = goods;
         roomOrderInfo.orderItem = uhuilaOrderItem;
@@ -227,7 +227,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         roomOrderInfo.shop = productGoods.shop;
 
         String[] properties = order.getSkuPropertiesName().split(";");
-        for (String  property : properties) {
+        for (String property : properties) {
             String[] map = property.split(":");
             if (map.length != 2) {
                 Logger.error("parse taobao sku failed(1): " + property);
@@ -239,18 +239,18 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                     if (matcher.matches()) {
                         calendar.setTime(new Date());
                         int year = calendar.get(Calendar.YEAR);
-                        int month = calendar.get(Calendar.MONTH);
+                        int month = calendar.get(Calendar.MONTH) + 1;
                         int skuMonth = Integer.parseInt(matcher.group(1));
                         //如果跨年了，要加一年
                         if (month == 12 && skuMonth == 1) {
                             year += 1;
                         }
                         calendar.set(Calendar.YEAR, year);
-                        calendar.set(Calendar.MONTH, skuMonth);
+                        calendar.set(Calendar.MONTH, skuMonth - 1);
                         calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(matcher.group(2)));
 
                         roomOrderInfo.scheduledDay = DateUtils.truncate(calendar.getTime(), Calendar.DATE);
-                    }else {
+                    } else {
                         Logger.error("parse taobao sku failed(2): " + property);
                         return null;
                     }
@@ -264,13 +264,13 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
 
                         roomOrderInfo.scheduledTime = startTime;
                         roomOrderInfo.duration = endTime - startTime + 1;
-                    }else {
+                    } else {
                         Logger.error("parse taobao sku failed(3): " + property);
                         return null;
                     }
                     break;
                 default:
-                    roomOrderInfo.ktvRoomType = KtvRoomType.getRoomTypeByTaobaoId(property);
+                    roomOrderInfo.roomType = KtvRoomType.getRoomTypeByTaobaoId(property);
                     break;
             }
         }

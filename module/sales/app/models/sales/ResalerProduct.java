@@ -94,11 +94,12 @@ public class ResalerProduct extends Model {
         this.deleted = DeletedStatus.UN_DELETED;
     }
 
-    private static ResalerProduct generate(OuterOrderPartner partner, Goods goods) {
+    private static ResalerProduct generate(OuterOrderPartner partner, Goods goods,Resaler resaler) {
         ResalerProduct product = new ResalerProduct().save();
         product.partner = partner;
         product.goods = goods;
         product.goodsLinkId = product.id + 20000;
+        product.resaler=resaler;
         return product.save();
     }
 
@@ -106,7 +107,7 @@ public class ResalerProduct extends Model {
         ResalerProduct product = ResalerProduct.find("partner=? and goods=? and status=? and deleted=? and resaler=?",
                 partner, goods, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED, resaler).first();
         if (product == null) {
-            product = generate(partner, goods);
+            product = generate(partner, goods,resaler);
         }
         return product;
     }
