@@ -144,6 +144,7 @@ public class Operator extends Model {
             _defaultOperator = null;
         }
         if (_defaultOperator == null) {
+
             synchronized (Operator.class) {
                 if (_defaultOperator != null) {
                     return _defaultOperator;

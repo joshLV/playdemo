@@ -201,6 +201,7 @@ public class OperateReports extends Controller {
         if (shopId != null && !shopId.equals(0L)) {
             condition.accountType = AccountType.SHOP;
             condition.account = AccountUtil.getShopAccount(shopId);
+
         } else if (supplierId != null && !supplierId.equals(0L)) {
             condition.accountType = AccountType.SUPPLIER;
             condition.account = AccountUtil.getSupplierAccount(supplierId);

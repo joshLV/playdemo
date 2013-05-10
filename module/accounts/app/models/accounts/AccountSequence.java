@@ -213,11 +213,13 @@ public class AccountSequence extends Model {
 
     /**
      * 查询在指定日期前没有结算的account账户进账的钱，减去已经提现的钱总金额。
+     *
      * @param account
      * @param toDate
      * @return
      */
     public static BigDecimal getVostroAmountTo(Account account, Date toDate) {
+        Logger.info("accountId:" + account.id);
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
                 " account=? and sequenceFlag=? and settlementStatus=? and createdAt<?",
                 account, AccountSequenceFlag.VOSTRO, SettlementStatus.UNCLEARED, toDate).first();
@@ -231,6 +233,7 @@ public class AccountSequence extends Model {
 
     /**
      * 查询已经提钱但未结算的金额
+     *
      * @param account
      * @param toDate
      * @return

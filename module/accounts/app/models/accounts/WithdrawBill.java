@@ -289,7 +289,7 @@ public class WithdrawBill extends Model {
         TradeBill tradeBill = TradeUtil.withdrawTrade(this.account, this.amount, id).make();
         TradeUtil.success(tradeBill, "提现成功", SettlementStatus.CLEARED);
 
-        if (account.accountType == AccountType.SUPPLIER) { //同意提现操作
+        if (account.accountType == AccountType.SUPPLIER || account.accountType == AccountType.SHOP) { //同意提现操作
             //标记所有详细销售记录为已结算
             return AccountSequence.withdraw(account, withdrawDate, this);
         }
