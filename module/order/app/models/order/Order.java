@@ -735,6 +735,7 @@ public class Order extends Model {
         }
         */
 
+        System.out.println("payAndSendECoupon ===");
         if (paid(account)) {
             generateECoupon();
             remindBigOrderRemark();
@@ -765,7 +766,7 @@ public class Order extends Model {
      * 订单已支付，修改支付状态、时间，更改库存，发送电子券密码
      */
     public boolean paid(Account account) {
-        System.out.println(  "《into paid()=========:");
+        System.out.println(  "《into paid()=========:"+account);
         if (this.status != OrderStatus.UNPAID) {
             throw new RuntimeException("can not pay order:" + this.getId() + " since it's already been processed");
         }
@@ -894,7 +895,7 @@ public class Order extends Model {
                         eCoupon.faceValue = eCoupon.salePrice;
 
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
-                        eCoupon.appointmentRemark = roomOrderInfo.ktvRoomType.getName()+","
+                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName()+","
                                 + roomOrderInfo.scheduledTime + "点至"
                                 + (roomOrderInfo.scheduledTime + roomOrderInfo.duration - 1) + "点" ;
                         eCoupon.save();

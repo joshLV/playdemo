@@ -304,6 +304,11 @@ public class Supplier extends Model {
     }
 
     @Transient
+    public boolean isKtvSupplier() {
+        return "1".equals(this.getProperty(Supplier.KTV_SUPPLIER));
+    }
+
+    @Transient
     public String getProperty(String propertyName) {
         if (this.id == null) {
             return "0";

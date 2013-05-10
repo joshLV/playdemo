@@ -28,7 +28,7 @@ import java.util.*;
  * Date: 13-4-12
  * Time: 下午2:09
  */
-@With({SupplierRbac.class, SupplierInjector.class})
+//@With({SupplierRbac.class, SupplierInjector.class})
 public class KtvPriceSchedules extends Controller {
     /**
      * 价格策略页面
@@ -139,11 +139,14 @@ public class KtvPriceSchedules extends Controller {
 
         index(shopCountMap.keySet().iterator().next().id, priceStrategy.roomType);
     }
-//
+
+    //
     public static void make(long priceScheduleId) {
-       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
-//        KtvUpdateSkuJob job = new KtvUpdateSkuJob();
-//        job.doJob();
+//       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
+        List<KtvProductGoods> ktvProductGoodsList = KtvProductGoods.findAll();
+        for (KtvProductGoods productGoods : ktvProductGoodsList) {
+            KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);
+        }
     }
 
 

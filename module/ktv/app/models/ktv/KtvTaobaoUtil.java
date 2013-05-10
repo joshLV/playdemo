@@ -84,17 +84,13 @@ public class KtvTaobaoUtil {
         List<KtvTaobaoSku> oldTaobaoSkuList = KtvTaobaoSku.find("byGoods", productGoods.goods).fetch();
         //比较两者，得出三个列表，分别是：1、应该添加到淘宝的SKU列表；2、应该更新的淘宝SKU列表；3、应该删除的淘宝SKU列表
         Map<String, List<KtvTaobaoSku>> diffResult = diffTaobaoSku(newTaobaoSkuList, oldTaobaoSkuList);
-
         //更新该ktv产品所对应的每一个分销渠道上的商品
         List<ResalerProduct> resalerProductList = ResalerProduct.find("byGoodsAndPartner", productGoods.goods, OuterOrderPartner.TB).fetch();
-
         for (ResalerProduct resalerProduct : resalerProductList) {
             if (StringUtils.isBlank(resalerProduct.partnerProductId)) {
                 continue;
             }
-
             for (Map.Entry<String, List<KtvTaobaoSku>> entry : diffResult.entrySet()) {
-
                 switch (entry.getKey()) {
                     case "add":
                         for (KtvTaobaoSku p : entry.getValue()) {
@@ -255,7 +251,6 @@ public class KtvTaobaoUtil {
     private static void addSaleSkuOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSku p) {
         ItemSkuAddRequest req = new ItemSkuAddRequest();
         req.setNumIid(Long.valueOf(resalerProduct.partnerProductId));
-
         req.setProperties(p.getProperties());
         req.setQuantity((long) p.quantity);
         req.setPrice(p.price.toString());
@@ -314,7 +309,6 @@ public class KtvTaobaoUtil {
                 tobeAdded.add(newProperty);
             }
         }
-
         result.put("update", tobeUpdated);
         result.put("add", tobeAdded);
         result.put("delete", tobeDeleted);
