@@ -23,6 +23,7 @@ import play.test.FunctionalTest;
  * Date: 13-4-11
  * Time: 下午6:16
  */
+@Ignore
 public class KtvRoomTypesTest extends FunctionalTest {
     /*
     Supplier supplier;

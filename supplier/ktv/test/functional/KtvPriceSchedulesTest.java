@@ -1,5 +1,6 @@
 package functional;
 
+import org.junit.Ignore;
 import play.test.FunctionalTest;
 
 /**
@@ -7,6 +8,7 @@ import play.test.FunctionalTest;
  * Date: 13-4-22
  * Time: 下午1:57
  */
+@Ignore
 public class KtvPriceSchedulesTest extends FunctionalTest {
     /*
     Supplier supplier;
