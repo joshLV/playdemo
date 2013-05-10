@@ -64,7 +64,7 @@ public class SendShopDailyReportJob extends JobWithHistory {
         }
         Supplier supplier = Supplier.findById(shop.supplierId);
         if (supplier == null || supplier.status != SupplierStatus.NORMAL || supplier.deleted == DeletedStatus.DELETED) {
-            Logger.error("send shop daily report error. Invalid supplier: " + shop.supplierId);
+            Logger.info("send shop daily report error. Invalid supplier: " + shop.supplierId);
             return;
         }
         if (shop.managerMobiles == null || shop.managerMobiles.trim().length() == 0) {
