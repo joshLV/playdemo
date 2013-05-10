@@ -15,7 +15,7 @@ import java.util.*;
 public class KtvAPI extends Controller {
 
     public static void jsonRoom(Long shopId, Date day) {
-        Map<String, Object> jsonParams = KtvPriceSchedule.dailyScheduleOverview(shopId, day);
+        Map<String, Object> jsonParams = null;//KtvPriceSchedule.dailyScheduleOverview(shopId, day);
         if (jsonParams == null) {
             error("shop not found");
         }
