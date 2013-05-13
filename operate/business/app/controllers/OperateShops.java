@@ -212,7 +212,7 @@ public class OperateShops extends Controller {
     public static void showGoodsShops(Long supplierId) {
         Supplier supplier = Supplier.findById(supplierId);
         boolean ktvSupplier = false;
-        if (supplier.getProperty("ktvSupplier").equals("1")) {
+        if ("1".equals(supplier.getProperty(Supplier.KTV_SUPPLIER))) {
             ktvSupplier = true;
         }
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
