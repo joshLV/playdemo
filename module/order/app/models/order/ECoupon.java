@@ -261,6 +261,9 @@ public class ECoupon extends Model {
     public String refundPriceInfo;
 
     @Transient
+    public String orderItemsPhone;
+
+    @Transient
     public String outerOrderId;
 
 
