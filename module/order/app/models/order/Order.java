@@ -57,10 +57,7 @@ import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 @Entity
@@ -980,6 +977,11 @@ public class Order extends Model {
         mailMessage.putParam("orderId", id);
         mailMessage.putParam("addr", play.Play.configuration.getProperty("application.baseUrl"));
         MailUtil.sendCustomerRemarkMail(mailMessage);
+
+        //发送短信
+        String content = "订单号" + orderNumber + "(金额" + amount + "),商品名：" + goodsName + ",客户手机号:" + buyerMobile + ",客户留言：" + remark;
+        String phone = "15026580827";
+        new SMSMessage(content, phone).send();
     }
 
     /**
