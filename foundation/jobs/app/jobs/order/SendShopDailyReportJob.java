@@ -4,7 +4,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import models.sales.Shop;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import play.Logger;
@@ -73,7 +73,7 @@ public class SendShopDailyReportJob extends JobWithHistory {
         String mobiles[] = shop.managerMobiles.split(",");
         for (String mobile : mobiles) {
             if (Pattern.compile(MOBILE_PATTERN).matcher(mobile).matches()) {
-                SMSUtil.send("", mobile);
+                new SMSMessage("", mobile).send();
             }
         }
     }

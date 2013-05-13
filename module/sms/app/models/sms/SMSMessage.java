@@ -1,7 +1,12 @@
 package models.sms;
 
+import models.order.OrderItemsFeeType;
+import play.Play;
+import util.mq.MQPublisher;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,6 +18,12 @@ public class SMSMessage implements Serializable {
     private static final long serialVersionUID = -8170943259282104651L;
     private static final String SIGN = "【一百券】";
 
+    // 短信MQ名称
+    public static final String SMS_QUEUE = Play.mode.isProd() ? "send_sms" : "send_sms_dev";
+
+    // 短信MQ名称，用于第二通道.
+    public static final String SMS2_QUEUE = Play.mode.isProd() ? "send_sms2" : "send_sms2_dev";
+
     private String content;
     /**
      * 端口参数。
@@ -20,6 +31,10 @@ public class SMSMessage implements Serializable {
      */
     private String code = "0000";
     private List<String> phoneNumbers;
+
+    // 计费专用
+    private Long orderItemsId;
+    private OrderItemsFeeType feeType;
 
     public SMSMessage(String content, String phoneNumber, String code) {
         this.setContent(content);
@@ -35,6 +50,11 @@ public class SMSMessage implements Serializable {
     public SMSMessage(String content, List<String> phoneNumbers) {
         this.setContent(content);
         this.phoneNumbers = phoneNumbers;
+    }
+
+
+    public SMSMessage(String content, String[] phoneNumbers) {
+        this(content, Arrays.asList(phoneNumbers));
     }
 
     public String getContent() {
@@ -65,6 +85,24 @@ public class SMSMessage implements Serializable {
         this.code = code;
     }
 
+    public Long getOrderItemsId() {
+        return orderItemsId;
+    }
+
+    public OrderItemsFeeType getFeeType() {
+        return feeType;
+    }
+
+    public SMSMessage orderItemsId(Long value) {
+        this.orderItemsId = value;
+        return this;
+    }
+
+    public SMSMessage feeType(OrderItemsFeeType feeType) {
+        this.feeType = feeType;
+        return this;
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder("SMSMessage [content=" + content + ",code=" + code + ",phones=");
@@ -73,5 +111,19 @@ public class SMSMessage implements Serializable {
         }
         str.append("]");
         return str.toString();
+    }
+
+    /**
+     * 通过通道1发出短信.
+     */
+    public void send() {
+        MQPublisher.publish(SMS_QUEUE, this);
+    }
+
+    /**
+     * 通过通道2发出短信.
+     */
+    public void send2() {
+        MQPublisher.publish(SMS2_QUEUE, this);
     }
 }

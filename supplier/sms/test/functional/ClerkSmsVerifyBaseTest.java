@@ -1,16 +1,15 @@
 package functional;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.regex.Pattern;
-
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import controllers.EnSmsReceivers;
+import controllers.SmsReceiverUtil;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
 import models.consumer.User;
-import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -18,14 +17,10 @@ import models.order.OrderItems;
 import models.sales.Brand;
 import models.sales.Goods;
 import models.sales.Shop;
-import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
-import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
-
 import org.junit.Test;
-
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Http.Response;
@@ -33,13 +28,11 @@ import play.test.FunctionalTest;
 import util.DateHelper;
 import util.mq.MockMQ;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-
-import controllers.EnSmsReceivers;
-import controllers.SmsReceiverUtil;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * <p/>
@@ -82,11 +75,11 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
     }
 
     protected SMSMessage getLastClerkSMSMessage() {
-        return (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
+        return (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS2_QUEUE);
     }
 
     protected SMSMessage getLastConsumerSMSMessage() {
-        return (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
+        return (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
     }
 
     /**

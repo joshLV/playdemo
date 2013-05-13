@@ -5,9 +5,10 @@ import models.admin.SupplierUser;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.OrderItemsFeeType;
 import models.order.VerifyCouponType;
 import models.sales.Shop;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
@@ -139,9 +140,12 @@ public class SupplierCoupons extends Controller {
                     renderJSON("{\"code\":\"5\"}");
                 }
                 // 发给消费者
-                SMSUtil.send2("您尾号" + ecouponSNLast4Code + "的券号于" + dateTime
+                new SMSMessage("您尾号" + ecouponSNLast4Code + "的券号于" + dateTime
                         + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151", eCoupon.orderItems.phone,
-                        eCoupon.replyCode);
+                        eCoupon.replyCode)
+                        .orderItemsId(eCoupon.orderItems.id)
+                        .feeType(OrderItemsFeeType.SMS_VERIFY_NOTIFY)
+                        .send2();
             } else {
                 // 多张券验证
                 if (verifyAmount == null || verifyAmount.compareTo(BigDecimal.ZERO) < 0) {
@@ -177,17 +181,23 @@ public class SupplierCoupons extends Controller {
                 }
 
                 if (availableECoupons.size() > 0) {
-                    SMSUtil.send2("您尾号" + ecouponSNLast4Code
+                    new SMSMessage("您尾号" + ecouponSNLast4Code
                             + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(2,BigDecimal.ROUND_HALF_UP) + "元)于"
                             + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有" + availableECouponSNs.size() + "张券（"
                             + StringUtils.join(availableECouponSNs, "/")
                             + "总面值" + availableAmount.setScale(2,BigDecimal.ROUND_HALF_UP) + "元）未消费。如有疑问请致电：4006865151",
-                            eCoupon.orderItems.phone, eCoupon.replyCode);
+                            eCoupon.orderItems.phone, eCoupon.replyCode)
+                            .orderItemsId(eCoupon.orderItems.id)
+                            .feeType(OrderItemsFeeType.SMS_VERIFY_NOTIFY)
+                            .send2();
                 } else {
-                    SMSUtil.send2("您尾号" + ecouponSNLast4Code
+                    new SMSMessage("您尾号" + ecouponSNLast4Code
                             + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(2,BigDecimal.ROUND_HALF_UP) + "元)于"
                             + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
-                            eCoupon.orderItems.phone, eCoupon.replyCode);
+                            eCoupon.orderItems.phone, eCoupon.replyCode)
+                            .orderItemsId(eCoupon.orderItems.id)
+                            .feeType(OrderItemsFeeType.SMS_VERIFY_NOTIFY)
+                            .send2();
                 }
 
                 if (verifyAmount.compareTo(consumedAmount) == 0) {

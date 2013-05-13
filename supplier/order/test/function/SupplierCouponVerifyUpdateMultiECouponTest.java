@@ -15,7 +15,6 @@ import models.sales.Category;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSMessage;
-import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
 import org.apache.commons.lang.StringUtils;
@@ -151,7 +150,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         // 得到还没有消费的券号列表
         List<String> availableECouponSNs = getAvaiableECouponSNs(ecoupons, 2);
 
-        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
+        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSMessage.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + coupon1.getLastCode(4)
                 + "共3张券(总面值250.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有2张券（"
                 + StringUtils.join(availableECouponSNs, "/")
@@ -172,7 +171,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         // 得到还没有消费的券号列表
         getAvaiableECouponSNs(ecoupons, 0);
 
-        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
+        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSMessage.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + coupon1.getLastCode(4)
                 + "共5张券(总面值350.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
                 msg.getContent());
@@ -191,7 +190,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         // 得到还没有消费的券号列表
         getAvaiableECouponSNs(ecoupons, 0);
 
-        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
+        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSMessage.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + coupon1.getLastCode(4)
                 + "共5张券(总面值350.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
                 msg.getContent());
@@ -209,7 +208,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         // 得到还没有消费的券号列表，应还是5张
         getAvaiableECouponSNs(ecoupons, 5);
 
-        assertEquals(0, MockMQ.size(SMSUtil.SMS2_QUEUE));
+        assertEquals(0, MockMQ.size(SMSMessage.SMS2_QUEUE));
     }
 
 
@@ -229,7 +228,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         // 得到还没有消费的券号列表
         List<String> availableECouponSNs = getAvaiableECouponSNs(ecoupons, 1);
 
-        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
+        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSMessage.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + singleCoupon1.getLastCode(4)
                 + "共2张券(总面值150.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有1张券（"
                 + StringUtils.join(availableECouponSNs, "/")
@@ -250,7 +249,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         // 得到还没有消费的券号列表
         getAvaiableECouponSNs(ecoupons, 0);
 
-        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
+        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSMessage.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + singleCoupon1.getLastCode(4)
                 + "共3张券(总面值225.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
                 msg.getContent());
@@ -269,7 +268,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         // 得到还没有消费的券号列表
         getAvaiableECouponSNs(ecoupons, 0);
 
-        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
+        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSMessage.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + singleCoupon1.getLastCode(4)
                 + "共3张券(总面值225.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
                 msg.getContent());
@@ -287,7 +286,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         // 得到还没有消费的券号列表，应还是3张
         getAvaiableECouponSNs(ecoupons, 3);
 
-        assertEquals(0, MockMQ.size(SMSUtil.SMS2_QUEUE));
+        assertEquals(0, MockMQ.size(SMSMessage.SMS2_QUEUE));
     }
 
     /**

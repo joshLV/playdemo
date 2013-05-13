@@ -4,7 +4,7 @@ import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import models.sales.SendSMSInfo;
 import models.sales.SendSMSTask;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import org.apache.commons.collections.CollectionUtils;
 import play.Play;
 import play.jobs.Every;
@@ -41,7 +41,7 @@ public class SMSScheduler extends JobWithHistory {
                         st.unfinished = st.unfinished - 1L;
 
                         smsInfo.sendAt = new Date();
-                        SMSUtil.send(smsInfo.text, smsInfo.mobile);
+                        new SMSMessage(smsInfo.text, smsInfo.mobile).send();
                         smsInfo.save();
                         st.save();
                     } catch (Exception e) {

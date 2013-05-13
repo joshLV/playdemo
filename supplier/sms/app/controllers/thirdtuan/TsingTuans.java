@@ -1,24 +1,21 @@
 package controllers.thirdtuan;
 
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-
+import com.uhuila.common.util.DateUtil;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
 import models.sales.Goods;
 import models.sales.Shop;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import models.tsingtuan.TsingTuanOrder;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-
 import play.Logger;
 import play.mvc.Controller;
 
-import com.uhuila.common.util.DateUtil;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
 
 public class TsingTuans extends Controller {
 
@@ -148,6 +145,6 @@ public class TsingTuans extends Controller {
     }
 
     private static void sendSmsToConsumer(String message, String mobile, String code) {
-        SMSUtil.send(message, mobile, code);
+        new SMSMessage(message, mobile, code).send();
     }
 }

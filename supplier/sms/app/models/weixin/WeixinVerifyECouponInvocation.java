@@ -6,9 +6,11 @@ import com.uhuila.common.util.FieldCheckUtil;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.OrderItems;
+import models.order.OrderItemsFeeType;
 import models.order.VerifyCouponType;
 import models.sales.Shop;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import play.Logger;
@@ -97,8 +99,8 @@ public class WeixinVerifyECouponInvocation extends WeixinInvocation {
                         return (supplier.fullName + "已被一百券锁定");
                     }
 
-                    String shopName = "未知";
-                    Long shopId = null;
+                    String shopName;
+                    Long shopId;
                     if (supplierUser.shop != null) {
                         //判断该券是否属于所在消费门店
                         shopId = supplierUser.shop.id;
@@ -129,7 +131,9 @@ public class WeixinVerifyECouponInvocation extends WeixinInvocation {
 
                         // 发给消费者
                         sendSmsToConsumer("您尾号" + coupon + "券于" + dateTime
-                                + "成功消费，门店：" + shopName + "。客服4006865151", consumerPhone, ecoupon.replyCode);
+                                + "成功消费，门店：" + shopName + "。客服4006865151", consumerPhone, ecoupon.replyCode,
+                                ecoupon.orderItems
+                        );
                         return ("尾号" + coupon + "的券号于" + dateTime
                                 + "成功消费，门店：" + shopName + "。客服4006865151");
                     } else if (ecoupon.status == ECouponStatus.CONSUMED) {
@@ -154,12 +158,12 @@ public class WeixinVerifyECouponInvocation extends WeixinInvocation {
     }
 
 
-    private static void sendSmsToConsumer(String message, String mobile, String code) {
-        SMSUtil.send(message, mobile, code);
-    }
-
-    private static void resendSmsToConsumer(String message, String mobile, String code) {
-        SMSUtil.send2(message, mobile, code);
+    private static void sendSmsToConsumer(String message, String mobile, String code, OrderItems orderItems) {
+        SMSMessage smsMessage = new SMSMessage(message, mobile, code);
+        if (orderItems != null) {
+            smsMessage.orderItemsId(orderItems.id).feeType(OrderItemsFeeType.SMS_VERIFY_NOTIFY);
+        }
+        smsMessage.send();
     }
 
 }

@@ -48,7 +48,7 @@ public class SmsSendConsumer extends RabbitMQConsumerWithTx<SMSMessage> {
     }
 
     protected String queue() {
-        return SMSUtil.SMS_QUEUE;
+        return SMSMessage.SMS_QUEUE;
 
     }
 

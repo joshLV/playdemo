@@ -1,12 +1,13 @@
 package controllers;
 
 import controllers.modules.resale.cas.SecureCAS;
-import models.accounts.*;
+import models.accounts.Account;
+import models.accounts.WithdrawBill;
 import models.accounts.util.AccountUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -70,7 +71,8 @@ public class ResalerWithdraw extends Controller{
         MailUtil.sendCommonMail(message);
 
         if(NOTIFICATION_MOBILES.length > 0 && !"".equals(NOTIFICATION_MOBILES[0])){
-            SMSUtil.send("一百券用户" + withdrawBill.applier + "申请提现" + withdrawBill.amount + "元", NOTIFICATION_MOBILES);
+            new SMSMessage("一百券用户" + withdrawBill.applier + "申请提现" + withdrawBill.amount + "元",
+                    NOTIFICATION_MOBILES).send();
         }
     }
 }

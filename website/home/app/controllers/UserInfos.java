@@ -10,9 +10,8 @@ import models.consumer.User;
 import models.consumer.UserInfo;
 import models.sms.BindMobile;
 import models.sms.MobileBindType;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import org.apache.commons.lang.StringUtils;
-
 import play.Play;
 import play.cache.Cache;
 import play.modules.breadcrumbs.BreadcrumbList;
@@ -75,7 +74,7 @@ public class UserInfos extends Controller {
             validCode = "123456";
         }
         String comment = "您的验证码是" + validCode + ", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
-        SMSUtil.send(comment, mobile, "0000");
+        new SMSMessage(comment, mobile, "0000").send();
         //保存手机和验证码
         Cache.set("validCode_", validCode, "10mn");
         Cache.set("mobile_", mobile, "10mn");

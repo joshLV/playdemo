@@ -6,9 +6,11 @@ import com.uhuila.common.util.FieldCheckUtil;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.OrderItems;
+import models.order.OrderItemsFeeType;
 import models.order.VerifyCouponType;
 import models.sales.Shop;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import play.Logger;
@@ -40,23 +42,23 @@ public class SmsReceiverUtil {
             for (int i = 1; i < couponCount; i++) {
                 couponNumber = couponArray[i];
                 if (!FieldCheckUtil.isNumeric(couponNumber)) {
-                    sendSmsToClerk("您输入的券号" + couponNumber + "无效，请确认！", mobile, code);
+                    sendSmsToClerk("您输入的券号" + couponNumber + "无效，请确认！", mobile, code, null);
                     return ("券号无效！");
                 }
 
                 ECoupon ecoupon = ECoupon.query(couponNumber, null);
 
                 if (ecoupon == null) {
-                    sendSmsToClerk("您输入的券号" + couponNumber + "不存在，请与顾客确认，如有疑问请致电：4006865151", mobile, code);
+                    sendSmsToClerk("您输入的券号" + couponNumber + "不存在，请与顾客确认，如有疑问请致电：4006865151", mobile, code, null);
                     return ("您输入的券号" + couponNumber + "不存在，请确认！");
                 } else {
                     if (ecoupon.isFreeze == 1) {
-                        sendSmsToClerk("该券已被冻结,如有疑问请致电：4006865151", mobile, code);
+                        sendSmsToClerk("该券已被冻结,如有疑问请致电：4006865151", mobile, code, ecoupon.orderItems);
                         return ("该券已被冻结");
                     }
                     if (!ecoupon.checkVerifyTimeRegion(new Date())) {
                         String info = ecoupon.getCheckInfo();
-                        sendSmsToClerk(info + "如有疑问请致电：4006865151", mobile, code);
+                        sendSmsToClerk(info + "如有疑问请致电：4006865151", mobile, code, ecoupon.orderItems);
                         return (info);
                     }
                     Long supplierId = ecoupon.goods.supplierId;
@@ -65,19 +67,19 @@ public class SmsReceiverUtil {
 
                     if (supplier == null || supplier.deleted == DeletedStatus.DELETED) {
                         String supplierName = (supplier == null) ? "" : supplier.fullName;
-                        sendSmsToClerk(supplierName + "未在一百券登记使用，如有疑问请致电：4006865151", mobile, code);
+                        sendSmsToClerk(supplierName + "未在一百券登记使用，如有疑问请致电：4006865151", mobile, code, ecoupon.orderItems);
                         return (supplierName + "未在一百券登记使用");
                     }
 
                     if (supplier.status == SupplierStatus.FREEZE) {
-                        sendSmsToClerk(supplier.fullName + "已被一百券锁定，如有疑问请致电：4006865151", mobile, code);
+                        sendSmsToClerk(supplier.fullName + "已被一百券锁定，如有疑问请致电：4006865151", mobile, code, ecoupon.orderItems);
                         return (supplier.fullName + "已被一百券锁定");
                     }
 
                     SupplierUser supplierUser = SupplierUser.findByMobileAndSupplier(mobile, supplier);
 
                     if (supplierUser == null) {
-                        sendSmsToClerk("请确认券号" + couponNumber + "(" + supplier.fullName + ")是否本店商品，或店号手机号是否已在一百券登记。如有疑问请致电：4006865151", mobile, code);
+                        sendSmsToClerk("请确认券号" + couponNumber + "(" + supplier.fullName + ")是否本店商品，或店号手机号是否已在一百券登记。如有疑问请致电：4006865151", mobile, code, ecoupon.orderItems);
                         return ("请确认券号" + couponNumber + "(" + supplier.fullName + ")是否本店商品，或店号手机号是否已在一百券登记");
                     }
 
@@ -94,7 +96,7 @@ public class SmsReceiverUtil {
 
                     String consumerPhone = ecoupon.orderItems.phone;
                     if (ecoupon.expireAt.before(new Date())) {
-                        sendSmsToClerk("券号" + couponNumber + "已过期，无法进行消费。如有疑问请致电：4006865151", mobile, code);
+                        sendSmsToClerk("券号" + couponNumber + "已过期，无法进行消费。如有疑问请致电：4006865151", mobile, code, ecoupon.orderItems);
                         return ("券号" + couponNumber + "已过期，无法进行消费");
                     } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
                         String coupon = ecoupon.getMaskedEcouponSn();
@@ -103,7 +105,7 @@ public class SmsReceiverUtil {
                             // 发给消费者
                             sendSmsToClerk(getMaskedMobile(consumerPhone) + "的" + coupon + "券只能在" + dateFormat.format(ecoupon.goods.useBeginTime)
                                     + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费。客服4006865151",
-                                    supplierUser.mobile, code);
+                                    supplierUser.mobile, code, ecoupon.orderItems);
                             return ("您尾号" + getMaskedMobile(consumerPhone) + "的" + coupon + "券只能在" + dateFormat.format(ecoupon.goods.useBeginTime)
                                     + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费");
                         }
@@ -118,10 +120,10 @@ public class SmsReceiverUtil {
 
                         // 发给店员
                         sendSmsToClerk(getMaskedMobile(consumerPhone) + "尾号" + coupon + "券（面值" + ecoupon
-                                .faceValue + "元）于" + dateTime + "在" + shopName + "验证成功。客服4006865151", supplierUser.mobile, code);
+                                .faceValue + "元）于" + dateTime + "在" + shopName + "验证成功。客服4006865151", supplierUser.mobile, code, ecoupon.orderItems);
                         // 发给消费者
                         sendSmsToConsumer("您尾号" + coupon + "券于" + dateTime
-                                + "成功消费，门店：" + shopName + "。客服4006865151", consumerPhone, code);
+                                + "成功消费，门店：" + shopName + "。客服4006865151", consumerPhone, code, ecoupon.orderItems);
                         return ("您尾号" + coupon + "的券号于" + dateTime
                                 + "已成功消费，门店：" + shopName + "。客服4006865151");
                     } else if (ecoupon.status == ECouponStatus.CONSUMED) {
@@ -129,7 +131,8 @@ public class SmsReceiverUtil {
                         SimpleDateFormat df = new SimpleDateFormat("MM-dd HH:mm");
                         // 发给店员
                         resendSmsToClerk(getMaskedMobile(consumerPhone) + "尾号" + couponLastCode + "券（" + ecoupon
-                                .faceValue + "元）不能重复消费，已于" + df.format(ecoupon.consumedAt) + "在" + shopName + "消费过", supplierUser.mobile, code);
+                                .faceValue + "元）不能重复消费，已于" + df.format(ecoupon.consumedAt) + "在" + shopName + "消费过",
+                                supplierUser.mobile, code, ecoupon.orderItems);
 
                         return ("券号" + couponNumber + "已消费，无法再次消费");
                     }
@@ -137,7 +140,7 @@ public class SmsReceiverUtil {
             }
         }
         sendSmsToClerk("券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：4006865151",
-                mobile, code);
+                mobile, code, null);
         return ("券号无效！");
 
     }
@@ -155,9 +158,9 @@ public class SmsReceiverUtil {
         if (ecoupons == null || ecoupons.size() == 0) {
             if ("0000".equals(code)) {
                 sendSmsToConsumer("券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：4006865151",
-                        mobile, code);
+                        mobile, code, null);
             } else {
-                sendSmsToConsumer("券号无法验证，请确认是否使用您购买时的手机号发送验证短信。如有疑问请致电：4006865151", mobile, code);
+                sendSmsToConsumer("券号无法验证，请确认是否使用您购买时的手机号发送验证短信。如有疑问请致电：4006865151", mobile, code, null);
             }
             return ("Not Found the coupon");
         }
@@ -166,12 +169,12 @@ public class SmsReceiverUtil {
         ECoupon ecoupon = ecoupons.get(0);
 
         if (ecoupon.isFreeze == 1) {
-            sendSmsToClerk("该券已被冻结,如有疑问请致电：4006865151", mobile, code);
+            sendSmsToClerk("该券已被冻结,如有疑问请致电：4006865151", mobile, code, ecoupon.orderItems);
             return ("该券已被冻结");
         }
         if (!ecoupon.checkVerifyTimeRegion(new Date())) {
             String info = ecoupon.getCheckInfo();
-            sendSmsToClerk(info + "如有疑问请致电：4006865151", mobile, code);
+            sendSmsToClerk(info + "如有疑问请致电：4006865151", mobile, code, ecoupon.orderItems);
             return (info);
         }
 
@@ -179,12 +182,12 @@ public class SmsReceiverUtil {
 
         if (supplier == null || supplier.deleted == DeletedStatus.DELETED) {
             String supplierName = (supplier == null) ? "" : supplier.fullName;
-            sendSmsToConsumer( supplierName + "未在一百券登记使用，请致电4006865151咨询", mobile, code);
+            sendSmsToConsumer( supplierName + "未在一百券登记使用，请致电4006865151咨询", mobile, code, ecoupon.orderItems);
             return ( supplierName + "未在一百券登记使用");
         }
 
         if (supplier.status == SupplierStatus.FREEZE) {
-            sendSmsToConsumer( supplier.fullName + "已被一百券锁定，请致电4006865151咨询", mobile, code);
+            sendSmsToConsumer( supplier.fullName + "已被一百券锁定，请致电4006865151咨询", mobile, code, ecoupon.orderItems);
             return ( supplier.fullName + "已被一百券锁定");
         }
 
@@ -194,7 +197,7 @@ public class SmsReceiverUtil {
         if (supplierUser == null) {
             // 发给消费者
             sendSmsToConsumer("店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：4006865151",
-                    mobile, code);
+                    mobile, code, ecoupon.orderItems);
             return ("店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店");
         }
 
@@ -209,11 +212,11 @@ public class SmsReceiverUtil {
             // 发给店员
             resendSmsToClerk( getMaskedMobile(mobile) +
                     "有多张可用券，请指导顾客回复数字工号*使用金额，如\"100112*200\"",
-                    supplierUser.mobile, code);
+                    supplierUser.mobile, code, ecoupon.orderItems);
             // 发给消费者
             resendSmsToConsumer("您有多张可用券(总面值" + amount +
                     "元)，请回复店员数字工号*使用金额，如\"100112*200\"，系统自动选择合适的券验证",
-                    mobile, code);
+                    mobile, code, ecoupon.orderItems);
 
             return ("有多张可用券，请回复数字工号*使用金额");
         }
@@ -237,7 +240,7 @@ public class SmsReceiverUtil {
         if (!canNotUserInThisShop) {
             if (ecoupon.expireAt.before(new Date())) {
                 //过期
-                sendSmsToConsumer("您的券号已过期，无法进行消费。如有疑问请致电：4006865151", mobile, code);
+                sendSmsToConsumer("您的券号已过期，无法进行消费。如有疑问请致电：4006865151", mobile, code, ecoupon.orderItems);
                 return ("您的券号已过期，无法进行消费。如有疑问请致电：4006865151");
             } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
                 String couponLastCode = ecoupon.getLastCode(4);
@@ -247,7 +250,7 @@ public class SmsReceiverUtil {
                     // 发给消费者
                     sendSmsToConsumer("您尾号" + couponLastCode + "券只能在" + dateFormat.format(ecoupon.goods.useBeginTime)
                             + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费。客服4006865151",
-                            supplierUser.mobile, code);
+                            supplierUser.mobile, code, ecoupon.orderItems);
                     return ("您尾号" + couponLastCode + "券只能在" + dateFormat.format(ecoupon.goods.useBeginTime)
                             + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费");
                 }
@@ -258,10 +261,10 @@ public class SmsReceiverUtil {
 
                 // 发给店员
                 sendSmsToClerk(getMaskedMobile(mobile) + "尾号" + couponLastCode + "券（面值" + ecoupon
-                        .faceValue + "元）于" + dateTime + "在" + shopName + "验证成功。客服4006865151", supplierUser.mobile, code);
+                        .faceValue + "元）于" + dateTime + "在" + shopName + "验证成功。客服4006865151", supplierUser.mobile, code, ecoupon.orderItems);
                 // 发给消费者
                 sendSmsToConsumer("您尾号" + couponLastCode + "券于" + dateTime
-                        + "成功消费，门店：" + shopName + "。客服4006865151", mobile, code);
+                        + "成功消费，门店：" + shopName + "。客服4006865151", mobile, code, ecoupon.orderItems);
                 return ("您尾号" + couponLastCode + "的券号于" + dateTime
                         + "已成功消费，门店：" + shopName + "。客服4006865151");
             } else if (ecoupon.status == ECouponStatus.CONSUMED) {
@@ -269,33 +272,45 @@ public class SmsReceiverUtil {
                 SimpleDateFormat df = new SimpleDateFormat("MM-dd HH:mm");
                 // 发给店员
                 resendSmsToClerk(getMaskedMobile(mobile) + "尾号" + couponLastCode + "券（" + ecoupon
-                        .faceValue + "元）不能重复消费，已于" + df.format(ecoupon.consumedAt) + "在" + shopName + "消费过", supplierUser.mobile, code);
+                        .faceValue + "元）不能重复消费，已于" + df.format(ecoupon.consumedAt) + "在" + shopName + "消费过", supplierUser.mobile, code, ecoupon.orderItems);
                 // 发给消费者
                 resendSmsToConsumer("您尾号" + couponLastCode + "券不能重复消费，已于" + df.format(ecoupon.consumedAt)
-                        + "在" + shopName + "消费过", mobile, code);
+                        + "在" + shopName + "消费过", mobile, code, ecoupon.orderItems);
 
                 return ("您的券号已消费，无法再次消费。如有疑问请致电：4006865151");
             }
         }
 
-        sendSmsToConsumer("您的券号不能在" + shopName + "消费，请与店员确认。如有疑问请致电：4006865151", mobile, code);
+        sendSmsToConsumer("您的券号不能在" + shopName + "消费，请与店员确认。如有疑问请致电：4006865151", mobile, code, ecoupon.orderItems);
         return ("您的券号不能在" + shopName + "消费，mobile:" + mobile);
     }
 
-    private static void sendSmsToConsumer(String message, String mobile, String code) {
-        SMSUtil.send(message, mobile, code);
+    private static void sendSmsToConsumer(String message, String mobile, String code, OrderItems orderItems) {
+        SMSMessage smsMessage = getSmsMessage(message, mobile, code, orderItems);
+        smsMessage.send();
     }
 
-    private static void sendSmsToClerk(String message, String mobile, String code) {
-        SMSUtil.send2(message, mobile, code);
+    private static SMSMessage getSmsMessage(String message, String mobile, String code, OrderItems orderItems) {
+        SMSMessage smsMessage = new SMSMessage(message, mobile, code);
+        if (orderItems != null) {
+            smsMessage = smsMessage.orderItemsId(orderItems.id).feeType(OrderItemsFeeType.SMS_VERIFY_NOTIFY);
+        }
+        return smsMessage;
     }
 
-    private static void resendSmsToConsumer(String message, String mobile, String code) {
-        SMSUtil.send2(message, mobile, code);
+    private static void sendSmsToClerk(String message, String mobile, String code, OrderItems orderItems) {
+        SMSMessage smsMessage = getSmsMessage(message, mobile, code, orderItems);
+        smsMessage.send2();
     }
 
-    private static void resendSmsToClerk(String message, String mobile, String code) {
-        SMSUtil.send(message, mobile, code);
+    private static void resendSmsToConsumer(String message, String mobile, String code, OrderItems orderItems) {
+        SMSMessage smsMessage = getSmsMessage(message, mobile, code, orderItems);
+        smsMessage.send2();
+    }
+
+    private static void resendSmsToClerk(String message, String mobile, String code, OrderItems orderItems) {
+        SMSMessage smsMessage = getSmsMessage(message, mobile, code, orderItems);
+        smsMessage.send();
     }
 
     /**
@@ -335,12 +350,12 @@ public class SmsReceiverUtil {
         } else {
             // 如果手机号是店员
             if (SupplierUser.checkMobile(mobile)) {
-                SMSUtil.send("券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：4006865151",
-                        mobile, code);
+                new SMSMessage("券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：4006865151",
+                        mobile, code).send();
                 result = "Unsupport Message";
             } else {
-                SMSUtil.send("不支持的命令，券验证请回复店员数字工号；或店员数字工号*验证金额，如299412*200",
-                        mobile, code);
+                new SMSMessage("不支持的命令，券验证请回复店员数字工号；或店员数字工号*验证金额，如299412*200",
+                        mobile, code).send();
                 result = "Unsupport Message";
             }
         }

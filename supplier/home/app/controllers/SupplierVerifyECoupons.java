@@ -5,10 +5,11 @@ import controllers.supplier.SupplierInjector;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.OrderItemsFeeType;
+import models.order.SentAvailableECouponInfo;
 import models.order.VerifyCouponType;
 import models.sales.Shop;
-import models.order.SentAvailableECouponInfo;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -173,28 +174,30 @@ public class SupplierVerifyECoupons extends Controller {
         final Shop shop = Shop.findById(shopId);
         Map<String, SentAvailableECouponInfo> map = new HashMap<>();
         SentAvailableECouponInfo ecouponInfo;
-        for (ECoupon ae : eCoupons) {  
+        for (ECoupon ae : eCoupons) {
             SentAvailableECouponInfo existedEcouponInfo = map.get(ae.orderItems.phone);
             if (existedEcouponInfo == null) {
-            	 ecouponInfo=new SentAvailableECouponInfo();
-            	 ecouponInfo.availableECouponSNs.add(ae.eCouponSn);
-                 ecouponInfo.sumFaceValue=ae.faceValue;
-                 ecouponInfo.lastECoupon=ae;
-                 map.put(ae.orderItems.phone,ecouponInfo);
+                ecouponInfo = new SentAvailableECouponInfo();
+                ecouponInfo.availableECouponSNs.add(ae.eCouponSn);
+                ecouponInfo.sumFaceValue = ae.faceValue;
+                ecouponInfo.lastECoupon = ae;
+                map.put(ae.orderItems.phone, ecouponInfo);
+            } else {
+                existedEcouponInfo.availableECouponSNs.add(ae.eCouponSn);
+                existedEcouponInfo.sumFaceValue = ae.faceValue;
+                existedEcouponInfo.lastECoupon = ae;
             }
-            else{
-            	existedEcouponInfo.availableECouponSNs.add(ae.eCouponSn);
-            	existedEcouponInfo.sumFaceValue=ae.faceValue;
-            	existedEcouponInfo.lastECoupon=ae;
-            }          
         }
 
         String dateTime = DateUtil.getNowTime();
 
         // 发给消费者
         for (String phone : map.keySet()) {
-           SMSUtil.send2("您的券" + StringUtils.join( map.get(phone).availableECouponSNs, ",") + "(共" +  map.get(phone).availableECouponSNs.size()+ "张面值" +  map.get(phone).sumFaceValue.setScale(2, BigDecimal.ROUND_HALF_UP) + "元)于" + dateTime
-                   + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151", phone, map.get(phone).lastECoupon.replyCode);
+            new SMSMessage("您的券" + StringUtils.join(map.get(phone).availableECouponSNs, ",") + "(共" + map.get(phone).availableECouponSNs.size() + "张面值" + map.get(phone).sumFaceValue.setScale(2, BigDecimal.ROUND_HALF_UP) + "元)于" + dateTime
+                    + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151", phone, map.get(phone).lastECoupon.replyCode)
+                    .orderItemsId(map.get(phone).lastECoupon.orderItems.id)
+                    .feeType(OrderItemsFeeType.SMS_VERIFY_NOTIFY)
+                    .send2();
         }
-   }
+    }
 }
