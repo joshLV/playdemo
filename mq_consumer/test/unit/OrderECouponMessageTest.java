@@ -99,7 +99,7 @@ public class OrderECouponMessageTest extends UnitTest {
 
         // 发短信时只会收到4条长短信，一条短信包括8张券
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
-        assertEquals(4, smsMessages.length);
+        assertEquals(2, smsMessages.length);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class OrderECouponMessageTest extends UnitTest {
 
         // 重发短信时只会收到2条长短信
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
-        assertEquals(2, smsMessages.length);
+        assertEquals(1, smsMessages.length);
     }
 
     @Test
