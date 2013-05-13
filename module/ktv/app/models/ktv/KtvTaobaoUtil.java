@@ -141,8 +141,6 @@ public class KtvTaobaoUtil {
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         List<KtvPriceSchedule> priceScheduleList = query.getResultList();
 
-        //查出该门店的该产品今天已经卖出、或者被锁定的房间信息
-        List<KtvRoomOrderInfo> roomOrderInfoList = KtvRoomOrderInfo.findScheduled(today, productGoods);
 
         //处理从今天开始往后的7天内，每一天的sku
         for (int i = 0; i < 7; i++) {
@@ -175,6 +173,8 @@ public class KtvTaobaoUtil {
                     sku.price = ps.price;
                     sku.quantity = shopPriceSchedule.roomCount;
 
+                    //查出该门店的该产品今天已经卖出、或者被锁定的房间信息
+                    List<KtvRoomOrderInfo> roomOrderInfoList = KtvRoomOrderInfo.findScheduled(today, startTime, productGoods);
                     //排除掉已预订的房间所占用的数量
                     for (KtvRoomOrderInfo orderInfo : roomOrderInfoList) {
                         if (orderInfo.scheduledDay.compareTo(day) != 0) {

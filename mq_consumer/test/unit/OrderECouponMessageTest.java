@@ -14,6 +14,8 @@ import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.Shop;
+import models.supplier.Supplier;
+import models.supplier.SupplierProperty;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +76,9 @@ public class OrderECouponMessageTest extends UnitTest {
                 target.status = OrderStatus.PAID;
             }
         });
+        SupplierProperty supplierProperty = FactoryBoy.lastOrCreate(SupplierProperty.class, "ktv");
+        supplierProperty.supplier = goods.getSupplier();
+        supplierProperty.save();
     }
 
 
