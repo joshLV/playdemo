@@ -82,13 +82,13 @@ public class ZtSMSProvider implements SMSProvider {
                 // 发送失败
                 throw new SMSException("发送助通短信不成功:" + result);
             }
-            Logger.info("ZtSMS message.getOrderItemsId()=" + message.getOrderItemsId());
-            if (message.getOrderItemsId() != null) {
-                int smsCount = (int) (result.length() / 67) + 1;
-                Logger.info("       smsCount=" + smsCount);
-                OrderItemsFee.recordFee(message.getOrderItemsId(), message.getFeeType(),
-                        getSmsFee().multiply(BigDecimal.valueOf(smsCount)));
-            }
+        }
+        Logger.info("ZtSMS message.getOrderItemsId()=" + message.getOrderItemsId());
+        if (message.getOrderItemsId() != null) {
+            int smsCount = (int) (result.length() / 67) + 1;
+            Logger.info("       smsCount=" + smsCount);
+            OrderItemsFee.recordFee(message.getOrderItemsId(), message.getFeeType(),
+                    getSmsFee().multiply(BigDecimal.valueOf(smsCount)));
         }
     }
 
