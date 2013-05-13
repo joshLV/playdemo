@@ -187,7 +187,7 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
                 .append("," + couponList.get(0).appointmentRemark)
-                .append("截止").append(dateFormat.format(couponList.get(0).expireAt))
+                .append(",截止").append(dateFormat.format(couponList.get(0).expireAt))
                 .append("一百券客服4006865151");
         assertEquals(sb.toString(), OrderECouponMessage.getOrderSMSMessage(couponList.get(0)).getSmsContent());
     }

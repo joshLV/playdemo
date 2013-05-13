@@ -185,8 +185,8 @@ public class OrderECouponMessage implements Serializable {
                 sb.append("券号").append(e.eCouponSn).append("密码").append(e.eCouponPassword);
                 ecouponSNs.add(sb.toString());
             } else {
-                if (eCoupons.size() > 1 && e.appointmentDate != null) {
-                    ecouponSNs.add("券号" + e.eCouponSn + ",预约日期:"+dateFormat.format(e.appointmentDate) + "," + e.appointmentRemark);
+                if (eCoupons.size() >= 1 && e.appointmentDate != null) {
+                    ecouponSNs.add("券号" + e.eCouponSn + ",预约日期:" + dateFormat.format(e.appointmentDate) + "," + e.appointmentRemark);
                 } else {
                     ecouponSNs.add("券号" + e.eCouponSn);
                 }
@@ -205,12 +205,6 @@ public class OrderECouponMessage implements Serializable {
         }
 
         String note = ",";
-        if (eCoupons.size() == 1) {
-            ECoupon coupon = eCoupons.get(0);
-            if (coupon.appointmentDate != null) {
-                note += "预约日期:" + dateFormat.format(coupon.appointmentDate) + "," + coupon.appointmentRemark;
-            }
-        }
         if (orderItems.goods.isOrder) {
             // 需要预约的产品
             note += "此产品需预约,预约电话见商品详情,";
