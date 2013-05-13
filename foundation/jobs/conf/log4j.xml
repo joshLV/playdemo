@@ -8,7 +8,7 @@
     </appender>
 
     <appender name="SYSLOG" class="org.apache.log4j.net.SyslogAppender">
-        <param name="syslogHost" value="logserver:29401"/>
+        <param name="syslogHost" value="logserver:29403"/>
         <param name="Facility" value="LOCAL1"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} [%-5p] [%X{client}] [%t] [%c{1}] %m%n"/>
