@@ -432,7 +432,9 @@ public class SupplierUser extends Model {
     }
 
     public Account getSupplierAccount() {
+        System.out.println(shop + "《=========shop:");
         if (shop != null && shop.independentClearing) {
+            System.out.println(  "《=========:");
             return AccountUtil.getShopAccount(shop.id);
         }
         if (supplier != null) {

@@ -15,7 +15,7 @@ import models.consumer.UserInfo;
 import models.order.Prepayment;
 import models.resale.Resaler;
 import models.sales.Shop;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import models.supplier.SupplierContract;
 import operate.rbac.ContextedPermission;
@@ -192,7 +192,7 @@ public class WithdrawApproval extends Controller {
                 sendContent += ".如有疑问请致电一百券财务54276001-8003";
 
                 if (supplier != null && StringUtils.isNotBlank(supplier.accountLeaderMobile) && supplierUser != null && !supplier.accountLeaderMobile.equals(supplierUser.mobile)) {
-                    SMSUtil.send(sendContent, supplier.accountLeaderMobile);
+                    new SMSMessage(sendContent, supplier.accountLeaderMobile).send();
                 }
                 break;
             case CONSUMER:
@@ -223,7 +223,7 @@ public class WithdrawApproval extends Controller {
             return;
         }
         sendContent = title + ", " + sendContent;
-        SMSUtil.send(sendContent, mobile);
+        new SMSMessage(sendContent, mobile).send();
 
     }
 

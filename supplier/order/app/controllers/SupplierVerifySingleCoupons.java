@@ -4,9 +4,10 @@ import com.uhuila.common.util.DateUtil;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.OrderItemsFeeType;
 import models.order.VerifyCouponType;
 import models.sales.Shop;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
@@ -122,8 +123,12 @@ public class SupplierVerifySingleCoupons extends Controller {
             ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
             String ecouponSNLast4Code = ecoupon.getLastCode(4);
             // 发给消费者
-            SMSUtil.send2("您尾号" + ecouponSNLast4Code + "的券号于" + dateTime
-                    + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151", ecoupon.orderItems.phone, ecoupon.replyCode);
+            new SMSMessage("您尾号" + ecouponSNLast4Code + "的券号于" + dateTime
+                    + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151", ecoupon.orderItems.phone,
+                    ecoupon.replyCode)
+                    .orderItemsId(ecoupon.orderItems.id)
+                    .feeType(OrderItemsFeeType.SMS_VERIFY_NOTIFY)
+                    .send2();
             // 标识为验证成功
             renderArgs.put("success_info", "true");
         }

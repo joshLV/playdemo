@@ -24,7 +24,7 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsCouponType;
 import models.sales.Shop;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
@@ -263,6 +263,9 @@ public class ECoupon extends Model {
 
     @Transient
     public String refundPriceInfo;
+
+    @Transient
+    public String orderItemsPhone;
 
     @Transient
     public String outerOrderId;
@@ -1269,8 +1272,11 @@ public class ECoupon extends Model {
         if (StringUtils.isBlank(phone)) {
             phone = eCoupon.orderItems.phone;
         }
-        SMSUtil.send((StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
-                "截止" + dateFormat.format(eCoupon.expireAt) + ",客服：4006865151", phone, eCoupon.replyCode);
+        new SMSMessage((StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
+                "截止" + dateFormat.format(eCoupon.expireAt) + ",客服：4006865151", phone, eCoupon.replyCode)
+                .orderItemsId(eCoupon.orderItems.id)
+                .feeType(OrderItemsFeeType.SMS_ECOUPON)
+                .send();
     }
 
     /**
@@ -1299,9 +1305,12 @@ public class ECoupon extends Model {
         }
         //        send(eCoupon, phone);
 
-        SMSUtil.send((StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号"
+        new SMSMessage((StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号"
                 + eCoupon.eCouponSn + "," +
-                "截止" + dateFormat.format(eCoupon.expireAt) + content + "客服：4006865151", phone, eCoupon.replyCode);
+                "截止" + dateFormat.format(eCoupon.expireAt) + content + "客服：4006865151", phone, eCoupon.replyCode)
+                .orderItemsId(eCoupon.orderItems.id)
+                .feeType(OrderItemsFeeType.SMS_ECOUPON)
+                .send();
     }
 
     public static void sendUserMessageInfoWithoutCheck(String phone, ECoupon eCoupon, String couponshopsId) {

@@ -1,11 +1,10 @@
 package functional;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.regex.Pattern;
-
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import controllers.EnSmsReceivers;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
@@ -18,12 +17,9 @@ import models.sales.Brand;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSMessage;
-import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
-
 import org.junit.Test;
-
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Http.Response;
@@ -31,12 +27,11 @@ import play.test.FunctionalTest;
 import util.DateHelper;
 import util.mq.MockMQ;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-
-import controllers.EnSmsReceivers;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Pattern;
 
 public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
 
@@ -88,11 +83,11 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
     }
 
     protected SMSMessage getLastConsumerSMSMessage() {
-        return (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
+        return (SMSMessage)MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
     }
 
     protected SMSMessage getLastClerkSMSMessage() {
-        return (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
+        return (SMSMessage)MockMQ.getLastMessage(SMSMessage.SMS2_QUEUE);
     }
     
     /**
@@ -204,14 +199,14 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
      * @param sendMessage
      */
     public void testNormalConsumerCheck(MessageSender messageSender) {
-        assertEquals(0, MockMQ.size(SMSUtil.SMS_QUEUE));
-        assertEquals(0, MockMQ.size(SMSUtil.SMS2_QUEUE));
+        assertEquals(0, MockMQ.size(SMSMessage.SMS_QUEUE));
+        assertEquals(0, MockMQ.size(SMSMessage.SMS2_QUEUE));
         assertEquals(ECouponStatus.UNCONSUMED, kfcECoupon.status);
         Http.Response response = messageSender.doMessageSend(kfcECoupon, kfcClerk.jobNumber, null);
 
         assertStatus(200, response);
-        assertEquals(1, MockMQ.size(SMSUtil.SMS_QUEUE));
-        assertEquals(1, MockMQ.size(SMSUtil.SMS2_QUEUE));
+        assertEquals(1, MockMQ.size(SMSMessage.SMS_QUEUE));
+        assertEquals(1, MockMQ.size(SMSMessage.SMS2_QUEUE));
 
         // 消费者短信
         SMSMessage msg = getLastConsumerSMSMessage();
@@ -226,7 +221,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         ECoupon ecoupon = ECoupon.findById(kfcECoupon.id);
         ecoupon.refresh();
         assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
-        assertEquals(0, MockMQ.size(SMSUtil.SMS_QUEUE));
+        assertEquals(0, MockMQ.size(SMSMessage.SMS_QUEUE));
     }
 
     /**

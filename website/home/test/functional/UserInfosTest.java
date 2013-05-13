@@ -3,25 +3,21 @@
  */
 package functional;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 import models.consumer.User;
 import models.consumer.UserInfo;
-import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
-import models.sms.SMSUtil;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.cache.Cache;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import util.mq.MockMQ;
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author wangjia
@@ -116,7 +112,7 @@ public class UserInfosTest extends FunctionalTest {
 
         //验证手机发送的验证码
 
-        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
+        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
         assertNotNull("您的验证码是123456, 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码【一百券】", msg);
         assertEquals("您的验证码是123456, 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码【一百券】", msg.getContent());
 

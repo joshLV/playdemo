@@ -5,9 +5,6 @@ import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
 import models.resale.Resaler;
 import models.supplier.Supplier;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import play.Logger;
@@ -152,7 +149,7 @@ public class OrderECouponMessage implements Serializable {
             return null;
         }
 
-        // 每8张券一个长短信
+
         List<ECoupon> eCoupons = orderItems.getECoupons();
 
         List<ECoupon> needSendECoupons = new ArrayList<>();
@@ -167,7 +164,13 @@ public class OrderECouponMessage implements Serializable {
             return null;
         }
 
-        List<List<ECoupon>> splitECoupons = Lists.partition(needSendECoupons, 8);
+        ECoupon firstECoupon = eCoupons.get(0);
+        // 默认每18张券一个长短信
+        int smsCouponSize = 18;
+        if (StringUtils.isNotBlank(firstECoupon.eCouponPassword)) {
+            smsCouponSize = 8;  //有密码是8张券一个短信
+        }
+        List<List<ECoupon>> splitECoupons = Lists.partition(needSendECoupons, smsCouponSize);
         OrderECouponSMSContext[] smsContents = new OrderECouponSMSContext[splitECoupons.size()];
         for (int i = 0; i < splitECoupons.size(); i++) {
             smsContents[i] = getSMSContent(orderItems, splitECoupons.get(i));

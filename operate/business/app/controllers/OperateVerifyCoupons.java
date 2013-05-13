@@ -5,9 +5,10 @@ import models.operator.OperateUser;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.OrderItemsFeeType;
 import models.order.VerifyCouponType;
 import models.sales.Shop;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -127,8 +128,11 @@ public class OperateVerifyCoupons extends Controller {
             ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
             String dateTime = DateUtil.getNowTime();
             String coupon = ecoupon.getLastCode(4);
-            SMSUtil.send("您尾号" + coupon + "券于" + dateTime
-                    + "成功消费，门店：" + shop.name + "。客服4006865151", ecoupon.orderItems.phone, ecoupon.replyCode);
+            new SMSMessage("您尾号" + coupon + "券于" + dateTime
+                    + "成功消费，门店：" + shop.name + "。客服4006865151", ecoupon.orderItems.phone, ecoupon.replyCode)
+                    .orderItemsId(ecoupon.orderItems.id)
+                    .feeType(OrderItemsFeeType.SMS_VERIFY_NOTIFY)
+                    .send();
         }
         render("OperateVerifyCoupons/index.html");
     }

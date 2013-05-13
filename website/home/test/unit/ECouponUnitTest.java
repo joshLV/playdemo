@@ -18,7 +18,6 @@ import models.order.PromoteRebate;
 import models.order.RebateStatus;
 import models.resale.Resaler;
 import models.sms.SMSMessage;
-import models.sms.SMSUtil;
 import org.junit.Before;
 import org.junit.Test;
 import play.Logger;
@@ -115,7 +114,7 @@ public class ECouponUnitTest extends UnitTest {
         eCoupon.shop = eCoupon.goods.getShopList().iterator().next();
         eCoupon.save();
         ECoupon.sendUserMessageInfoWithoutCheck("13712345678", eCoupon, eCoupon.shop.id.toString());
-        SMSMessage checkMsg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
+        SMSMessage checkMsg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
         assertEquals(eCoupon.goods.title + "券号" + eCoupon.eCouponSn + ",截止" + DateUtil.dateToString(eCoupon.goods.expireAt, 0) + ",[" +
                 eCoupon.shop.name + "]" + eCoupon.shop.address + " " + eCoupon.shop.phone + ";客服：4006865151【一百券】", checkMsg.getContent());
     }
