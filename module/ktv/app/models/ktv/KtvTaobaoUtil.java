@@ -75,7 +75,7 @@ public class KtvTaobaoUtil {
     public static void updateTaobaoSkuByProductGoods(KtvProductGoods productGoods) {
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
         //找到淘宝的token
-        Resaler resaler = Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.YLD_LOGIN_NAME);
         OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
 
         //构建新的淘宝SKU列表

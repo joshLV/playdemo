@@ -126,7 +126,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             Logger.error(e, "taobao coupon request failed: invalid params");
             return false;
         }
-        if (!"券生活8".equals(sellerNick)) {
+        if (!"券生活8".equals(sellerNick) && !"kisbear".equals(sellerNick)) {
             Logger.info("taobao coupon request failed: invalid seller");
             return false;//暂时只发我们自己的店
         }
@@ -148,7 +148,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
 
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(taobaoOrderId, "orders.price,orders.num,orders.sku_properties_name");
-            Order ybqOrder = createYbqOrder(outerIid, mobile, taobaoTrade);
+            Order ybqOrder = createYbqOrder(outerIid, mobile, sellerNick, taobaoTrade);
             if (ybqOrder == null) {
                 return false;//解析错误
             } else {
@@ -165,10 +165,18 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     }
 
     // 创建一百券订单
-    private Order createYbqOrder(Long outerGroupId, String userPhone, TradeGetResponse taobaoTrade) {
-        Resaler resaler = Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+    private Order createYbqOrder(Long outerGroupId, String userPhone, String sellerNick, TradeGetResponse taobaoTrade) {
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", Resaler.TAOBAO_LOGIN_NAME);
+            return null;
+        }
+        //如果是从其他淘宝店铺过来的订单，则读取相应的分销信息
+        if ("kisbear".equals(sellerNick)) {
+            resaler = Resaler.findApprovedByLoginName(Resaler.YLD_LOGIN_NAME);
+        }
+        if (resaler == null) {
+            Logger.error("can not find the resaler by login name: %s", Resaler.YLD_LOGIN_NAME);
             return null;
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
