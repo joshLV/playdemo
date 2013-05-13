@@ -167,12 +167,9 @@ public class AccountUtil {
     }
 
     public static Account getAccount(long uid, AccountType type, boolean creditable, Operator operator) {
-        System.out.println(uid + "《=========uid:");
-        System.out.println(type + "《=========type:");
-        System.out.println(operator.id + "《=========operator.id:");
         Account account = Account.find("uid=? and accountType=? and operator=? order by id", uid, type,
                 operator).first();
-        System.out.println(account.id + "《=========account.id:");
+
         if (account == null) {
             synchronized (Account.class) {
                 account = Account.find("uid=? and accountType=? and operator=? order by id", uid, type,

@@ -13,6 +13,7 @@ import models.accounts.WithdrawBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.operator.OperateUser;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -45,10 +46,12 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
     Account supplierAccount;
     WithdrawAccount withdrawAccount;
     OperateUser operateUser;
+    Operator operator;
 
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
+        operator = FactoryBoy.create(Operator.class);
         supplier = FactoryBoy.create(Supplier.class);
         goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
@@ -311,7 +314,7 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
         Prepayment lastPrepayment = Prepayment.getLastUnclearedPrepayments(supplier.id);
         BigDecimal result = (lastPrepayment == null ? BigDecimal.ZERO : lastPrepayment.getBalance());
         Logger.info("预付款余额=" + result);
-        return  result;
+        return result;
     }
 
     private BigDecimal 现金结算款(Date date) {
