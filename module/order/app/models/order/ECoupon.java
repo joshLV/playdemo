@@ -15,6 +15,10 @@ import models.admin.SupplierUser;
 import models.consumer.User;
 import models.kangou.KangouCardStatus;
 import models.kangou.KangouUtil;
+import models.ktv.KtvOrderStatus;
+import models.ktv.KtvProductGoods;
+import models.ktv.KtvRoomOrderInfo;
+import models.ktv.KtvTaobaoUtil;
 import models.operator.OperateUser;
 import models.resale.Resaler;
 import models.sales.Goods;
@@ -926,7 +930,7 @@ public class ECoupon extends Model {
 
 
         // 创建退款交易
-        TradeBill  tradeBill = TradeUtil.refundTrade()
+        TradeBill tradeBill = TradeUtil.refundTrade()
                 .toAccount(account)
                 .balancePaymentAmount(refundCashAmount)
                 .promotionPaymentAmount(refundPromotionAmount)
@@ -974,6 +978,20 @@ public class ECoupon extends Model {
             //if (KangouCardStatus.REFUND == kangouCardStatus) {
             Logger.info("看购网券eCoupon.id:" + eCoupon.id + "退款成功，看购网返回订单状态：" + kangouCardStatus);
             //}
+        }
+
+        //ktv商户
+        if (eCoupon.goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
+            //更新淘宝ktv sku信息
+            KtvProductGoods ktvProductGoods = KtvProductGoods.find("goods=?", eCoupon.goods).first();
+            if (ktvProductGoods != null) {
+                KtvRoomOrderInfo ktvRoomOrderInfo = KtvRoomOrderInfo.find("orderItem=?", eCoupon.orderItems).first();
+                ktvRoomOrderInfo.status = KtvOrderStatus.REFUND;
+                ktvRoomOrderInfo.save();
+
+                KtvTaobaoUtil.updateTaobaoSkuByProductGoods(ktvProductGoods);
+                Logger.info("after ecoupon refund,update taobao ktv sku:ktvProductGoods.id:" + ktvProductGoods.id + " success");
+            }
         }
 
         // 更改搜索服务中的库存

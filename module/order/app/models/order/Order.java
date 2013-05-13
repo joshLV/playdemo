@@ -894,9 +894,6 @@ public class Order extends Model {
 
                     //ktv商户的话，更新券的价格信息
                     if (isKtvSupplier && roomOrderInfo != null) {
-                        eCoupon.originalPrice = orderItem.originalPrice;
-                        eCoupon.faceValue = eCoupon.salePrice;
-
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
                         eCoupon.appointmentRemark = roomOrderInfo.roomType.getName()+","
                                 + roomOrderInfo.scheduledTime + "点至"

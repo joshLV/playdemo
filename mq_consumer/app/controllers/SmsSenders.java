@@ -34,11 +34,5 @@ public class SmsSenders extends Controller {
 
         renderText(smsProvider.getClass().getName() + " send success!");
     }
-    public static void make() {
-        TaobaoCouponMessage message = new TaobaoCouponMessage(24198L);
-        TaobaoCouponConsumer taobaoCouponConsumer = new TaobaoCouponConsumer();
-        taobaoCouponConsumer.consumeWithTx(message);
-
-    }
 
 }

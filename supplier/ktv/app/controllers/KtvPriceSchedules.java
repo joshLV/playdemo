@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import controllers.supplier.SupplierInjector;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvRoomType;
+import models.order.ECoupon;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import models.taobao.KtvSkuMessageUtil;
@@ -13,6 +14,7 @@ import models.ktv.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.DateUtils;
+import play.Logger;
 import play.Play;
 import play.data.binding.As;
 import play.data.validation.Valid;
@@ -28,7 +30,7 @@ import java.util.*;
  * Date: 13-4-12
  * Time: 下午2:09
  */
-//@With({SupplierRbac.class, SupplierInjector.class})
+@With({SupplierRbac.class, SupplierInjector.class})
 public class KtvPriceSchedules extends Controller {
     /**
      * 价格策略页面
@@ -143,10 +145,11 @@ public class KtvPriceSchedules extends Controller {
     //
     public static void make(long priceScheduleId) {
 //       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
-        List<KtvProductGoods> ktvProductGoodsList = KtvProductGoods.findAll();
-        for (KtvProductGoods productGoods : ktvProductGoodsList) {
-            KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);
-        }
+//        List<KtvProductGoods> ktvProductGoodsList = KtvProductGoods.findAll();
+//        for (KtvProductGoods productGoods : ktvProductGoodsList) {
+//            KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);
+//        }
+
     }
 
 

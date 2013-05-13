@@ -32,6 +32,7 @@ import play.jobs.OnApplicationStart;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -185,9 +186,11 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                         userPhone, new BigDecimal(order.getPrice()), new BigDecimal(order.getPrice()));
                 uhuilaOrderItem.save();
 
-                if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER) && createSkuOrderInfo(uhuilaOrderItem, order, goods) == null) {
-                    JPA.em().getTransaction().rollback();
-                    return null;
+                if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
+                    if (createSkuOrderInfo(uhuilaOrderItem, order, goods) == null) {
+                        JPA.em().getTransaction().rollback();
+                        return null;
+                    }
                 }
             }
 
@@ -211,12 +214,17 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         return ybqOrder;
     }
 
+    /**
+     * 创建淘宝sku订单信息
+     */
     private KtvRoomOrderInfo createSkuOrderInfo(OrderItems uhuilaOrderItem, com.taobao.api.domain.Order order, Goods goods) {
-
         KtvProductGoods productGoods = KtvProductGoods.find("byGoods", goods).first();
         if (productGoods == null) {
             return null;
         }
+        uhuilaOrderItem.faceValue = uhuilaOrderItem.salePrice;
+        uhuilaOrderItem.originalPrice = uhuilaOrderItem.salePrice.multiply(goods.originalPrice.divide(goods.salePrice, RoundingMode.FLOOR)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        uhuilaOrderItem.save();
 
         Calendar calendar = Calendar.getInstance();
         Matcher matcher;
