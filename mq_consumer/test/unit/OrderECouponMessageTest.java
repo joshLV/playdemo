@@ -212,7 +212,6 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append("[共2张]")
                 .append(",截止").append(dateFormat.format(couponList.get(0).expireAt))
                 .append("一百券客服4006865151");
-        System.out.println(sb.toString());
         assertEquals(sb.toString(), smsMessages[0].getSmsContent());
 
     }

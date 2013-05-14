@@ -152,7 +152,7 @@ public class KtvTaobaoUtil {
         //处理从今天开始往后的7天内，每一天的sku
         for (int i = 0; i < 7; i++) {
             Date day = DateUtils.addDays(today, i);
-            //抓出所有相关的价格策略，以日期范围 和 星期 为条件，筛选出合适的，然后坐进一步处理
+            //抓出所有相关的价格策略，以日期范围 和 星期 为条件，筛选出合适的，然后进一步处理
             for (KtvPriceSchedule ps : priceScheduleList) {
 
                 calendar.setTime(day);

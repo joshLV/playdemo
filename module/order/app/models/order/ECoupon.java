@@ -985,9 +985,11 @@ public class ECoupon extends Model {
             //更新淘宝ktv sku信息
             KtvProductGoods ktvProductGoods = KtvProductGoods.find("goods=?", eCoupon.goods).first();
             if (ktvProductGoods != null) {
-                KtvRoomOrderInfo ktvRoomOrderInfo = KtvRoomOrderInfo.find("orderItem=?", eCoupon.orderItems).first();
-                ktvRoomOrderInfo.status = KtvOrderStatus.REFUND;
-                ktvRoomOrderInfo.save();
+                List<KtvRoomOrderInfo> roomOrderInfoList = KtvRoomOrderInfo.find("orderItem=?", eCoupon.orderItems).fetch();
+                for (KtvRoomOrderInfo orderInfo : roomOrderInfoList) {
+                    orderInfo.status = KtvOrderStatus.REFUND;
+                    orderInfo.save();
+                }
 
                 KtvTaobaoUtil.updateTaobaoSkuByProductGoods(ktvProductGoods);
                 Logger.info("after ecoupon refund,update taobao ktv sku:ktvProductGoods.id:" + ktvProductGoods.id + " success");
