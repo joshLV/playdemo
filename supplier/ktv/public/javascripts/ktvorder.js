@@ -150,6 +150,20 @@ var KTVOrder = (function  () {
             ele.remove();
         }
     }
+    function hoverInPriceCell(){
+        var ele = $(this);
+        var t = Number(ele.attr("data-time"));
+        if (d == 1) {
+            ele.text(t + ":00");
+        }else {
+            var d = Number(ele.attr("data-duration"));
+            ele.text(t+":00 - "+ (t+d-1)+":00");
+        }
+    }
+    function hoverOutPriceCell(){
+        var ele = $(this);
+        ele.text("￥" + ele.attr("data-price"));
+    }
 
     function togglePriceCell(ktv, ele) {
         var index = toggleSelected(ktv, ele);
@@ -217,6 +231,7 @@ var KTVOrder = (function  () {
                     if (holderType == "order" && holder.type=="schedule" ) {
                         holder.type = "order";
                         holder.div.removeClass("wk-order-room-price");
+                        holder.div.unbind('mouseenter mouseleave');
                         holder.div.text("");
                         return holder;
                     };
@@ -298,6 +313,7 @@ var KTVOrder = (function  () {
                     holder.div.attr("data-price", schedule.price);
                     holder.div.text("￥" + schedule.price);
                     holder.div.addClass("wk-order-room-price");
+                    holder.div.hover( hoverInPriceCell, hoverOutPriceCell )
 
                     if (!ktv.viewMode) {
                         priceCell.click(function(){togglePriceCell(ktv, $(this))});
@@ -313,34 +329,6 @@ var KTVOrder = (function  () {
 
             var holder = ktv.getAvaliableHolder(order.roomType.toLowerCase(), scheduleTime, order.duration, "order");
             holder.div.addClass("wk-order-room-reserved");
-        }
-        for(var roomType in ktv.rooms) {
-            var roomsOfType = ktv.rooms[roomType];
-            for(var duration in roomsOfType.durations){
-                var roomsOfDuration = roomsOfType.durations[duration];
-                for(var m = 0; m < roomsOfDuration.rooms.length; m ++) {
-                    var room = roomsOfDuration.rooms[m];
-                    for(var n = 0; n < room.holders.length; n ++) {
-                        var holder = room.holders[n];
-                        holder.div.hover(
-                            function(){
-                                var ele = $(this);
-                                var t = Number(ele.attr("data-time"));
-                                if (d == 1) {
-                                    ele.text(t + ":00");
-                                }else {
-                                    var d = Number(ele.attr("data-duration"));
-                                    ele.text(t+":00 - "+ (t+d-1)+":00");
-                                }
-                            },
-                            function(){
-                                var ele = $(this);
-                                ele.text("￥" + ele.attr("data-price"));
-                            }
-                            );
-                    }
-                }
-            }
         }
     };
     return KTVOrder;
