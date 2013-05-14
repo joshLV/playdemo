@@ -66,6 +66,9 @@ POST  /mock/jingdong/send-order                 mock.JingDongGroupByRequest.doSe
 GET   /mock/jingdong/send-sms                   mock.JingDongGroupByRequest.sendSMS
 POST  /mock/jingdong/send-sms                   mock.JingDongGroupByRequest.doSendSMS
 
+# KTV预订系统回调页面
+GET     /api/v1/ktv/taobao/welcome              KtvAuth.taobao
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

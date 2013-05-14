@@ -1,0 +1,583 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎使用KTV预订系统</title>
+    <style type="text/css">
+    /* Standard Orange Button */
+    .button,
+    button {
+    background-color: #ed5a48;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    display: inline-block;
+    padding: 5px;
+    }
+
+    .button:hover,
+    .button:visited {
+    color: #fff;
+    }
+
+    /* Grey Button */
+    .button.grey {
+    background-color: #c5c4c4;
+    }
+
+    /* Icon Buttons */
+    .button.icon-button {
+    background-color: transparent;
+    padding: 0;
+    }
+
+    .icon-button .icon {
+    display: inline-block;
+    height: 25px;
+    margin-right: -4px;
+    padding: 0;
+    width: 25px;
+    }
+
+    .icon-button .icon img {
+    display: block;
+    }
+
+    .icon-button .label {
+    -webkit-transition: all 0.4s ease;
+
+    display: inline-block;
+    /*opacity: 0;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: top;
+    white-space: nowrap;
+    /*max-width: 0;*/
+    }
+
+    /*.icon-button:hover .label {
+    -webkit-transition: all 0.4s ease;
+
+    opacity: 1;
+    max-width: 200px;
+    }*/
+
+
+    * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    margin: 0;
+    padding: 0;
+    }
+
+    html,
+    body {
+    height: 100%;
+    width: 100%;
+    }
+
+    body {
+    -webkit-font-smoothing: subpixel-antialiased;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
+    font-smoothing: subpixel-antialiased;
+    text-rendering: optimizeLegibility;
+    }
+
+    a,
+    a:visited {
+    -webkit-transition: all 0.2s cubic-bezier(0.2, 0.6, 0.3, 1);
+    -moz-transition: all 0.2s cubic-bezier(0.2, 0.6, 0.3, 1);
+    -ms-transition: all 0.2s cubic-bezier(0.2, 0.6, 0.3, 1);
+    -o-transition: all 0.2s cubic-bezier(0.2, 0.6, 0.3, 1);
+    transition: all 0.2s cubic-bezier(0.2, 0.6, 0.3, 1);
+
+    color: #333;
+    position: relative;
+    text-decoration: none;
+    }
+
+    a:hover,
+    a:visited:hover {
+    -webkit-transition: all 0.2s cubic-bezier(0.2, 0.6, 0.3, 1);
+    -moz-transition: all 0.2s cubic-bezier(0.2, 0.6, 0.3, 1);
+    -ms-transition: all 0.2s cubic-bezier(0.2, 0.6, 0.3, 1);
+    -o-transition: all 0.2s cubic-bezier(0.2, 0.6, 0.3, 1);
+    transition: all 0.2s cubic-bezier(0.2, 0.6, 0.3, 1);
+
+    color: #ed5a48;
+    }
+
+    .wrap {
+    margin: 0 auto;
+    width: 990px;
+    }
+
+    /* Clearfix */
+    .cf:before, .cf:after,
+    .wrap:before, .wrap:after,
+    .content:before, .content:after,
+    header:before, header:after,
+    footer:before, footer:after,
+    .button:before, .button:after,
+    .opposing-float-control:before, .opposing-float-control:after {
+    content: " ";
+    display: table;
+    }
+    .cf:after,
+    .wrap:after,
+    .content:after,
+    header:after,
+    footer:after,
+    .button:after,
+    .opposing-float-control:after {
+    clear: both;
+    }
+
+    /* Footer */
+    footer {
+    border-top: 1px solid #ddd;
+    padding: 50px;
+    }
+
+    footer .column {
+    float: left;
+    width: 50%;
+    }
+
+    footer .column.last {
+    text-align: right;
+    }
+
+    footer p {
+    color: #9099A3;
+    font-size: 14px;
+    font-weight: 300;
+    }
+
+    footer a {
+    color: #3E4956;
+    font-size: 14px;
+    margin-right: 15px;
+    }
+
+    footer a.orange {
+    color: #ed5a48;
+    font-weight: 600;
+    margin: 0;
+    }
+
+    /* Fade in up */
+    @-webkit-keyframes fadeInUp {
+    0% {
+    opacity: 0;
+    -webkit-transform: translateY(75px);
+    }
+    100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    }
+    }
+    @-moz-keyframes fadeInUp {
+    0% {
+    opacity: 0;
+    -moz-transform: translateY(75px);
+    }
+    100% {
+    opacity: 1;
+    -moz-transform: translateY(0);
+    }
+    }
+    @-o-keyframes fadeInUp {
+    0% {
+    opacity: 0;
+    -o-transform: translateY(75px);
+    }
+    100% {
+    opacity: 1;
+    -o-transform: translateY(0);
+    }
+    }
+    @keyframes fadeInUp {
+    0% {
+    opacity: 0;
+    transform: translateY(75px);
+    }
+    100% {
+    opacity: 1;
+    transform: translateY(0);
+    }
+    }
+
+    /* Shake */
+    @-webkit-keyframes shake {
+    0%, 100% {-webkit-transform: translateX(0);}
+    10%, 30%, 50%, 70%, 90% {-webkit-transform: translateX(-10px);}
+    20%, 40%, 60%, 80% {-webkit-transform: translateX(10px);}
+    }
+    @-moz-keyframes shake {
+    0%, 100% {-moz-transform: translateX(0);}
+    10%, 30%, 50%, 70%, 90% {-moz-transform: translateX(-10px);}
+    20%, 40%, 60%, 80% {-moz-transform: translateX(10px);}
+    }
+    @-o-keyframes shake {
+    0%, 100% {-o-transform: translateX(0);}
+    10%, 30%, 50%, 70%, 90% {-o-transform: translateX(-10px);}
+    20%, 40%, 60%, 80% {-o-transform: translateX(10px);}
+    }
+    @keyframes shake {
+    0%, 100% {transform: translateX(0);}
+    10%, 30%, 50%, 70%, 90% {transform: translateX(-10px);}
+    20%, 40%, 60%, 80% {transform: translateX(10px);}
+    }
+
+
+    ::selection {
+    background: #fdc3b3;
+    color: #fff;
+    }
+    ::-moz-selection {
+    background: #fdc3b3;
+    color: #fff;
+    }
+
+    body {
+    background-color: #f4f3f3;
+    }
+
+    form,
+    input {
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
+    }
+
+    input:focus,
+    input:active {
+    outline: none;
+    }
+
+    a {
+    border: none;
+    outline: none;
+    }
+
+    img {
+    border: none;
+    display: block;
+    outline: none;
+    }
+
+    svg {
+    border: none;
+    outline: none;
+    }
+
+    h1 {
+    color: #3E4956;
+    font-size: 46px;
+    font-weight: 400;
+    text-align: center;
+    }
+
+    h2 {
+    color: #9099A3;
+    font-size: 22px;
+    font-weight: 300;
+    text-align: center;
+    }
+
+    h2 em {
+    color: #3E4956;
+    font-style: normal;
+    }
+
+    .wrap {
+    margin: 0 auto;
+    width: 990px;
+    }
+
+    .content {
+    padding: 0;
+    }
+
+
+    /* Lead */
+    .lead {
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    }
+
+    .lead .button {
+    font-size: 20px;
+    font-weight: 300;
+    padding: 15px 20px;
+    }
+
+    .lead h2 {
+    line-height: 2.5;
+    }
+
+    .lead header {
+    margin: 75px 0 50px 0;
+    position: relative;
+    text-align: center;
+    }
+
+    .lead header a {
+    display: block;
+    margin: 0 auto;
+    width: 180px;
+    }
+
+    .lead header img {
+    display: block;
+    }
+
+    .lead header nav {
+    position: absolute;
+    right: 0;
+    top: 0;
+    }
+
+    .lead header nav a {
+    color: #b0b8c2;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 60px;
+    }
+
+    .lead header nav a:hover {
+    color: #ed5a48;
+    }
+
+    .call-to-action {
+    padding: 50px 0 75px 0;
+    text-align: center;
+    }
+
+    .call-to-action a {
+    display: inline-block;
+    }
+
+    .signup-form input {
+    border: 1px solid #ED5A48;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.15);
+    color: #3e4956;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 300;
+    padding: 16px 20px;
+    }
+
+    #mc-embedded-subscribe {
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    display: inline-block;
+    left: -4px;
+    padding: 20px;
+    position: relative;
+    vertical-align: top;
+    }
+
+    #mc-embedded-subscribe .icon {
+    background: #ed5a48 url('../../images/marketing/homepage/icon-sprite.png') no-repeat left 60%;
+    display: block;
+    height: 18px;
+    font-size: 18px;
+    line-height: 1;
+    text-indent: -9999px;
+    width: 31px;
+    }
+
+    #preview {
+    height: 320px;
+    }
+
+    #preview img {
+    margin: 0 auto;
+    }
+
+
+    /* Points */
+    .points {
+    padding: 75px 0;
+    }
+
+    .point {
+    float: left;
+    margin-bottom: 50px;
+    margin-right: 5%;
+    width: 30%;
+    }
+
+    .last .point {
+    margin-bottom: 0;
+    }
+
+    .point:nth-child(3n) {
+    margin-right: 0;
+    }
+
+    .point h3 {
+    background: transparent url('../../images/marketing/homepage/point-icons.png') no-repeat left top;
+    color: #3E4956;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 40px;
+    margin-bottom: 5px;
+    padding-left: 45px;
+    }
+
+    .design h3 {
+    background-position: left -5px;
+    }
+    .photo h3 {
+    background-position: left -55px
+    }
+    .cloud h3 {
+    background-position: left -105px;
+    }
+    .code h3 {
+    background-position: left -155px;
+    }
+    .domain h3 {
+    background-position: left -255px;
+    }
+    .management h3 {
+    background-position: left -205px;
+    }
+
+    .point p {
+    color: #9099A3;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.75;
+    }
+
+    /* Animations */
+    .shake {
+    -webkit-animation: shake 1s ease forwards;
+    }
+
+    .cssanimations #preview {
+    -moz-animation: fadeInUp 0.6s 0.5s ease forwards;
+    -o-animation: fadeInUp 0.6s 0.5s ease forwards;
+    -webkit-animation: fadeInUp 0.6s 0.5s ease forwards;
+    opacity: 0;
+    }
+    </style>
+</head>
+
+
+<body class="public homepage">
+<!-- BEGIN Header -->
+
+<!-- END Header -->
+
+
+
+<!-- BEGIN Content -->
+<div class="content">
+
+    <div class="lead">
+        <div class="wrap">
+            <header>
+                <a href="/"><img src="http://img.uhcdn.com/images/y/logo.png" id="logo" ></a>
+
+                <nav>
+                    <a href="https://oauth.taobao.com/authorize?response_type=code&client_id=21499637&redirect_uri=http://api.quanfx.com/api/v1/ktv/taobao/welcome&scope=item&view=web">请求授权</a>
+                </nav>
+            </header>
+
+            <h1>欢迎使用一百券KTV预订系统</h1>
+            <!--<h2><em>玩转淘宝KTV</em> 就在一百券KTV预订系统 </h2>-->
+
+            <div class="call-to-action">
+                <!-- BEGIN Mailchimp form -->
+            </div>
+
+        </div>
+    </div>
+
+
+    *{
+    <div class="points wrap cf">
+        <!-- Row 1 -->
+        <div class="row first">
+            <div class="point design">
+                <h3>Stunning designs</h3>
+                <p>
+                    Plover provides you with beautiful templates right out of the box. Create a beautiful gallery in minutes.
+                </p>
+            </div>
+
+            <div class="point photo">
+                <h3>Sell prints</h3>
+                <p>
+                    Earn an extra revenue stream. We can print and ship the order, or you can fulfill it yourself the way you want it.
+                </p>
+            </div>
+
+            <div class="point cloud">
+                <h3>Cloud storage</h3>
+                <p>
+                    We know how important your images are to you. Have peace of mind knowing that your images are safely secured in the cloud.
+                </p>
+            </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="row last">
+            <div class="point code">
+                <h3>Custom templates</h3>
+                <p>
+                    Make any template your own with a few clicks. We'll never show our logo to your clients.
+                </p>
+            </div>
+
+            <div class="point domain">
+                <h3>Custom domain name</h3>
+                <p>
+                    We think that you should be able to customize every aspect of Plover so that your clients never know we're here.
+                </p>
+            </div>
+
+            <div class="point management">
+                <h3>Management made easy</h3>
+                <p>
+                    Organize images into collections, decide what products to sell, and view detailed stats about <em>everything</em>.
+                </p>
+            </div>
+        </div>
+    </div>
+    }*
+
+</div>
+<!-- END Content -->
+
+<!-- BEGIN Footer -->
+
+*{
+<footer>
+    <div class="wrap">
+        <div class="column">
+            <a href="/signin/">Sign in</a>
+            <a href="/privacy/">Privacy</a>
+            <a href="/terms/">Terms</a>
+            <a href="http://blog.plover.co" target="_blank">Blog</a>
+            <a href="http://twitter.com/ploverapp" target="_blank">Twitter</a>
+        </div>
+
+        <div class="column last">
+            <p>Made with love in NYC by <a href="http://flek.co" target="_blank" class="orange">Flek</a></p>
+        </div>
+    </div>
+</footer>
+}*
+
+
+</body>
+</html>
