@@ -147,7 +147,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         }
 
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
-            TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(taobaoOrderId, "orders.price,orders.num,orders.sku_properties_name");
+            TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(taobaoOrderId, "orders.payment,orders.num,orders.sku_properties_name");
             Order ybqOrder = createYbqOrder(outerIid, mobile, taobaoTrade);
             if (ybqOrder == null) {
                 return false;//解析错误
@@ -183,7 +183,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             List<com.taobao.api.domain.Order> orders = taobaoTrade.getTrade().getOrders();
             for (com.taobao.api.domain.Order order : orders) {
                 OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, order.getNum(),
-                        userPhone, new BigDecimal(order.getPrice()), new BigDecimal(order.getPrice()));
+                        userPhone, new BigDecimal(order.getPayment()), new BigDecimal(order.getPayment()));
                 uhuilaOrderItem.save();
 
                 if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
