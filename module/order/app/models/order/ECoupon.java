@@ -15,12 +15,16 @@ import models.admin.SupplierUser;
 import models.consumer.User;
 import models.kangou.KangouCardStatus;
 import models.kangou.KangouUtil;
+import models.ktv.KtvOrderStatus;
+import models.ktv.KtvProductGoods;
+import models.ktv.KtvRoomOrderInfo;
+import models.ktv.KtvTaobaoUtil;
 import models.operator.OperateUser;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsCouponType;
 import models.sales.Shop;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
@@ -259,6 +263,9 @@ public class ECoupon extends Model {
 
     @Transient
     public String refundPriceInfo;
+
+    @Transient
+    public String orderItemsPhone;
 
     @Transient
     public String outerOrderId;
@@ -923,7 +930,7 @@ public class ECoupon extends Model {
 
 
         // 创建退款交易
-        TradeBill  tradeBill = TradeUtil.refundTrade()
+        TradeBill tradeBill = TradeUtil.refundTrade()
                 .toAccount(account)
                 .balancePaymentAmount(refundCashAmount)
                 .promotionPaymentAmount(refundPromotionAmount)
@@ -971,6 +978,20 @@ public class ECoupon extends Model {
             //if (KangouCardStatus.REFUND == kangouCardStatus) {
             Logger.info("看购网券eCoupon.id:" + eCoupon.id + "退款成功，看购网返回订单状态：" + kangouCardStatus);
             //}
+        }
+
+        //ktv商户
+        if (eCoupon.goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
+            //更新淘宝ktv sku信息
+            KtvProductGoods ktvProductGoods = KtvProductGoods.find("goods=?", eCoupon.goods).first();
+            if (ktvProductGoods != null) {
+                KtvRoomOrderInfo ktvRoomOrderInfo = KtvRoomOrderInfo.find("orderItem=?", eCoupon.orderItems).first();
+                ktvRoomOrderInfo.status = KtvOrderStatus.REFUND;
+                ktvRoomOrderInfo.save();
+
+                KtvTaobaoUtil.updateTaobaoSkuByProductGoods(ktvProductGoods);
+                Logger.info("after ecoupon refund,update taobao ktv sku:ktvProductGoods.id:" + ktvProductGoods.id + " success");
+            }
         }
 
         // 更改搜索服务中的库存
@@ -1251,8 +1272,11 @@ public class ECoupon extends Model {
         if (StringUtils.isBlank(phone)) {
             phone = eCoupon.orderItems.phone;
         }
-        SMSUtil.send((StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
-                "截止" + dateFormat.format(eCoupon.expireAt) + ",客服：4006865151", phone, eCoupon.replyCode);
+        new SMSMessage((StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
+                "截止" + dateFormat.format(eCoupon.expireAt) + ",客服：4006865151", phone, eCoupon.replyCode)
+                .orderItemsId(eCoupon.orderItems.id)
+                .feeType(OrderItemsFeeType.SMS_ECOUPON)
+                .send();
     }
 
     /**
@@ -1281,9 +1305,12 @@ public class ECoupon extends Model {
         }
         //        send(eCoupon, phone);
 
-        SMSUtil.send((StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号"
+        new SMSMessage((StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号"
                 + eCoupon.eCouponSn + "," +
-                "截止" + dateFormat.format(eCoupon.expireAt) + content + "客服：4006865151", phone, eCoupon.replyCode);
+                "截止" + dateFormat.format(eCoupon.expireAt) + content + "客服：4006865151", phone, eCoupon.replyCode)
+                .orderItemsId(eCoupon.orderItems.id)
+                .feeType(OrderItemsFeeType.SMS_ECOUPON)
+                .send();
     }
 
     public static void sendUserMessageInfoWithoutCheck(String phone, ECoupon eCoupon, String couponshopsId) {

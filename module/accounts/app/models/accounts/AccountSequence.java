@@ -212,7 +212,7 @@ public class AccountSequence extends Model {
     }
 
     /**
-     * 查询在指定日期前没有结算的account账户进账的钱，减去已经提现的钱总金额。
+     * 查询在指定日期前没有结算的account账户进账的钱，减去所有出款项(除提现)且未结算的金额。
      * @param account
      * @param toDate
      * @return
@@ -225,12 +225,12 @@ public class AccountSequence extends Model {
         amount = (amount != null) ? amount : BigDecimal.ZERO;
         Logger.info("getVostroAmountTo: amount:" + amount + ", toDate=" + toDate);
         BigDecimal refundAmount = getWithdrawAmountTo(account, toDate);
-        Logger.info("getVostroAmountTo: refundAmount:" + refundAmount);  // 提现金额，查出应为负数，所以下面用add
+        Logger.info("getVostroAmountTo: refundAmount:" + refundAmount);  // 所有出款项(除提现)且未结算的金额，查出应为负数，所以下面用add
         return amount.add(refundAmount);
     }
 
     /**
-     * 查询已经提钱但未结算的金额
+     * 查询所有出款项(除提现)且未结算的金额
      * @param account
      * @param toDate
      * @return

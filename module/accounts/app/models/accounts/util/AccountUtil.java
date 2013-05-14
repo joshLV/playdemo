@@ -169,6 +169,7 @@ public class AccountUtil {
     public static Account getAccount(long uid, AccountType type, boolean creditable, Operator operator) {
         Account account = Account.find("uid=? and accountType=? and operator=? order by id", uid, type,
                 operator).first();
+
         if (account == null) {
             synchronized (Account.class) {
                 account = Account.find("uid=? and accountType=? and operator=? order by id", uid, type,

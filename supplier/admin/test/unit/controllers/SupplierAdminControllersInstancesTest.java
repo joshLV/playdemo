@@ -11,7 +11,6 @@ import play.test.UnitTest;
 public class SupplierAdminControllersInstancesTest extends UnitTest{
     @Test
     public void controllerInstanceTest(){
-        assertTrue(new FoundationJobsApplication() instanceof Controller);
         assertTrue(new SupplierProfiles() instanceof Controller);
         assertTrue(new SuppliersFindPassword() instanceof Controller);
         assertTrue(new SuppliersPassword() instanceof Controller);

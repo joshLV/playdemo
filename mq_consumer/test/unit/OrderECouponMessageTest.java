@@ -14,6 +14,8 @@ import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.Shop;
+import models.supplier.Supplier;
+import models.supplier.SupplierProperty;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +76,9 @@ public class OrderECouponMessageTest extends UnitTest {
                 target.status = OrderStatus.PAID;
             }
         });
+        SupplierProperty supplierProperty = FactoryBoy.lastOrCreate(SupplierProperty.class, "ktv");
+        supplierProperty.supplier = goods.getSupplier();
+        supplierProperty.save();
     }
 
 
@@ -99,7 +104,7 @@ public class OrderECouponMessageTest extends UnitTest {
 
         // 发短信时只会收到4条长短信，一条短信包括8张券
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
-        assertEquals(4, smsMessages.length);
+        assertEquals(2, smsMessages.length);
     }
 
     @Test
@@ -117,7 +122,7 @@ public class OrderECouponMessageTest extends UnitTest {
 
         // 重发短信时只会收到2条长短信
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
-        assertEquals(2, smsMessages.length);
+        assertEquals(1, smsMessages.length);
     }
 
     @Test
@@ -187,7 +192,7 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
                 .append("," + couponList.get(0).appointmentRemark)
-                .append("截止").append(dateFormat.format(couponList.get(0).expireAt))
+                .append(",截止").append(dateFormat.format(couponList.get(0).expireAt))
                 .append("一百券客服4006865151");
         assertEquals(sb.toString(), OrderECouponMessage.getOrderSMSMessage(couponList.get(0)).getSmsContent());
     }

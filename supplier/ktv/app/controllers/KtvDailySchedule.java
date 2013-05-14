@@ -62,7 +62,7 @@ public class KtvDailySchedule extends Controller {
         List<Map<String, Object>> orderInfoMaps = new ArrayList<>();
         for (KtvRoomOrderInfo orderInfo : orderInfoList) {
             Map<String, Object> o = new HashMap<>();
-            o.put("roomType", orderInfo.ktvRoomType);
+            o.put("roomType", orderInfo.roomType);
             o.put("scheduledDay", orderInfo.scheduledDay);
             o.put("scheduledTime", orderInfo.scheduledTime);
             o.put("duration", orderInfo.duration);

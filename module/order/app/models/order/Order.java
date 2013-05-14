@@ -28,7 +28,7 @@ import models.sales.ImportedCoupon;
 import models.sales.ImportedCouponStatus;
 import models.sales.MaterialType;
 import models.sales.SecKillGoodsItem;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -57,7 +57,10 @@ import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 
 @Entity
@@ -735,6 +738,7 @@ public class Order extends Model {
         }
         */
 
+        System.out.println("payAndSendECoupon ===");
         if (paid(account)) {
             generateECoupon();
             remindBigOrderRemark();
@@ -765,7 +769,7 @@ public class Order extends Model {
      * 订单已支付，修改支付状态、时间，更改库存，发送电子券密码
      */
     public boolean paid(Account account) {
-        System.out.println(  "《into paid()=========:");
+        System.out.println(  "《into paid()=========:"+account);
         if (this.status != OrderStatus.UNPAID) {
             throw new RuntimeException("can not pay order:" + this.getId() + " since it's already been processed");
         }
@@ -890,11 +894,8 @@ public class Order extends Model {
 
                     //ktv商户的话，更新券的价格信息
                     if (isKtvSupplier && roomOrderInfo != null) {
-                        eCoupon.originalPrice = orderItem.originalPrice;
-                        eCoupon.faceValue = eCoupon.salePrice;
-
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
-                        eCoupon.appointmentRemark = roomOrderInfo.ktvRoomType.getName()+","
+                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName()+","
                                 + roomOrderInfo.scheduledTime + "点至"
                                 + (roomOrderInfo.scheduledTime + roomOrderInfo.duration - 1) + "点" ;
                         eCoupon.save();
@@ -976,11 +977,6 @@ public class Order extends Model {
         mailMessage.putParam("orderId", id);
         mailMessage.putParam("addr", play.Play.configuration.getProperty("application.baseUrl"));
         MailUtil.sendCustomerRemarkMail(mailMessage);
-
-        //发送短信
-        String content = "订单号" + orderNumber + "(金额" + amount + "),商品名：" + goodsName + ",客户手机号:" + buyerMobile + ",客户留言：" + remark;
-        String phone = "15026580827";
-        SMSUtil.send(content, phone);
     }
 
     /**

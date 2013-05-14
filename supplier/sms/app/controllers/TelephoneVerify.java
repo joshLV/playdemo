@@ -7,8 +7,10 @@ import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.OrderItemsFee;
+import models.order.OrderItemsFeeType;
 import models.order.VerifyCouponType;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -234,9 +236,17 @@ public class TelephoneVerify extends Controller {
 
         // 发给消费者
         if (Play.mode.isProd()) {
-            SMSUtil.send("您尾号" + eCouponNumber + "的券号于" + dateTime
-                    + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：4006865151", ecoupon.orderItems.phone, ecoupon.replyCode);
+            new SMSMessage("您尾号" + eCouponNumber + "的券号于" + dateTime
+                    + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：4006865151", ecoupon.orderItems.phone,
+                    ecoupon.replyCode)
+                    .orderItemsId(eCoupon.orderItems.id)
+                    .feeType(OrderItemsFeeType.SMS_VERIFY_NOTIFY)
+                    .send();
         }
+
+        OrderItemsFee.recordFee(eCoupon.orderItems, OrderItemsFeeType.PHONE_VERFIY,
+                new BigDecimal("0.15")); //电话验证一次算0.15元
+
         ecoupon.verifyType = VerifyCouponType.TELEPHONE;
         ecoupon.verifyTel = caller;
         ecoupon.save();

@@ -9,5 +9,6 @@ public enum KtvOrderStatus {
     LOCK,//锁定
 
     DEAL,//成交
+    REFUND,//退款
     CANCELED
 }

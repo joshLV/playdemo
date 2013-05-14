@@ -12,7 +12,6 @@ import models.sales.Category;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSMessage;
-import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
 import org.junit.Before;
@@ -68,7 +67,7 @@ public class SupplierCouponVerifyUpdateSingleECouponTest extends FunctionalTest 
         Http.Response response = POST("/coupons/single-verify", params);
 
         assertContentMatch("0", response);
-        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
+        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSMessage.SMS2_QUEUE);
         assertSMSContentMatch("您尾号" + coupon.getLastCode(4)
                 + "的券号于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
                 msg.getContent());

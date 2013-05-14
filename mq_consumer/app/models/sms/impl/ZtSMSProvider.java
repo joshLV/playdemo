@@ -1,5 +1,6 @@
 package models.sms.impl;
 
+import models.order.OrderItemsFee;
 import models.sms.SMSException;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
@@ -11,6 +12,7 @@ import play.Logger;
 import play.Play;
 import util.ws.WebServiceRequest;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -24,11 +26,11 @@ import java.util.regex.Pattern;
 public class ZtSMSProvider implements SMSProvider {
 
     private final String SEND_URL = Play.configuration
-                    .getProperty("ztsms.http.send_url");
+            .getProperty("ztsms.http.send_url");
     private final String USERNAME = Play.configuration
-                    .getProperty("ztsms.http.username");
+            .getProperty("ztsms.http.username");
     private final String PASSWORD = Play.configuration
-                    .getProperty("ztsms.http.password");
+            .getProperty("ztsms.http.password");
 
     private final Pattern RESULTCODE_PATTERN = Pattern.compile("^1,");
 
@@ -64,7 +66,7 @@ public class ZtSMSProvider implements SMSProvider {
         qparams.add(new BasicNameValuePair("content", message.getContent()));
         qparams.add(new BasicNameValuePair("mobile", phoneArgs));
         String url = SEND_URL.replace(":sms_info",
-                        URLEncodedUtils.format(qparams, "UTF-8"));
+                URLEncodedUtils.format(qparams, "UTF-8"));
 
         String result = WebServiceRequest.url(url).type("ZTSMS").addKeyword(phoneArgs).getString();
 
@@ -81,5 +83,19 @@ public class ZtSMSProvider implements SMSProvider {
                 throw new SMSException("发送助通短信不成功:" + result);
             }
         }
+        Logger.info("ZtSMS message.getOrderItemsId()=" + message.getOrderItemsId());
+        if (message.getOrderItemsId() != null) {
+            int smsCount = (int) (result.length() / 67) + 1;
+            Logger.info("       smsCount=" + smsCount);
+            OrderItemsFee.recordFee(message.getOrderItemsId(), message.getFeeType(),
+                    getSmsFee().multiply(BigDecimal.valueOf(smsCount)));
+        }
     }
+
+    private static final BigDecimal smsFee = new BigDecimal("0.055");
+
+    public BigDecimal getSmsFee() {
+        return smsFee;
+    }
+
 }

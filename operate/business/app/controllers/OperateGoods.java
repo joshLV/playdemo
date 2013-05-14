@@ -276,17 +276,10 @@ public class OperateGoods extends Controller {
         goods.save();
         String createdFrom = "Op";
         goods.createHistory(createdFrom);
-        Supplier suppleir = Supplier.findById(goods.supplierId);
-
-        if (suppleir.getProperty("ktvSupplier").equals("1")) {
+        if (goods.getSupplier().isKtvSupplier()) {
             KtvProductGoods productGoods = new KtvProductGoods();
-            Shop shop = Shop.findById(Long.valueOf(request.params.getAll("goods.shops.id")[0]));
-            goods.shops = new HashSet<>();
-            goods.shops.add(shop);
-            goods.save();
-            productGoods.shop = shop;
-            KtvProduct product = KtvProduct.findById(goods.product.id);
-            productGoods.product = product;
+            productGoods.shop = goods.shops.iterator().next();
+            productGoods.product = goods.product;
             productGoods.goods = goods;
             productGoods.save();
         }
@@ -412,21 +405,22 @@ public class OperateGoods extends Controller {
         renderArgs.put("imageLargePath", goods.getImageLargePath());
         renderArgs.put("page", page);
         renderArgs.put("queryString", queryString);
-        Supplier supplier = Supplier.findById(goods.supplierId);
-        boolean ktvSupplier = false;
-        if (supplier.getProperty("ktvSupplier") != null && supplier.getProperty("ktvSupplier").equals("1")) {
-            ktvSupplier = true;
-        }
-        List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
 
-        Supplier suppleir = Supplier.findById(goods.supplierId);
-        if (ktvSupplier) {
-            KtvProductGoods productGoods = KtvProductGoods.find("goods=? and shop=?", goods, goods.shops.iterator().next()).first();
-            goods.product = productGoods.product;
-        }
+        boolean ktvSupplier = goods.getSupplierProperty(Supplier.KTV_SUPPLIER);
+        List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
+        setGoodsProduct(goods, ktvSupplier);
         renderInit(goods);
         render(id, hasApproveGoodsPermission, ktvSupplier, productList);
 
+    }
+
+    private static void setGoodsProduct(Goods goods, boolean ktvSupplier) {
+        if (ktvSupplier) {
+            KtvProductGoods productGoods = KtvProductGoods.find("goods=? and shop=?", goods, goods.shops.iterator().next()).first();
+            if (productGoods != null) {
+                goods.product = productGoods.product;
+            }
+        }
     }
 
     /**
@@ -446,19 +440,12 @@ public class OperateGoods extends Controller {
     public static void copy(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
         checkShops(goods.supplierId);
-        Supplier supplier = Supplier.findById(goods.supplierId);
-        boolean ktvSupplier = false;
-        if (supplier.getProperty("ktvSupplier") != null && supplier.getProperty("ktvSupplier").equals("1")) {
-            ktvSupplier = true;
-        }
-        if (ktvSupplier) {
-            KtvProductGoods productGoods = KtvProductGoods.find("goods=? and shop=?", goods, goods.shops.iterator().next()).first();
-            goods.product = productGoods.product;
-        }
+        boolean ktvSupplier = goods.getSupplierProperty(Supplier.KTV_SUPPLIER);
+        List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
+        setGoodsProduct(goods, ktvSupplier);
         renderInit(goods);
 
         renderArgs.put("imageLargePath", goods.getImageLargePath());
-        List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
         render(id, ktvSupplier, productList);
 
     }
@@ -626,18 +613,21 @@ public class OperateGoods extends Controller {
         goodsItem.refresh();
         String createdFrom = "Op";
         goodsItem.createHistory(createdFrom);
-        Supplier suppleir = Supplier.findById(goods.supplierId);
-        if (suppleir.getProperty("ktvSupplier").equals("1")) {
-            KtvProductGoods productGoods = new KtvProductGoods();
-            Shop shop = Shop.findById(Long.valueOf(request.params.getAll("goods.shops.id")[0]));
-            goods.shops = new HashSet<>();
-            goods.shops.add(shop);
-            goods.save();
-            productGoods.shop = shop;
-            KtvProduct product = KtvProduct.findById(goods.product.id);
-            productGoods.product = product;
-            productGoods.goods = goodsItem;
-            productGoods.save();
+        if (goods.getSupplier().isKtvSupplier()) {
+            KtvProductGoods productGoods = KtvProductGoods.find("goods=?", goodsItem).first();
+            System.out.println(goods.shops + "--------" + goods.product);
+
+            if (productGoods != null) {
+                productGoods.shop = goodsItem.shops.iterator().next();
+                productGoods.product = goods.product;
+                productGoods.save();
+            } else {
+                productGoods = new KtvProductGoods();
+                productGoods.goods = goods;
+                productGoods.shop = goodsItem.shops.iterator().next();
+                productGoods.product = goods.product;
+                productGoods.save();
+            }
         }
         redirectUrl(page, queryString);
     }

@@ -142,11 +142,15 @@ public class KtvPriceSchedules extends Controller {
 
         index(shopCountMap.keySet().iterator().next().id, priceStrategy.roomType);
     }
-//
+
+    //
     public static void make(long priceScheduleId) {
-       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
-//        KtvUpdateSkuJob job = new KtvUpdateSkuJob();
-//        job.doJob();
+//       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
+//        List<KtvProductGoods> ktvProductGoodsList = KtvProductGoods.findAll();
+//        for (KtvProductGoods productGoods : ktvProductGoodsList) {
+//            KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);
+//        }
+
     }
 
 

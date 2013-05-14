@@ -12,7 +12,6 @@ import models.order.SentCouponMessage;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sms.SMSMessage;
-import models.sms.SMSUtil;
 import org.junit.Before;
 import org.junit.Test;
 import play.Logger;
@@ -147,13 +146,13 @@ public class ExpiredCouponUnitTest extends UnitTest {
         assertEquals(1, sentList.size());
 
         Logger.info("testJob2");
-        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
+        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
         assertEquals("您的" + goods.name + "，将要过期，请注意消费截止日期为" + sdf.format(coupon.expireAt) + "。【一百券】", msg.getContent());
 
         job.doJob();
 
         // 不会再发短信.
-//        assertEquals(0, MockMQ.size(SMSUtil.SMS_QUEUE));
+//        assertEquals(0, MockMQ.size(SMSMessage.SMS_QUEUE));
         sentList = SentCouponMessage.findAll();
         assertEquals(1, sentList.size());
 
@@ -180,7 +179,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
         assertEquals(0, sentList.size());
 
         // 不会再发短信.
-//        assertEquals(0, MockMQ.size(SMSUtil.SMS_QUEUE));
+//        assertEquals(0, MockMQ.size(SMSMessage.SMS_QUEUE));
     }
 
     @Test
@@ -204,6 +203,6 @@ public class ExpiredCouponUnitTest extends UnitTest {
         assertEquals(0, sentList.size());
 
         // 不会再发短信.
-//        assertEquals(0, MockMQ.size(SMSUtil.SMS_QUEUE));
+//        assertEquals(0, MockMQ.size(SMSMessage.SMS_QUEUE));
     }
 }

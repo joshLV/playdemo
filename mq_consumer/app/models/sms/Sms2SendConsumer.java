@@ -49,7 +49,7 @@ public class Sms2SendConsumer extends RabbitMQConsumerWithTx<SMSMessage> {
 
     @Override
     protected String queue() {
-        return SMSUtil.SMS2_QUEUE;
+        return SMSMessage.SMS2_QUEUE;
 
     }
 

@@ -211,6 +211,7 @@ public class OperateCoupons extends Controller {
         condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         condition.operatorId = OperateRbac.currentUser().id;
         JPAExtPaginator<ECoupon> couponsList = ECoupon.query(condition, 1, PAGE_SIZE);
+        Boolean hasViewEcouponSnPermission = ContextedPermission.hasPermission("VIEW_ECOUPONSN");
 
         for (ECoupon coupon : couponsList) {
             OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon.order);
@@ -248,6 +249,11 @@ public class OperateCoupons extends Controller {
                 coupon.statusInfo = "已退款";
             }
             coupon.eCouponSn = coupon.getMaskedEcouponSn();
+            if (hasViewEcouponSnPermission) {
+                coupon.orderItemsPhone = coupon.orderItems.phone;
+            } else {
+                coupon.orderItemsPhone = coupon.orderItems.getMaskedPhone();
+            }
         }
 
         render(couponsList);

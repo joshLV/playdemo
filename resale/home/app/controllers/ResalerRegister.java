@@ -7,7 +7,7 @@ import models.resale.Resaler;
 import models.resale.ResalerCreditable;
 import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import org.apache.commons.codec.digest.DigestUtils;
 import play.Play;
 import play.data.validation.Valid;
@@ -101,7 +101,7 @@ public class ResalerRegister extends Controller {
         MailUtil.sendCommonMail(message);
 
         if(NOTIFICATION_MOBILES.length > 0 && !"".equals(NOTIFICATION_MOBILES[0])){
-            SMSUtil.send("分销商注册申请，账号：" +resaler.loginName, NOTIFICATION_MOBILES);
+            new SMSMessage("分销商注册申请，账号：" +resaler.loginName, NOTIFICATION_MOBILES).send();
         }
     }
 }

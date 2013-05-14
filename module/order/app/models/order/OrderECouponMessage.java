@@ -4,9 +4,7 @@ import com.google.common.collect.Lists;
 import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
 import models.resale.Resaler;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.collections.Predicate;
+import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import play.Logger;
@@ -151,7 +149,7 @@ public class OrderECouponMessage implements Serializable {
             return null;
         }
 
-        // 每8张券一个长短信
+
         List<ECoupon> eCoupons = orderItems.getECoupons();
 
         List<ECoupon> needSendECoupons = new ArrayList<>();
@@ -166,7 +164,13 @@ public class OrderECouponMessage implements Serializable {
             return null;
         }
 
-        List<List<ECoupon>> splitECoupons = Lists.partition(needSendECoupons, 8);
+        ECoupon firstECoupon = eCoupons.get(0);
+        // 默认每18张券一个长短信
+        int smsCouponSize = 18;
+        if (StringUtils.isNotBlank(firstECoupon.eCouponPassword)) {
+            smsCouponSize = 8;  //有密码是8张券一个短信
+        }
+        List<List<ECoupon>> splitECoupons = Lists.partition(needSendECoupons, smsCouponSize);
         OrderECouponSMSContext[] smsContents = new OrderECouponSMSContext[splitECoupons.size()];
         for (int i = 0; i < splitECoupons.size(); i++) {
             smsContents[i] = getSMSContent(orderItems, splitECoupons.get(i));
@@ -185,8 +189,8 @@ public class OrderECouponMessage implements Serializable {
                 sb.append("券号").append(e.eCouponSn).append("密码").append(e.eCouponPassword);
                 ecouponSNs.add(sb.toString());
             } else {
-                if (eCoupons.size() > 1 && e.appointmentDate != null) {
-                    ecouponSNs.add("券号" + e.eCouponSn + ",预约日期:"+dateFormat.format(e.appointmentDate) + "," + e.appointmentRemark);
+                if (eCoupons.size() >= 1 && e.goods.getSupplierProperty(Supplier.KTV_SUPPLIER) && e.appointmentDate != null) {
+                    ecouponSNs.add("券号" + e.eCouponSn + ",预约日期:" + dateFormat.format(e.appointmentDate) + "," + e.appointmentRemark);
                 } else {
                     ecouponSNs.add("券号" + e.eCouponSn);
                 }
@@ -205,12 +209,6 @@ public class OrderECouponMessage implements Serializable {
         }
 
         String note = ",";
-        if (eCoupons.size() == 1) {
-            ECoupon coupon = eCoupons.get(0);
-            if (coupon.appointmentDate != null) {
-                note += "预约日期:" + dateFormat.format(coupon.appointmentDate) + "," + coupon.appointmentRemark;
-            }
-        }
         if (orderItems.goods.isOrder) {
             // 需要预约的产品
             note += "此产品需预约,预约电话见商品详情,";

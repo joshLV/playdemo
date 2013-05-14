@@ -1,16 +1,13 @@
 package controllers;
 
+import com.uhuila.common.constants.DataConstants;
+import com.uhuila.common.util.RandomNumberUtil;
 import models.consumer.User;
-import models.sms.SMSUtil;
-
+import models.sms.SMSMessage;
 import org.apache.commons.lang.StringUtils;
-
 import play.Play;
 import play.cache.Cache;
 import play.mvc.Controller;
-
-import com.uhuila.common.constants.DataConstants;
-import com.uhuila.common.util.RandomNumberUtil;
 
 /**
  * 找回密码.
@@ -54,7 +51,7 @@ public class FindPassword extends Controller {
 
                 String validCode = RandomNumberUtil.generateSerialNumber(4);
                 String comment = "您的验证码是" + validCode + ", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
-                SMSUtil.send(comment, from, "0000");
+                new SMSMessage(comment, from, "0000").send();
                 //保存手机和验证码
                 Cache.set("validCode_", validCode, "10mn");
                 Cache.set("mobile_", from, "30mn");

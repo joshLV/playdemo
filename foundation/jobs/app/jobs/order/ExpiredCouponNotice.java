@@ -5,8 +5,9 @@ import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.OrderItemsFeeType;
 import models.order.SentCouponMessage;
-import models.sms.SMSUtil;
+import models.sms.SMSMessage;
 import play.Logger;
 
 import javax.persistence.Query;
@@ -19,7 +20,7 @@ import java.util.List;
  * @author 12-5-30
  *         Time: 下午1:57
  */
-@JobDefine(title="消费者券到期短信提醒", description="每天12点向消费者发送短信提醒1周后过期的券")
+@JobDefine(title = "消费者券到期短信提醒", description = "每天12点向消费者发送短信提醒1周后过期的券")
 // @ O n("0 0 12 * * ?")
 public class ExpiredCouponNotice extends JobWithHistory {
 
@@ -52,9 +53,12 @@ public class ExpiredCouponNotice extends JobWithHistory {
             goodsName = coupon.goods.name;
             Logger.info("mobile=" + mobile + ", goodsName=" + goodsName);
             if (!pre_phone.equals(mobile) || !pre_goodsName.equals(goodsName)) {
-                SMSUtil.send("您的" + goodsName + "，将要过期，请注意消费截止日期为" + sdf.format(coupon.expireAt) + "。",
+                new SMSMessage("您的" + goodsName + "，将要过期，请注意消费截止日期为" + sdf.format(coupon.expireAt) + "。",
                         mobile,
-                        coupon.replyCode);
+                        coupon.replyCode)
+                        .orderItemsId(coupon.orderItems.id)
+                        .feeType(OrderItemsFeeType.SMS_EXPIRE_NOTIFY)
+                        .send();
                 pre_goodsName = goodsName;
                 pre_phone = mobile;
             }
