@@ -80,17 +80,17 @@ public class TaobaoCouponAPI extends Controller {
      * 此处只接收、记录请求内容，并立即返回，具体工作由 TaobaoCouponConsumer 来做
      */
     private static void send(String sellerNick, Map<String, String> params, String orderId, OuterOrder outerOrder) {
-        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
-        if (resaler == null) {
-            Logger.error("can not find the resaler by login name: %s", Resaler.TAOBAO_LOGIN_NAME);
-            return;
-        }
+        Resaler resaler = null;
+
         //如果是从其他淘宝店铺过来的订单，则读取相应的分销信息
         if ("kisbear".equals(sellerNick)) {
             resaler = Resaler.findApprovedByLoginName(Resaler.YLD_LOGIN_NAME);
+        }else {
+            //默认是我们券生活8的resaler
+            resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
         }
         if (resaler == null) {
-            Logger.error("can not find the resaler by login name: %s", Resaler.YLD_LOGIN_NAME);
+            Logger.error("can not find the resaler : %s", sellerNick);
             return;
         }
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个

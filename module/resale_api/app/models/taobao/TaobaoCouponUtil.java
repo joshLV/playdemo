@@ -273,17 +273,11 @@ public class TaobaoCouponUtil {
 
     public static OAuthToken getToken(Resaler resaler) {
         if (resaler == null) {
-            throw new RuntimeException("no taobao resaler found");
+            throw new RuntimeException("no resaler found");
         }
         OAuthToken token = OAuthToken.find("byUserIdAndAccountType", resaler.id, AccountType.RESALER).first();
         if (token == null || token.isExpired()) {
-            /*
-             2012-12-03
-             淘宝的token 有效时间是一年，如果过期了，或者不小心删除了，
-             请先清除oauth_token表中的token,然后使用taobao 这个账号登陆分销平台，
-             然后随便找一个商品点击发布到淘宝，会跳转到淘宝的授权认证，点击授权后跳转回来之后，token就已经是最新的了
-             */
-            throw new UnexpectedException("!!!!!!!!!!!!!!!!!! 淘宝 token 过期 请联系技术人员, 或看此处代码的注释");
+            throw new UnexpectedException("!!!!!!!!!!!!!!!!!! 淘宝 token 过期 请联系技术人员");
         }
         return token;
     }
