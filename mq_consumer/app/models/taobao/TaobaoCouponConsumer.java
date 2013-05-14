@@ -106,7 +106,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
 
     //淘宝订单是否是等待发货
     private boolean taobaoOrderReadyToSend(OuterOrder outerOrder) {
-        TradeGetResponse response = TaobaoCouponUtil.tradeInfo(Long.parseLong(outerOrder.orderId), "status");
+        TradeGetResponse response = TaobaoCouponUtil.tradeInfo(outerOrder, "status");
         return response.getTrade().getStatus().equals("WAIT_SELLER_SEND_GOODS");
     }
 
@@ -121,11 +121,12 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             num = jsonObject.get("num").getAsLong();//购买的数量
             sellerNick = jsonObject.get("seller_nick").getAsString();//淘宝卖家用户名（旺旺号）
             outerIid = jsonObject.get("outer_iid").getAsLong();//商家发布商品时填写的外部商品ID
-            taobaoOrderId = jsonObject.get("order_id").getAsLong();//淘宝的订单号
+//            taobaoOrderId = jsonObject.get("order_id").getAsLong();//淘宝的订单号
         } catch (Exception e) {
             Logger.error(e, "taobao coupon request failed: invalid params");
             return false;
         }
+        //todo 添加其他分销账户
         if (!"券生活8".equals(sellerNick) && !"kisbear".equals(sellerNick)) {
             Logger.info("taobao coupon request failed: invalid seller");
             return false;//暂时只发我们自己的店
@@ -147,7 +148,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         }
 
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
-            TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(taobaoOrderId, "orders.price,orders.num,orders.sku_properties_name");
+            TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(outerOrder, "orders.price,orders.num,orders.sku_properties_name");
             Order ybqOrder = createYbqOrder(outerIid, mobile, sellerNick, taobaoTrade);
             if (ybqOrder == null) {
                 return false;//解析错误
@@ -243,6 +244,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         roomOrderInfo.shop = productGoods.shop;
 
         String[] properties = order.getSkuPropertiesName().split(";");
+//        String[] properties ={"27426219:3374388","日期:5月14日","欢唱时间:12点至13点"};
         for (String property : properties) {
             String[] map = property.split(":");
             if (map.length != 2) {

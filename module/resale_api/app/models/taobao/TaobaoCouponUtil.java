@@ -43,7 +43,7 @@ public class TaobaoCouponUtil {
         if (Play.runingInTestMode()) {
             return;
         }
-        OAuthToken oAuthToken = getToken();
+        OAuthToken oAuthToken = getToken(outerOrder.resaler);
 
         // 组合券
         List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
@@ -78,7 +78,7 @@ public class TaobaoCouponUtil {
             return;//请求出错，忽略，等待下次重试
         }
 
-        if(response.getRetCode() != null && response.getRetCode() == 1) {
+        if (response.getRetCode() != null && response.getRetCode() == 1) {
             outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
             Logger.info("tell taobao coupon send response. success. %s", outerOrder.id);
             return;//成功，设置为ORDER_SYNCED
@@ -86,13 +86,13 @@ public class TaobaoCouponUtil {
 
         Logger.info("tell taobao coupon send. outerOrderId:%s, sub_code:%s", outerOrder.id, response.getSubCode());
 
-        if ("isv.eticket-send-error:code-alreay-send".equals(response.getSubCode())){
+        if ("isv.eticket-send-error:code-alreay-send".equals(response.getSubCode())) {
             outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
             return;//如果错误是此订单已处理，那么也当做成功
         }
 
         if ("isv.eticket-service-unavailable:op-failed".equals(response.getSubCode())
-         || "isv.eticket-service-unavailable:order-is-processing".equals(response.getSubCode())) {
+                || "isv.eticket-service-unavailable:order-is-processing".equals(response.getSubCode())) {
             return;//淘宝操作失败，或者订单正在处理。这两种情况等会儿继续重试
         }
 
@@ -114,7 +114,7 @@ public class TaobaoCouponUtil {
         if (Play.runingInTestMode()) {
             return true;
         }
-        OAuthToken oAuthToken = getToken();
+        OAuthToken oAuthToken = getToken(outerOrder.resaler);
         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
@@ -169,7 +169,7 @@ public class TaobaoCouponUtil {
             return ExtensionResult.INVALID_CALL;
         }
 
-        OAuthToken oAuthToken = getToken();
+        OAuthToken oAuthToken = getToken(coupon.order.getResaler());
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndYbqOrder", OuterOrderPartner.TB, coupon.order).first();
         if (outerOrder == null) {
             Logger.info("consume on taobao failed: outerOrder not found");
@@ -218,20 +218,21 @@ public class TaobaoCouponUtil {
 
     /**
      * 调用淘宝的高性能版本的订单信息接口
-     * @param tid 淘宝订单ID
-     * @param fields 需要的参数
+     *
+     * @param outerOrder 外部订单信息
+     * @param fields     需要的参数
      * @return 淘宝订单信息
      */
-    public static TradeGetResponse tradeInfo(Long tid, String fields) {
+    public static TradeGetResponse tradeInfo(OuterOrder outerOrder, String fields) {
         TradeGetRequest request = new TradeGetRequest();
         request.setFields(fields);
-        request.setTid(tid);
+        request.setTid(Long.valueOf(outerOrder.orderId));
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
-        OAuthToken oAuthToken = getToken();
+        OAuthToken oAuthToken = getToken(outerOrder.resaler);
         try {
             return taobaoClient.execute(request, oAuthToken.accessToken);
-        }catch (ApiException e) {
+        } catch (ApiException e) {
             throw new RuntimeException("request taobao trade info error", e);
         }
     }
@@ -240,7 +241,7 @@ public class TaobaoCouponUtil {
      * 在淘宝上撤销验证（冲正）
      */
     public static boolean reverseOnTaobao(ECoupon coupon) {
-        OAuthToken oAuthToken = getToken();
+        OAuthToken oAuthToken = getToken(coupon.order.getResaler());
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndYbqOrder", OuterOrderPartner.TB, coupon.order).first();
         if (outerOrder == null) {
             Logger.info("consume on taobao failed: outerOrder not found");
@@ -270,8 +271,7 @@ public class TaobaoCouponUtil {
     }
 
 
-    public static OAuthToken getToken() {
-        Resaler resaler = Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+    public static OAuthToken getToken(Resaler resaler) {
         if (resaler == null) {
             throw new RuntimeException("no taobao resaler found");
         }

@@ -106,6 +106,7 @@ public class DDGroupBuy extends Controller {
             isExisted = false;
             outerOrder = new OuterOrder();
             outerOrder.orderId = kx_order_id;
+            outerOrder.resaler = resaler;
             outerOrder.partner = OuterOrderPartner.DD;
             outerOrder.message = gson.toJson(params);
             outerOrder.status = OuterOrderStatus.ORDER_COPY;

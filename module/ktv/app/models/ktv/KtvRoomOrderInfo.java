@@ -97,11 +97,11 @@ public class KtvRoomOrderInfo extends Model {
      * @param productGoods 某门店的某KTV产品
      * @return 订单列表
      */
-    public static List<KtvRoomOrderInfo> findScheduled(Date scheduledDay, int scheduledTime, KtvProductGoods productGoods) {
+    public static List<KtvRoomOrderInfo> findScheduled(Date scheduledDay, KtvProductGoods productGoods) {
         scheduledDay = DateUtils.truncate(scheduledDay, Calendar.DATE);
         Date tenMinutesAgo = DateUtils.addMinutes(new Date(), -KtvRoomOrderInfo.LOCK_MINUTE);
-        return KtvRoomOrderInfo.find("goods=? and shop=? and scheduledDay = ? and scheduledTime =? and (status =? or (status=? and createdAt >=?))",
-                productGoods.goods, productGoods.shop, scheduledDay, scheduledTime, KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, tenMinutesAgo).fetch();
+        return KtvRoomOrderInfo.find("goods=? and shop=? and scheduledDay = ? and  (status =? or (status=? and createdAt >=?))",
+                productGoods.goods, productGoods.shop, scheduledDay,  KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, tenMinutesAgo).fetch();
     }
 
     /**

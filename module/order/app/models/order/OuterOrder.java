@@ -3,6 +3,7 @@ package models.order;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import models.resale.Resaler;
 import org.w3c.dom.Document;
 import play.db.jpa.Model;
 import play.libs.XML;
@@ -45,7 +46,11 @@ public class OuterOrder extends Model {
     @Version
     @Column(name = "lock_version")
     public int lockVersion;         //乐观锁
-
+    /**
+     * 对应的分销商.
+     */
+    @ManyToOne
+    public Resaler resaler;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_type")

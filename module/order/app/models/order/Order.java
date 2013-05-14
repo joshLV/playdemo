@@ -312,6 +312,7 @@ public class Order extends Model {
     private Order(Long userId, AccountType userType) {
         this(userId, userType, Operator.defaultOperator());
     }
+
     private Order(Long userId, AccountType userType, Operator operator) {
         // FIXME: 检查一下新浪微博钱包 是调用哪个接口
         if (userType == AccountType.CONSUMER) {
@@ -769,7 +770,7 @@ public class Order extends Model {
      * 订单已支付，修改支付状态、时间，更改库存，发送电子券密码
      */
     public boolean paid(Account account) {
-        System.out.println(  "《into paid()=========:"+account);
+        System.out.println("《into paid()=========:" + account);
         if (this.status != OrderStatus.UNPAID) {
             throw new RuntimeException("can not pay order:" + this.getId() + " since it's already been processed");
         }
@@ -818,7 +819,7 @@ public class Order extends Model {
                 //忽略，此时订单没有支付，但余额已经保存
             }
         }
-        System.out.println(  "after paid()《=========:");
+        System.out.println("after paid()《=========:");
         this.status = OrderStatus.PAID;
         this.paidAt = new Date();
         this.save();
@@ -843,7 +844,7 @@ public class Order extends Model {
             String loginName = this.getResaler().loginName;
             operator = "分销商：" + loginName;
             //使用淘宝传过来的截止日期
-            if (loginName.equals(Resaler.TAOBAO_LOGIN_NAME)) {
+            if (loginName.equals(Resaler.TAOBAO_LOGIN_NAME) || loginName.equals(Resaler.YLD_LOGIN_NAME)) {
                 OuterOrder outerOrder = OuterOrder.find("byYbqOrder", this).first();
                 if (outerOrder != null) {
                     try {
@@ -876,7 +877,7 @@ public class Order extends Model {
                 KtvRoomOrderInfo roomOrderInfo = null;
                 if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
                     isKtvSupplier = true;
-                    roomOrderInfo = KtvRoomOrderInfo.find("orderItem",orderItem).first();
+                    roomOrderInfo = KtvRoomOrderInfo.find("orderItem", orderItem).first();
                 }
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     //创建电子券
@@ -895,9 +896,9 @@ public class Order extends Model {
                     //ktv商户的话，更新券的价格信息
                     if (isKtvSupplier && roomOrderInfo != null) {
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
-                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName()+","
+                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + ","
                                 + roomOrderInfo.scheduledTime + "点至"
-                                + (roomOrderInfo.scheduledTime + roomOrderInfo.duration - 1) + "点" ;
+                                + (roomOrderInfo.scheduledTime + roomOrderInfo.duration - 1) + "点";
                         eCoupon.save();
                     }
                     //记录券历史信息
@@ -1346,8 +1347,8 @@ public class Order extends Model {
 
         //创建订单交易
         //如果使用余额足以支付，则付款直接成功
-        System.out.println(  "《=========:");
-        System.out.println( order.discountPay+ "《===order.discountPay======:");
+        System.out.println("《=========:");
+        System.out.println(order.discountPay + "《===order.discountPay======:");
         System.out.println(order.accountPay + "《=========order.accountPay:");
         System.out.println(order.promotionBalancePay + "《=========order.promotionBalancePay:");
         System.out.println(order.voucherValue + "《=========order.voucherValue:");
@@ -1357,7 +1358,7 @@ public class Order extends Model {
                 && order.accountPay.add(order.promotionBalancePay).add(order.voucherValue)
                 .compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
-            System.out.println(  "before send coupon《=========:");
+            System.out.println("before send coupon《=========:");
             order.payAndSendECoupon();
             useVouchers(validVouchers, order);
             return true;
