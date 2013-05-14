@@ -68,7 +68,8 @@ public class ImportPartnerOrders extends Controller {
             //准备转换器
             Logger.info("partner==" + partner);
             InputStream inputXML = VirtualFile.fromRelativePath(
-                    "app/views/ImportPartnerOrders/" + partner.toString().toLowerCase() + "Transfer.xml").inputstream();
+                    "app/views/ImportPartnerOrders/" + partner.toString().toLowerCase() + "Transfer.xml")
+                    .inputstream();
             XLSReader mainReader = ReaderBuilder.buildFromXML(inputXML);
             //准备javabean
             Map<String, Object> beans = new HashMap<>();
