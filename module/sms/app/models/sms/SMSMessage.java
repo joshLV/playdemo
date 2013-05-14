@@ -89,6 +89,14 @@ public class SMSMessage implements Serializable {
         return orderItemsId;
     }
 
+    public void setOrderItemsId(Long orderItemsId) {
+        this.orderItemsId = orderItemsId;
+    }
+
+    public void setFeeType(OrderItemsFeeType feeType) {
+        this.feeType = feeType;
+    }
+
     public OrderItemsFeeType getFeeType() {
         return feeType;
     }

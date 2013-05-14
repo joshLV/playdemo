@@ -11,7 +11,7 @@ require:
     - play1 -> app-version 0.1
     - play1 -> factory-boy 1.0
     - play1 -> play-solr 0.2.28
-    - play1 -> play-useragentcheck 0.5.2
+    - play1 -> play-useragentcheck 0.5.3
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - layout_operate -> layout_operate
     - view_ext -> view_ext

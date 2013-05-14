@@ -148,7 +148,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         }
 
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
-            TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(outerOrder, "orders.price,orders.num,orders.sku_properties_name");
+            TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(outerOrder, "orders.payment,orders.num,orders.sku_properties_name");
             Order ybqOrder = createYbqOrder(outerIid, mobile, sellerNick, taobaoTrade);
             if (ybqOrder == null) {
                 return false;//解析错误
@@ -191,10 +191,14 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             }
             List<com.taobao.api.domain.Order> orders = taobaoTrade.getTrade().getOrders();
             for (com.taobao.api.domain.Order order : orders) {
+                Long number = order.getNum();
+                BigDecimal orderItemPayment = new BigDecimal(order.getPayment());
+                BigDecimal salePrice = orderItemPayment.divide(new BigDecimal(number), RoundingMode.DOWN);
                 OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, order.getNum(),
-                        userPhone, new BigDecimal(order.getPrice()), new BigDecimal(order.getPrice()));
+                        userPhone, salePrice, salePrice);
                 uhuilaOrderItem.save();
 
+                //ktv商户才创建sku订单
                 if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
                     if (createSkuOrderInfo(uhuilaOrderItem, order, goods) == null) {
                         JPA.em().getTransaction().rollback();

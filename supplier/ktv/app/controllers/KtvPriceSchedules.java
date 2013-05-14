@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import controllers.supplier.SupplierInjector;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvRoomType;
-import models.order.ECoupon;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import models.taobao.KtvSkuMessageUtil;
@@ -14,8 +13,6 @@ import models.ktv.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.DateUtils;
-import play.Logger;
-import play.Play;
 import play.data.binding.As;
 import play.data.validation.Valid;
 import play.db.jpa.JPA;
@@ -85,6 +82,10 @@ public class KtvPriceSchedules extends Controller {
         List<Shop> shops = Shop.findShopBySupplier(supplier.id);
         List<KtvProduct> ktvProductList = KtvProduct.find("supplier=?", supplier).fetch();
         render(shops, ktvProductList);
+    }
+
+    public static void showEdit(Long id) {
+
     }
 
     public static void create(KtvPriceSchedule priceStrategy, Set<Integer> useWeekDays) {
@@ -285,10 +286,6 @@ public class KtvPriceSchedules extends Controller {
         }
         return null;
     }
-
-    public static void showEdit(Long id) {
-    }
-
 
     public static void update(Long id, @Valid KtvPriceSchedule priceSchedule, List<String> useWeekDays) {
     }

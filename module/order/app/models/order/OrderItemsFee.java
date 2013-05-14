@@ -40,7 +40,7 @@ public class OrderItemsFee extends Model {
         orderItemsFee.orderItems = orderItems;
         orderItemsFee.feeType = feeType;
         orderItemsFee.fee = fee;
-        orderItems.createdAt = new Date();
+        orderItemsFee.createdAt = new Date();
         orderItemsFee.save();
     }
 
