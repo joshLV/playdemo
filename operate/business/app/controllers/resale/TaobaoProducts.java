@@ -53,7 +53,7 @@ public class TaobaoProducts extends Controller {
             notFound();
         }
         //ktv商户直接展示ktv上传页面
-        if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
+        if (goods.isKtvSupplier(Supplier.KTV_SUPPLIER)) {
             render("resale/TaobaoProducts/showKtvUpload.html", goods, resalerLoginName);
         }
         render(goods);

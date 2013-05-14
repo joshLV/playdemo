@@ -406,7 +406,7 @@ public class OperateGoods extends Controller {
         renderArgs.put("page", page);
         renderArgs.put("queryString", queryString);
 
-        boolean ktvSupplier = goods.getSupplierProperty(Supplier.KTV_SUPPLIER);
+        boolean ktvSupplier = goods.isKtvSupplier(Supplier.KTV_SUPPLIER);
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
         setGoodsProduct(goods, ktvSupplier);
         renderInit(goods);
@@ -440,7 +440,7 @@ public class OperateGoods extends Controller {
     public static void copy(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
         checkShops(goods.supplierId);
-        boolean ktvSupplier = goods.getSupplierProperty(Supplier.KTV_SUPPLIER);
+        boolean ktvSupplier = goods.isKtvSupplier(Supplier.KTV_SUPPLIER);
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
         setGoodsProduct(goods, ktvSupplier);
         renderInit(goods);

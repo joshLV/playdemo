@@ -189,7 +189,7 @@ public class OrderECouponMessage implements Serializable {
                 sb.append("券号").append(e.eCouponSn).append("密码").append(e.eCouponPassword);
                 ecouponSNs.add(sb.toString());
             } else {
-                if (eCoupons.size() >= 1 && e.goods.getSupplierProperty(Supplier.KTV_SUPPLIER) && e.appointmentDate != null) {
+                if (eCoupons.size() >= 1 && e.goods.isKtvSupplier(Supplier.KTV_SUPPLIER) && e.appointmentDate != null) {
                     ecouponSNs.add("券号" + e.eCouponSn + ",预约日期:" + dateFormat.format(e.appointmentDate) + "," + e.appointmentRemark);
                 } else {
                     ecouponSNs.add("券号" + e.eCouponSn);
