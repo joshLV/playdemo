@@ -10,13 +10,12 @@
                 <mapping row="1" col="2">logistic.salePrice</mapping>
                 <mapping row="1" col="3">logistic.buyNumber</mapping>
                 <mapping row="1" col="4">logistic.paidAtStr</mapping>
-                <mapping row="1" col="5">logistic.options</mapping>
-                <mapping row="1" col="6">logistic.remarks</mapping>
-                <mapping row="1" col="7">logistic.expressInfo</mapping>
-                <mapping row="1" col="8">logistic.receiver</mapping>
-                <mapping row="1" col="9">logistic.phone</mapping>
-                <mapping row="1" col="10">logistic.zipCode</mapping>
-                <mapping row="1" col="11">logistic.address</mapping>
+                <mapping row="1" col="5">logistic.remarks</mapping>
+                <mapping row="1" col="6">logistic.expressInfo</mapping>
+                <mapping row="1" col="7">logistic.receiver</mapping>
+                <mapping row="1" col="8">logistic.phone</mapping>
+                <mapping row="1" col="9">logistic.zipCode</mapping>
+                <mapping row="1" col="10">logistic.address</mapping>
             </section>
             <loopbreakcondition>
                 <rowcheck offset="0"/>

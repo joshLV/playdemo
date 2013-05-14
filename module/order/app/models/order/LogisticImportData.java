@@ -360,6 +360,7 @@ public class LogisticImportData implements Cloneable {
         outerOrder.message = new Gson().toJson(this);
         outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
         outerOrder.orderType = OuterOrderType.IMPORT;
+        outerOrder.createdAt = new Date();
         return outerOrder;
     }
 
