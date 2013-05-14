@@ -981,7 +981,7 @@ public class ECoupon extends Model {
         }
 
         //ktv商户
-        if (eCoupon.goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
+        if (eCoupon.goods.isKtvSupplier(Supplier.KTV_SUPPLIER)) {
             //更新淘宝ktv sku信息
             KtvProductGoods ktvProductGoods = KtvProductGoods.find("goods=?", eCoupon.goods).first();
             if (ktvProductGoods != null) {

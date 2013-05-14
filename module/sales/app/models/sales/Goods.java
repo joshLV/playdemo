@@ -628,7 +628,7 @@ public class Goods extends Model {
     }
 
     @Transient
-    public boolean getSupplierProperty(String key) {
+    public boolean isKtvSupplier(String key) {
         if (this.id == null) {
             return false;
         }
