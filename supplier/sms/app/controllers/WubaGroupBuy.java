@@ -81,6 +81,7 @@ public class WubaGroupBuy extends Controller {
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if (outerOrder == null) {
             outerOrder = new OuterOrder();
+            outerOrder.resaler = Resaler.findApprovedByLoginName(Resaler.WUBA_LOGIN_NAME);
             outerOrder.partner = OuterOrderPartner.WB;
             outerOrder.status = OuterOrderStatus.ORDER_COPY;
             outerOrder.orderId = orderId;

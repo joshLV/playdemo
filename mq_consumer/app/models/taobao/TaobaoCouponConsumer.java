@@ -106,7 +106,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
 
     //淘宝订单是否是等待发货
     private boolean taobaoOrderReadyToSend(OuterOrder outerOrder) {
-        TradeGetResponse response = TaobaoCouponUtil.tradeInfo(Long.parseLong(outerOrder.orderId), "status");
+        TradeGetResponse response = TaobaoCouponUtil.tradeInfo(outerOrder, "status");
         return response.getTrade().getStatus().equals("WAIT_SELLER_SEND_GOODS");
     }
 
@@ -121,12 +121,13 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             num = jsonObject.get("num").getAsLong();//购买的数量
             sellerNick = jsonObject.get("seller_nick").getAsString();//淘宝卖家用户名（旺旺号）
             outerIid = jsonObject.get("outer_iid").getAsLong();//商家发布商品时填写的外部商品ID
-            taobaoOrderId = jsonObject.get("order_id").getAsLong();//淘宝的订单号
+//            taobaoOrderId = jsonObject.get("order_id").getAsLong();//淘宝的订单号
         } catch (Exception e) {
             Logger.error(e, "taobao coupon request failed: invalid params");
             return false;
         }
-        if (!"券生活8".equals(sellerNick)) {
+        //todo 添加其他分销账户
+        if (!"券生活8".equals(sellerNick) && !"kisbear".equals(sellerNick)) {
             Logger.info("taobao coupon request failed: invalid seller");
             return false;//暂时只发我们自己的店
         }
@@ -147,8 +148,8 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         }
 
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
-            TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(taobaoOrderId, "orders.payment,orders.num,orders.sku_properties_name");
-            Order ybqOrder = createYbqOrder(outerIid, mobile, taobaoTrade);
+            TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(outerOrder, "orders.payment,orders.num,orders.sku_properties_name");
+            Order ybqOrder = createYbqOrder(outerIid, mobile, sellerNick, taobaoTrade);
             if (ybqOrder == null) {
                 return false;//解析错误
             } else {
@@ -165,10 +166,18 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     }
 
     // 创建一百券订单
-    private Order createYbqOrder(Long outerGroupId, String userPhone, TradeGetResponse taobaoTrade) {
-        Resaler resaler = Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+    private Order createYbqOrder(Long outerGroupId, String userPhone, String sellerNick, TradeGetResponse taobaoTrade) {
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", Resaler.TAOBAO_LOGIN_NAME);
+            return null;
+        }
+        //如果是从其他淘宝店铺过来的订单，则读取相应的分销信息
+        if ("kisbear".equals(sellerNick)) {
+            resaler = Resaler.findApprovedByLoginName(Resaler.YLD_LOGIN_NAME);
+        }
+        if (resaler == null) {
+            Logger.error("can not find the resaler by login name: %s", Resaler.YLD_LOGIN_NAME);
             return null;
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
@@ -184,11 +193,12 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             for (com.taobao.api.domain.Order order : orders) {
                 Long number = order.getNum();
                 BigDecimal orderItemPayment = new BigDecimal(order.getPayment());
-                BigDecimal salePrice = orderItemPayment.divide(new BigDecimal(number),RoundingMode.DOWN);
+                BigDecimal salePrice = orderItemPayment.divide(new BigDecimal(number), RoundingMode.DOWN);
                 OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, order.getNum(),
                         userPhone, salePrice, salePrice);
                 uhuilaOrderItem.save();
 
+                //ktv商户才创建sku订单
                 if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
                     if (createSkuOrderInfo(uhuilaOrderItem, order, goods) == null) {
                         JPA.em().getTransaction().rollback();
@@ -238,6 +248,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         roomOrderInfo.shop = productGoods.shop;
 
         String[] properties = order.getSkuPropertiesName().split(";");
+//        String[] properties ={"27426219:3374388","日期:5月14日","欢唱时间:12点至13点"};
         for (String property : properties) {
             String[] map = property.split(":");
             if (map.length != 2) {

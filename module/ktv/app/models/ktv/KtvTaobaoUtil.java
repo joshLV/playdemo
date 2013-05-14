@@ -74,9 +74,7 @@ public class KtvTaobaoUtil {
      */
     public static void updateTaobaoSkuByProductGoods(KtvProductGoods productGoods) {
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
-        //找到淘宝的token
-        Resaler resaler = Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME);
-        OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+
 
         //构建新的淘宝SKU列表
         List<KtvTaobaoSku> newTaobaoSkuList = buildTaobaoSku(productGoods);
@@ -87,6 +85,13 @@ public class KtvTaobaoUtil {
         //更新该ktv产品所对应的每一个分销渠道上的商品
         List<ResalerProduct> resalerProductList = ResalerProduct.find("byGoodsAndPartner", productGoods.goods, OuterOrderPartner.TB).fetch();
         for (ResalerProduct resalerProduct : resalerProductList) {
+            if (resalerProduct.resaler == null) {
+                Logger.info("ktv update sku时,resalerProduct.partnerProductId=%s的resaler.id is null,will not update this resalerProduct!",resalerProduct.partnerProductId);
+                continue;
+            }
+            //找到淘宝的token
+            OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+
             if (StringUtils.isBlank(resalerProduct.partnerProductId)) {
                 continue;
             }
@@ -142,6 +147,8 @@ public class KtvTaobaoUtil {
         List<KtvPriceSchedule> priceScheduleList = query.getResultList();
 
 
+        //查出该门店的该产品今天已经卖出、或者被锁定的房间信息
+        List<KtvRoomOrderInfo> roomOrderInfoList = KtvRoomOrderInfo.findScheduled(today, productGoods);
         //处理从今天开始往后的7天内，每一天的sku
         for (int i = 0; i < 7; i++) {
             Date day = DateUtils.addDays(today, i);
@@ -173,8 +180,6 @@ public class KtvTaobaoUtil {
                     sku.price = ps.price;
                     sku.quantity = shopPriceSchedule.roomCount;
 
-                    //查出该门店的该产品今天已经卖出、或者被锁定的房间信息
-                    List<KtvRoomOrderInfo> roomOrderInfoList = KtvRoomOrderInfo.findScheduled(today, startTime, productGoods);
                     //排除掉已预订的房间所占用的数量
                     for (KtvRoomOrderInfo orderInfo : roomOrderInfoList) {
                         if (orderInfo.scheduledDay.compareTo(day) != 0) {

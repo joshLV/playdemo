@@ -5,6 +5,7 @@ import models.jobs.annotation.JobDefine;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
+import models.resale.Resaler;
 import models.yihaodian.YHDResponse;
 import models.yihaodian.YHDUtil;
 import org.w3c.dom.Node;
@@ -52,6 +53,7 @@ public class OrderListener extends JobWithHistory {
                 //此处不保存outerOrder的message，等处理的时候会再去一号店拉取最新的订单信息并保存
                 outerOrder.status = OuterOrderStatus.ORDER_COPY;
                 outerOrder.partner = OuterOrderPartner.YHD;
+                outerOrder.resaler = Resaler.findApprovedByLoginName(Resaler.YHD_LOGIN_NAME);
                 outerOrder.orderId = orderCode;
                 outerOrder.save();
             }

@@ -124,6 +124,7 @@ public class JDGroupBuy extends Controller {
         if (outerOrder == null) {
             outerOrder = new OuterOrder();
             outerOrder.partner = OuterOrderPartner.JD;
+            outerOrder.resaler = Resaler.findApprovedByLoginName(Resaler.JD_LOGIN_NAME);
             outerOrder.status = OuterOrderStatus.ORDER_COPY;
             outerOrder.orderId = jdOrderId;
             outerOrder.message = restXml;

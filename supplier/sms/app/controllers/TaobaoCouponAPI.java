@@ -8,6 +8,7 @@ import models.order.ECouponStatus;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
+import models.resale.Resaler;
 import models.taobao.TaobaoCouponUtil;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -44,7 +45,8 @@ public class TaobaoCouponAPI extends Controller {
             renderJSON("{\"code\":502}");
             return;
         }
-        if (!"order_modify".equals(method) && !"券生活8".equals(sellerNick)) {
+        //todo 判断其他的淘宝账户
+        if (!"order_modify".equals(method) && !"券生活8".equals(sellerNick) && !"kisbear".equals(sellerNick)) {
             Logger.warn("taobao coupon request error: wrong seller nick: %s", sellerNick);
             renderJSON("{\"code\":503}");
             return;//暂时只发我们自己的店
@@ -54,7 +56,7 @@ public class TaobaoCouponAPI extends Controller {
 
         switch (method) {
             case "send":
-                send(params, orderId, outerOrder);
+                send(sellerNick, params, orderId, outerOrder);
                 break;
             case "resend":
                 resend(outerOrder);
@@ -77,10 +79,24 @@ public class TaobaoCouponAPI extends Controller {
      * 接收发码通知
      * 此处只接收、记录请求内容，并立即返回，具体工作由 TaobaoCouponConsumer 来做
      */
-    private static void send(Map<String, String> params, String orderId, OuterOrder outerOrder) {
+    private static void send(String sellerNick, Map<String, String> params, String orderId, OuterOrder outerOrder) {
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+        if (resaler == null) {
+            Logger.error("can not find the resaler by login name: %s", Resaler.TAOBAO_LOGIN_NAME);
+            return;
+        }
+        //如果是从其他淘宝店铺过来的订单，则读取相应的分销信息
+        if ("kisbear".equals(sellerNick)) {
+            resaler = Resaler.findApprovedByLoginName(Resaler.YLD_LOGIN_NAME);
+        }
+        if (resaler == null) {
+            Logger.error("can not find the resaler by login name: %s", Resaler.YLD_LOGIN_NAME);
+            return;
+        }
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if (outerOrder == null) {
             outerOrder = new OuterOrder();
+            outerOrder.resaler = resaler;
             outerOrder.partner = OuterOrderPartner.TB;
             outerOrder.status = OuterOrderStatus.ORDER_COPY;
             outerOrder.message = new Gson().toJson(params);

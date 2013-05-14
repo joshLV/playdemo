@@ -356,6 +356,7 @@ public class LogisticImportData implements Cloneable {
         OuterOrder outerOrder = new OuterOrder();
         outerOrder.orderId = outerOrderNo;
         outerOrder.partner = partner;
+        outerOrder.resaler = Resaler.findApprovedByLoginName(partner.partnerLoginName());
         outerOrder.message = new Gson().toJson(this);
         outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
         outerOrder.orderType = OuterOrderType.IMPORT;
