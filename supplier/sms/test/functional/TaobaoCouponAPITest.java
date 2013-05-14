@@ -7,8 +7,10 @@ import com.ning.http.multipart.StringPart;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.order.*;
+import models.resale.Resaler;
 import models.taobao.TaobaoCouponUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
@@ -23,17 +25,22 @@ import java.util.*;
  * @author likang
  *         Date: 12-11-30
  */
-public class TaobaoCouponAPITest extends FunctionalTest{
+public class TaobaoCouponAPITest extends FunctionalTest {
     OuterOrder outerOrder = null;
-
+Resaler resaler;
     private final long TAOBAO_ORDER_ID = 259599322131179L;
+
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        resaler=FactoryBoy.lastOrCreate(Resaler.class);
+        resaler.loginName=Resaler.TAOBAO_LOGIN_NAME;
+        resaler.save();
         outerOrder = FactoryBoy.create(OuterOrder.class, new BuildCallback<OuterOrder>() {
             @Override
             public void build(OuterOrder target) {
                 target.partner = OuterOrderPartner.TB;
+                target.resaler = resaler;
                 target.orderId = String.valueOf(TAOBAO_ORDER_ID);
             }
         });
@@ -80,6 +87,7 @@ public class TaobaoCouponAPITest extends FunctionalTest{
 
         Map<String, String> params = prepareParams();
         params.put("order_id", "321111");
+        params.put("seller_nick", "券生活8");
         resign(params);
         Http.Response response = POST2("/api/v1/taobao/coupon", params);
 
@@ -150,7 +158,7 @@ public class TaobaoCouponAPITest extends FunctionalTest{
 
         Map<String, String> params = prepareParams();
         params.put("method", "modified");
-        params.put("mobile","13472581854");
+        params.put("mobile", "13472581854");
         resign(params);
 
         Http.Response response = POST2("/api/v1/taobao/coupon", params);
@@ -178,11 +186,11 @@ public class TaobaoCouponAPITest extends FunctionalTest{
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date start = new Date();
-        Date end = new Date(System.currentTimeMillis() + 60000*60);
+        Date end = new Date(System.currentTimeMillis() + 60000 * 60);
 
         Map<String, String> params = prepareParams();
         params.put("method", "order_modify");
-        params.put("sub_method","1");
+        params.put("sub_method", "1");
         params.put("data", "{\"valid_start\":\"" + dateFormat.format(start) + "\", \"valid_ends\":\"" + dateFormat.format(end) + "\"}");
         resign(params);
 
@@ -217,7 +225,7 @@ public class TaobaoCouponAPITest extends FunctionalTest{
 
         //测试submethod
         params.put("data", "{\"valid_start\":\"" + dateFormat.format(start) + "\", \"valid_ends\":\"" + dateFormat.format(end) + "\"}");
-        params.put("sub_method","2");
+        params.put("sub_method", "2");
         resign(params);
 
         response = POST2("/api/v1/taobao/coupon", params);
@@ -227,7 +235,7 @@ public class TaobaoCouponAPITest extends FunctionalTest{
 
         //测试无效的日期格式
         params.put("data", "{\"valid_start\":\"a" + dateFormat.format(start) + "\", \"valid_ends\":\"" + dateFormat.format(end) + "\"}");
-        params.put("sub_method","1");
+        params.put("sub_method", "1");
         resign(params);
 
         response = POST2("/api/v1/taobao/coupon", params);
@@ -236,7 +244,7 @@ public class TaobaoCouponAPITest extends FunctionalTest{
         assertContentEquals("{\"code\":507}", response);
 
         params.put("data", "{\"valid_start\":\"" + dateFormat.format(start) + "\", \"valid_ends\":\"a" + dateFormat.format(end) + "\"}");
-        params.put("sub_method","1");
+        params.put("sub_method", "1");
         resign(params);
 
         response = POST2("/api/v1/taobao/coupon", params);
@@ -253,23 +261,23 @@ public class TaobaoCouponAPITest extends FunctionalTest{
 
     private Map<String, String> prepareParams() {
         Map<String, String> params = new HashMap<>();
-        params.put("valid_ends","2013-01-11 23:59:59");
+        params.put("valid_ends", "2013-01-11 23:59:59");
         params.put("outer_iid", "32");
-        params.put("item_title","测试用 拍下概不负责");
-        params.put("taobao_sid","828005208");
+        params.put("item_title", "测试用 拍下概不负责");
+        params.put("taobao_sid", "828005208");
         params.put("order_id", String.valueOf(TAOBAO_ORDER_ID));
-        params.put("send_type","2");
-        params.put("timestamp","2012-11-30 17:16:01");
-        params.put("sign","8D5F91B2FC6D2E8843461AB1D8F605B1");
-        params.put("num","1");
-        params.put("consume_type","0");
-        params.put("valid_start","2012-11-30 00:00:00");
-        params.put("token","a6670b68da9bdb8c6365c49b71e395b7");
-        params.put("method","send");
-        params.put("num_iid","21339404852");
-        params.put("sms_template","验证码$code.您已成功订购券生活8提供的测试用 拍下概不负责,有效期2012/11/30至2013/01/11,消费时请出示本短信以验证.淘宝客服电话057188158198.");
-        params.put("seller_nick","券生活8");
-        params.put("mobile","13472581853");
+        params.put("send_type", "2");
+        params.put("timestamp", "2012-11-30 17:16:01");
+        params.put("sign", "8D5F91B2FC6D2E8843461AB1D8F605B1");
+        params.put("num", "1");
+        params.put("consume_type", "0");
+        params.put("valid_start", "2012-11-30 00:00:00");
+        params.put("token", "a6670b68da9bdb8c6365c49b71e395b7");
+        params.put("method", "send");
+        params.put("num_iid", "21339404852");
+        params.put("sms_template", "验证码$code.您已成功订购券生活8提供的测试用 拍下概不负责,有效期2012/11/30至2013/01/11,消费时请出示本短信以验证.淘宝客服电话057188158198.");
+        params.put("seller_nick", "券生活8");
+        params.put("mobile", "13472581853");
 
         return params;
     }

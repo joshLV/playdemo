@@ -255,7 +255,6 @@ public class KtvPriceSchedules extends Controller {
         query.setParameter("roomType", roomType);
         query.setParameter("shops", shops);
         List<KtvShopPriceSchedule> shopStrategies = query.getResultList();
-
         //维护一个已知的 没有冲突的策略列表
         Set<Long> okStrategies = new HashSet<>();
         for (KtvShopPriceSchedule shopStrategy : shopStrategies) {

@@ -173,29 +173,30 @@ public class KtvRoomOrderInfo extends Model {
 
     }
     */
-    public static String getRoomOrderTime(List<KtvRoomOrderInfo> ktvRoomOrderInfoList) {
-        List<Integer> orderTimeList = new ArrayList<>();
-        for (KtvRoomOrderInfo ktvRoomOrderInfo : ktvRoomOrderInfoList) {
-            orderTimeList.add(ktvRoomOrderInfo.scheduledTime);
-
-        }
-        Collections.sort(orderTimeList);
-
-        int lastTime = -2;
-        List<Integer[]> result = new ArrayList<>();
-        for (int t : orderTimeList) {
-            if (t != lastTime + 1) {
-                result.add(new Integer[]{t, t + 1});
-            } else {
-                result.get(result.size() - 1)[1] = t + 1;
-            }
-            lastTime = t;
-        }
-
-        StringBuilder resultStr = new StringBuilder();
-        for (Integer[] pair : result) {
-            resultStr.append(pair[0]).append(":00-").append(pair[1]).append(":00;");
-        }
-        return resultStr.toString();
-    }
+//
+//    public static String getRoomOrderTime(List<KtvRoomOrderInfo> ktvRoomOrderInfoList) {
+//        List<Integer> orderTimeList = new ArrayList<>();
+//        for (KtvRoomOrderInfo ktvRoomOrderInfo : ktvRoomOrderInfoList) {
+//            orderTimeList.add(ktvRoomOrderInfo.scheduledTime);
+//
+//        }
+//        Collections.sort(orderTimeList);
+//
+//        int lastTime = -2;
+//        List<Integer[]> result = new ArrayList<>();
+//        for (int t : orderTimeList) {
+//            if (t != lastTime + 1) {
+//                result.add(new Integer[]{t, t + 1});
+//            } else {
+//                result.get(result.size() - 1)[1] = t + 1;
+//            }
+//            lastTime = t;
+//        }
+//
+//        StringBuilder resultStr = new StringBuilder();
+//        for (Integer[] pair : result) {
+//            resultStr.append(pair[0]).append(":00-").append(pair[1]).append(":00;");
+//        }
+//        return resultStr.toString();
+//    }
 }
