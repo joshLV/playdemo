@@ -167,17 +167,17 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
 
     // 创建一百券订单
     private Order createYbqOrder(Long outerGroupId, String userPhone, String sellerNick, TradeGetResponse taobaoTrade) {
-        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
-        if (resaler == null) {
-            Logger.error("can not find the resaler by login name: %s", Resaler.TAOBAO_LOGIN_NAME);
-            return null;
-        }
+        Resaler resaler = null;
+
         //如果是从其他淘宝店铺过来的订单，则读取相应的分销信息
         if ("kisbear".equals(sellerNick)) {
             resaler = Resaler.findApprovedByLoginName(Resaler.YLD_LOGIN_NAME);
+        }else {
+            //默认是我们券生活8的resaler
+            resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
         }
         if (resaler == null) {
-            Logger.error("can not find the resaler by login name: %s", Resaler.YLD_LOGIN_NAME);
+            Logger.error("can not find the resaler : %s", sellerNick);
             return null;
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
