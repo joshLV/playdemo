@@ -182,8 +182,11 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             }
             List<com.taobao.api.domain.Order> orders = taobaoTrade.getTrade().getOrders();
             for (com.taobao.api.domain.Order order : orders) {
+                Long number = order.getNum();
+                BigDecimal orderItemPayment = new BigDecimal(order.getPayment());
+                BigDecimal salePrice = orderItemPayment.divide(new BigDecimal(number),RoundingMode.DOWN);
                 OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, order.getNum(),
-                        userPhone, new BigDecimal(order.getPayment()), new BigDecimal(order.getPayment()));
+                        userPhone, salePrice, salePrice);
                 uhuilaOrderItem.save();
 
                 if (goods.getSupplierProperty(Supplier.KTV_SUPPLIER)) {
