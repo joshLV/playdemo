@@ -20,7 +20,7 @@ POST    /ktv/price-schedule/collision-detect            KtvPriceSchedules.jsonCo
 
 POST    /ktv/price-schedule                              KtvPriceSchedules.create
 POST    /ktv/price-schedule/json-search                  KtvPriceSchedules.jsonSearch
-GET     /ktv/price-schedule/{id}/edit                    KtvPriceSchedules.edit
+GET     /ktv/price-schedule/{id}/edit                    KtvPriceSchedules.showEdit
 DELETE  /ktv/price-schedule/{id}                         KtvPriceSchedules.delete
 PUT     /ktv/price-schedule/{id}                         KtvPriceSchedules.update
 

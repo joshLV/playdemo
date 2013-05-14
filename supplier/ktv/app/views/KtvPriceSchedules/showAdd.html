@@ -65,20 +65,17 @@
         </div>
 
         <div class="field-group">
-            <label>欢唱时长</label>
+            <label>套餐产品</label>
             <select name="priceStrategy.product.id" id="priceStrategy_product_id" style="width: auto">
                 #{list ktvProductList,as :'product'}
-                    <option value="${product.id}"
-                            data-duration="${product.duration}">${product.name}</option>
-                *{<input type="radio" name="priceStrategy.product.id" data-duration="${product.duration}"}*
-                *{value="${product.id}"> ${product.name}}*
+                    <option value="${product.id}" data-duration="${product.duration}">${product.name}</option>
                 #{/list}
             </select>
         </div>
 
         <div class="field-group">
             <label>包厢价格</label>
-            <input type="text" id="price" name="priceStrategy.price"/> 元 / 每 <span id="durationPer">3</span> 小时
+            <input type="text" id="price" name="priceStrategy.price"/> 元 / 每 <span id="durationPer"></span> 小时
         </div>
 
         <div class="field-group">
@@ -147,6 +144,7 @@
         });
     }
     $(function () {
+        $("#durationPer").text($("#priceStrategy_product_id option:selected").attr("data-duration"));
         //选择门店
         $("input[data-shop-id]").change(function () {
             var roomCountAll = $("#roomCountAll").val();
@@ -179,19 +177,6 @@
         $("#priceStrategy_product_id").change(function () {
             var ele = $("#priceStrategy_product_id option:selected");
             $("#durationPer").text(ele.attr("data-duration"));
-            if (ele.attr("id") == "customDuration") {
-                $("#customDurationText").hide();
-                $("#customDurationSelect").show();
-            } else {
-                $("#customDurationSelect").hide();
-                $("#customDurationText").show();
-            }
-            resetSelectedHours();
-        });
-        //切换时长select
-        $("#customDurationSelect").change(function () {
-            $("#durationPer").text($(this).val());
-            $("#customDuration").val($(this).val());
             resetSelectedHours();
         });
         //点击时间点

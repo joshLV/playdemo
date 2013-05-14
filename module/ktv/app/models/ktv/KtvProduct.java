@@ -1,13 +1,11 @@
 package models.ktv;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
-import play.modules.solr.SolrField;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,24 +38,18 @@ public class KtvProduct extends Model {
     public int duration;//欢唱时长
 
     @Enumerated(EnumType.ORDINAL)
-    @SolrField
     public DeletedStatus deleted;
 
     @Column(name = "created_by")
-    @SolrField
     public String createdBy;
 
     @Column(name = "updated_by")
-    @SolrField
     public String updatedBy;
 
     @Column(name = "created_at")
-    @SolrField
     public Date createdAt;
 
-
     @Column(name = "updated_at")
-    @SolrField
     public Date updatedAt;
 
     public static void update(Long id, KtvProduct product, String updatedBy) {
