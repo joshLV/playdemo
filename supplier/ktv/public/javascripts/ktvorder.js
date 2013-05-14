@@ -293,7 +293,8 @@ var KTVOrder = (function  () {
                 var startTime = Number(startTimes[j]);
                 for (var k = 0; k < schedule.roomCount; k++) {
                     var holder = ktv.getAvaliableHolder(schedule.roomType.toLowerCase(), startTime, schedule.duration, "schedule");
-                    holder.div.attr("data-time",(startTime<10 ? "0"+startTime : startTime) + ":00" );
+                    holder.div.attr("data-time",startTime);
+                    holder.div.attr("data-duration",schedule.duration);
                     holder.div.attr("data-price", schedule.price);
                     holder.div.text("￥" + schedule.price);
                     holder.div.addClass("wk-order-room-price");
@@ -312,6 +313,34 @@ var KTVOrder = (function  () {
 
             var holder = ktv.getAvaliableHolder(order.roomType.toLowerCase(), scheduleTime, order.duration, "order");
             holder.div.addClass("wk-order-room-reserved");
+        }
+        for(var roomType in ktv.rooms) {
+            var roomsOfType = ktv.rooms[roomType];
+            for(var duration in roomsOfType.durations){
+                var roomsOfDuration = roomsOfType.durations[duration];
+                for(var m = 0; m < roomsOfDuration.rooms.length; m ++) {
+                    var room = roomsOfDuration.rooms[m];
+                    for(var n = 0; n < room.holders.length; n ++) {
+                        var holder = room.holders[n];
+                        holder.div.hover(
+                            function(){
+                                var ele = $(this);
+                                var t = Number(ele.attr("data-time"));
+                                if (d == 1) {
+                                    ele.text(t + ":00");
+                                }else {
+                                    var d = Number(ele.attr("data-duration"));
+                                    ele.text(t+":00 - "+ (t+d-1)+":00");
+                                }
+                            },
+                            function(){
+                                var ele = $(this);
+                                ele.text("￥" + ele.attr("data-price"));
+                            }
+                            );
+                    }
+                }
+            }
         }
     };
     return KTVOrder;
