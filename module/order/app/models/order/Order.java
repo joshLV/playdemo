@@ -864,7 +864,6 @@ public class Order extends Model {
 
         Resaler sinaResaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
 
-        Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
         for (OrderItems orderItem : this.orderItems) {
             Goods goods = orderItem.goods;
@@ -913,7 +912,7 @@ public class Order extends Model {
                     KtvTaobaoSku ktvSku = KtvTaobaoSku.find("goods=? and roomType=? and timeRange =? and date=?",
                             goods, roomOrderInfo.roomType.getTaobaoId(), roomOrderInfo.getTimeRange(), roomDay).first();
                     if (ktvSku != null) {
-                        ktvSku.quantity -= orderItem.buyNumber;
+                        ktvSku.quantity -= orderItem.buyNumber.intValue();
                         ktvSku.save();
                     }
                 }
