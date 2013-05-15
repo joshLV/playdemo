@@ -240,11 +240,7 @@ public class OperateGoods extends Controller {
         checkUseWeekDay(goods);
         if (Validation.hasErrors()) {
             boolean selectAll = false;
-            Supplier supplier = Supplier.findById(goods.supplierId);
-            boolean ktvSupplier = false;
-            if (supplier.getProperty("ktvSupplier").equals("1")) {
-                ktvSupplier = true;
-            }
+            boolean ktvSupplier = goods.isKtvSupplier(Supplier.KTV_SUPPLIER);
             List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
             renderInit(goods);
 
@@ -263,9 +259,17 @@ public class OperateGoods extends Controller {
                 }
             }
         }
+
+        //KTV商品处理
+        if (goods.getSupplier().isKtvSupplier()) {
+            KtvProductGoods productGoods = new KtvProductGoods();
+            productGoods.shop = goods.shops.iterator().next();
+            productGoods.product = goods.product;
+            productGoods.goods = goods;
+            productGoods.save();
+        }
         goods.createdBy = OperateRbac.currentUser().loginName;
         goods.create();
-
 
         try {
             goods.imagePath = uploadImagePath(imagePath, goods.id, null);
@@ -276,13 +280,6 @@ public class OperateGoods extends Controller {
         goods.save();
         String createdFrom = "Op";
         goods.createHistory(createdFrom);
-        if (goods.getSupplier().isKtvSupplier()) {
-            KtvProductGoods productGoods = new KtvProductGoods();
-            productGoods.shop = goods.shops.iterator().next();
-            productGoods.product = goods.product;
-            productGoods.goods = goods;
-            productGoods.save();
-        }
 
         index(null);
     }
@@ -408,14 +405,14 @@ public class OperateGoods extends Controller {
 
         boolean ktvSupplier = goods.isKtvSupplier(Supplier.KTV_SUPPLIER);
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
-        setGoodsProduct(goods, ktvSupplier);
+        setGoodsProduct(goods);
         renderInit(goods);
         render(id, hasApproveGoodsPermission, ktvSupplier, productList);
 
     }
 
-    private static void setGoodsProduct(Goods goods, boolean ktvSupplier) {
-        if (ktvSupplier) {
+    private static void setGoodsProduct(Goods goods) {
+        if (goods.isKtvSupplier(Supplier.KTV_SUPPLIER)) {
             KtvProductGoods productGoods = KtvProductGoods.find("goods=? and shop=?", goods, goods.shops.iterator().next()).first();
             if (productGoods != null) {
                 goods.product = productGoods.product;
@@ -442,7 +439,7 @@ public class OperateGoods extends Controller {
         checkShops(goods.supplierId);
         boolean ktvSupplier = goods.isKtvSupplier(Supplier.KTV_SUPPLIER);
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
-        setGoodsProduct(goods, ktvSupplier);
+        setGoodsProduct(goods);
         renderInit(goods);
 
         renderArgs.put("imageLargePath", goods.getImageLargePath());
@@ -615,8 +612,6 @@ public class OperateGoods extends Controller {
         goodsItem.createHistory(createdFrom);
         if (goods.getSupplier().isKtvSupplier()) {
             KtvProductGoods productGoods = KtvProductGoods.find("goods=?", goodsItem).first();
-            System.out.println(goods.shops + "--------" + goods.product);
-
             if (productGoods != null) {
                 productGoods.shop = goodsItem.shops.iterator().next();
                 productGoods.product = goods.product;
