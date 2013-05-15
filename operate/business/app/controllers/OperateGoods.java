@@ -238,12 +238,14 @@ public class OperateGoods extends Controller {
         checkSalePrice(goods);
         checkShops(goods.supplierId);
         checkUseWeekDay(goods);
+
         if (Validation.hasErrors()) {
             boolean selectAll = false;
-            boolean ktvSupplier = goods.isKtvSupplier(Supplier.KTV_SUPPLIER);
             List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
             renderInit(goods);
 
+            boolean ktvSupplier = goods.getSupplier().isKtvSupplier();
+            System.out.println(ktvSupplier + "-------");
             render("OperateGoods/add.html", productList, ktvSupplier, selectAll, hasApproveGoodsPermission);
         }
         //预览
@@ -403,7 +405,7 @@ public class OperateGoods extends Controller {
         renderArgs.put("page", page);
         renderArgs.put("queryString", queryString);
 
-        boolean ktvSupplier = goods.isKtvSupplier(Supplier.KTV_SUPPLIER);
+        boolean ktvSupplier = goods.isKtvSupplier();
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
         setGoodsProduct(goods);
         renderInit(goods);
@@ -412,7 +414,7 @@ public class OperateGoods extends Controller {
     }
 
     private static void setGoodsProduct(Goods goods) {
-        if (goods.isKtvSupplier(Supplier.KTV_SUPPLIER)) {
+        if (goods.isKtvSupplier()) {
             KtvProductGoods productGoods = KtvProductGoods.find("goods=? and shop=?", goods, goods.shops.iterator().next()).first();
             if (productGoods != null) {
                 goods.product = productGoods.product;
@@ -437,7 +439,7 @@ public class OperateGoods extends Controller {
     public static void copy(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
         checkShops(goods.supplierId);
-        boolean ktvSupplier = goods.isKtvSupplier(Supplier.KTV_SUPPLIER);
+        boolean ktvSupplier = goods.isKtvSupplier();
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
         setGoodsProduct(goods);
         renderInit(goods);
@@ -567,11 +569,8 @@ public class OperateGoods extends Controller {
         if (Validation.hasErrors()) {
             renderArgs.put("imageLargePath", imageLargePath);
             renderInit(goods);
-            Supplier supplier = Supplier.findById(goods.supplierId);
-            boolean ktvSupplier = false;
-            if (supplier.getProperty("ktvSupplier").equals("1")) {
-                ktvSupplier = true;
-            }
+            boolean ktvSupplier = goods.isKtvSupplier();
+
             List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
             render("OperateGoods/edit2.html", productList, ktvSupplier, goods, id, page, queryString, hasApproveGoodsPermission);
         }
