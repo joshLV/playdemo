@@ -9,7 +9,7 @@
         <div class="field-group" style="padding-left: 0px">
             <table cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                    <td>适用门店:<select name="shop.id" value="${shop?.id}" style="width: auto">
+                    <td>适用门店:<select name="shopId" value="${shop?.id}" style="width: auto">
                         #{list items:shops,as:'s'}
                             <option value="${s.id}" ${shop?.id==s?.id ?'selected':''}/>${s.name}&nbsp;&nbsp;
                         #{/list}
