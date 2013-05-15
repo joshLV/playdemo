@@ -199,7 +199,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 uhuilaOrderItem.save();
 
                 //ktv商户才创建sku订单
-                if (goods.isKtvSupplier(Supplier.KTV_SUPPLIER)) {
+                if (goods.isKtvSupplier()) {
                     if (createSkuOrderInfo(uhuilaOrderItem, order, goods) == null) {
                         JPA.em().getTransaction().rollback();
                         return null;

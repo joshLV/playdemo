@@ -609,12 +609,15 @@ public class Goods extends Model {
         });
     }
 
+    /**
+     * 判断该商户是否ktv商户
+     */
     @Transient
-    public boolean isKtvSupplier(String key) {
+    public boolean isKtvSupplier() {
         if (this.id == null) {
             return false;
         }
-        return "1".equals(getSupplier().getProperty(key));
+        return "1".equals(getSupplier().getProperty(Supplier.KTV_SUPPLIER));
     }
 
     @Column(name = "is_all_shop")

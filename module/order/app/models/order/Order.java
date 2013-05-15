@@ -875,7 +875,7 @@ public class Order extends Model {
                 boolean isKtvSupplier = false;
                 //ktv商户的场合
                 KtvRoomOrderInfo roomOrderInfo = null;
-                if (goods.isKtvSupplier(Supplier.KTV_SUPPLIER)) {
+                if (goods.isKtvSupplier()) {
                     isKtvSupplier = true;
                     roomOrderInfo = KtvRoomOrderInfo.find("orderItem", orderItem).first();
                 }
