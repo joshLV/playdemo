@@ -82,6 +82,10 @@ public class KtvRoomOrderInfo extends Model {
         this.scheduledTime = scheduledTime;
     }
 
+    public String getTimeRange(){
+       return this.scheduledTime + "点至" + (this.scheduledTime + this.duration - 1) + "点";
+    }
+
     /*
     public static List<KtvRoomOrderInfo> findScheduledInfos(Date scheduleDay, Shop shop) {
         return KtvRoom.find("select k from KtvRoomOrderInfo k join k.goods.shops s where k.scheduledDay = ? and s.id=? and (k.status = ? or (k.status=?  and k.createdAt >= ?))",

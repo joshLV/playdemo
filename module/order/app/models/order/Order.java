@@ -17,6 +17,7 @@ import models.consumer.UserWebIdentification;
 import models.kangou.KangouCard;
 import models.kangou.KangouUtil;
 import models.ktv.KtvRoomOrderInfo;
+import models.ktv.KtvTaobaoSku;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.operator.Operator;
@@ -33,6 +34,7 @@ import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -57,10 +59,7 @@ import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 @Entity
@@ -865,6 +864,8 @@ public class Order extends Model {
 
         Resaler sinaResaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
 
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
         for (OrderItems orderItem : this.orderItems) {
             Goods goods = orderItem.goods;
             if (goods == null) {
@@ -896,9 +897,7 @@ public class Order extends Model {
                     //ktv商户的话，更新券的价格信息
                     if (isKtvSupplier && roomOrderInfo != null) {
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
-                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + ","
-                                + roomOrderInfo.scheduledTime + "点至"
-                                + (roomOrderInfo.scheduledTime + roomOrderInfo.duration - 1) + "点";
+                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + "," + roomOrderInfo.getTimeRange();
                         eCoupon.save();
                     }
                     //记录券历史信息
@@ -910,6 +909,13 @@ public class Order extends Model {
                 //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
                 if (isKtvSupplier && roomOrderInfo != null) {
                     roomOrderInfo.dealKtvRoom();
+                    String roomDay = dateFormat.format(roomOrderInfo.scheduledDay);
+                    KtvTaobaoSku ktvSku = KtvTaobaoSku.find("goods=? and roomType=? and timeRange =? and date=?",
+                            goods, roomOrderInfo.roomType.getTaobaoId(), roomOrderInfo.getTimeRange(), roomDay).first();
+                    if (ktvSku != null) {
+                        ktvSku.quantity -= orderItem.buyNumber;
+                        ktvSku.save();
+                    }
                 }
             }
 
