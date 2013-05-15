@@ -261,14 +261,6 @@ public class OperateGoods extends Controller {
             }
         }
 
-        //KTV商品处理
-        if (goods.getSupplier().isKtvSupplier()) {
-            KtvProductGoods productGoods = new KtvProductGoods();
-            productGoods.shop = goods.shops.iterator().next();
-            productGoods.product = goods.product;
-            productGoods.goods = goods;
-            productGoods.save();
-        }
         goods.createdBy = OperateRbac.currentUser().loginName;
         goods.create();
 
@@ -282,6 +274,18 @@ public class OperateGoods extends Controller {
         String createdFrom = "Op";
         goods.createHistory(createdFrom);
 
+        //KTV商品处理
+        if (goods.getSupplier().isKtvSupplier()) {
+            Shop shop = Shop.findById(Long.valueOf(request.params.getAll("goods.shops.id")[0]));
+            goods.shops = new HashSet<>();
+            goods.shops.add(shop);
+            goods.save();
+            KtvProductGoods productGoods = new KtvProductGoods();
+            productGoods.shop = shop;
+            productGoods.product = goods.product;
+            productGoods.goods = goods;
+            productGoods.save();
+        }
         index(null);
     }
 
