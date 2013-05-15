@@ -292,7 +292,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                     }
                     break;
                 default:
-                    roomOrderInfo.roomType = KtvRoomType.getRoomTypeByTaobaoId(property);
+                    roomOrderInfo.roomType = KtvRoomType.getRoomTypeByName(map[1]);
                     break;
             }
         }

@@ -245,7 +245,6 @@ public class OperateGoods extends Controller {
             renderInit(goods);
 
             boolean ktvSupplier = goods.getSupplier().isKtvSupplier();
-            System.out.println(ktvSupplier + "-------");
             render("OperateGoods/add.html", productList, ktvSupplier, selectAll, hasApproveGoodsPermission);
         }
         //预览
