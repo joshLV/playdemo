@@ -57,25 +57,7 @@ import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 import play.modules.view_ext.annotation.Money;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -274,7 +256,7 @@ public class Goods extends Model {
     @Transient
     private String imageSmallPath;
 
-    @Transient
+    @OneToOne
     public KtvProduct product;
 
     @Transient
@@ -627,12 +609,15 @@ public class Goods extends Model {
         });
     }
 
+    /**
+     * 判断该商户是否ktv商户
+     */
     @Transient
-    public boolean isKtvSupplier(String key) {
+    public boolean isKtvSupplier() {
         if (this.id == null) {
             return false;
         }
-        return "1".equals(getSupplier().getProperty(key));
+        return "1".equals(getSupplier().getProperty(Supplier.KTV_SUPPLIER));
     }
 
     @Column(name = "is_all_shop")

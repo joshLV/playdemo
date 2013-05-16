@@ -41,6 +41,14 @@ public enum KtvRoomType {
         }
         return null;
     }
+    public static KtvRoomType getRoomTypeByName(String name) {
+        for (KtvRoomType roomType : KtvRoomType.values()) {
+            if (roomType.getName().equals(name)) {
+                return roomType;
+            }
+        }
+        return null;
+    }
 
 
     @Override

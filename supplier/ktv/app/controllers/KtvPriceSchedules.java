@@ -20,6 +20,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import javax.persistence.Query;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -158,7 +159,7 @@ public class KtvPriceSchedules extends Controller {
 
     //
     public static void make(long priceScheduleId) {
-       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
+//       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
         List<KtvProductGoods> ktvProductGoodsList = KtvProductGoods.findAll();
         for (KtvProductGoods productGoods : ktvProductGoodsList) {
             KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);

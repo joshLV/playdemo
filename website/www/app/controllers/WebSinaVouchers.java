@@ -81,7 +81,7 @@ public class WebSinaVouchers extends Controller {
     }
 
     private static void initKtvPage(String productId, Goods goods, User user) {
-        if (goods.isKtvSupplier(Supplier.KTV_SUPPLIER)) {
+        if (goods.isKtvSupplier()) {
             Collection<Shop> shops = goods.getShopList();
             if (shops.size() == 0) {
                 error("no shop found");
@@ -103,7 +103,7 @@ public class WebSinaVouchers extends Controller {
         Validation.match("phone", phone, "^1\\d{10}$");
         String pageUrl = "ktvorder.html";
         //ktv商户不需要验证购买数量
-        if (!goods.isKtvSupplier(Supplier.KTV_SUPPLIER)) {
+        if (!goods.isKtvSupplier()) {
             pageUrl = "showOrder.html";
             Validation.required("buyCount", buyCount);
         }
@@ -121,7 +121,7 @@ public class WebSinaVouchers extends Controller {
         Order order = Order.createConsumeOrder(user, resaler).save();
         try {
             //页面根据包厢ID,取得该时间段的价格信息
-            if (goods.isKtvSupplier(Supplier.KTV_SUPPLIER)) {
+            if (goods.isKtvSupplier()) {
                 createKtvOrderItem(productId, phone, scheduledDay, goods, order);
             } else {
                 OrderItems orderItems = order.addOrderItem(goods, buyCount, phone, goods.getResalePrice(), goods.getResalePrice());
