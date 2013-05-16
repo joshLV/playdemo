@@ -182,7 +182,4 @@ public class ResalerProduct extends Model {
         return this;
     }
 
-    public static List<ResalerProduct> getPartnerProductIdByGoods(Goods goods, OuterOrderPartner partner) {
-        return ResalerProduct.find("goods=? and partner=?", goods, partner).fetch();
-    }
 }

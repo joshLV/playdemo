@@ -4,6 +4,7 @@ import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.util.AccountUtil;
 import models.operator.Operator;
+import models.order.OuterOrderPartner;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.annotations.Index;
 import play.data.validation.Email;
@@ -40,9 +41,7 @@ public class Resaler extends Model {
     public static final String YHD_LOGIN_NAME = "yihaodian";
     public static final String WUBA_LOGIN_NAME = "wuba";
     public static final String TAOBAO_LOGIN_NAME = "taobao";
-    public static final String YLD_LOGIN_NAME = "yinledi";
     public static final String SINA_LOGIN_NAME = "sina";
-
     public static final String YIBAIQUAN_NAME = "yibaiquan";
 
     /**
@@ -136,6 +135,9 @@ public class Resaler extends Model {
      */
     @Column(name = "sales_id")
     public Long salesId;
+
+    @Column(name = "partner")
+    public String partner;       //合作伙伴
 
     /**
      * 分销商状态

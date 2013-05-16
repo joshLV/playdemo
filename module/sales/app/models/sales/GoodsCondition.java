@@ -66,6 +66,7 @@ public class GoodsCondition implements Serializable {
     public Date expireAtBegin;
     public Date expireAtEnd;
     public Date expireAt;
+    public String operatorCode;
 
     private Map<String, Object> paramMap = new HashMap<>();
 
@@ -327,6 +328,8 @@ public class GoodsCondition implements Serializable {
         if (isLottery) {
             condBuilder.append(" and g.isLottery=:isLottery");
             paramMap.put("isLottery", isLottery);
+        } else {
+            condBuilder.append(" and g.isLottery is false");
         }
         if (isHideOnsale) {
             condBuilder.append(" and g.isHideOnsale=:isHideOnsale");

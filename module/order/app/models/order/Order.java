@@ -841,9 +841,10 @@ public class Order extends Model {
         Date expireAt = null;
         if (!isWebsiteOrder()) {
             String loginName = this.getResaler().loginName;
+            String partner=this.getResaler().partner;
             operator = "分销商：" + loginName;
             //使用淘宝传过来的截止日期
-            if (loginName.equals(Resaler.TAOBAO_LOGIN_NAME) || loginName.equals(Resaler.YLD_LOGIN_NAME)) {
+            if ("TB".equals(partner)) {
                 OuterOrder outerOrder = OuterOrder.find("byYbqOrder", this).first();
                 if (outerOrder != null) {
                     try {

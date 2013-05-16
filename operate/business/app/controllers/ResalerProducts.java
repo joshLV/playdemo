@@ -4,7 +4,10 @@ import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JingdongMessage;
 import models.operator.OperateUser;
 import com.uhuila.common.constants.DeletedStatus;
+import models.operator.Operator;
 import models.order.OuterOrderPartner;
+import models.resale.Resaler;
+import models.resale.ResalerStatus;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductJournal;
 import models.sales.*;
@@ -22,7 +25,7 @@ import java.util.*;
 
 /**
  * @author likang
- * Date: 13-1-8
+ *         Date: 13-1-8
  */
 @With(OperateRbac.class)
 @ActiveNavigation("resale_partner_product")
@@ -37,15 +40,18 @@ public class ResalerProducts extends Controller {
         int pageNumber = getPage();
         if (condition == null) {
             condition = new GoodsCondition();
+            condition.operatorCode= Operator.defaultOperator().code;
         }
+        condition.isLottery = false;
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
 
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        Map<String, List<ResalerProduct> > partnerProducts = new HashMap<>();
-        for(models.sales.Goods goods : goodsPage.getCurrentPage()) {
-            List<ResalerProduct> products = ResalerProduct.find("goods = ? and status != ? and deleted = ?",
+        List<Resaler> resalerList = Resaler.find("status =? and operator.code =? and partner is not null ", ResalerStatus.APPROVED,condition.operatorCode).fetch();
+        Map<String, List<ResalerProduct>> partnerProducts = new HashMap<>();
+        for (models.sales.Goods goods : goodsPage.getCurrentPage()) {
+            List<ResalerProduct> products = ResalerProduct.find("goods = ? and status != ? and deleted = ? ",
                     goods, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
             for (ResalerProduct product : products) {
                 List<ResalerProduct> p = partnerProducts.get(goods.id + product.partner.toString());
@@ -57,7 +63,9 @@ public class ResalerProducts extends Controller {
             }
         }
 
-        render(goodsPage, condition, supplierList, partnerProducts);
+        List<Operator> operators = Operator.findUnDeleted();
+
+        render(goodsPage, operators, condition, supplierList, partnerProducts,resalerList);
     }
 
     private static int getPage() {
@@ -72,8 +80,8 @@ public class ResalerProducts extends Controller {
     public static void journal(Long productId) {
         ResalerProduct product = ResalerProduct.findById(productId);
         List<ResalerProductJournal> journals = ResalerProductJournal.find("byProduct", product).fetch();
-        for(ResalerProductJournal journal : journals) {
-            journal.operator = ((OperateUser)OperateUser.findById(journal.operatorId)).userName;
+        for (ResalerProductJournal journal : journals) {
+            journal.operator = ((OperateUser) OperateUser.findById(journal.operatorId)).userName;
         }
         render(journals);
     }
@@ -91,18 +99,20 @@ public class ResalerProducts extends Controller {
     }
 
     @ActiveNavigation("resale_partner_product")
-    public static void showProducts(String partner, Long goodsId) {
+    public static void showProducts(String partner, Long goodsId,String loginName) {
         Goods goods = Goods.findById(goodsId);
         if (goods == null) {
             Logger.info("goods not found");
             error("商品不存在");
         }
         List<ResalerProduct> products = ResalerProduct.find(
-                "goods = ? and partner = ? and status != ? and deleted = ? order by createdAt desc",
-                goods, OuterOrderPartner.valueOf(partner.toUpperCase()), ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
+                "goods = ? and partner = ? and resaler.loginName=? and status != ? and deleted = ? order by createdAt desc",
+                goods, OuterOrderPartner.valueOf(partner.toUpperCase()), loginName,ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
         for (ResalerProduct product : products) {
-            if (product.creatorId != null) product.creator = ((OperateUser)OperateUser.findById(product.creatorId)).userName;
-            if (product.lastModifierId != null) product.lastModifier = ((OperateUser)OperateUser.findById(product.lastModifierId)).userName;
+            if (product.creatorId != null)
+                product.creator = ((OperateUser) OperateUser.findById(product.creatorId)).userName;
+            if (product.lastModifierId != null)
+                product.lastModifier = ((OperateUser) OperateUser.findById(product.lastModifierId)).userName;
         }
         render(products);
     }
@@ -116,7 +126,7 @@ public class ResalerProducts extends Controller {
         product.deleted = DeletedStatus.DELETED;
         product.updatedAt = new Date();
         product.lastModifier(OperateRbac.currentUser().id).save();
-        showProducts(product.partner.toString().toLowerCase(), product.goods.id);
+        showProducts(product.partner.toString().toLowerCase(),product.goods.id, product.resaler.loginName);
     }
 
     /**
@@ -125,9 +135,9 @@ public class ResalerProducts extends Controller {
     @ActiveNavigation("resale_partner_product")
     public static void enter(Long productId, String partnerPid, String url, Date endSale) {
         ResalerProduct product = ResalerProduct.findById(productId);
-        if (!StringUtils.isBlank(partnerPid)){
+        if (!StringUtils.isBlank(partnerPid)) {
             ResalerProduct t = ResalerProduct.find("byPartnerAndPartnerProductId", product.partner, partnerPid).first();
-            if(t != null) {
+            if (t != null) {
                 error("该分销商品ID已存在");
             }
 
@@ -135,13 +145,14 @@ public class ResalerProducts extends Controller {
         }
         if (!StringUtils.isBlank(url)) product.url = url;
         if (endSale != null) {
-            endSale = new Date(endSale.getTime() + 24*60*60*1000 - 1000);
+            endSale = new Date(endSale.getTime() + 24 * 60 * 60 * 1000 - 1000);
             product.endSale = endSale;
         }
         product.save();
 
-        showProducts(product.partner.toString().toLowerCase(), product.goods.id);
+        showProducts(product.partner.toString().toLowerCase(),product.goods.id, product.resaler.loginName);
     }
+
     /**
      * 完整录入分销商品
      */
@@ -152,7 +163,7 @@ public class ResalerProducts extends Controller {
         }
 
         ResalerProduct t = ResalerProduct.find("byPartnerAndPartnerProductId", product.partner, product.partnerProductId).first();
-        if(t != null) {
+        if (t != null) {
             error("该分销商品ID已存在");
         }
 
@@ -164,7 +175,7 @@ public class ResalerProducts extends Controller {
         product.creator(OperateRbac.currentUser().id);
         product.save();
 
-        showProducts(product.partner.toString().toLowerCase(), product.goods.id);
+        showProducts(product.partner.toString().toLowerCase(),product.goods.id, product.resaler.loginName);
     }
 
     /**
@@ -177,7 +188,7 @@ public class ResalerProducts extends Controller {
 
         List<ResalerProduct> products = ResalerProduct.find(
                 "deleted = ? and status != ? and endSale is not null and endSale < ? and (partner = ?) " +
-                "and goods.materialType = ? order by endSale",
+                        "and goods.materialType = ? order by endSale",
                 DeletedStatus.UN_DELETED, ResalerProductStatus.STAGING, fourDaysLater,
                 OuterOrderPartner.JD, MaterialType.ELECTRONIC).fetch();
         render(products);
@@ -228,8 +239,8 @@ public class ResalerProducts extends Controller {
         }
 
         if (success) {
-            renderJSON("{\"endSale\":\"" + format.format(endSale) +  "\"}");
-        }else {
+            renderJSON("{\"endSale\":\"" + format.format(endSale) + "\"}");
+        } else {
             renderJSON("{\"error\":\"延期失败\"}");
         }
     }
