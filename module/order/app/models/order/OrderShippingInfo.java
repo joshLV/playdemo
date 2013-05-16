@@ -129,6 +129,12 @@ public class OrderShippingInfo extends Model {
     public String expressNumber;
 
     /**
+     * 运费
+     */
+    @Column(name = "freight")
+    public BigDecimal freight;
+
+    /**
      * 已发货文件上传渠道时间，这里认为是下载渠道已发货文件的时间。
      */
     public Date uploadedAt;

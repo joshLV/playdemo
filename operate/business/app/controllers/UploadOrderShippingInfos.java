@@ -1,6 +1,7 @@
 package controllers;
 
 import models.order.ExpressCompany;
+import models.order.Freight;
 import models.order.LogisticImportData;
 import models.order.OrderItems;
 import models.order.OrderStatus;
@@ -116,6 +117,8 @@ public class UploadOrderShippingInfos extends Controller {
 
             orderItems.shippingInfo.expressCompany = expressCompany;
             orderItems.shippingInfo.expressNumber = logistic.expressNumber;
+            orderItems.shippingInfo.freight = Freight.findFreight(orderItems.goods.getSupplier(), expressCompany,
+                    orderItems.shippingInfo.address);
             orderItems.shippingInfo.save();
             orderItems.status = OrderStatus.SENT;
             orderItems.sendAt = new Date();

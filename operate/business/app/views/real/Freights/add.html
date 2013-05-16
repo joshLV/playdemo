@@ -1,0 +1,14 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'添加快递运费' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/freight-form.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @real.Freights.create() , id:'freight_form',enctype:'multipart/form-data',class:"form-horizontal" ,
+method:'POST'}
+    <legend>${title}</legend>
+    #{set action:"add"/}
+    #{include 'real/Freights/freightForm.html'/}
+#{/form}
+</div>

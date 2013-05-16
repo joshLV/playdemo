@@ -480,6 +480,13 @@ GET     /express-companies/new             real.ExpressCompanies.add
 POST    /express-companies                 real.ExpressCompanies.create
 GET     /express-companies/{id}/edit       real.ExpressCompanies.edit
 
+#实物运费
+GET     /freights                 real.Freights.index
+GET     /freights/new             real.Freights.add
+POST    /freights                 real.Freights.create
+GET     /freights/{id}/edit       real.Freights.edit
+DELETE  /freights/{id}            real.Freights.delete
+
 
 #供货商管理
 GET     /vendors                           real.Vendors.index

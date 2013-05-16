@@ -1,0 +1,90 @@
+#{if "add".equals(action)}
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>商户</label>
+
+    <div class="controls">
+        #{vx.selectInputField  name:"supplierName", id:"freight.supplier.id", list:supplierList ,
+        value:freight?.supplier?.id, array:'supplierArray'/}
+        <span class="error">#{error 'freight.supplier'/}</span>
+    </div>
+</div>
+#{/if}
+#{else}
+<input type="hidden" id="freight_supplierId" name="freight.supplier.id" value="${freight?.supplier?.id}">
+    #{layout_operate.textField name:'商户名称', value:freight?.supplier?.fullName, disabled:true/}
+#{/else}
+
+#{if "add".equals(action)}
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>快递公司</label>
+
+    <div class="controls">
+        #{vx.selectInputField  name:"expressName", id:"freight.express.id", list:expressList,
+        value:freight?.express?.id,array:'expressArray'/}
+        <span class="error">#{error 'freight.express'/}</span>
+    </div>
+</div>
+#{/if}
+#{else}
+<input type="hidden" id="freight_expressId" name="freight.express.id" value="${freight?.express?.id}">
+    #{layout_operate.textField name:'快递公司', value:freight?.express?.name, disabled:true/}
+#{/else}
+#{layout_operate.labelText name:"计费方式", required:_required/}
+&nbsp;     &nbsp;   &nbsp;   &nbsp;
+<input type="radio" name="freight.type" value="NUMBER" #{if freight?.type == null || freight?.type ==  models.order
+.FreightType.NUMBER}
+       checked #{/if}> 按件数
+<br><br>
+
+<span style="margin-left: 145px;">
+    省
+    &nbsp; &nbsp;&nbsp;
+<select id="province" name="freight.province" title="省">
+    <option value="北京" #{if freight?.province == '北京'} selected #{/if}>B.北京</option>
+    <option value="天津" #{if freight?.province == '天津'} selected #{/if}>T.天津</option>
+    <option value="河北"  #{if freight?.province == '河北'} selected #{/if}>H.河北</option>
+    <option value="山西"  #{if freight?.province == '山西'} selected #{/if}>S.山西</option>
+    <option value="内蒙古自治区" #{if freight?.province == '内蒙古自治区'} selected #{/if}>N.内蒙古自治区</option>
+    <option value="辽宁" #{if freight?.province == '辽宁京'} selected #{/if}>L.辽宁</option>
+    <option value="吉林" #{if freight?.province == '吉林'} selected #{/if}>J.吉林</option>
+    <option value="黑龙江" #{if freight?.province == '黑龙江'} selected #{/if}>H.黑龙江</option>
+    <option value="江苏" #{if freight?.province == '江苏'} selected #{/if}>J.江苏</option>
+    <option value="浙江" #{if freight?.province == '浙江'} selected #{/if}>Z.浙江</option>
+    <option value="安徽" #{if freight?.province == '安徽'} selected #{/if}>A.安徽</option>
+    <option value="福建" #{if freight?.province == '福建'} selected #{/if}>F.福建</option>
+    <option value="江西" #{if freight?.province == '江西'} selected #{/if}>J.江西</option>
+    <option value="山东" #{if freight?.province == '山东'} selected #{/if}>S.山东</option>
+    <option value="河南" #{if freight?.province == '河南'} selected #{/if}>H.河南</option>
+    <option value="湖北" #{if freight?.province == '湖北'} selected #{/if}>H.湖北</option>
+    <option value="湖南" #{if freight?.province == '湖南'} selected #{/if}>H.湖南</option>
+    <option value="广东" #{if freight?.province == '广东'} selected #{/if}>G.广东</option>
+    <option value="广西壮族自治区" #{if freight?.province == '广西壮族自治区'} selected #{/if}>G.广西壮族自治区</option>
+    <option value="海南" #{if freight?.province == '海南'} selected #{/if}>H.海南</option>
+    <option value="四川" #{if freight?.province == '四川'} selected #{/if}>S.四川</option>
+    <option value="贵州" #{if freight?.province == '贵州'} selected #{/if}>G.贵州</option>
+    <option value="云南" #{if freight?.province == '云南'} selected #{/if}>Y.云南</option>
+    <option value="西藏自治区" #{if freight?.province == '西藏自治区'} selected #{/if}>X.西藏自治区</option>
+    <option value="陕西" #{if freight?.province == '陕西'} selected #{/if}>S.陕西</option>
+    <option value="甘肃" #{if freight?.province == '甘肃'} selected #{/if}>G.甘肃</option>
+    <option value="青海" #{if freight?.province == '青海'} selected #{/if}>Q.青海</option>
+    <option value="宁夏回族自治区" #{if freight?.province == '宁夏回族自治区'} selected #{/if}>N.宁夏回族自治区</option>
+    <option value="新疆维吾尔自治区" #{if freight?.province == '新疆维吾尔自治区'} selected #{/if}>X.新疆维吾尔自治区</option>
+    <option value="香港特别行政区" #{if freight?.province == '香港特别行政区'} selected #{/if}>X.香港特别行政区</option>
+    <option value="澳门特别行政区" #{if freight?.province == '澳门特别行政区'} selected #{/if}>A.澳门特别行政区</option>
+    <option value="海外" #{if freight?.province == '海外'} selected #{/if}>H.海外</option>
+    <option value="其他" #{if freight?.province == '其他'} selected #{/if}>Q.其他</option>
+</select>
+    </span>
+<br><br>
+#{layout_operate.textField name:'freight.price', value:freight?.price,required:true/}
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存">
+#{vx.cancelButton url:'', class:'btn btn-primary'/}
+</div>
+<input type="hidden" name="id" value="${id}">
+
+
+
+
+
+
