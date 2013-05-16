@@ -26,37 +26,30 @@ import java.util.Map;
  */
 public class TaobaoCouponAPI extends Controller {
 
-    public static void index(String method) {
+    public static void index(String method, Long taobao_sid, String order_id) {
         Map<String, String> params = request.params.allSimple();
         params.remove("body");
         Logger.info("taobao coupon request: \n%s", new Gson().toJson(params));
-        if (!TaobaoCouponUtil.verifyParam(params)) {
-            Logger.warn("taobao coupon request error: param verify failed!");
+
+        Resaler resaler = Resaler.find("byTaobaoSellerId", taobao_sid).first();
+
+        if (resaler == null) {
+            Logger.warn("taobao coupon request error: invalid seller");
             renderJSON("{\"code\":501}");
-            return;//签名错误
-        }
-        String orderId;
-        String sellerNick;
-        try {
-            orderId = params.get("order_id").trim();//淘宝订单交易号
-            sellerNick = params.get("seller_nick").trim();//淘宝卖家用户名（旺旺号）
-        } catch (Exception e) {
-            Logger.warn("taobao coupon request error: param invalid");
-            renderJSON("{\"code\":502}");
-            return;
-        }
-        //todo 判断其他的淘宝账户
-        if (!"order_modify".equals(method) && !"券生活8".equals(sellerNick) && !"kisbear".equals(sellerNick)) {
-            Logger.warn("taobao coupon request error: wrong seller nick: %s", sellerNick);
-            renderJSON("{\"code\":503}");
-            return;//暂时只发我们自己的店
+            return;//不支持的卖家
         }
 
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.TB, orderId).first();
+        if (!TaobaoCouponUtil.verifyParam(resaler.taobaoCouponServiceKey, params)) {
+            Logger.warn("taobao coupon request error: param verify failed!");
+            renderJSON("{\"code\":502}");
+            return;//签名错误
+        }
+
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.TB, order_id).first();
 
         switch (method) {
             case "send":
-                send(sellerNick, params, orderId, outerOrder);
+                send(resaler, params, order_id, outerOrder);
                 break;
             case "resend":
                 resend(outerOrder);
@@ -79,20 +72,7 @@ public class TaobaoCouponAPI extends Controller {
      * 接收发码通知
      * 此处只接收、记录请求内容，并立即返回，具体工作由 TaobaoCouponConsumer 来做
      */
-    private static void send(String sellerNick, Map<String, String> params, String orderId, OuterOrder outerOrder) {
-        Resaler resaler = null;
-
-        //如果是从其他淘宝店铺过来的订单，则读取相应的分销信息
-        if ("kisbear".equals(sellerNick)) {
-            resaler = Resaler.findApprovedByLoginName(Resaler.YLD_LOGIN_NAME);
-        }else {
-            //默认是我们券生活8的resaler
-            resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
-        }
-        if (resaler == null) {
-            Logger.error("can not find the resaler : %s", sellerNick);
-            return;
-        }
+    private static void send(Resaler resaler, Map<String, String> params, String orderId, OuterOrder outerOrder) {
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if (outerOrder == null) {
             outerOrder = new OuterOrder();

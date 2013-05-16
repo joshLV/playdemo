@@ -33,11 +33,12 @@ public class KtvPriceSchedules extends Controller {
     /**
      * 价格策略页面
      */
-    public static void index(Long shopId, KtvRoomType roomType) {
+    public static void index(Long shopId, KtvRoomType roomType, Long productId) {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         List<Shop> shops = Shop.findShopBySupplier(supplierId);
 
         Shop shop = null;
+        KtvProduct product = null;
         if (shopId != null) {
             shop = Shop.find("bySupplierIdAndId", supplierId, shopId).first();
         }
@@ -47,7 +48,19 @@ public class KtvPriceSchedules extends Controller {
         if (roomType == null) {
             roomType = KtvRoomType.values()[0];
         }
-        render(shops, shop, roomType);
+        if (productId != null) {
+            product = KtvProduct.find("id = ? and supplier.id = ?", productId, supplierId).first();
+        }
+
+        if (shop != null) {
+            List<KtvProduct> products = KtvProduct.findProductBySupplier(shop.supplierId);
+            renderArgs.put("products", products);
+
+            if (product == null && products.size() > 0) {
+                product = products.get(0);
+            }
+        }
+        render(shops, shop, roomType, product);
     }
 
     public static void jsonSearch(Date startDay, Date endDay, Shop shop, KtvRoomType roomType) {
@@ -141,7 +154,7 @@ public class KtvPriceSchedules extends Controller {
         }
         KtvSkuMessageUtil.send(priceStrategy.id);
 
-        index(shopCountMap.keySet().iterator().next().id, priceStrategy.roomType);
+        index(shopCountMap.keySet().iterator().next().id, priceStrategy.roomType, priceStrategy.product.id);
     }
 
     //
@@ -293,11 +306,11 @@ public class KtvPriceSchedules extends Controller {
     public static void delete(Long id) {
         KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(id);
         if (priceSchedule == null) {
-            index(null, null);
+            index(null, null, null);
             return;
         }
         priceSchedule.delete();
 
-        index(null, null);
+        index(null, null, null);
     }
 }

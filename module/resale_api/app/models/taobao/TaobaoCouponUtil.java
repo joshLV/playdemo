@@ -27,10 +27,6 @@ import java.util.TreeMap;
  *         Date: 12-11-27
  */
 public class TaobaoCouponUtil {
-    // 淘宝电子凭证的secret
-    public static final String COUPON_SECRET = Play.configuration.getProperty("taobao.coupon.secret", "4f64e4c29f3790388965c9a095784d67");
-    public static final String TOP_APPKEY = Play.configuration.getProperty("taobao.top.appkey", "21293912");
-    public static final String TOP_APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "1781d22a1f06c4f25f1f679ae0633400");
     public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
 
     /**
@@ -55,7 +51,8 @@ public class TaobaoCouponUtil {
             verifyCodes.append(eCoupons.get(i).getSafeECouponSN()).append(":1"); //1表示数量
         }
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(
+                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
@@ -133,7 +130,8 @@ public class TaobaoCouponUtil {
             i++;
         }
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(
+                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
         VmarketEticketResendRequest request = new VmarketEticketResendRequest();
         request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setVerifyCodes(verifyCodes.toString());
@@ -178,7 +176,8 @@ public class TaobaoCouponUtil {
         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(
+                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
         VmarketEticketConsumeRequest request = new VmarketEticketConsumeRequest();
         request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setVerifyCode(coupon.getSafeECouponSN());
@@ -228,7 +227,8 @@ public class TaobaoCouponUtil {
         request.setFields(fields);
         request.setTid(Long.valueOf(outerOrder.orderId));
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(
+                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
         OAuthToken oAuthToken = getToken(outerOrder.resaler);
         try {
             return taobaoClient.execute(request, oAuthToken.accessToken);
@@ -250,7 +250,8 @@ public class TaobaoCouponUtil {
         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(
+                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
         VmarketEticketReverseRequest request = new VmarketEticketReverseRequest();
         request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setReverseCode(coupon.getSafeECouponSN());
@@ -282,13 +283,13 @@ public class TaobaoCouponUtil {
         return token;
     }
 
-    public static boolean verifyParam(Map<String, String> params) {
+    public static boolean verifyParam(String taobaoCouponServiceKey, Map<String, String> params) {
         String sign = params.get("sign");
-        return sign != null && sign.equals(sign(params));
+        return sign != null && sign.equals(sign(taobaoCouponServiceKey, params));
     }
 
-    public static String sign(Map<String, String> params) {
-        StringBuilder paramString = new StringBuilder(COUPON_SECRET);
+    public static String sign(String taobaoCouponServiceKey , Map<String, String> params) {
+        StringBuilder paramString = new StringBuilder(taobaoCouponServiceKey);
         TreeMap<String, String> orderedParams = new TreeMap<>(params);
         for (String key : orderedParams.keySet()) {
             String value = orderedParams.get(key);

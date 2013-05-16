@@ -9,15 +9,26 @@
         <div class="field-group" style="padding-left: 0px">
             <table cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                    <td>适用门店:<select name="shopId" value="${shop?.id}" style="width: auto">
+                    <td>
+                        适用门店:
+                        <select name="shopId" value="${shop?.id}" style="width: auto">
                         #{list items:shops,as:'s'}
                             <option value="${s.id}" ${shop?.id==s?.id ?'selected':''}/>${s.name}&nbsp;&nbsp;
                         #{/list}
-                    </select>
-                        包厢类型：<select name="roomType" style="width: auto">
+                        </select>
+
+                        包厢类型：
+                        <select name="roomType" style="width: auto">
                             #{list items:models.ktv.KtvRoomType.values(),as:'r'}
                                 <option value="${r}" ${roomType == r ? 'selected':''}/>${r.name}
                                 &nbsp;&nbsp;
+                            #{/list}
+                        </select>
+                        产品选择：
+                        <select name="productId" style="width: auto">
+                            #{list items:products,as:'p'}
+                            <option value="${p.id}" ${product?.id == p.id ? 'selected':''}/>${p.name}
+                            &nbsp;&nbsp;
                             #{/list}
                         </select>
                     </td>
@@ -29,7 +40,7 @@
         </div>
         <input type="hidden" id="shopId" value="${shop?.id}">
         <input type="hidden" id="roomType" value="${roomType}">
-        #{if shops.size()==0}
+        #{if shops.size()==0 || !shop}
             <div class="error">请到左边菜单【我的门店】的新增门店页面，添加该门店的包厢数量！</div>
         #{/if}
         #{else}
