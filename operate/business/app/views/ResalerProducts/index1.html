@@ -14,11 +14,11 @@
         商品名称：<input type="text" name="condition.shortName" class="input-medium" value="${condition?.shortName}"/>
         商品编码：<input type="text" name="condition.code" class="input-medium" value="${condition?.code}"/>
         运营商：
-    #{select 'condition.operatorCode', class:'input-large', value:condition?.operatorCode}
-        #{list items:operators,as:'operator'}
-            #{option operator.code}${operator.name}#{/option}
-        #{/list}
-    #{/select}
+        <select name="condition.operator" value="">
+            #{list items:operators,as:'operator'}
+            <option value="${operator.code}">${operator.name}</option>
+            #{/list}
+        </select>
         <button class="btn btn-primary" id="searchbtn" type="submit"> 搜索</button>
 
     </form>
@@ -29,9 +29,13 @@
             <th>商品编码</th>
             <th>名称</th>
             <th style="text-align:right">一百券价</th>
-        #{list items:resalerList, as:'resaler'}
-            <th>${resaler.userName}</th>
-        #{/list}
+            <th>58</th>
+            <th>淘宝</th>
+            <th>京东</th>
+            <th>当当</th>
+            <th>一号店</th>
+            <th>新浪</th>
+            <th>银乐迪</th>
         </tr>
         </thead>
 
@@ -42,15 +46,19 @@
             <td>${goods.code}</td>
             <td><a href="/goods/${goods.id}" target="_blank">${goods.shortName}</a></td>
             <td style="text-align:right">${goods.salePrice.formatCurrency("CNY")}</td>
-            #{list items:resalerList, as:'resaler'}
+        %{
+            partners = ['WB','TB','JD','DD','YHD', 'SINA','YLD']
+            }%
+            #{list items:partners, as:'partner'}
             %{
-                pd = partnerProducts.get(goods.id+ resaler.partner);
-                partner = resaler.partner.toLowerCase();
+                pd = partnerProducts.get(goods.id+ partner);
+                partner = partner.toLowerCase();
                 }%
                 <td>
                     <div class="btn-group">
-                        #{if ("tb".equals(partner))}
-                            #{set resalerLoginName="/"+ resaler.loginName/}
+
+                        #{if ("yld".equals(partner))}
+                            #{set resalerLoginName="/"+models.resale.Resaler.YLD_LOGIN_NAME /}
                         #{/if}
                         #{else}
                             #{set resalerLoginName=""/}

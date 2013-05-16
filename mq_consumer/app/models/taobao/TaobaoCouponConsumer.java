@@ -149,7 +149,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
 
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(outerOrder, "orders.payment,orders.num,orders.sku_properties_name");
-            Order ybqOrder = createYbqOrder(outerIid, mobile, sellerNick, taobaoTrade);
+            Order ybqOrder = createYbqOrder(outerIid, mobile, outerOrder.resaler, taobaoTrade);
             if (ybqOrder == null) {
                 return false;//解析错误
             } else {
@@ -166,20 +166,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     }
 
     // 创建一百券订单
-    private Order createYbqOrder(Long outerGroupId, String userPhone, String sellerNick, TradeGetResponse taobaoTrade) {
-        Resaler resaler = null;
-
-        //如果是从其他淘宝店铺过来的订单，则读取相应的分销信息
-        if ("kisbear".equals(sellerNick)) {
-            resaler = Resaler.findApprovedByLoginName(Resaler.YLD_LOGIN_NAME);
-        }else {
-            //默认是我们券生活8的resaler
-            resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
-        }
-        if (resaler == null) {
-            Logger.error("can not find the resaler : %s", sellerNick);
-            return null;
-        }
+    private Order createYbqOrder(Long outerGroupId, String userPhone, Resaler resaler, TradeGetResponse taobaoTrade) {
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
         Goods goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.TB);

@@ -39,22 +39,17 @@ import java.math.BigDecimal;
 @ActiveNavigation("resale_partner_product")
 public class TaobaoProducts extends Controller {
     private static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
-    private static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "21293912");
-    private static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "1781d22a1f06c4f25f1f679ae0633400");
-
-    public static String IMG_ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
-    public static String TAOBAO_TOP_OAUTH_URL = Play.configuration.getProperty("taobao.top.oauth_url",
-            "http://container.api.taobao.com/container?appkey=21293912&encode=utf-8");
+    private static String IMG_ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
 
     @ActiveNavigation("resale_partner_product")
-    public static void showUpload(Long goodsId, String resalerLoginName) {
+    public static void showUpload(Long goodsId, String loginName) {
         Goods goods = Goods.findById(goodsId);
         if (goods == null) {
             notFound();
         }
         //ktv商户直接展示ktv上传页面
         if (goods.isKtvSupplier()) {
-            render("resale/TaobaoProducts/showKtvUpload.html", goods, resalerLoginName);
+            render("resale/TaobaoProducts/showKtvUpload.html", goods, loginName);
         }
         render(goods);
     }
@@ -63,18 +58,15 @@ public class TaobaoProducts extends Controller {
     public static void upload(Long num, Long goodsId, BigDecimal price, BigDecimal faceValue, String type,
                               String stuffStatus, String title, String desc, String locationState,
                               String locationCity, Long cid, String props, String approveStatus,
-                              String[] sellerCids, String resalerLoginName) {
+                              String[] sellerCids, String loginName) {
         OperateUser operateUser = OperateRbac.currentUser();
         Goods goods = Goods.findById(goodsId);
         if (goods == null) {
             notFound();
         }
 
-        //默认是淘宝，如果是从其他ktv商户过来，则根据resalerLoginName取得相应的taobaoResaler
-        Resaler taobaoResaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
-        if (StringUtils.isNotBlank(resalerLoginName)) {
-            taobaoResaler = Resaler.findApprovedByLoginName(Resaler.YLD_LOGIN_NAME);
-        }
+        //根据loginName取得相应的taobaoResaler
+        Resaler taobaoResaler = Resaler.findApprovedByLoginName(loginName);
         ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.TB, taobaoResaler, goods);
 
         ItemAddRequest addRequest = new ItemAddRequest();
@@ -95,7 +87,7 @@ public class TaobaoProducts extends Controller {
         addRequest.setOuterId(String.valueOf(product.goodsLinkId));
         addRequest.setSellerCids(StringUtils.join(sellerCids));
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, taobaoResaler.taobaoCouponAppKey, taobaoResaler.taobaoCouponAppSecretKey);
 
         //找到淘宝的token
         OAuthToken token = OAuthToken.getOAuthToken(taobaoResaler.id, AccountType.RESALER, WebSite.TAOBAO);

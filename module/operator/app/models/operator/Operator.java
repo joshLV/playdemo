@@ -167,4 +167,8 @@ public class Operator extends Model {
                 .append("code", code)
                 .toString();
     }
+
+    public static List<Operator> findUnDeleted() {
+        return Operator.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
+    }
 }
