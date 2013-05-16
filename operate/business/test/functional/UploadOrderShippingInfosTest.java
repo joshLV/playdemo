@@ -17,6 +17,7 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class UploadOrderShippingInfosTest extends FunctionalTest {
     Goods goods;
     OrderShippingInfo orderShippingInfo;
     OrderShippingInfo orderShippingInfo1;
+    Freight freight;
 
     /**
      * 测试数据准备
@@ -59,6 +61,7 @@ public class UploadOrderShippingInfosTest extends FunctionalTest {
                 target.code = "1";
             }
         });
+        freight = FactoryBoy.create(Freight.class);
         orderItems = FactoryBoy.create(OrderItems.class);
         orderShippingInfo = FactoryBoy.create(OrderShippingInfo.class, new BuildCallback<OrderShippingInfo>() {
             @Override
@@ -141,6 +144,8 @@ public class UploadOrderShippingInfosTest extends FunctionalTest {
         assertEquals(OrderStatus.SENT, orderItems1.status);
         assertEquals("test", orderShippingInfo1.expressCompany.code);
         assertEquals("12345689", orderShippingInfo1.expressNumber);
+        assertEquals(BigDecimal.ONE.setScale(2), orderShippingInfo1.freight);
     }
+
 
 }
