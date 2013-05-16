@@ -65,7 +65,7 @@ GET     /contract/o/{path1}/{path2}                       SupplierContractImages
 GET     /resaler-products                               ResalerProducts.index
 GET     /resaler-products/journal/json/{journalId}      ResalerProducts.journalJson
 GET     /resaler-products/journal/{productId}           ResalerProducts.journal
-GET     /resaler-products/products/{partner}/{goodsId}  ResalerProducts.showProducts
+GET     /resaler-products/products/{partner}/{goodsId}/{loginName}   ResalerProducts.showProducts
 
 GET     /resaler-products/expiring                      ResalerProducts.expiringGoods
 PUT     /resaler-products/auto-delay/{id}               ResalerProducts.autoDelay

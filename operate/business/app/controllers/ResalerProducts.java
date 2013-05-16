@@ -99,15 +99,15 @@ public class ResalerProducts extends Controller {
     }
 
     @ActiveNavigation("resale_partner_product")
-    public static void showProducts(String partner, Long goodsId) {
+    public static void showProducts(String partner, Long goodsId,String loginName) {
         Goods goods = Goods.findById(goodsId);
         if (goods == null) {
             Logger.info("goods not found");
             error("商品不存在");
         }
         List<ResalerProduct> products = ResalerProduct.find(
-                "goods = ? and partner = ? and status != ? and deleted = ? order by createdAt desc",
-                goods, OuterOrderPartner.valueOf(partner.toUpperCase()), ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
+                "goods = ? and partner = ? and resaler.loginName=? and status != ? and deleted = ? order by createdAt desc",
+                goods, OuterOrderPartner.valueOf(partner.toUpperCase()), loginName,ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
         for (ResalerProduct product : products) {
             if (product.creatorId != null)
                 product.creator = ((OperateUser) OperateUser.findById(product.creatorId)).userName;
@@ -126,7 +126,7 @@ public class ResalerProducts extends Controller {
         product.deleted = DeletedStatus.DELETED;
         product.updatedAt = new Date();
         product.lastModifier(OperateRbac.currentUser().id).save();
-        showProducts(product.partner.toString().toLowerCase(), product.goods.id);
+        showProducts(product.partner.toString().toLowerCase(),product.goods.id, product.resaler.loginName);
     }
 
     /**
@@ -150,7 +150,7 @@ public class ResalerProducts extends Controller {
         }
         product.save();
 
-        showProducts(product.partner.toString().toLowerCase(), product.goods.id);
+        showProducts(product.partner.toString().toLowerCase(),product.goods.id, product.resaler.loginName);
     }
 
     /**
@@ -175,7 +175,7 @@ public class ResalerProducts extends Controller {
         product.creator(OperateRbac.currentUser().id);
         product.save();
 
-        showProducts(product.partner.toString().toLowerCase(), product.goods.id);
+        showProducts(product.partner.toString().toLowerCase(),product.goods.id, product.resaler.loginName);
     }
 
     /**

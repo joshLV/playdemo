@@ -126,11 +126,10 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             Logger.error(e, "taobao coupon request failed: invalid params");
             return false;
         }
-        //todo 添加其他分销账户
-        if (!"券生活8".equals(sellerNick) && !"kisbear".equals(sellerNick)) {
-            Logger.info("taobao coupon request failed: invalid seller");
-            return false;//暂时只发我们自己的店
-        }
+//        if (!"券生活8".equals(sellerNick) && !"kisbear".equals(sellerNick)) {
+//            Logger.info("taobao coupon request failed: invalid seller");
+//            return false;//暂时只发我们自己的店
+//        }
 
         //检查订单数量
         if (num <= 0 || !checkPhone(mobile)) {
@@ -149,7 +148,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
 
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             TradeGetResponse taobaoTrade = TaobaoCouponUtil.tradeInfo(outerOrder, "orders.payment,orders.num,orders.sku_properties_name");
-            Order ybqOrder = createYbqOrder(outerIid, mobile, outerOrder.resaler, taobaoTrade);
+            Order ybqOrder = createYbqOrder(outerIid, mobile, outerOrder, taobaoTrade);
             if (ybqOrder == null) {
                 return false;//解析错误
             } else {
@@ -166,7 +165,12 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     }
 
     // 创建一百券订单
-    private Order createYbqOrder(Long outerGroupId, String userPhone, Resaler resaler, TradeGetResponse taobaoTrade) {
+    private Order createYbqOrder(Long outerGroupId, String userPhone, OuterOrder outerOrder, TradeGetResponse taobaoTrade) {
+        Resaler resaler = outerOrder.resaler;
+        if (resaler == null) {
+            Logger.info("when taobao coupon request create out order,resaler is null,outOrder.id is :%s",outerOrder.id);
+            return null;
+        }
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
         Goods goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.TB);
