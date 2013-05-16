@@ -35,6 +35,8 @@ Resaler resaler;
         FactoryBoy.deleteAll();
         resaler=FactoryBoy.lastOrCreate(Resaler.class);
         resaler.loginName=Resaler.TAOBAO_LOGIN_NAME;
+        resaler.taobaoSellerId = 828005208L;
+        resaler.taobaoCouponServiceKey = "abc";
         resaler.save();
         outerOrder = FactoryBoy.create(OuterOrder.class, new BuildCallback<OuterOrder>() {
             @Override
@@ -256,7 +258,7 @@ Resaler resaler;
 
     private void resign(Map<String, String> params) {
         params.remove("sign");
-        params.put("sign", TaobaoCouponUtil.sign(params));
+        params.put("sign", TaobaoCouponUtil.sign(resaler.taobaoCouponServiceKey, params));
     }
 
     private Map<String, String> prepareParams() {

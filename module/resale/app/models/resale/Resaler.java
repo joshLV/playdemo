@@ -119,12 +119,18 @@ public class Resaler extends Model {
     @Required
     public String identityNo;
 
-    @Column(name = "app_key")
-    @Index(name = "app_key")
-    public String appKey;
+    @Column(name = "taobao_coupon_app_key")
+    public String taobaoCouponAppKey;
 
-    @Column(name = "app_secret_key")
-    public String appSecretKey;
+    @Column(name = "taobao_coupon_app_secret_key")
+    public String taobaoCouponAppSecretKey;
+
+    @Column(name = "taobao_coupon_service_key")
+    public String taobaoCouponServiceKey;
+
+    @Column(name = "taobao_seller_id")
+    public Long taobaoSellerId;
+
     /**
      * 分销负责专员
      */

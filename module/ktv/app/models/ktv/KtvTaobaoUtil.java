@@ -34,8 +34,6 @@ import java.util.*;
  */
 public class KtvTaobaoUtil {
     // 淘宝电子凭证的secret
-    public static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "21293912");
-    public static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "1781d22a1f06c4f25f1f679ae0633400");
     public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
 
 
@@ -73,7 +71,6 @@ public class KtvTaobaoUtil {
      * @param productGoods KTV商品.
      */
     public static void updateTaobaoSkuByProductGoods(KtvProductGoods productGoods) {
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
 
 
         //构建新的淘宝SKU列表
@@ -89,6 +86,8 @@ public class KtvTaobaoUtil {
                 Logger.info("ktv update sku时,resalerProduct.partnerProductId=%s的resaler.id is null,will not update this resalerProduct!",resalerProduct.partnerProductId);
                 continue;
             }
+            TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
+                    resalerProduct.resaler.taobaoCouponAppSecretKey);
             //找到淘宝的token
             OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
 
