@@ -72,7 +72,7 @@ public class Freight extends Model {
     @SolrField
     public DeletedStatus deleted;
 
-    public static final String OTHER_PROVICE = "其它";
+    public static final String OTHER_PROVICE = "其他";
 
     @Override
     public boolean create() {
@@ -112,23 +112,29 @@ public class Freight extends Model {
 
     public static Freight findFreightRule(Supplier supplier, ExpressCompany express, String address) {
         List<Freight> freightList = Freight.find("supplier = ? and express = ?", supplier, express).fetch();
-        int index = -1;
+
+        int index = Integer.MAX_VALUE;
         Freight targetFreight = null;
-        for (Freight freight : freightList) {
-            if (Freight.OTHER_PROVICE.equals(freight.province) && index == -1) {
+        for (Freight freight: freightList) {
+            int i = address.indexOf(freight.province);
+            if (i >= 0 && i < index) {
+                index = i;
                 targetFreight = freight;
             }
-            int tempIndex = address.indexOf(freight.province);
-            if ((tempIndex > index && index == -1) ||
-                    (tempIndex >= 0 && tempIndex < index)) {
+        }
+
+        //如果没有找到 并且没有设置默认的运费 抛出异常
+        if (index == Integer.MAX_VALUE) {
+            Freight freight = Freight.find("supplier = ? and express = ? and province = ?",
+                    supplier, express, Freight.OTHER_PROVICE).first();
+            if (freight != null ) {
                 targetFreight = freight;
-                index = tempIndex;
+            }else {
+                Logger.error("freight is not existed: supplierId:" + supplier.id + " express:" + express.id + " address:" + address);
+                throw new RuntimeException("freight is not existed when finding freight");
             }
         }
-        if (targetFreight == null) {
-            Logger.error("freight is not existed: supplierId:" + supplier.id + " express:" + express.id + " address:" + address);
-            throw new RuntimeException("freight is not existed when finding freight");
-        }
+
         return targetFreight;  //To change body of created methods use File | Settings | File Templates.
     }
 
