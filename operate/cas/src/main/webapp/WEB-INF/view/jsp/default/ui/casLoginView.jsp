@@ -2,82 +2,95 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
-<!DOCTYPE html>
-
+<!doctype html>
 <html>
-    <head>
-        <title>运营后台登录</title>
-        <meta charset="">
-        <link rel="stylesheet" type="text/css" media="screen"   href="public/stylesheets/main.css">
-        <link rel="stylesheet" type="text/css" media="screen"   href="public/stylesheets/updateinfo.css">
-        <link rel="shortcut icon" type="image/png" href="public/images/favicon.png">
-        <script src="public/javascripts/jquery-1.6.4.min.js" type="text/javascript"></script>
-    </head>
-    <body>
-<style type="text/css">
-#header {
-    height: 123px;
-}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- Apple devices fullscreen -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Apple devices fullscreen -->
+    <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-.headmain {
-    border-bottom: #b73a24 2px solid;
-    height: 98px;
-    padding-bottom: 10px;
-}
+    <title>运营后台登录</title>
 
-.error {
-    padding-left: 10px;
-    color: red;
-}
-</style>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="http://a.uhcdn.com/css/flat/bootstrap.min.css">
+    <!-- Bootstrap responsive -->
+    <link rel="stylesheet" href="http://a.uhcdn.com/css/flat/bootstrap-responsive.min.css">
+    <!-- icheck -->
+    <link rel="stylesheet" href="http://a.uhcdn.com/css/flat/plugins/icheck/all.css">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="http://a.uhcdn.com/css/flat/style.css">
+    <!-- Color CSS -->
+    <link rel="stylesheet" href="http://a.uhcdn.com/css/flat/themes.css">
 
-<div id="index_main">
-    <div id="main">
-        <div id="maincontainer" style="overflow: hidden; margin-bottom: 40px; margin-left: 30px;">
 
-            <form:form method="post" id="fm1"  commandName="${commandName}" htmlEscape="true">
-                  <form:errors path="*" id="msg" cssClass="errors" element="div" />
-            <div style="margin: 145px 18pt 0pt 10px;" class="loginbg">
-                <strong style="font-size: 14px; margin-bottom: 6px; display: block;">登录</strong>
-                <div class="login">
-                    <ul class="loginUl">
-                        <li class="field" id="showmess">
-                            <div class="pwderror">
-                                <h1 class="colorred"></h1>
+    <!-- jQuery -->
+    <script src="http://a.uhcdn.com/js/flat/jquery.min.js"></script>
 
-                            </div>
-                        </li>
-                        <li class="field">
-                            <div class="input">
-                                <label>用户名：</label>
-                                <form:input  cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="false" htmlEscape="true" />
-                            </div>
-                        </li>
+    <!-- Nice Scroll -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/nicescroll/jquery.nicescroll.min.js"></script>
+    <!-- Validation -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/validation/jquery.validate.min.js"></script>
+    <script src="http://a.uhcdn.com/js/flat/plugins/validation/additional-methods.min.js"></script>
+    <!-- icheck -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/icheck/jquery.icheck.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="http://a.uhcdn.com/js/flat/bootstrap.min.js"></script>
+    <script src="http://a.uhcdn.com/js/flat/eakroko.js"></script>
 
-                        <li class="field">
-                            <div class="input">
-                                <label>密码：</label>
-                                <form:password  cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
-                            </div>
-                        </li>
-                        <li class="submit-field">
-                        <input type="hidden" name="lt" value="${loginTicket}" />
-                        <input type="hidden" name="execution" value="${flowExecutionKey}" />
-                        <input type="hidden" name="_eventId" value="submit" />
+    <!--[if lte IE 9]>
+    <script src="http://a.uhcdn.com/js/flat/plugins/placeholder/jquery.placeholder.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('input, textarea').placeholder();
+        });
+    </script>
+    <![endif]-->
 
-                        <button id="loginbutton" type="submit"
-                                class="bt colorw bold">登录</button>
-                </li>
-                </ul>
-                <div class="clear"></div>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="http://a.uhcdn.com/images/flat/favicon.ico" />
+    <!-- Apple devices Homescreen icon -->
+    <link rel="apple-touch-icon-precomposed" href="http://a.uhcdn.com/images/flat/apple-touch-icon-precomposed.png" />
+
+</head>
+
+
+<body class='login'>
+<div class="wrapper">
+    <h1><a href="index.html">
+        <img src="http://a.uhcdn.com/images/flat/logo-big.png" alt="" class='retina-ready' width="59" height="49">上海视惠</a></h1>
+    <div class="login-body">
+        <h2>登录</h2>
+        <form:form method="post" id="fm1"  commandName="${commandName}" htmlEscape="true">
+            <div class="control-group">
+                <div class="email controls">
+                    <input type="text" name='username' placeholder="用户名" class='input-block-level' data-
+                           rule-required="true" data-rule-email="true">
+                </div>
             </div>
-            </form:form>
+            <div class="control-group">
+                <div class="pw controls">
+                    <input type="password" name="password" placeholder="密码" class='input-block-level' dat
+                           a-rule-required="true">
+                    <form:errors path="*" id="msg" cssClass="help-block error" element="span" />
+                </div>
+            </div>
+            <div class="submit">
+
+                <input type="hidden" name="lt" value="${loginTicket}" />
+                <input type="hidden" name="execution" value="${flowExecutionKey}" />
+                <input type="hidden" name="_eventId" value="submit" />
+                <input type="submit" value="登录" class='btn btn-primary'>
+            </div>
+        </form:form>
+        <div class="forget">
+            <a href="http://www.seewi.com.cn"><span>上海视惠信息科技有限公司</span></a>
         </div>
     </div>
-
 </div>
+</body>
 
-    </body>
 </html>
-
-
