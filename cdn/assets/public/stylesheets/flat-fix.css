@@ -1,0 +1,4 @@
+.pagination ul>li>a.active {
+    background: #368ee0;
+    color: #fff;
+}

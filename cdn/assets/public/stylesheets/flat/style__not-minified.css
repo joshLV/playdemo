@@ -23,8 +23,8 @@
  */
 @font-face {
   font-family: 'FontAwesome';
-  src: url("../font/fontawesome-webfont.eot?v=3.0.1");
-  src: url("../font/fontawesome-webfont.eot?#iefix&v=3.0.1") format("embedded-opentype"), url("../font/fontawesome-webfont.woff?v=3.0.1") format("woff"), url("../font/fontawesome-webfont.ttf?v=3.0.1") format("truetype");
+  src: url("../../font/fontawesome-webfont.eot?v=3.0.1");
+  src: url("../../font/fontawesome-webfont.eot?#iefix&v=3.0.1") format("embedded-opentype"), url("../../font/fontawesome-webfont.woff?v=3.0.1") format("woff"), url("../../font/fontawesome-webfont.ttf?v=3.0.1") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -1320,8 +1320,8 @@ html, html .halflings {
 
 @font-face {
   font-family: 'Glyphicons';
-  src: url("../font/glyphicons-regular.eot");
-  src: url("../font/glyphicons-regular.eot?#iefix") format("embedded-opentype"), url("../font/glyphicons-regular.woff") format("woff"), url("../font/glyphicons-regular.ttf") format("truetype"), url("../font/glyphicons-regular.svg#glyphicons_halflingsregular") format("svg");
+  src: url("../../font/glyphicons-regular.eot");
+  src: url("../../font/glyphicons-regular.eot?#iefix") format("embedded-opentype"), url("../../font/glyphicons-regular.woff") format("woff"), url("../../font/glyphicons-regular.ttf") format("truetype"), url("../../font/glyphicons-regular.svg#glyphicons_halflingsregular") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -6904,6 +6904,11 @@ span.ColVis_radio {
 .dataTables_wrapper .dataTables_paginate > span > a.paginate_active {
   background: #368ee0;
   color: #fff;
+}
+
+.dataTables_wrapper .dataTables_paginate > span > a.active {
+    background: #368ee0;
+    color: #fff;
 }
 
 .dataTables_scroll {

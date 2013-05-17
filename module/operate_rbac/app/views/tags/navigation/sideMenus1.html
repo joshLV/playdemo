@@ -21,26 +21,23 @@ if (_ulClass == null) {
 }
 
 }%
-
 #{if !secondLevelMenus.isEmpty() &&
      _level <= _showLevels &&
      (_level <= _expandLevels || menuItem.hasActiveDescendant()) }
-
+<ul${_ulClass == null ? '' : (' class="' + _ulClass + '"').raw()}>
 #{list items:secondLevelMenus, as:'child'}
   %{
     linkClasses = ["nav-header"]
   }%
+  <li class="${linkClasses.join(' ')}">
+    #{if child.hasLink()}
+      <a href="${child.getLink()}">${child.getText()}</a>
+    #{/if}
+    #{else}
+      ${child.getText()}
+    #{/else}
+  </li>
 
-<div class="subnav">
-    <div class="subnav-title">
-        #{if child.hasLink()}
-            <a href="${child.getLink()}" class='toggle-subnav'><i class="icon-angle-down"></i><span>${child.getText()}</span></a>
-        #{/if}
-        #{else}
-        <a href="#" class='toggle-subnav'><i class="icon-angle-down"></i><span>${child.getText()}</span></a>
-        #{/else}
-    </div>
-    <ul class="subnav-menu">
   #{list items:child.children, as:'subItem'}
   %{
     subLinkClasses = []
@@ -57,9 +54,6 @@ if (_ulClass == null) {
         #{/else}
       </li>
   #{/list}
-
-  </ul>
-</div>
-
 #{/list}
+</ul>
 #{/if}

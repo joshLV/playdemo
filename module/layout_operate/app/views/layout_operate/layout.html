@@ -1,164 +1,210 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html>
 <head>
-    <title>#{get 'title' /}</title>
     <meta charset="utf-8">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-#{asset.js src:['/jquery-1.7.2.min.js'] /}
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <!-- Apple devices fullscreen -->
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <!-- Apple devices fullscreen -->
+    <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+    <title>#{get 'title' /}</title>
+
+    <!-- Bootstrap -->
+    #{asset.css src:['/flat/bootstrap.min.css'] /}
+    <!-- Bootstrap responsive -->
+    #{asset.css src:['/flat/bootstrap-responsive.min.css'] /}
+    <!-- jQuery UI -->
+    #{asset.css src:['/flat/plugins/jquery-ui/smoothness/jquery-ui.css'] /}
+    #{asset.css src:['/flat/plugins/jquery-ui/smoothness/jquery.ui.theme.css'] /}
+    <!-- PageGuide -->
+    #{asset.css src:['/flat/plugins/pageguide/pageguide.css'] /}
+    <!-- Fullcalendar -->
+    #{asset.css src:['/flat/plugins/fullcalendar/fullcalendar.css'] /}
+    #{asset.css src:['/flat/plugins/fullcalendar/fullcalendar.print.css" media="print'] /}
+    <!-- chosen -->
+    #{asset.css src:['/flat/plugins/chosen/chosen.css'] /}
+    <!-- select2 -->
+    #{asset.css src:['/flat/plugins/select2/select2.css'] /}
+    <!-- icheck -->
+    #{asset.css src:['/flat/plugins/icheck/all.css'] /}
+    <!-- Theme CSS -->
+    #{asset.css src:['/flat/style.css'] /}
+    <!-- Color CSS -->
+    #{asset.css src:['/flat/themes.css'] /}
+
+    <!-- Flat Fix CSS -->
+    #{asset.css src:['/flat-fix.css'] /}
+
+    <!-- jQuery -->
+    <script src="http://a.uhcdn.com/js/flat/jquery.min.js"></script>
+
+
+    <!-- Nice Scroll -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/nicescroll/jquery.nicescroll.min.js"></script>
+    <!-- jQuery UI -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/jquery-ui/jquery.ui.core.min.js"></script>
+    <script src="http://a.uhcdn.com/js/flat/plugins/jquery-ui/jquery.ui.widget.min.js"></script>
+    <script src="http://a.uhcdn.com/js/flat/plugins/jquery-ui/jquery.ui.mouse.min.js"></script>
+    <script src="http://a.uhcdn.com/js/flat/plugins/jquery-ui/jquery.ui.draggable.min.js"></script>
+    <script src="http://a.uhcdn.com/js/flat/plugins/jquery-ui/jquery.ui.resizable.min.js"></script>
+    <script src="http://a.uhcdn.com/js/flat/plugins/jquery-ui/jquery.ui.sortable.min.js"></script>
+    <!-- Touch enable for jquery UI -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/touch-punch/jquery.touch-punch.min.js"></script>
+    <!-- slimScroll -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="http://a.uhcdn.com/js/flat/bootstrap.min.js"></script>
+    <!-- vmap -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/vmap/jquery.vmap.min.js"></script>
+    <script src="http://a.uhcdn.com/js/flat/plugins/vmap/jquery.vmap.world.js"></script>
+    <script src="http://a.uhcdn.com/js/flat/plugins/vmap/jquery.vmap.sampledata.js"></script>
+    <!-- Bootbox -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/bootbox/jquery.bootbox.js"></script>
+    <!-- Flot -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/flot/jquery.flot.min.js"></script>
+    <script src="http://a.uhcdn.com/js/flat/plugins/flot/jquery.flot.bar.order.min.js"></script>
+    <script src="http://a.uhcdn.com/js/flat/plugins/flot/jquery.flot.pie.min.js"></script>
+    <script src="http://a.uhcdn.com/js/flat/plugins/flot/jquery.flot.resize.min.js"></script>
+    <!-- imagesLoaded -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/imagesLoaded/jquery.imagesloaded.min.js"></script>
+    <!-- PageGuide -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/pageguide/jquery.pageguide.js"></script>
+    <!-- FullCalendar -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/fullcalendar/fullcalendar.min.js"></script>
+    <!-- Chosen -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/chosen/chosen.jquery.min.js"></script>
+    <!-- select2 -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/select2/select2.min.js"></script>
+    <!-- icheck -->
+    <script src="http://a.uhcdn.com/js/flat/plugins/icheck/jquery.icheck.min.js"></script>
+
+    <!-- Theme framework -->
+    <script src="http://a.uhcdn.com/js/flat/eakroko.min.js"></script>
+    <!-- Theme scripts -->
+    <script src="http://a.uhcdn.com/js/flat/application.min.js"></script>
+
+    <!--[if lte IE 9]>
+    <script src="http://a.uhcdn.com/js/flat/plugins/placeholder/jquery.placeholder.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('input, textarea').placeholder();
+        });
+    </script>
     <![endif]-->
 
-    <!-- Le styles -->
-#{asset.css src:['/bootstrap/bootstrap.css', '/bootstrap/bootstrap-responsive.css',
-'/bootstrap/datepicker.css', '/o/main.css'] /}
-    <style type="text/css">
-        body {
-            padding-top: 60px;
-            padding-bottom: 40px;
-        }
-        @media (max-width: 979px)
-        {
-            /* Remove any padding from the body */
-            body {
-                padding-top: 0;
-            }
-        }
-
-        .sidebar-nav {
-            padding: 9px 0;
-        }
-
-        .form-inline ul {
-            display: inline-block;
-            margin-bottom: -15px;
-        }
-
-        .table td {
-            vertical-align: middle;
-        }
-
-        .rank {
-            background-image: url(http://img.uhcdn.com/images/r/rank.png);
-            background-position: right 6px;
-            background-repeat: no-repeat;
-        }
-
-        .rank-asc {
-            background-position: right -15px;
-        }
-
-        .rank-desc {
-            background-position: right -36px;
-        }
-
-        .tooltip-inner {
-            max-width: 200px;
-            padding: 8px;
-            color: black;
-            font-size: 14px;
-            text-align: left;
-            text-decoration: none;
-            background-color: #fafad2;
-            -webkit-border-radius: 4px;
-            -moz-border-radius: 4px;
-            border-radius: 4px;
-        }
-
-    </style>
 #{get 'moreStyles' /}
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="http://a.uhcdn.com/images/flat/favicon.ico"/>
+    <!-- Apple devices Homescreen icon -->
+    <link rel="apple-touch-icon-precomposed" href="http://a.uhcdn.com/images/flat/apple-touch-icon-precomposed.png"/>
 
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="#{asset.url href:'/images/bootstrap/favicon.png'/}">
-    <link rel="apple-touch-icon" href="#{asset.url href:'/images/bootstrap/bootstrap-apple-57x57.png'/}">
-    <link rel="apple-touch-icon" sizes="72x72" href="#{asset.url href:'/images/bootstrap/bootstrap-apple-72x72.png'/}">
-    <link rel="apple-touch-icon" sizes="114x114"
-          href="#{asset.url href:'/images/bootstrap/bootstrap-apple-114x114.png'/}">
 </head>
+
 <body>
-<div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
+<div id="navigation">
+    <div class="container-fluid">
+        <a href="#" id="brand">运营后台</a>
+        <a href="#" class="toggle-nav" rel="tooltip" data-placement="bottom" title="切换左侧菜单"><i class="icon-reorder"></i></a>
+    #{navigation.topMenus2 topMenus /}
+        <div class="user">
+            <ul class="icon-nav">
+                <li class="dropdown sett">
+                    <a href="#" class='dropdown-toggle' data-toggle="dropdown"><i class="icon-cog"></i></a>
+                    <ul class="dropdown-menu pull-right theme-settings">
+                        <li>
+                            <span>Layout-width</span>
+
+                            <div class="version-toggle">
+                                <a href="#" class='set-fixed'>Fixed</a>
+                                <a href="#" class="active set-fluid">Fluid</a>
+                            </div>
+                        </li>
+                        <li>
+                            <span>Topbar</span>
+
+                            <div class="topbar-toggle">
+                                <a href="#" class='set-topbar-fixed'>Fixed</a>
+                                <a href="#" class="active set-topbar-default">Default</a>
+                            </div>
+                        </li>
+                        <li>
+                            <span>Sidebar</span>
+
+                            <div class="sidebar-toggle">
+                                <a href="#" class='set-sidebar-fixed'>Fixed</a>
+                                <a href="#" class="active set-sidebar-default">Default</a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li class='dropdown colo'>
+                    <a href="#" class='dropdown-toggle' data-toggle="dropdown"><i class="icon-tint"></i></a>
+                    <ul class="dropdown-menu pull-right theme-colors">
+                        <li class="subtitle">
+                            Predefined colors
+                        </li>
+                        <li>
+                            <span class='red'></span>
+                            <span class='orange'></span>
+                            <span class='green'></span>
+                            <span class="brown"></span>
+                            <span class="blue"></span>
+                            <span class='lime'></span>
+                            <span class="teal"></span>
+                            <span class="purple"></span>
+                            <span class="pink"></span>
+                            <span class="magenta"></span>
+                            <span class="grey"></span>
+                            <span class="darkblue"></span>
+                            <span class="lightred"></span>
+                            <span class="lightgrey"></span>
+                            <span class="satblue"></span>
+                            <span class="satgreen"></span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="dropdown">
+                <a href="#" class='dropdown-toggle' data-toggle="dropdown">${currentUser?.userName}
+                    <img src="http://a.uhcdn.com/images/flat/demo/user-avatar.jpg" alt=""></a>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="http://admin.${play.Play.configuration.getProperty("application.baseDomain")}/profile">个人设置</a>
+                    </li>
+                    <li>
+                        <a href="/logout">退出</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid" id="content">
+    <div id="left">
+        <form action="http://business.${play.Play.configuration.getProperty("application.baseDomain")}/quick-search"
+              method="GET" target="_blank" class='search-form'>
+            <div class="search-pane">
+                <input rel="tooltip"
+                       data-placement="bottom"
+                       data-original-title='券号/手机/订单号<br>外部订单号(数字之前加上WD)<br>外部券号(数字之前加上WQ)'
+                       type="text" name="q" placeholder="快速搜索...">
+                <button type="submit"><i class="icon-search"></i></button>
+            </div>
+        </form>
+        #{get 'sidebar-nav'/}
+    </div>
+    <div id="main">
         <div class="container-fluid">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="brand" href="#">运营后台</a>
-            <div class="nav-collapse collapse">
-
-                #{navigation.topMenus topMenus /}
-
-                <div class="navbar-text pull-right">
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;当前用户： </span>
-                    <a id="profile" href="http://admin.${play.Play.configuration.getProperty("application.baseDomain")}/profile">${currentUser?.loginName}</a>
-                    <a href="/logout">注销</a>
-                </div>
-
-                <div class="navbar-text pull-right">
-                    <form class="form-search " method="GET" target="_blank"
-                          action="http://business.${play.Play.configuration.getProperty("application.baseDomain")}/quick-search"
-                    style="margin: 0 0 0 0" id="quick_search_form">
-                    <input rel="tooltip"
-                           data-placement="bottom"
-                           data-original-title='券号/手机/订单号<br>外部订单号(数字之前加上WD)<br>外部券号(数字之前加上WQ)'
-                           type="text" class="input-small search-query" placeholder="快速搜索" name="q"
-                           id="quick_search">
-                    </form>
-                </div>
+            <div class="row-fluid">
+            #{doLayout /}
             </div>
         </div>
     </div>
 </div>
-<div class="container-fluid">
-    <i class="icon icon-chevron-left" id="expand-sidebar" style="margin-top: -14px;cursor:pointer"></i>
-
-    <div class="row-fluid">
-        <div class="span2" id="content-left-side">
-            <div class="well sidebar-nav">
-            #{get 'sidebar-nav'/}
-            </div>
-            <!--/.well -->
-        </div>
-        <!--/span-->
-        <div class="span10" id="content-right-side">
-        #{doLayout /}
-        </div>
-    </div>
-</div>
-<footer>
-%{
-models.cms.Topic devOncall = models.cms.Topic.getDevOnCall();
-}%
-    <div class="text-success" style="padding-left: 20px">技术值班人：<a href="http://cms.${play.Play.configuration.getProperty("application.baseDomain")}/topics/161" target="_blank">${devOncall?.title}</a></div>
-    <p class="pull-right" style="padding-right: 20px">&copy; 上海视惠信息科技有限公司 2012-2013</p>
-</footer>
-
-<!-- javascript -->
-#{asset.js src:['/bootstrap/bootstrap.min.js', '/bootstrap/bootstrap-datepicker.js'] /}
 
 <script>
     $(function () {
-
-
-        $("#expand-sidebar").click(function () {
-            var ele = $(this);
-            if (ele.hasClass("icon-chevron-left")) {
-                ele.removeClass("icon-chevron-left");
-                ele.addClass("icon-chevron-right");
-                $("#content-left-side").hide();
-                $("#content-right-side").removeClass("span10");
-            } else {
-                ele.addClass("icon-chevron-left");
-                ele.removeClass("icon-chevron-right");
-                $("#content-left-side").show();
-                $("#content-right-side").addClass("span10");
-            }
-        });
         $('.bs-datepicker').datepicker();
     });
 
@@ -169,17 +215,10 @@ models.cms.Topic devOncall = models.cms.Topic.getDevOnCall();
 
     });
 
-    $("#quick_search").keydown(function(event){
-        if (event.keyCode == 13) {
-            $("#quick_search_form").submit();
-        }
-    });
-
-
-
 </script>
 
 #{get 'moreScripts' /}
-
 </body>
+
 </html>
+

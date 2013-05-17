@@ -1,0 +1,45 @@
+%{
+topMenus = _topMenus ?: _arg
+if (topMenus == null) {
+  throw new NullPointerException("The topMenus is null");
+}
+
+if (_level == null) {
+  _level = 1
+}
+
+if (_showLevels == null) {
+  _showLevels = 99;
+}
+
+if (_expandLevels == null) {
+  _expandLevels = 99;
+}
+
+if (_ulClass == null) {
+   _ulClass = "nav"
+}
+
+}%
+#{if !topMenus.isEmpty() &&
+     _level <= _showLevels &&
+     (_level <= _expandLevels || menuItem.hasActiveDescendant()) }
+<ul class="main-nav${_ulClass == null ? '' : (' ' + _ulClass).raw()}">
+#{list items:topMenus, as:'child'}
+  %{
+    linkClasses = []
+    if(child.isActive()) { linkClasses.push("active"); }
+    if(child.hasActiveDescendant()) { linkClasses.push("activePath"); }
+    if(child.getProperty('external')) { linkClasses.push("external"); }
+  }%
+  <li class="${linkClasses.join(' ')}">
+    #{if child.hasLink()}
+      <a href="${child.getBaseUrl() + child.getLink()}">${child.getText()}</a>
+    #{/if}
+    #{else}
+      <a href="#">${child.getText()}</a>
+    #{/else}
+  </li>
+#{/list}
+</ul>
+#{/if}
