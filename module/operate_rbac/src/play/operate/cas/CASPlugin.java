@@ -18,6 +18,7 @@ package play.operate.cas;
 
 import play.Logger;
 import play.PlayPlugin;
+import play.cache.Cache;
 import play.mvc.Router;
 
 /**
@@ -28,9 +29,18 @@ import play.mvc.Router;
  */
 public class CASPlugin extends PlayPlugin {
 
+    // 值必须与 OperateUser.CACHE_KEY一样
+    public static final String CACHEKEY = "OPUSER";
+
     @Override
     public void onApplicationStart() {
-        Logger.info("Module CAS conf : [Mock Server:" + CASUtils.isCasMockServer() + "]");
+        Logger.info("Module CAS conf : [Mock Server:" + CASUtils.isCasMockServer() + "], clearing Cache...");
+        try {
+            Cache.delete(CACHEKEY);
+        } catch (Exception e1) {
+            Logger.warn("When delete cache[key:" + CACHEKEY + "] found exception.", e1);
+        }
+        Logger.info("Module CAS cache cleaing success!");
     }
 
     @Override

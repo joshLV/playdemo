@@ -4,6 +4,7 @@ import org.apache.commons.collections.CollectionUtils;
 import play.Play;
 import play.mvc.Router;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,10 @@ import java.util.Map.Entry;
  *
  * This class wraps a bare Menu and a MenuContext and has methods that are useful in your menu renderer
  */
-public class ContextedMenu {
+public class ContextedMenu implements Serializable {
+
+    private static final long serialVersionUID = 70901122330652L;
+
     public Menu menu;
     public MenuContext menuContext;
 

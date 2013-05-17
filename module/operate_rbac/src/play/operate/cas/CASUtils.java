@@ -50,8 +50,6 @@ public class CASUtils {
     /**
      * Method that generate the CAS login page URL.
      *
-     * @param request
-     *
      * @param possibleGateway
      * @throws Throwable
      */

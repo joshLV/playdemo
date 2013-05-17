@@ -1,11 +1,13 @@
 package operate.rbac;
 
+import play.mvc.Http.Request;
+
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import play.mvc.Http.Request;
 
 /**
  * Provide context for a Menu
@@ -13,7 +15,9 @@ import play.mvc.Http.Request;
  * a MenuContext holds a list of active actions, active labels and substitutions, so that the renderer
  * knows which Menu is active and which should be visible.
  */
-public class MenuContext {
+public class MenuContext implements Serializable {
+
+    private static final long serialVersionUID = 701098312330652L;
 
     public Set<String> activeActions = new HashSet<String>();
     public Set<String> activeLabels = new HashSet<String>();

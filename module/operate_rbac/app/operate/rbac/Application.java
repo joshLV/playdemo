@@ -1,18 +1,20 @@
 package operate.rbac;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement(name="application")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Application {
-        
+public class Application implements Serializable {
+
+    private static final long serialVersionUID = 9813912330652L;
+
     @XmlAttribute(name="text")
     public String text;
 

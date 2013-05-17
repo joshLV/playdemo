@@ -26,7 +26,6 @@ import play.operate.cas.models.CASUser;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -164,6 +163,7 @@ public class OperateRbac extends Controller {
     @Before(unless = { "login", "logout", "fail", "authenticate", "pgtCallBack", "setLoginUserForTest" })
     public static void injectCurrentMenus() {
         Logger.debug("[OperateCAS]: CAS Filter for URL -> " + request.url);
+        long beginLoadCurrentMenus = System.currentTimeMillis();
 
         if (Security.isTestLogined()) {
             session.put(SESSION_USER_KEY, Security.getLoginUserForTest());
@@ -177,12 +177,7 @@ public class OperateRbac extends Controller {
         Logger.debug("======================================== currentUser = " + userName);
 
         OperateUser user = null;
-        
-        List<OperateRole> testRoles = OperateRole.findAll();
-        for (OperateRole role : testRoles) {
-            Logger.debug("all: role.id=%d, role.key=%s, loadversion=%d", role.id, role.key, role.loadVersion);
-        }
-        
+
         // 检查权限
         if (userName != null) {
             // 查出当前用户的所有权限
@@ -214,14 +209,17 @@ public class OperateRbac extends Controller {
 
         // 得到当前菜单的名字
         String currentMenuName = getCurrentMenuName();
-        
-        String applicationName = Play.configuration.getProperty("application.name");
-        NavigationHandler.initContextMenu(applicationName, currentMenuName);
 
+        String applicationName = Play.configuration.getProperty("application.name");
+        NavigationHandler.initContextMenu(applicationName, currentMenuName, user);
         renderArgs.put("topMenus", NavigationHandler.getTopMenus());
         renderArgs.put("secondLevelMenu", NavigationHandler.getSecondLevelMenus());
+
         // 检查权限
         checkRight(currentMenuName);
+
+        long endLoadCurrentMenus = System.currentTimeMillis();
+        Logger.info("OperateRbac.loadCurrentMenu spent %d ms", (endLoadCurrentMenus - beginLoadCurrentMenus));
     }
 
     public static void injectDefaultMenus() {

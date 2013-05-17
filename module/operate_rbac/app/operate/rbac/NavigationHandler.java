@@ -1,10 +1,20 @@
 package operate.rbac;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import models.operator.OperateNavigation;
+import models.operator.OperateUser;
+import org.apache.commons.collections.CollectionUtils;
+import play.Logger;
 import play.Play;
 import play.mvc.Http.Request;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class NavigationHandler {
 
@@ -15,61 +25,102 @@ public class NavigationHandler {
     static ThreadLocal<List<ContextedMenu>> secondLevelMenus = new ThreadLocal<>();
     static ThreadLocal<Set<String>> stackMenuNames = new ThreadLocal<>();
 
-    public static void initContextMenu(String applicationName, String activeNavigationName) {
-        initStackMenuNamesThreadLocal(applicationName, activeNavigationName);
-        initSecondLevelMenusThreadLocal(applicationName, activeNavigationName);
-        initTopMenusThreadLocal();
+    public static void initContextMenu(String applicationName, String activeNavigationName, OperateUser user) {
+        initStackMenuNamesThreadLocal(applicationName, activeNavigationName, user);
+        initSecondLevelMenusThreadLocal(applicationName, activeNavigationName, user);
+        initTopMenusThreadLocal(user);
     }
 
 
-    private static void initStackMenuNamesThreadLocal(String applicationName, String activeNavigationName) {
-        List<OperateNavigation> navigateionStackList = OperateNavigation
-                .getNavigationParentStack(applicationName, activeNavigationName);
-        if (navigateionStackList == null) {
+    private static void initStackMenuNamesThreadLocal(final String applicationName, final String activeNavigationName, final OperateUser user) {
+        Set<String> tmpStackMenuNames = CacheHelper.getCache(
+                CacheHelper.getCacheKey(
+                        new String[]{
+                                OperateUser.CACHEKEY,
+                                applicationName, activeNavigationName,
+                                OperateUser.CACHEKEY + user.id
+                        }, "STACK_MENU_NAME"),
+                new CacheCallBack<Set<String>>() {
+                    @Override
+                    public Set<String> loadData() {
+                        Logger.info("initStackMenuNamesThreadLocal(%s, %s, %d)", applicationName, activeNavigationName, user.id);
+                        List<OperateNavigation> navigateionStackList = OperateNavigation
+                                .getNavigationParentStack(applicationName, activeNavigationName);
+                        if (navigateionStackList == null) {
+                            return new HashSet<>();
+                        }
+                        Set<String> navigationNameStackSets = new HashSet<>();
+                        for (OperateNavigation nav : navigateionStackList) {
+                            navigationNameStackSets.add(nav.name);
+                        }
+                        return navigationNameStackSets;
+                    }
+                });
+        stackMenuNames.set(tmpStackMenuNames);
+    }
+
+
+    private static void initSecondLevelMenusThreadLocal(final String applicationName, final String activeNavigationName, final OperateUser user) {
+        List<ContextedMenu> tmpSecondLevelMenus = CacheHelper.getCache(
+                CacheHelper.getCacheKey(
+                        new String[]{
+                                OperateUser.CACHEKEY,
+                                applicationName, activeNavigationName,
+                                OperateUser.CACHEKEY + user.id
+                        }, "2_LEVEL_MENU"), new CacheCallBack<List<ContextedMenu>>() {
+            @Override
+            public List<ContextedMenu> loadData() {
+                Logger.info("initSecondLevelMenusThreadLocal(%s, %s, %d)", applicationName, activeNavigationName, user.id);
+                List<OperateNavigation> secondLevelNavigations = OperateNavigation
+                        .getSecondLevelNavigations(applicationName, activeNavigationName);
+                if (secondLevelNavigations == null) {
+                    return new ArrayList<>();
+                }
+                List<ContextedMenu> _secondLevelMenus = new ArrayList<>();
+                for (OperateNavigation navigation : secondLevelNavigations) {
+                    if (navigation.permissions == null ||
+                            navigation.permissions.size() == 0 ||
+                            ContextedPermission.hasPermissions(navigation.permissions)) {
+                        Menu menu = Menu.from(navigation);
+                        ContextedMenu contextedMenu = new ContextedMenu(menu, getMenuContext());
+                        _secondLevelMenus.add(contextedMenu);
+                    }
+                }
+                return _secondLevelMenus;
+            }
+        });
+        if (CollectionUtils.isEmpty(tmpSecondLevelMenus)) {
             return;
         }
-        Set<String> navigationNameStackSets = new HashSet<>();
-        for (OperateNavigation nav : navigateionStackList) {
-            navigationNameStackSets.add(nav.name);
-        }
-        stackMenuNames.set(navigationNameStackSets);
+        secondLevelMenus.set(tmpSecondLevelMenus);
     }
 
 
-    private static void initSecondLevelMenusThreadLocal(String applicationName, String activeNavigationName) {
-        List<OperateNavigation> secondLevelNavigations = OperateNavigation
-                .getSecondLevelNavigations(applicationName, activeNavigationName);
-        if (secondLevelNavigations == null) {
-            return;
-        }
-        List<ContextedMenu> _secondLevelMenus = new ArrayList<>();
-        for (OperateNavigation navigation : secondLevelNavigations) {
-            if (navigation.permissions == null ||
-                    navigation.permissions.size() == 0 ||
-                    ContextedPermission.hasPermissions(navigation.permissions)) {
-                Menu menu = Menu.from(navigation);
-                ContextedMenu contextedMenu = new ContextedMenu(menu, getMenuContext());
-                _secondLevelMenus.add(contextedMenu);
-            }
-        }
-        secondLevelMenus.set(_secondLevelMenus);
-    }
-
-
-    private static void initTopMenusThreadLocal() {
-        List<OperateNavigation> topNavigations = OperateNavigation.getTopNavigations();
-        List<ContextedMenu> _topMenus = new ArrayList<>();
-        for (OperateNavigation navigation : topNavigations) {
-            if (navigation.permissions == null ||
-                    navigation.permissions.size() == 0 ||
-                    ContextedPermission.hasPermissions(navigation.permissions)) {
-                Menu menu = Menu.from(navigation);
-                ContextedMenu contextedMenu = new ContextedMenu(menu,
-                        getMenuContext());
-                _topMenus.add(contextedMenu);
-            }
-        }
-        topMenus.set(_topMenus);
+    private static void initTopMenusThreadLocal(final OperateUser user) {
+        List<ContextedMenu> tmpTopMenu = CacheHelper.getCache(
+                CacheHelper.getCacheKey(
+                        new String[]{OperateUser.CACHEKEY, OperateUser.CACHEKEY + user.id},
+                        "TOPMENU"),
+                new CacheCallBack<List<ContextedMenu>>() {
+                    @Override
+                    public List<ContextedMenu> loadData() {
+                        Logger.info("initTopMenusThreadLocal(%d)", user.id);
+                        List<OperateNavigation> topNavigations = OperateNavigation.getTopNavigations();
+                        List<ContextedMenu> _topMenus = new ArrayList<>();
+                        for (OperateNavigation navigation : topNavigations) {
+                            if (navigation.permissions == null ||
+                                    navigation.permissions.size() == 0 ||
+                                    ContextedPermission.hasPermissions(navigation.permissions)) {
+                                Menu menu = Menu.from(navigation);
+                                ContextedMenu contextedMenu = new ContextedMenu(menu,
+                                        getMenuContext());
+                                _topMenus.add(contextedMenu);
+                            }
+                        }
+                        return _topMenus;
+                    }
+                });
+        topMenus.set(tmpTopMenu);
     }
 
     /// ================ ================

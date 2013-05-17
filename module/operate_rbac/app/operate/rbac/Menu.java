@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,7 +26,9 @@ import java.util.Set;
  */
 @XmlRootElement(name="navigation")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Menu {
+public class Menu implements Serializable {
+
+    private static final long serialVersionUID = 706323206391019831L;
 
     @XmlTransient
     public Menu parent;

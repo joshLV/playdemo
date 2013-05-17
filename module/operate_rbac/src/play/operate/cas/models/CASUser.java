@@ -27,9 +27,6 @@ import java.util.Map;
  */
 public class CASUser implements Serializable {
 
-    /**
-     *
-     */
     private static final long   serialVersionUID = -7063462255687685373L;
     private String              username;
     private Map<String, String> attribut;

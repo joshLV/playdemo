@@ -1,5 +1,6 @@
 package models.operator;
 
+import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
@@ -107,6 +108,25 @@ public class OperateUser extends Model {
             inverseJoinColumns = @JoinColumn(name = "permission_id"),
             joinColumns = @JoinColumn(name = "user_id"))
     public Set<OperatePermission> permissions;
+
+
+    /**
+     * 注意！
+     * 这个值如果要修改，请保持与 CASPlugin.CACHEKEY 中的值一致
+     */
+    public static final String CACHEKEY = "OPUSER";
+
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._save();
+    }
+
+    @Override
+    public void _delete() {
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._delete();
+    }
 
     /**
      * 查询操作员信息
@@ -231,13 +251,6 @@ public class OperateUser extends Model {
 
     public static OperateUser findUser(String loginName) {
         Logger.debug("loginName=" + loginName + " ^^^^^^^^^^^^^^^^");
-
-        List<OperateUser> all = OperateUser.findAll();
-        for (OperateUser user : all) {
-            Logger.debug("  ----- user.id:" + user.id + ", loginName:" + user.loginName);
-        }
-
-        Logger.debug("     ! -------------- loginName: " + loginName);
         return OperateUser.find("byLoginName", loginName).first();
     }
 
