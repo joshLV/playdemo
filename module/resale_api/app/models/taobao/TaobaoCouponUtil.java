@@ -171,7 +171,7 @@ public class TaobaoCouponUtil {
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndYbqOrder", OuterOrderPartner.TB, coupon.order).first();
         if (outerOrder == null) {
             Logger.info("consume on taobao failed: outerOrder not found");
-            return ExtensionResult.code(100).message("没有找到对应当当订单号（couponId:%d)", coupon.id);
+            return ExtensionResult.code(100).message("没有找到对应淘宝订单号（couponId:%d)", coupon.id);
         }
         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();

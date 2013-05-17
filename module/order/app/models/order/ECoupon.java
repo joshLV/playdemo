@@ -574,6 +574,7 @@ public class ECoupon extends Model {
                 ExtensionResult result = verifyOnPartnerResaler();
                 // 记录日志验证失败
                 Logger.info("verifyAndCheckOnPartnerResaler: SN:" + eCouponSn + ", result:" + result);
+                Logger.info("result.isOK():" + result.isOk() + "SN:" + eCouponSn);
                 if (result.isOk()) {
                     // 不需要重试.
                     RemoteRecallCheck.signAsSuccess();
@@ -602,6 +603,7 @@ public class ECoupon extends Model {
         if (this.status != ECouponStatus.UNCONSUMED) {
             return false;
         }
+        ECouponStatus previousStatus = this.status;
         if (shopId != null) {
             this.shop = Shop.findById(shopId);
         }
@@ -638,7 +640,7 @@ public class ECoupon extends Model {
             historyRemark += ",实际消费时间" + DateUtil.dateToString(realConsumedAt, "yyyy-MM-dd");
         }
         ECouponHistoryMessage.with(this).operator(operator).remark(historyRemark)
-                .fromStatus(this.status).toStatus(ECouponStatus.CONSUMED).sendToMQ();
+                .fromStatus(previousStatus).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         return true;
     }
 
