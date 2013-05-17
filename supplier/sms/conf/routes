@@ -44,7 +44,7 @@ GET     /getsms                                 EnSmsReceivers.getSms
 GET     /lingshi                                LingShiSmsReceivers.getSms
 
 # 上海助通SMS接收接口
-GET     /ztsms                                  ZtSmsReceivers.getsms
+#GET     /ztsms                                  ZtSmsReceivers.getsms
 
 *       /tel-verify                             TelephoneVerify.verify
 *       /tel-verify/face-value                  TelephoneVerify.consumedFaceValue
