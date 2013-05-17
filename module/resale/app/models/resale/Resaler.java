@@ -137,7 +137,7 @@ public class Resaler extends Model {
     public Long salesId;
 
     @Column(name = "partner")
-    public String partner;       //合作伙伴
+    public String partner;       //合作伙伴,sql添加分销的partner
 
     /**
      * 分销商状态

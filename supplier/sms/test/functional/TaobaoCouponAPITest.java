@@ -37,6 +37,7 @@ Resaler resaler;
         resaler.loginName=Resaler.TAOBAO_LOGIN_NAME;
         resaler.taobaoSellerId = 828005208L;
         resaler.taobaoCouponServiceKey = "abc";
+        resaler.partner="TB";
         resaler.save();
         outerOrder = FactoryBoy.create(OuterOrder.class, new BuildCallback<OuterOrder>() {
             @Override
@@ -52,6 +53,8 @@ Resaler resaler;
 
     @Test
     public void testSign() {
+        resaler.taobaoSellerId=11L;
+        resaler.save();
         Map<String, String> params = prepareParams();
         params.put("sign", "1");
         Http.Response response = POST2("/api/v1/taobao/coupon", params);
@@ -66,21 +69,11 @@ Resaler resaler;
         params.remove("order_id");
         resign(params);
 
+        params.put("sign", "1");
         Http.Response response = POST2("/api/v1/taobao/coupon", params);
 
         assertIsOk(response);
         assertContentEquals("{\"code\":502}", response);
-    }
-
-    @Test
-    public void testSellerNick() {
-        Map<String, String> params = prepareParams();
-        params.put("seller_nick", "券生活");
-        resign(params);
-        Http.Response response = POST2("/api/v1/taobao/coupon", params);
-
-        assertIsOk(response);
-        assertContentEquals("{\"code\":503}", response);
     }
 
     @Test
