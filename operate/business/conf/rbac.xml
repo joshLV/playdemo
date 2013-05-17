@@ -185,7 +185,7 @@
                         permissions="PURCHASE_ORDERS_MANAGEMENT"/>
 
         </navigation>
-        <!--
+
         <navigation key="point_goods" text="积分商品">
             <navigation key="point_goods_add" action="OperatePointGoods.add" text="积分商品添加"
                         permissions="Point_GOODS_NEW"/>
@@ -194,7 +194,6 @@
             <navigation key="point_goods_order" action="OperatePointGoodsOrders.index" text="积分商品订单管理"
                         permissions="Point_GOODS_ORDER"/>
         </navigation>
-        -->
     </navigation>
 
     <navigation key="order_main" text="订单销售" action="OperateOrders.index" display-order="50">
