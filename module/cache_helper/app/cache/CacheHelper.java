@@ -59,20 +59,21 @@ public class CacheHelper {
      */
     public static String getCacheKey(String[] baseKeys, String subKey, String expireSeconds) {
         if (baseKeys == null || baseKeys.length == 0) {
-            throw new IllegalArgumentException("baseKey不能为空");
+            throw new IllegalArgumentException("baseKey数组不能为空");
         }
         if (StringUtils.isBlank(subKey)) {
-            throw new IllegalArgumentException("baseKey不能为空");
+            throw new IllegalArgumentException("subKey不能为空");
         }
         // 拼接baseKey
         StringBuilder fullBaseKey = new StringBuilder();
-        for (final String baseKey : baseKeys) {
+        for (String baseKey : baseKeys) {
             if (StringUtils.isBlank(baseKey)) {
-                throw new IllegalArgumentException("baseKey不能为空");
+                baseKey = "NULL";  //baseKey为空，则设置为NULL值，这样所有空值都可以得到一个randomKey.
             }
+            final String _baseKey = baseKey;
             String cachedBaseKey = getCache(baseKey, expireSeconds, new CacheCallBack<String>() {
                 public String loadData() {
-                    String randomKey = getRandomKey(baseKey);
+                    String randomKey = getRandomKey(_baseKey);
                     Logger.debug("重新生成Key:" + randomKey);
                     return randomKey;
                 }

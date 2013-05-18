@@ -37,7 +37,7 @@ GET     /sql/secret                             WebSqlExcutors.secret
 POST    /sql/secret                             WebSqlExcutors.secret
 GET     /sql/history                            WebSqlExcutors.history
 
-*       /yabo/wizard                            YaboWizard.wizard
+# *       /yabo/wizard                            YaboWizard.wizard
 
 # jobs
 GET     /jobs                                   OperateJobs.index

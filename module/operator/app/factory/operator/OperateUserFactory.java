@@ -1,5 +1,6 @@
 package factory.operator;
 
+import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
 import factory.ModelFactory;
@@ -13,6 +14,7 @@ public class OperateUserFactory extends ModelFactory<OperateUser> {
 
     @Override
     public OperateUser define() {
+        CacheHelper.delete(OperateUser.CACHEKEY); //清除权限Cache
         OperateUser user = new OperateUser();
         user.loginName = "tom";
         user.deleted = DeletedStatus.UN_DELETED;

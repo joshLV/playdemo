@@ -7,6 +7,7 @@ import models.operator.OperateUser;
 import play.Logger;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,31 +40,41 @@ public class ContextedPermission implements Serializable {
             return;
         }
 
-        Set<String> tmpPermKeySet = CacheHelper.getCache(
+        List<String> tmpPermKeySet = CacheHelper.getCache(
                 CacheHelper.getCacheKey(
                         new String[]{OperateUser.CACHEKEY, OperateUser.CACHEKEY + user.id},
-                        "PERMKEYS"),
-                new CacheCallBack<Set<String>>() {
+                        "PERMKEYLIST"),
+                new CacheCallBack<List<String>>() {
                     @Override
-                    public Set<String> loadData() {
-                        Set<String> permKeySet = new HashSet<>();
-
-                        Logger.debug("user: %s, permissions: %d", user.loginName, user.permissions.size());
-                        for (OperatePermission perm : user.permissions) {
-                            permKeySet.add(perm.key);
-                        }
-
-                        // 查出当前用户从角色继承的所有权限
-                        List<OperatePermission> rolePerms = OperatePermission.findByUserRole(user.id);
-                        for (OperatePermission perm : rolePerms) {
-                            Logger.debug("user: %s rold: %s", user.loginName, perm.key);
-                            permKeySet.add(perm.key);
-                        }
-                        return permKeySet;
+                    public List<String> loadData() {
+                        return getPermKeySet(user);
                     }
                 });
+        Set<String> keys = new HashSet<>();
+        keys.addAll(tmpPermKeySet);
+        _allowPermissions.set(keys);
+    }
 
-        _allowPermissions.set(tmpPermKeySet);
+    /**
+     * Set放到Cache中时，测试时会不时出现为空集合的问题，修改为使用List后解决。
+     * @param user
+     * @return
+     */
+    private static List<String> getPermKeySet(OperateUser user) {
+        List<String> permKeySet = new ArrayList<>();
+
+        Logger.info("user: %s (%d), permissions: %d", user.loginName, user.id, user.permissions.size());
+        for (OperatePermission perm : user.permissions) {
+            permKeySet.add(perm.key);
+        }
+
+        // 查出当前用户从角色继承的所有权限
+        List<OperatePermission> rolePerms = OperatePermission.findByUserRole(user.id);
+        for (OperatePermission perm : rolePerms) {
+            Logger.info("user: %s rold: %s", user.loginName, perm.key);
+            permKeySet.add(perm.key);
+        }
+        return permKeySet;
     }
 
     public static boolean hasPermission(String permission_key) {

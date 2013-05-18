@@ -22,7 +22,7 @@
              action="WebServiceCallLogs.index" permissions="APPLICATION_LOGS"/>
           <navigation key="jobs_view" text="查看定时任务"
                         action="OperateJobs.index" permissions="JOBS_VIEW"/>
-          <navigation key="web_sql_executor" text="SQL命令"
+          <navigation key="web_sql_executor" text="执行SQL命令"
                         action="WebSqlExcutors.index" permissions="SQL_EXECUTOR"/>
         </navigation>
     </navigation>
