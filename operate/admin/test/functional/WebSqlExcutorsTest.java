@@ -7,7 +7,6 @@ import models.cms.Topic;
 import models.operator.OperateUser;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
@@ -55,14 +54,12 @@ public class WebSqlExcutorsTest extends FunctionalTest {
         POST(Router.reverse("WebSqlExcutors.secret").url, params);
     }
 
-    @Ignore
     @Test
     public void testIndexNoSecret() throws Exception {
         Http.Response response = GET(Router.reverse("WebSqlExcutors.index").url);
         assertStatus(302, response);
     }
 
-    @Ignore
     @Test
     public void testIndex() throws Exception {
         inputSecretKey();
@@ -70,7 +67,6 @@ public class WebSqlExcutorsTest extends FunctionalTest {
         assertIsOk(response);
     }
 
-    @Ignore
     @Test
     public void testRunSelect() throws Exception {
         inputSecretKey();
@@ -84,7 +80,6 @@ public class WebSqlExcutorsTest extends FunctionalTest {
         assertTrue(columnNames.size() > 0);
     }
 
-    @Ignore
     @Test
     public void testRunSelectWebSQLCommand() throws Exception {
         inputSecretKey();
@@ -107,7 +102,6 @@ public class WebSqlExcutorsTest extends FunctionalTest {
         assertEquals("修改数据库的操作需要输入『备注』信息。", message);
     }
 
-    @Ignore
     @Test
     public void testRunDelete() throws Exception {
         inputSecretKey();
@@ -121,7 +115,6 @@ public class WebSqlExcutorsTest extends FunctionalTest {
 
     }
 
-    @Ignore
     @Test
     public void testHistory() throws Exception {
         inputSecretKey();
@@ -136,7 +129,6 @@ public class WebSqlExcutorsTest extends FunctionalTest {
      * 安全码输入界面
      * @throws Exception
      */
-    @Ignore
     @Test
     public void testSecret() throws Exception {
         Http.Response response = GET(Router.reverse("WebSqlExcutors.secret").url);

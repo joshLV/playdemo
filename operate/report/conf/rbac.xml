@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<application text="商品管理">
+<application text="报表">
     <!--<role key="admin" text="系统管理员"/>-->
     <role key="account" text="财务人员"/>
     <role key="webop" text="网站运营"/>

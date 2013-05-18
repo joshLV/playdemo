@@ -4,17 +4,14 @@ import cache.CacheCallBack;
 import cache.CacheHelper;
 import models.operator.OperateNavigation;
 import models.operator.OperateUser;
-import org.apache.commons.collections.CollectionUtils;
 import play.Logger;
 import play.Play;
 import play.mvc.Http.Request;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class NavigationHandler {
 
@@ -23,7 +20,7 @@ public class NavigationHandler {
 
     static ThreadLocal<List<ContextedMenu>> topMenus = new ThreadLocal<>();
     static ThreadLocal<List<ContextedMenu>> secondLevelMenus = new ThreadLocal<>();
-    static ThreadLocal<Set<String>> stackMenuNames = new ThreadLocal<>();
+    static ThreadLocal<List<String>> stackMenuNames = new ThreadLocal<>();
 
     public static void initContextMenu(String applicationName, String activeNavigationName, OperateUser user) {
         initStackMenuNamesThreadLocal(applicationName, activeNavigationName, user);
@@ -33,23 +30,23 @@ public class NavigationHandler {
 
 
     private static void initStackMenuNamesThreadLocal(final String applicationName, final String activeNavigationName, final OperateUser user) {
-        Set<String> tmpStackMenuNames = CacheHelper.getCache(
+        List<String> tmpStackMenuNames = CacheHelper.getCache(
                 CacheHelper.getCacheKey(
                         new String[]{
                                 OperateUser.CACHEKEY,
                                 applicationName, activeNavigationName,
                                 OperateUser.CACHEKEY + user.id
-                        }, "STACK_MENU_NAME"),
-                new CacheCallBack<Set<String>>() {
+                        }, "STACK_MENU_NAMES"),
+                new CacheCallBack<List<String>>() {
                     @Override
-                    public Set<String> loadData() {
+                    public List<String> loadData() {
                         Logger.info("initStackMenuNamesThreadLocal(%s, %s, %d)", applicationName, activeNavigationName, user.id);
                         List<OperateNavigation> navigateionStackList = OperateNavigation
                                 .getNavigationParentStack(applicationName, activeNavigationName);
                         if (navigateionStackList == null) {
-                            return new HashSet<>();
+                            return new ArrayList<>();
                         }
-                        Set<String> navigationNameStackSets = new HashSet<>();
+                        List<String> navigationNameStackSets = new ArrayList<>();
                         for (OperateNavigation nav : navigateionStackList) {
                             navigationNameStackSets.add(nav.name);
                         }
@@ -89,9 +86,6 @@ public class NavigationHandler {
                 return _secondLevelMenus;
             }
         });
-        if (CollectionUtils.isEmpty(tmpSecondLevelMenus)) {
-            return;
-        }
         secondLevelMenus.set(tmpSecondLevelMenus);
     }
 
@@ -166,8 +160,7 @@ public class NavigationHandler {
     }
 
     protected static MenuContext buildMenuContext() {
-        MenuContext menuContext = new MenuContext(Request.current(), stackMenuNames.get());
-        return menuContext;
+        return new MenuContext(Request.current(), stackMenuNames.get());
     }
 
 

@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ public class MenuContext implements Serializable {
     public Set<String> activeNames = new HashSet<String>();
     public Map<String, Object> substitutions = new HashMap<String, Object>();
 
-    public MenuContext(Request request, Set<String> _activeNames) {
+    public MenuContext(Request request, List<String> _activeNames) {
         addActiveAction(request.action);
         if (_activeNames != null) {
             activeNames.addAll(_activeNames);
