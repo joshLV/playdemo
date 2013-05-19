@@ -24,6 +24,7 @@ import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.cache.Cache;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Http;
 import play.mvc.Router;
@@ -52,6 +53,7 @@ public class OperationReportsTest extends FunctionalTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        Cache.clear();  //缓存可能影响内部权限检查功能
 
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
