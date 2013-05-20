@@ -19,10 +19,12 @@ import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
+import play.db.jpa.JPA;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import javax.persistence.Query;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -113,20 +115,23 @@ public class ResalerProducts extends Controller {
             Logger.info("goods not found");
             error("商品不存在");
         }
-        StringBuilder sql = new StringBuilder("goods = ? and partner= ? and status != ? and " +
-                "deleted=?");
-        List params = new ArrayList<>();
-        params.add(goods);
-        params.add(OuterOrderPartner.valueOf(partner.toUpperCase()));
-        params.add(ResalerProductStatus.STAGING);
-        params.add(DeletedStatus.UN_DELETED);
+        StringBuilder sql = new StringBuilder("select r from ResalerProduct r " +
+                "where goods = :goods and partner= :partner and status <> :status and deleted = :deleted");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("goods", goods);
+        params.put("partner", OuterOrderPartner.valueOf(partner.toUpperCase()));
+        params.put("status", ResalerProductStatus.STAGING);
+        params.put("deleted", DeletedStatus.UN_DELETED);
         if (StringUtils.isNotBlank(loginName)) {
-            sql.append(" and resaler.loginName =?");
-            params.add(loginName);
+            sql.append(" and resaler.loginName = :loginName");
+            params.put("loginName", loginName);
         }
 
-//        Query query = JPA.em().createQuery(sql.toString());
-        List<ResalerProduct> products=ResalerProduct.find(sql.toString(),params.toArray()).fetch();
+        Query query = JPA.em().createQuery(sql.toString());
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        List<ResalerProduct> products = query.getResultList();
 //        List<ResalerProduct> products = ResalerProduct.find(
 //                "goods = ? and partner = ? and resaler.loginName=? and status != ? and deleted = ? order by createdAt desc",
 //                goods, OuterOrderPartner.valueOf(partner.toUpperCase()), loginName, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
