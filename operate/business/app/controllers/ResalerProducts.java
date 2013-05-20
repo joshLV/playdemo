@@ -1,16 +1,19 @@
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JingdongMessage;
 import models.operator.OperateUser;
-import com.uhuila.common.constants.DeletedStatus;
 import models.operator.Operator;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
+import models.sales.Goods;
+import models.sales.GoodsCondition;
+import models.sales.MaterialType;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductJournal;
-import models.sales.*;
+import models.sales.ResalerProductStatus;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -21,7 +24,12 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author likang
@@ -40,7 +48,7 @@ public class ResalerProducts extends Controller {
         int pageNumber = getPage();
         if (condition == null) {
             condition = new GoodsCondition();
-            condition.operatorCode= Operator.defaultOperator().code;
+            condition.operatorCode = Operator.defaultOperator().code;
         }
         condition.isLottery = false;
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
@@ -48,7 +56,7 @@ public class ResalerProducts extends Controller {
         goodsPage.setBoundaryControlsEnabled(true);
 
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        List<Resaler> resalerList = Resaler.find("status =? and operator.code =? and partner is not null ", ResalerStatus.APPROVED,condition.operatorCode).fetch();
+        List<Resaler> resalerList = Resaler.find("status =? and operator.code =? and partner is not null ", ResalerStatus.APPROVED, condition.operatorCode).fetch();
         Map<String, List<ResalerProduct>> partnerProducts = new HashMap<>();
         for (models.sales.Goods goods : goodsPage.getCurrentPage()) {
             List<ResalerProduct> products = ResalerProduct.find("goods = ? and status != ? and deleted = ? ",
@@ -65,7 +73,7 @@ public class ResalerProducts extends Controller {
 
         List<Operator> operators = Operator.findUnDeleted();
 
-        render(goodsPage, operators, condition, supplierList, partnerProducts,resalerList);
+        render(goodsPage, operators, condition, supplierList, partnerProducts, resalerList);
     }
 
     private static int getPage() {
@@ -99,15 +107,30 @@ public class ResalerProducts extends Controller {
     }
 
     @ActiveNavigation("resale_partner_product")
-    public static void showProducts(String partner, Long goodsId,String loginName) {
+    public static void showProducts(String partner, Long goodsId, String loginName) {
         Goods goods = Goods.findById(goodsId);
         if (goods == null) {
             Logger.info("goods not found");
             error("商品不存在");
         }
-        List<ResalerProduct> products = ResalerProduct.find(
-                "goods = ? and partner = ? and resaler.loginName=? and status != ? and deleted = ? order by createdAt desc",
-                goods, OuterOrderPartner.valueOf(partner.toUpperCase()), loginName,ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
+        StringBuilder sql = new StringBuilder("goods = ? and partner= ? and status != ? and " +
+                "deleted=?");
+        List params = new ArrayList<>();
+        params.add(goods);
+        params.add(OuterOrderPartner.valueOf(partner.toUpperCase()));
+        params.add(ResalerProductStatus.STAGING);
+        params.add(DeletedStatus.UN_DELETED);
+        if (StringUtils.isNotBlank(loginName)) {
+            sql.append(" and resaler.loginName =?");
+            params.add(loginName);
+        }
+
+//        Query query = JPA.em().createQuery(sql.toString());
+        List<ResalerProduct> products=ResalerProduct.find(sql.toString(),params.toArray()).fetch();
+//        List<ResalerProduct> products = ResalerProduct.find(
+//                "goods = ? and partner = ? and resaler.loginName=? and status != ? and deleted = ? order by createdAt desc",
+//                goods, OuterOrderPartner.valueOf(partner.toUpperCase()), loginName, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
+//
         for (ResalerProduct product : products) {
             if (product.creatorId != null)
                 product.creator = ((OperateUser) OperateUser.findById(product.creatorId)).userName;
@@ -126,7 +149,7 @@ public class ResalerProducts extends Controller {
         product.deleted = DeletedStatus.DELETED;
         product.updatedAt = new Date();
         product.lastModifier(OperateRbac.currentUser().id).save();
-        showProducts(product.partner.toString().toLowerCase(),product.goods.id, product.resaler.loginName);
+        showProducts(product.partner.toString().toLowerCase(), product.goods.id, product.resaler.loginName);
     }
 
     /**
@@ -150,7 +173,7 @@ public class ResalerProducts extends Controller {
         }
         product.save();
 
-        showProducts(product.partner.toString().toLowerCase(),product.goods.id, product.resaler.loginName);
+        showProducts(product.partner.toString().toLowerCase(), product.goods.id, product.resaler.loginName);
     }
 
     /**
@@ -175,7 +198,7 @@ public class ResalerProducts extends Controller {
         product.creator(OperateRbac.currentUser().id);
         product.save();
 
-        showProducts(product.partner.toString().toLowerCase(),product.goods.id, product.resaler.loginName);
+        showProducts(product.partner.toString().toLowerCase(), product.goods.id, product.resaler.loginName);
     }
 
     /**
