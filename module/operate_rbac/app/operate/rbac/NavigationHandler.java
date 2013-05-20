@@ -25,7 +25,7 @@ public class NavigationHandler {
     public static void initContextMenu(String applicationName, String activeNavigationName, OperateUser user) {
         initStackMenuNamesThreadLocal(applicationName, activeNavigationName, user);
         initSecondLevelMenusThreadLocal(applicationName, activeNavigationName, user);
-        initTopMenusThreadLocal(user);
+        initTopMenusThreadLocal(applicationName, activeNavigationName, user);
     }
 
 
@@ -90,11 +90,13 @@ public class NavigationHandler {
     }
 
 
-    private static void initTopMenusThreadLocal(final OperateUser user) {
+    private static void initTopMenusThreadLocal(final String applicationName, final String activeNavigationName, final OperateUser user) {
         List<ContextedMenu> tmpTopMenu = CacheHelper.getCache(
                 CacheHelper.getCacheKey(
-                        new String[]{OperateUser.CACHEKEY, OperateUser.CACHEKEY + user.id},
-                        "TOPMENU"),
+                        new String[]{OperateUser.CACHEKEY,
+                                applicationName, activeNavigationName,
+                                OperateUser.CACHEKEY + user.id},
+                        "TOPMENUS"),
                 new CacheCallBack<List<ContextedMenu>>() {
                     @Override
                     public List<ContextedMenu> loadData() {
