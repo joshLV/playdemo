@@ -30,6 +30,7 @@ import play.mvc.With;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 
 /**
  * @author likang
@@ -81,6 +82,8 @@ public class TaobaoProducts extends Controller {
         addRequest.setCid(cid);//分类类别：餐饮
         //类别：品牌：城市
         addRequest.setProps(props);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        addRequest.setLocalityLifeExpirydate(format.format(goods.expireAt));
         addRequest.setInputStr(faceValue.toString()); //面值value
         addRequest.setInputPids("5392163");//面值key
         addRequest.setApproveStatus(approveStatus);//初始为下架的，在淘宝仓库中
