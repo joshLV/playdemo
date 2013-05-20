@@ -20,6 +20,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import javax.persistence.Query;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -99,6 +100,13 @@ public class KtvPriceSchedules extends Controller {
     }
 
     public static void showEdit(Long id) {
+        KtvPriceSchedule priceStrategy = KtvPriceSchedule.findById(id);
+        Supplier supplier = SupplierRbac.currentUser().supplier;
+        List<Shop> shops = Shop.findShopBySupplier(supplier.id);
+        List<KtvProduct> ktvProductList = KtvProduct.find("supplier=?", supplier).fetch();
+
+        List<KtvShopPriceSchedule> shopPriceScheduleList = KtvShopPriceSchedule.find("schedule=?", priceStrategy).fetch();
+        render(priceStrategy, shops, ktvProductList, shopPriceScheduleList);
 
     }
 
@@ -300,7 +308,17 @@ public class KtvPriceSchedules extends Controller {
         return null;
     }
 
-    public static void update(Long id, @Valid KtvPriceSchedule priceSchedule, List<String> useWeekDays) {
+    public static void update(Long id, @Valid KtvPriceSchedule priceStrategy, List<String> useWeekDays, Shop shop) {
+        BigDecimal price = priceStrategy.price;
+        KtvPriceSchedule updSchedule = KtvPriceSchedule.findById(id);
+        updSchedule.price = price;
+        updSchedule.dayOfWeeks = StringUtils.join(useWeekDays, ",");
+        updSchedule.save();
+
+        if (updSchedule.price.compareTo(price) != 0) {
+            KtvSkuMessageUtil.send(id);
+        }
+        index(shop.id, updSchedule.roomType, updSchedule.product.id);
     }
 
     public static void delete(Long id) {

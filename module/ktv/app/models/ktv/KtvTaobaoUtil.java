@@ -83,7 +83,7 @@ public class KtvTaobaoUtil {
         List<ResalerProduct> resalerProductList = ResalerProduct.find("byGoodsAndPartner", productGoods.goods, OuterOrderPartner.TB).fetch();
         for (ResalerProduct resalerProduct : resalerProductList) {
             if (resalerProduct.resaler == null) {
-                Logger.info("ktv update sku时,resalerProduct.partnerProductId=%s的resaler.id is null,will not update this resalerProduct!",resalerProduct.partnerProductId);
+                Logger.info("ktv update sku时,resalerProduct.partnerProductId=%s的resaler.id is null,will not update this resalerProduct!", resalerProduct.partnerProductId);
                 continue;
             }
             TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
@@ -129,13 +129,19 @@ public class KtvTaobaoUtil {
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
+        Date today = DateUtils.truncate(new Date(), Calendar.DATE);
 
+        //当天18点到24点之后sku不更新，并删除
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        if (hour > 12) {
+            today = DateUtils.addDays(today, 1);
+        }
 
         //查出与该KTV商品有关联的、最近7天的所有价格策略
         Query query = JPA.em().createQuery("select s.schedule from KtvShopPriceSchedule s where s.shop = :shop "
                 + "and s.schedule.product = :product and s.schedule.startDay <= :endDay and s.schedule.endDay >= :startDay and s.schedule.deleted = :deleted");
 
-        Date today = DateUtils.truncate(new Date(), Calendar.DATE);
+
         Date endDay = DateUtils.addDays(today, 6);
 
         query.setParameter("shop", productGoods.shop);
