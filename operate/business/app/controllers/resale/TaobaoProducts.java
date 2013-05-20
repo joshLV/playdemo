@@ -68,6 +68,9 @@ public class TaobaoProducts extends Controller {
 
         //根据loginName取得相应的taobaoResaler
         Resaler taobaoResaler = Resaler.findApprovedByLoginName(loginName);
+        if (taobaoResaler == null) {
+            taobaoResaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+        }
         ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.TB, taobaoResaler, goods);
 
         ItemAddRequest addRequest = new ItemAddRequest();
