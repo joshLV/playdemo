@@ -117,11 +117,14 @@ ${promotion.promotionType.name}
 
 <div class="field-group">
     <label>适用包厢</label>
-
-#{list items:roomsList,as:'room'}
-    <input type="checkbox" name="promotion.roomTypes.id" value="${room?.id}"
-           #{if roomTypeIds?.contains(","+room?.id+",")}checked#{/if}/>${room.name}&nbsp;&nbsp;
+#{list items:models.ktv.KtvRoomType.values(), as:'roomType'}
+    <input type="radio" name="promotion.roomTypes.id" value="${roomType}" #{if roomType.type=='MINI'}
+           checked #{/if} />${roomType.name} &nbsp;&nbsp;
 #{/list}
+*{#{list items:roomsList,as:'room'}}*
+*{<input type="checkbox" name="promotion.roomTypes.id" value="${room?.id}"}*
+*{#{if roomTypeIds?.contains(","+room?.id+",")}checked#{/if}/>${room.name}&nbsp;&nbsp;}*
+*{#{/list}}*
     <span class=" error">
     #{error 'promotion.roomTypes' /}</span>
 </div>

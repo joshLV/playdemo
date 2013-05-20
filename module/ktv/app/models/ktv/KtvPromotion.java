@@ -27,7 +27,7 @@ public class KtvPromotion extends Model {
 
     @ElementCollection(targetClass=KtvRoomType.class)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name="ktv_promotions_room_types")
+    @CollectionTable(name="ktv_promotions_room_types",joinColumns=@JoinColumn(name="ktv_promotion_id"))
     @Column(name="room_type")
     public Set<KtvRoomType> roomTypes;
 
