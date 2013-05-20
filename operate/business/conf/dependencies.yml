@@ -39,7 +39,7 @@ require:
     - oauth -> oauth
     - resale_api -> resale_api
     - supplier_api -> supplier_api
-    - com.taobao -> taobao-top 20121130
+    - com.taobao -> taobao-top 20130520
     - supports -> supports
     - ktv -> ktv
 

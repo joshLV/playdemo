@@ -59,7 +59,7 @@ public class TaobaoProducts extends Controller {
     public static void upload(Long num, Long goodsId, BigDecimal price, BigDecimal faceValue, String type,
                               String stuffStatus, String title, String desc, String locationState,
                               String locationCity, Long cid, String props, String approveStatus,
-                              String[] sellerCids, String loginName, Long auctionPoint) {
+                              String[] sellerCids, String loginName, Long auctionPoint, String inputIds) {
         OperateUser operateUser = OperateRbac.currentUser();
         Goods goods = Goods.findById(goodsId);
         if (goods == null) {
@@ -84,16 +84,34 @@ public class TaobaoProducts extends Controller {
         addRequest.setLocationState(locationState);
         addRequest.setLocationCity(locationCity);
         addRequest.setCid(cid);//分类类别：餐饮
-        //类别：品牌：城市
-        addRequest.setProps(props);
+        if (StringUtils.isNotBlank(inputIds)) {
+            //其他
+            if ("0".equals(inputIds)) {
+                addRequest.setProps(props);
+                addRequest.setInputStr(faceValue.toString()); //面值value
+                addRequest.setInputPids("5392163");//面值key
+                //银乐迪品牌
+            } else if ("61725418".equals(inputIds)) {
+                addRequest.setProps("20000:" + inputIds + ";" + props);
+                addRequest.setInputStr(faceValue.toString()); //面值value
+                addRequest.setInputPids("5392163");//面值key
+            }
+        } else {
+            //类别：品牌：城市
+            addRequest.setProps(props);
+            addRequest.setInputStr(faceValue.toString()); //面值value
+            addRequest.setInputPids("5392163");//面值key
+        }
+
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         addRequest.setLocalityLifeExpirydate(format.format(goods.expireAt));
-        addRequest.setInputStr(faceValue.toString()); //面值value
-        addRequest.setInputPids("5392163");//面值key
+
         addRequest.setApproveStatus(approveStatus);//初始为下架的，在淘宝仓库中
         addRequest.setOuterId(String.valueOf(product.goodsLinkId));
         addRequest.setSellerCids(StringUtils.join(sellerCids));
-
+        addRequest.setLocalityLifeOnsaleAutoRefundRatio(100L);//电子凭证售中自动退款比例
+        addRequest.setLocalityLifeRefundRatio(1L);//退款比例
+        addRequest.setHasInvoice(true);
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, taobaoResaler.taobaoCouponAppKey, taobaoResaler.taobaoCouponAppSecretKey);
 
         //找到淘宝的token
