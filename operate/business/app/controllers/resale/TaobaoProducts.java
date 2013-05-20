@@ -58,7 +58,7 @@ public class TaobaoProducts extends Controller {
     public static void upload(Long num, Long goodsId, BigDecimal price, BigDecimal faceValue, String type,
                               String stuffStatus, String title, String desc, String locationState,
                               String locationCity, Long cid, String props, String approveStatus,
-                              String[] sellerCids, String loginName) {
+                              String[] sellerCids, String loginName, Long auctionPoint) {
         OperateUser operateUser = OperateRbac.currentUser();
         Goods goods = Goods.findById(goodsId);
         if (goods == null) {
@@ -76,6 +76,7 @@ public class TaobaoProducts extends Controller {
         addRequest.setStuffStatus(stuffStatus);
         addRequest.setTitle(title);
         addRequest.setDesc(desc);
+        addRequest.setAuctionPoint(auctionPoint);
         addRequest.setLocationState(locationState);
         addRequest.setLocationCity(locationCity);
         addRequest.setCid(cid);//分类类别：餐饮
