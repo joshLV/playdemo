@@ -15,7 +15,7 @@
         <span class="error">#{error 'sku.supplier.id'/}</span>
     </div>
 </div>
-<div id="brand">
+<div id="brands">
     #{include '/OperateBrands/skuBrands.html'/}
 </div>
 #{/if}
@@ -53,7 +53,7 @@
             } else {
                 $("#err-supplierUser_supplier_id").html("");
                 $("#save").attr('disabled', false);
-                $("#brand").load("/sku_brands/" + id + "?skuBrand=skuBrand", function (data) {
+                $("#brands").load("/sku_brands/" + id + "?skuBrand=skuBrand", function (data) {
                 });
             }
 

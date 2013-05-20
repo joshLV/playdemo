@@ -79,7 +79,7 @@
             <span class="error">#{error 'goods.category'/}</span>
         </div>
     </div>
-    <div id="brand">#{include '/OperateBrands/goodsBrands.html'/}</div>
+    <div id="brands">#{include '/OperateBrands/goodsBrands.html'/}</div>
         #{layout_operate.textField name:'goods.no', value:goods?.no/}
         #{layout_operate.nameField name:'goods.shortName', value:goods?.shortName, required:true, length:30/}
         #{layout_operate.nameField name:'goods.name', value:goods?.name, required:true, length:500/}

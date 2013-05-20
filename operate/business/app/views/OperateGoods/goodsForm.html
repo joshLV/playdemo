@@ -51,7 +51,7 @@
         <span class="error">#{error 'goods.category'/}</span>
     </div>
 </div>
-<div id="brand">#{include '/OperateBrands/goodsBrands.html'/}</div>
+<div id="brands">#{include '/OperateBrands/goodsBrands.html'/}</div>
     #{layout_operate.textField name:'goods.no', value:goods?.no/}
     #{layout_operate.nameField name:'goods.name', value:goods?.name, required:true, length:30/}
     #{layout_operate.nameField name:'goods.title', value:goods?.title,note:'(包含商家名称和面值)', required:true, length:30/}
@@ -234,7 +234,7 @@
             } else {
                 $("#err-supplierUser_supplier_id").html("");
                 $("#save").attr('disabled', false);
-                $("#brand").load("/goods_brands/" + id, function (data) {
+                $("#brands").load("/goods_brands/" + id, function (data) {
                 });
                 $("#tableShop").load("/shops/" + id + "/showGoodsShops", function (data) {
                     $("#selectAll").click();
