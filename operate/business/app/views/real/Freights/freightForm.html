@@ -40,6 +40,7 @@
     省
     &nbsp; &nbsp;&nbsp;
 <select id="province" name="freight.province" title="省">
+    <option value="上海" #{if freight?.province == '上海'} selected #{/if}>S.上海</option>
     <option value="北京" #{if freight?.province == '北京'} selected #{/if}>B.北京</option>
     <option value="天津" #{if freight?.province == '天津'} selected #{/if}>T.天津</option>
     <option value="河北"  #{if freight?.province == '河北'} selected #{/if}>H.河北</option>
