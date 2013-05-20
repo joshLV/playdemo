@@ -63,7 +63,7 @@ public class ContextedPermission implements Serializable {
     private static List<String> getPermKeySet(OperateUser user) {
         List<String> permKeySet = new ArrayList<>();
 
-        Logger.info("user: %s (%d), permissions: %d", user.loginName, user.id, user.permissions.size());
+        Logger.debug("user: %s (%d), permissions: %d", user.loginName, user.id, user.permissions.size());
         for (OperatePermission perm : user.permissions) {
             permKeySet.add(perm.key);
         }
@@ -71,7 +71,7 @@ public class ContextedPermission implements Serializable {
         // 查出当前用户从角色继承的所有权限
         List<OperatePermission> rolePerms = OperatePermission.findByUserRole(user.id);
         for (OperatePermission perm : rolePerms) {
-            Logger.info("user: %s rold: %s", user.loginName, perm.key);
+            Logger.debug("user: %s rold: %s", user.loginName, perm.key);
             permKeySet.add(perm.key);
         }
         return permKeySet;

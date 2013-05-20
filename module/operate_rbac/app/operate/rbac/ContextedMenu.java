@@ -67,9 +67,13 @@ public class ContextedMenu implements Serializable {
         }
     }
 
+    public void setChildren(List<ContextedMenu> children) {
+        this.children = children;
+    }
+
     public List<ContextedMenu> getChildren() {
         if(children == null) {
-            children = new ArrayList<ContextedMenu>(menu.children.size());
+            children = new ArrayList<>(menu.children.size());
             for(Menu childMenu : menu.children) {
                 if (childMenu.getPermissions() == null ||
                         childMenu.getPermissions().size() == 0 ||

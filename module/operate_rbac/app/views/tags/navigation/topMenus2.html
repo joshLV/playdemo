@@ -34,11 +34,21 @@ if (_ulClass == null) {
   }%
   <li class="${linkClasses.join(' ')}">
     #{if child.hasLink()}
-      <a href="${child.getBaseUrl() + child.getLink()}">${child.getText()}</a>
+      <a href="${child.getBaseUrl() + child.getLink()}" data-toggle="dropdown" class='dropdown-toggle'>
     #{/if}
     #{else}
-      <a href="#">${child.getText()}</a>
+      <a href="#" data-toggle="dropdown" class='dropdown-toggle'>
     #{/else}
+          <span>${child.getText()}</span>
+          <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+      #{list items:child.children, as:'secChild'}
+          #{list items:secChild.children, as:'subItem'}
+            <li><a href="${subItem.getBaseUrl() + subItem.getLink()}">${subItem.getText()}</a></li>
+          #{/list}
+      #{/list}
+      </ul>
   </li>
 #{/list}
 </ul>

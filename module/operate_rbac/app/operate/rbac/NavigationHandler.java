@@ -58,7 +58,12 @@ public class NavigationHandler {
 
 
     private static void initSecondLevelMenusThreadLocal(final String applicationName, final String activeNavigationName, final OperateUser user) {
-        List<ContextedMenu> tmpSecondLevelMenus = CacheHelper.getCache(
+        List<ContextedMenu> tmpSecondLevelMenus = getSecondLevelMenulsThreadLocal(applicationName, activeNavigationName, user);
+        secondLevelMenus.set(tmpSecondLevelMenus);
+    }
+
+    private static List<ContextedMenu> getSecondLevelMenulsThreadLocal(final String applicationName, final String activeNavigationName, final OperateUser user) {
+        return CacheHelper.getCache(
                 CacheHelper.getCacheKey(
                         new String[]{
                                 OperateUser.CACHEKEY,
@@ -67,26 +72,29 @@ public class NavigationHandler {
                         }, "2_LEVEL_MENU"), new CacheCallBack<List<ContextedMenu>>() {
             @Override
             public List<ContextedMenu> loadData() {
-                Logger.info("initSecondLevelMenusThreadLocal(%s, %s, %d)", applicationName, activeNavigationName, user.id);
-                List<OperateNavigation> secondLevelNavigations = OperateNavigation
-                        .getSecondLevelNavigations(applicationName, activeNavigationName);
-                if (secondLevelNavigations == null) {
-                    return new ArrayList<>();
-                }
-                List<ContextedMenu> _secondLevelMenus = new ArrayList<>();
-                for (OperateNavigation navigation : secondLevelNavigations) {
-                    if (navigation.permissions == null ||
-                            navigation.permissions.size() == 0 ||
-                            ContextedPermission.hasPermissions(navigation.permissions)) {
-                        Menu menu = Menu.from(navigation);
-                        ContextedMenu contextedMenu = new ContextedMenu(menu, getMenuContext());
-                        _secondLevelMenus.add(contextedMenu);
-                    }
-                }
-                return _secondLevelMenus;
+                return getSecondLevelMenulsThreadLocalWithoutCache(applicationName, activeNavigationName, user);
             }
         });
-        secondLevelMenus.set(tmpSecondLevelMenus);
+    }
+
+    private static List<ContextedMenu> getSecondLevelMenulsThreadLocalWithoutCache(String applicationName, String activeNavigationName, OperateUser user) {
+        Logger.info("initSecondLevelMenusThreadLocal(%s, %s, %d)", applicationName, activeNavigationName, user.id);
+        List<OperateNavigation> secondLevelNavigations = OperateNavigation
+                .getSecondLevelNavigations(applicationName, activeNavigationName);
+        if (secondLevelNavigations == null) {
+            return new ArrayList<>();
+        }
+        List<ContextedMenu> _secondLevelMenus = new ArrayList<>();
+        for (OperateNavigation navigation : secondLevelNavigations) {
+            if (navigation.permissions == null ||
+                    navigation.permissions.size() == 0 ||
+                    ContextedPermission.hasPermissions(navigation.permissions)) {
+                Menu menu = Menu.from(navigation);
+                ContextedMenu contextedMenu = new ContextedMenu(menu, getMenuContext());
+                _secondLevelMenus.add(contextedMenu);
+            }
+        }
+        return _secondLevelMenus;
     }
 
 
@@ -96,7 +104,7 @@ public class NavigationHandler {
                         new String[]{OperateUser.CACHEKEY,
                                 applicationName, activeNavigationName,
                                 OperateUser.CACHEKEY + user.id},
-                        "TOPMENUS"),
+                        "TOPMENUS4"),
                 new CacheCallBack<List<ContextedMenu>>() {
                     @Override
                     public List<ContextedMenu> loadData() {
@@ -108,8 +116,13 @@ public class NavigationHandler {
                                     navigation.permissions.size() == 0 ||
                                     ContextedPermission.hasPermissions(navigation.permissions)) {
                                 Menu menu = Menu.from(navigation);
+
                                 ContextedMenu contextedMenu = new ContextedMenu(menu,
                                         getMenuContext());
+
+                                List<ContextedMenu> secondLevelMenuls = getSecondLevelMenulsThreadLocalWithoutCache(navigation.applicationName, navigation.name, user);
+
+                                contextedMenu.setChildren(secondLevelMenuls);
                                 _topMenus.add(contextedMenu);
                             }
                         }
