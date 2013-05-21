@@ -43,7 +43,7 @@ public class SupplierShops extends Controller {
      *
      * @param shop 门店对象
      */
-    public static void create(@Valid Shop shop, List<Long> roomTypeIds) {
+    public static void create(@Valid Shop shop) {
         if (Validation.hasErrors()) {
             renderParams(shop);
             render("SupplierShops/add.html", shop);
@@ -52,7 +52,6 @@ public class SupplierShops extends Controller {
         shop.deleted = DeletedStatus.UN_DELETED;
         shop.createdAt = new Date();
         shop.create();
-        Supplier supplier = SupplierRbac.currentUser().supplier;
         index(null);
     }
 
@@ -118,7 +117,7 @@ public class SupplierShops extends Controller {
      * @param id   门店标识
      * @param shop 修改后的门店
      */
-    public static void update(long id, @Valid Shop shop, List<Long> roomTypeIds) {
+    public static void update(long id, @Valid Shop shop) {
         Shop sp = Shop.findById(id);
         if (Validation.hasErrors()) {
             shop.id = id;
@@ -135,8 +134,6 @@ public class SupplierShops extends Controller {
         sp.phone = shop.phone;
         sp.updatedAt = new Date();
         sp.save();
-
-        Supplier supplier = SupplierRbac.currentUser().supplier;
 
         index(null);
     }

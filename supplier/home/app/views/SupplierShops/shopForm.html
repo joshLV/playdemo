@@ -28,33 +28,6 @@
     <input class="text" name="shop.phone" type="text" value="${shop?.phone}"/>
     <span class="error">#{error 'shop.phone'/}</span>
 </div>
-%{
-ktvSupplier=supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER);
-}%
-#{if "1".equals(ktvSupplier)}
-<div class="field-group">
-    <label>包厢类型</label>
-    <table cellspacing="0" cellpadding="0" border="0" class="standard-table">
-        <thead>
-        <tr>
-            <th>包厢类型</th>
-            <th>包厢数量</th>
-        </tr>
-        </thead>
-        <tbody>
-            #{list items:ktvRoomTypeList,as:'roomType'}
-            <tr>
-                <td>${roomType.name}
-                    <input name="roomTypeIds" type="hidden" value="${roomType?.id}"/>
-                </td>
-                <!--<td><input name="roomTypeNumber${roomType.id}" type="text" value="${models.ktv.KtvRoom.getRoomNumber(roomType,shop)}"/></td>-->
-            </tr>
-            #{/list}
-        </tbody>
-    </table>
-
-</div>
-#{/if}
 <div class="field-group">
     <input type="submit" class="btn" value="确定"/> <a href="/shops">取消</a>
 </div>

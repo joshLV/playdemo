@@ -14,6 +14,7 @@ var KTVWeek = (function  () {
         ktv.dataUrl = args[0].dataUrl;
         ktv.shop = args[0].shop;
         ktv.roomType = args[0].roomType;
+        ktv.product = args[0].product;
         ktv.colorIndex = -1;
         $("#" + ktv.wrapperId + " .wk-button-previous").click(function(){
             var previousWeekDay = ktv.monday.addDays(-7);
@@ -60,7 +61,8 @@ var KTVWeek = (function  () {
                 startDay: ktv.monday.toString("yyyy-MM-dd"),
                 endDay: ktv.sunday.toString("yyyy-MM-dd"),
                 "shop.id": ktv.shop,
-                "roomType": ktv.roomType
+                "roomType": ktv.roomType,
+                "product.id": ktv.product
             },
             function(data){
                 ktv.dataLoaded(data);

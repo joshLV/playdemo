@@ -64,14 +64,15 @@ public class KtvPriceSchedules extends Controller {
         render(shops, shop, roomType, product);
     }
 
-    public static void jsonSearch(Date startDay, Date endDay, Shop shop, KtvRoomType roomType) {
+    public static void jsonSearch(Date startDay, Date endDay, Shop shop, KtvRoomType roomType,KtvProduct product) {
         if (startDay.after(endDay)) {
             error();
         }
+        System.out.println(product+"------");
         List<KtvPriceSchedule> priceSchedules = KtvShopPriceSchedule.find(
                 "select k.schedule from KtvShopPriceSchedule k where k.shop = ? and k.schedule.roomType = ? " +
-                        "and k.schedule.startDay <= ? and k.schedule.endDay >= ?",
-                shop, roomType, endDay, startDay).fetch();
+                        "and k.schedule.startDay <= ? and k.schedule.endDay >= ? and k.schedule.product = ?",
+                shop, roomType, endDay, startDay,product).fetch();
         List<Map<String, Object>> result = new ArrayList<>();
         for (KtvPriceSchedule schedule : priceSchedules) {
             Map<String, Object> o = new HashMap<>();
