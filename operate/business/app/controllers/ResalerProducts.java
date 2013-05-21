@@ -64,15 +64,14 @@ public class ResalerProducts extends Controller {
             List<ResalerProduct> products = ResalerProduct.find("goods = ? and status != ? and deleted = ? ",
                     goods, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
             for (ResalerProduct product : products) {
-                List<ResalerProduct> p = partnerProducts.get(goods.id + product.partner.toString());
+                List<ResalerProduct> p = partnerProducts.get(goods.id + "-"+product.resaler.id.toString());
                 if (p == null) {
                     p = new ArrayList<>();
-                    partnerProducts.put(goods.id + product.partner.toString(), p);
+                    partnerProducts.put(goods.id + "-"+product.resaler.id.toString(), p);
                 }
                 p.add(product);
             }
         }
-
         List<Operator> operators = Operator.findUnDeleted();
 
         render(goodsPage, operators, condition, supplierList, partnerProducts, resalerList);
@@ -132,10 +131,6 @@ public class ResalerProducts extends Controller {
             query.setParameter(entry.getKey(), entry.getValue());
         }
         List<ResalerProduct> products = query.getResultList();
-//        List<ResalerProduct> products = ResalerProduct.find(
-//                "goods = ? and partner = ? and resaler.loginName=? and status != ? and deleted = ? order by createdAt desc",
-//                goods, OuterOrderPartner.valueOf(partner.toUpperCase()), loginName, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
-//
         for (ResalerProduct product : products) {
             if (product.creatorId != null)
                 product.creator = ((OperateUser) OperateUser.findById(product.creatorId)).userName;

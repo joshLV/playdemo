@@ -1,5 +1,6 @@
 package controllers.resale;
 
+import com.google.gson.Gson;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.FileItem;
@@ -17,9 +18,7 @@ import models.oauth.WebSite;
 import models.operator.OperateUser;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
-import models.sales.Goods;
-import models.sales.ResalerProduct;
-import models.sales.ResalerProductStatus;
+import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -126,6 +125,9 @@ public class TaobaoProducts extends Controller {
                 //保存商品状态
                 product.creator(operateUser.id).partnerProduct(String.valueOf(taobaoItemId))
                         .status(ResalerProductStatus.UPLOADED).save();
+
+                ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(addRequest),
+                        ResalerProductJournalType.CREATE, "上传商品");
 
                 ItemImgUploadRequest imgUploadRequest = new ItemImgUploadRequest();
                 imgUploadRequest.setNumIid(taobaoItemId);
