@@ -72,7 +72,6 @@ public class ResalerProducts extends Controller {
                 p.add(product);
             }
         }
-
         List<Operator> operators = Operator.findUnDeleted();
 
         render(goodsPage, operators, condition, supplierList, partnerProducts, resalerList);
