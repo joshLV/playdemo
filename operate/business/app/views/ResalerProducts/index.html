@@ -44,7 +44,7 @@
             <td style="text-align:right">${goods.salePrice.formatCurrency("CNY")}</td>
             #{list items:resalerList, as:'resaler'}
             %{
-                pd = partnerProducts.get(goods.id+ resaler.partner);
+                pd = partnerProducts.get(goods.id+ "-"+resaler.id);
                 partner = resaler.partner.toLowerCase();
                 }%
                 <td>

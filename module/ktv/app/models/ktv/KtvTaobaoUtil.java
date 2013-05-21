@@ -133,7 +133,7 @@ public class KtvTaobaoUtil {
 
         //当天18点到24点之后sku不更新，并删除
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if (hour > 12) {
+        if (hour > 18) {
             today = DateUtils.addDays(today, 1);
         }
 
