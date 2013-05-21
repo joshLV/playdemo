@@ -3,282 +3,316 @@
 #{include '/share/nav.html' /}
 #{set 'moreStyles'}
     #{asset.css src:['/ztree/zTreeStyle.css'] /}
-    <style type="text/css">
-        ul.ztree{
+<style type="text/css">
+    ul.ztree {
         margin-top: 1px;
         border: 1px solid #ccc;
         background: #f5f5f5;
         overflow-y: scroll;
         overflow-x: auto;
-        }
-    </style>
+    }
+</style>
 #{/set}
 <div class="body">
-    <legend>当当上传商品：<a href="/goods/${goods.id}" target="_blank">
-        ${goods.shortName}</a>
-    </legend>
-    <form class="form-horizontal" method="POST" action="/resaler-products/dd/upload">
-        <div class="control-group">
-            <label class="control-label">选择城市</label>
-            <div class="controls">
-                <select name="cityName">
-                    <option value="北京市">北京市</option>
-                    <option value="上海市" selected>上海市</option>
-                    <option value="广州市">广州市</option>
-                    <option value="深圳市">深圳市</option>
-                    <option value="香港特别行政区">香港特别行政区</option>
-                    <option value="沈阳市">沈阳市</option>
-                    <option value="天津市">天津市</option>
-                    <option value="武汉市">武汉市</option>
-                    <option value="西安市">西安市</option>
-                    <option value="重庆市">重庆市</option>
-                    <option value="珠海市">珠海市</option>
-                    <option value="东莞市">东莞市</option>
-                    <option value="佛山市">佛山市</option>
-                    <option value="石家庄市">石家庄市</option>
-                    <option value="廊坊市">廊坊市</option>
-                    <option value="哈尔滨市">哈尔滨市</option>
-                    <option value="长春市">长春市</option>
-                    <option value="大连市">大连市</option>
-                    <option value="济南市">济南市</option>
-                    <option value="青岛市">青岛市</option>
-                    <option value="太原市">太原市</option>
-                    <option value="郑州市">郑州市</option>
-                    <option value="合肥市">合肥市</option>
-                    <option value="南京市">南京市</option>
-                    <option value="苏州市">苏州市</option>
-                    <option value="无锡市">无锡市</option>
-                    <option value="长沙市">长沙市</option>
-                    <option value="杭州市">杭州市</option>
-                    <option value="宁波市">宁波市</option>
-                    <option value="温州市">温州市</option>
-                    <option value="厦门市">厦门市</option>
-                    <option value="三亚市">三亚市</option>
-                    <option value="福州市">福州市</option>
-                    <option value="昆明市">昆明市</option>
-                    <option value="贵阳市">贵阳市</option>
-                    <option value="乌鲁木齐市">乌鲁木齐市</option>
-                    <option value="兰州市">兰州市</option>
-                    <option value="银川市">银川市</option>
-                    <option value="成都市">成都市</option>
-                    <option value="潮州市">潮州市</option>
-                    <option value="汕头市">汕头市</option>
-                    <option value="惠州市">惠州市</option>
-                    <option value="江门市">江门市</option>
-                    <option value="茂名市">茂名市</option>
-                    <option value="清远市">清远市</option>
-                </select>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">选择分类 *</label>
-            <div class="controls">
-                <input class="input" readonly id="category-show" value="请选择">
-                <div id="category-treeFrame" class="menuContent" style="display:none; position: absolute;">
-                    <ul id="category-tree" class="ztree" style="width:210px"></ul>
-                </div>
+<legend>当当上传商品：<a href="/goods/${goods.id}" target="_blank">
+${goods.shortName}</a>
+</legend>
+<form class="form-horizontal" method="POST" action="/resaler-products/dd/upload">
+<div class="control-group">
+    <label class="control-label">选择城市</label>
 
-                <input name="categoryName1" id="input-category_name1" type="hidden">
-                <input name="categoryName2" id="input-category_name2" type="hidden">
-            </div>
+    <div class="controls">
+        <select name="cityName">
+            <option value="北京市">北京市</option>
+            <option value="上海市" selected>上海市</option>
+            <option value="广州市">广州市</option>
+            <option value="深圳市">深圳市</option>
+            <option value="香港特别行政区">香港特别行政区</option>
+            <option value="沈阳市">沈阳市</option>
+            <option value="天津市">天津市</option>
+            <option value="武汉市">武汉市</option>
+            <option value="西安市">西安市</option>
+            <option value="重庆市">重庆市</option>
+            <option value="珠海市">珠海市</option>
+            <option value="东莞市">东莞市</option>
+            <option value="佛山市">佛山市</option>
+            <option value="石家庄市">石家庄市</option>
+            <option value="廊坊市">廊坊市</option>
+            <option value="哈尔滨市">哈尔滨市</option>
+            <option value="长春市">长春市</option>
+            <option value="大连市">大连市</option>
+            <option value="济南市">济南市</option>
+            <option value="青岛市">青岛市</option>
+            <option value="太原市">太原市</option>
+            <option value="郑州市">郑州市</option>
+            <option value="合肥市">合肥市</option>
+            <option value="南京市">南京市</option>
+            <option value="苏州市">苏州市</option>
+            <option value="无锡市">无锡市</option>
+            <option value="长沙市">长沙市</option>
+            <option value="杭州市">杭州市</option>
+            <option value="宁波市">宁波市</option>
+            <option value="温州市">温州市</option>
+            <option value="厦门市">厦门市</option>
+            <option value="三亚市">三亚市</option>
+            <option value="福州市">福州市</option>
+            <option value="昆明市">昆明市</option>
+            <option value="贵阳市">贵阳市</option>
+            <option value="乌鲁木齐市">乌鲁木齐市</option>
+            <option value="兰州市">兰州市</option>
+            <option value="银川市">银川市</option>
+            <option value="成都市">成都市</option>
+            <option value="潮州市">潮州市</option>
+            <option value="汕头市">汕头市</option>
+            <option value="惠州市">惠州市</option>
+            <option value="江门市">江门市</option>
+            <option value="茂名市">茂名市</option>
+            <option value="清远市">清远市</option>
+        </select>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">选择分类 *</label>
+
+    <div class="controls">
+        <input class="input" readonly id="category-show" value="请选择">
+
+        <div id="category-treeFrame" class="menuContent" style="display:none; position: absolute;">
+            <ul id="category-tree" class="ztree" style="width:210px"></ul>
         </div>
 
-        <div class="control-group">
-            <label class="control-label" for="inputTeamTitle">团购短标题 *</label>
-            <div class="controls">
-                <input type="text" id="inputTeamTitle" class="input-block-level" name="teamTitle" value="${goods.name}">
-                <span class="help-block">不超过180个字符</span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputSummary">团购单品页长标题 *</label>
-            <div class="controls">
-                <input type="text" id="inputSummary" name="teamSummary" class="input-block-level" value="${goods.shortName}">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">团购类型 *</label>
-            <div class="controls">
-                <input type="radio" name="teamType" value="1" #{if goods.materialType == models.sales.MaterialType.ELECTRONIC} checked #{/if}> 虚拟商品
-                <input type="radio" name="teamType" value="2"#{if goods.materialType == models.sales.MaterialType.REAL} checked #{/if}> 实物商品
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">送货类型 *</label>
-            <div class="controls">
-                <input type="radio" name="deliveryType" value="1" #{if goods.materialType == models.sales.MaterialType.ELECTRONIC} checked #{/if}>手机验证码
-                <input type="radio" name="deliveryType" value="2" #{if goods.materialType == models.sales.MaterialType.REAL} checked #{/if}> 快递
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">退货类型 *</label>
-            <div class="controls">
-                <input type="radio" name="refundType" value="1" checked> 只要没有使用就可以退货
-                <input type="radio" name="refundType" value="0"> 不许退货
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">过期自动退款 *</label>
-            <div class="controls">
-                <input type="radio" name="autoRefundFlag" value="1" checked>支持
-                <input type="radio" name="autoRefundFlag" value="0"> 不支持
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputMarketPrice">市场价 *</label>
-            <div class="controls">
-                <input type="text" id="inputMarketPrice" name="originalPrice" value="${goods.faceValue}">
-                <span class="help-inline">最多两位小数</span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputSalePrice">销售价 *</label>
-            <div class="controls">
-                <input type="text" id="inputSalePrice" name="salePrice" value="${goods.salePrice}">
-                <span class="help-inline">不能大于市场价，最多两位小数</span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">团购开始时间 *</label>
-            <div class="controls">
-                <input type="text" name="startDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-                       class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}">
-                团购结束时间 *
-                <input type="text" name="endDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-                       class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">券生效日期 *</label>
-            <div class="controls">
-                <input type="text" name="effectStartDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-                       class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}">
-                券&nbsp;截止&nbsp;日&nbsp;期 *
-                <input type="text" name="effectEndDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-                       class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputMaxNumber">商品总量上限 </label>
-            <div class="controls">
-                <input type="text" id="inputMaxNumber" name="teamMaxNum" value="${goods.getRealStocks()}">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputMinNumber">最低成团人数 </label>
-            <div class="controls">
-                <input type="text" id="inputMinNumber" name="teamMinNum" value="1">
-                <span class="help-inline">必须大于等于1</span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputSourceSaleNum">一百券已销售数量 </label>
-            <div class="controls">
-                <input type="text" id="inputSourceSaleNum" name="sourceSaleNum" value="">
-                <span class="help-inline">可为空</span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputVirtualNum">虚拟销售数量 </label>
-            <div class="controls">
-                <input type="text" id="inputVirtualNum" name="virtualNum" value="${goods.virtualSaleCount}">
-                <span class="help-inline">可为空</span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputLimitOnceMax">每人每次购买上限 *</label>
-            <div class="controls">
-                <input type="text" id="inputLimitOnceMax" name="limitOnceMax" value="99999">
-                <span class="help-inline">仅数字，99999表示无限制</span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputLimitOnceMin">每人每次购买下限 *</label>
-            <div class="controls">
-                <input type="text" id="inputLimitOnceMin" name="limitOnceMin" value="1">
-                <span class="help-inline">大于等于1</span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputLimitMaxNumber">单人累计购买上限 *</label>
-            <div class="controls">
-                <input type="text" id="inputLimitMaxNumber" name="limitMaxNum" value="9999">
-                <span class="help-inline">仅数字，9999表示无限制</span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputBuyTimes">单人购买次数上限 *</label>
-            <div class="controls">
-                <input type="text" id="inputBuyTimes" name="buyTimes" value="9999">
-                <span class="help-inline">仅数字，9999表示无限制</span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputSeoTitle">SEO 页面标题 </label>
-            <div class="controls">
-                <input type="text" id="inputSeoTitle" name="seoTitle" value="">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputSeoKeyword">SEO 页面关键字 </label>
-            <div class="controls">
-                <input type="text" id="inputSeoKeyword" name="seoKeyword" value="">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputSeoDescription">SEO 页面描述 </label>
-            <div class="controls">
-                <input type="text" id="inputSeoDescription" name="seoDescription" value="">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">团购状态 *</label>
-            <div class="controls">
-                <input type="radio" name="displayStatus" value="0" checked>普通销售
-                <input type="radio" name="displayStatus" value="1" > 下架不显示
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputSrcImage">团购主图 *</label>
-            <div class="controls">
-                <input type="text" id="inputSrcImage" name="srcImage" class="input-block-level" value="${goods.imageOriginalPath}">
-                <span class="help-block">http开头，图片长宽大于410*254，图片大小在300kb以内</span>
-                <img src="${goods.imageOriginalPath}" alt="" id="imgSrcImage">
-            </div>
-        </div>
+        <input name="categoryName1" id="input-category_name1" type="hidden">
+        <input name="categoryName2" id="input-category_name2" type="hidden">
+    </div>
+</div>
 
-        <div class="control-group">
-            <label class="control-label">团购详情</label>
-            <div class="controls">
-                <textarea rows="8" cols="100"  name="detail" id="detail" style="width:850px;height:550px;display:hidden;">
-                    ${goods.exhibition?.raw()}
-                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
-                    </p>
-                    ${goods.prompt?.raw()}
-                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
-                    </p>
-                    ${goods.details?.raw()}
-                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
-                    </p>
-                    ${goods.supplierDes?.raw()}
-                </textarea>
-            </div>
-        </div>
-        <div class="form-actions">
-            <input type="hidden" name="goodsId" value="${goods.id}" >
-            <button type="submit" id="submit" class="btn btn-primary">发布</button>
-        </div>
-    </form>
+<div class="control-group">
+    <label class="control-label" for="inputTeamTitle">团购短标题 *</label>
+
+    <div class="controls">
+        <input type="text" id="inputTeamTitle" class="input-block-level" name="teamTitle" value="${goods.name}">
+        <span class="help-block">不超过180个字符</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputSummary">团购单品页长标题 *</label>
+
+    <div class="controls">
+        <input type="text" id="inputSummary" name="teamSummary" class="input-block-level" value="${goods.shortName}">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">团购类型 *</label>
+
+    <div class="controls">
+        <input type="radio" name="teamType" value="1" #{if goods.materialType == models.sales.MaterialType.ELECTRONIC}
+               checked #{/if}> 虚拟商品
+        <input type="radio" name="teamType" value="2"#{if goods.materialType == models.sales.MaterialType.REAL}
+               checked #{/if}> 实物商品
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">送货类型 *</label>
+
+    <div class="controls">
+        <input type="radio" name="deliveryType"
+               value="1" #{if goods.materialType == models.sales.MaterialType.ELECTRONIC} checked #{/if}>手机验证码
+        <input type="radio" name="deliveryType" value="2" #{if goods.materialType == models.sales.MaterialType.REAL}
+               checked #{/if}> 快递
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">退货类型 *</label>
+
+    <div class="controls">
+        <input type="radio" name="refundType" value="1" checked> 只要没有使用就可以退货
+        <input type="radio" name="refundType" value="0"> 不许退货
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">过期自动退款 *</label>
+
+    <div class="controls">
+        <input type="radio" name="autoRefundFlag" value="1" checked>支持
+        <input type="radio" name="autoRefundFlag" value="0"> 不支持
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputMarketPrice">市场价 *</label>
+
+    <div class="controls">
+        <input type="text" id="inputMarketPrice" name="originalPrice" value="${goods.faceValue}">
+        <span class="help-inline">最多两位小数</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputSalePrice">销售价 *</label>
+
+    <div class="controls">
+        <input type="text" id="inputSalePrice" name="salePrice" value="${goods.salePrice}">
+        <span class="help-inline">不能大于市场价，最多两位小数</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">团购开始时间 *</label>
+
+    <div class="controls">
+        <input type="text" name="startDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+               class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}">
+        团购结束时间 *
+        <input type="text" name="endDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+               class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">券生效日期 *</label>
+
+    <div class="controls">
+        <input type="text" name="effectStartDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+               class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}">
+        券&nbsp;截止&nbsp;日&nbsp;期 *
+        <input type="text" name="effectEndDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+               class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputMaxNumber">商品总量上限 </label>
+
+    <div class="controls">
+        <input type="text" id="inputMaxNumber" name="teamMaxNum" value="${goods.getRealStocks()}">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputMinNumber">最低成团人数 </label>
+
+    <div class="controls">
+        <input type="text" id="inputMinNumber" name="teamMinNum" value="1">
+        <span class="help-inline">必须大于等于1</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputSourceSaleNum">一百券已销售数量 </label>
+
+    <div class="controls">
+        <input type="text" id="inputSourceSaleNum" name="sourceSaleNum" value="">
+        <span class="help-inline">可为空</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputVirtualNum">虚拟销售数量 </label>
+
+    <div class="controls">
+        <input type="text" id="inputVirtualNum" name="virtualNum" value="${goods.virtualSaleCount}">
+        <span class="help-inline">可为空</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputLimitOnceMax">每人每次购买上限 *</label>
+
+    <div class="controls">
+        <input type="text" id="inputLimitOnceMax" name="limitOnceMax" value="99999">
+        <span class="help-inline">仅数字，99999表示无限制</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputLimitOnceMin">每人每次购买下限 *</label>
+
+    <div class="controls">
+        <input type="text" id="inputLimitOnceMin" name="limitOnceMin" value="1">
+        <span class="help-inline">大于等于1</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputLimitMaxNumber">单人累计购买上限 *</label>
+
+    <div class="controls">
+        <input type="text" id="inputLimitMaxNumber" name="limitMaxNum" value="9999">
+        <span class="help-inline">仅数字，9999表示无限制</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputBuyTimes">单人购买次数上限 *</label>
+
+    <div class="controls">
+        <input type="text" id="inputBuyTimes" name="buyTimes" value="9999">
+        <span class="help-inline">仅数字，9999表示无限制</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputSeoTitle">SEO 页面标题 </label>
+
+    <div class="controls">
+        <input type="text" id="inputSeoTitle" name="seoTitle" value="">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputSeoKeyword">SEO 页面关键字 </label>
+
+    <div class="controls">
+        <input type="text" id="inputSeoKeyword" name="seoKeyword" value="">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputSeoDescription">SEO 页面描述 </label>
+
+    <div class="controls">
+        <input type="text" id="inputSeoDescription" name="seoDescription" value="">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">团购状态 *</label>
+
+    <div class="controls">
+        <input type="radio" name="displayStatus" value="0" checked>普通销售
+        <input type="radio" name="displayStatus" value="1"> 下架不显示
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputSrcImage">团购主图 *</label>
+
+    <div class="controls">
+        <input type="text" id="inputSrcImage" name="srcImage" class="input-block-level"
+               value="${goods.imageOriginalPath}">
+        <span class="help-block">http开头，图片长宽大于410*254，图片大小在300kb以内</span>
+        <img src="${goods.imageOriginalPath}" alt="" id="imgSrcImage">
+    </div>
+</div>
+
+<div class="control-group">
+    <label class="control-label">团购详情</label>
+
+    <div class="controls">
+        <textarea rows="8" cols="100" name="detail" id="detail" style="width:850px;height:550px;display:hidden;">
+        ${goods.exhibition?.raw()}
+            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+            </p>
+        ${goods.prompt?.raw()}
+            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+            </p>
+        ${goods.details?.raw()}
+            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+            </p>
+        ${goods.supplierDes?.raw()}
+        </textarea>
+    </div>
+</div>
+<div class="form-actions">
+    <input type="hidden" name="goodsId" value="${goods.id}">
+    <button type="submit" id="submit" class="btn btn-primary">发布</button>
+</div>
+</form>
 </div>
 
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-#{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
+<script src="@{'/public/javascripts/jquery.migrate.js'}" type="text/javascript"
+        charset="UTF-8"></script>
+    #{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
 <script src="@{'/public/javascripts/ztree-helper.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@@{'/public/javascripts/dangdang-products.js'}"></script>
 #{/set}
