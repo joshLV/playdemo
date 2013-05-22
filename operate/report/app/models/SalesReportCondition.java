@@ -232,7 +232,7 @@ public class SalesReportCondition implements Serializable {
 
     public String getFilterConsumedAt() {
         StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' " +
-                " and r.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED" +
+                " and r.goods.isLottery=false and e.consumedAt is not null" +
                 " and  r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
