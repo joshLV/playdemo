@@ -28,6 +28,8 @@ import java.util.TreeMap;
  */
 public class TaobaoCouponUtil {
     public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
+    public static final String CODE_MERCHANT_STR = "21519243";
+    public static final long CODE_MERCHANT_ID = 21519243L;
 
     /**
      * 告诉淘宝我券已经发过了.
@@ -60,6 +62,9 @@ public class TaobaoCouponUtil {
         request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setVerifyCodes(verifyCodes.toString());
         request.setToken(token);
+        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_STR)) {
+            request.setCodemerchantId(CODE_MERCHANT_ID);
+        }
         Logger.info("tell taobao coupon send request. orderId: %s, verifyCodes: %s, token: %s",
                 request.getOrderId(), request.getVerifyCodes(), request.getToken());
 
@@ -136,6 +141,9 @@ public class TaobaoCouponUtil {
         request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setVerifyCodes(verifyCodes.toString());
         request.setToken(token);
+        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_STR)) {
+            request.setCodemerchantId(CODE_MERCHANT_ID);
+        }
 
         Logger.info("tell taobao coupon resend request. orderId: %s, verifyCodes: %s, token: %s",
                 request.getOrderId(), request.getVerifyCodes(), request.getToken());
@@ -183,6 +191,9 @@ public class TaobaoCouponUtil {
         request.setVerifyCode(coupon.getSafeECouponSN());
         request.setConsumeNum(1L);
         request.setToken(token);
+        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_STR)) {
+            request.setCodemerchantId(CODE_MERCHANT_ID);
+        }
 
         Logger.info("tell taobao coupon verify request. orderId: %s, verifyCode: %s, token: %s",
                 request.getOrderId(), request.getVerifyCode(), request.getToken());
@@ -258,6 +269,9 @@ public class TaobaoCouponUtil {
         request.setReverseNum(1L);
         request.setConsumeSecialNum(coupon.partnerCouponId);
         request.setToken(token);
+        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_STR)) {
+            request.setCodemerchantId(CODE_MERCHANT_ID);
+        }
         try {
             VmarketEticketReverseResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
             if (response != null) {
