@@ -31,7 +31,10 @@ GET     /                                       SmsApplication.index
 *       /api/v1/58/gb/coupon-info               WubaGroupBuy.coupon
 
 # 淘宝
+# 信任卖家
 *       /api/v1/taobao/coupon                   TaobaoCouponAPI.index
+# 码商
+*       /api/v1/taobao/code-merchant            TaobaoCouponAPI.index
 
 # 微信
 GET     /api/v1/weixin/message                  WeixinAPI.heartbeat
