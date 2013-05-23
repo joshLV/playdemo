@@ -37,7 +37,7 @@ public class KtvProductGoods extends Model {
     @JoinColumn(name = "product_id")
     public KtvProduct product;
 
-    public static List<Goods> findGoods(Shop shop, KtvProduct product) {
-        return KtvProductGoods.find("shop=? and product=? ", shop, product).fetch();
+    public static KtvProductGoods findGoods(Shop shop, KtvProduct product) {
+        return KtvProductGoods.find("shop=? and product=? ", shop, product).first();
     }
 }

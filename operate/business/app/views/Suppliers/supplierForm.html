@@ -81,6 +81,16 @@ error:'supplier.operator'}
                value="${ktvSupplier}" ${"1".equals(ktvSupplier)?'checked':''}/>&{'supplier.ktvSupplier'}
     </div>
 </div>
+<div class="control-group">
+    <label class="control-label">选择分销商</label>
+
+    <div class="controls">
+        #{list items:resalerList,as:'resaler'}
+        <input type="checkbox" name="supplier.resalers.id" value="${resaler.id}" #{if resalerIds?.contains(resaler.id)}checked#{/if}/>${resaler.userName}
+        #{/list}
+    </div>
+
+</div>
 #{layout_operate.radio2Field name:'supplier.showSellingState', value:supplier?.showSellingState?:false, value1:true, value2:false/}
 *{#{layout_operate.timeScope2Field name:'supplier.shopHour', begin:'supplier.shopBeginHour',end:'supplier.shopEndHour',}*
 *{beginValue:supplier?.shopBeginHour, endValue:supplier?.shopEndHour/}}*

@@ -61,8 +61,8 @@ public class ResalerProducts extends Controller {
         List<Resaler> resalerList = Resaler.find("status =? and operator.code =? and partner is not null ", ResalerStatus.APPROVED, condition.operatorCode).fetch();
         Map<String, List<ResalerProduct>> partnerProducts = new HashMap<>();
         for (models.sales.Goods goods : goodsPage.getCurrentPage()) {
-            List<ResalerProduct> products = ResalerProduct.find("goods = ? and status != ? and deleted = ? ",
-                    goods, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
+            List<ResalerProduct> products = ResalerProduct.find("goods = ? and status != ? and deleted = ? and resaler.operator.code=?",
+                    goods, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED,condition.operatorCode).fetch();
             for (ResalerProduct product : products) {
                 List<ResalerProduct> p = partnerProducts.get(goods.id + "-"+product.resaler.id.toString());
                 if (p == null) {

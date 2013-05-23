@@ -3,8 +3,10 @@ package models.resale;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.util.AccountUtil;
+import models.operator.OperateUser;
 import models.operator.Operator;
 import models.order.OuterOrderPartner;
+import models.supplier.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.annotations.Index;
 import play.data.validation.Email;
@@ -19,16 +21,11 @@ import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "resaler")
@@ -43,6 +40,7 @@ public class Resaler extends Model {
     public static final String TAOBAO_LOGIN_NAME = "taobao";
     public static final String SINA_LOGIN_NAME = "sina";
     public static final String YIBAIQUAN_NAME = "yibaiquan";
+    public static final String TMALL_LOGIN_NAME = "shihuibendishenghuo";
 
     /**
      * 分销商账户类型
@@ -130,6 +128,11 @@ public class Resaler extends Model {
     @Column(name = "taobao_seller_id")
     public Long taobaoSellerId;
 
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinTable(name = "suppliers_resalers",
+            inverseJoinColumns = @JoinColumn(name = "supplier_id"),
+            joinColumns = @JoinColumn(name = "resaler_id"))
+    public Set<Supplier> suppliers;
     /**
      * 分销负责专员
      */
@@ -327,6 +330,7 @@ public class Resaler extends Model {
     public static Resaler findApprovedByLoginName(String loginName) {
         return Resaler.find("loginName=? and status=?", loginName, ResalerStatus.APPROVED).first();
     }
+
     /**
      * 得到一百券分销帐号，用于代替之前的CONSUMER检查.
      */
@@ -347,6 +351,7 @@ public class Resaler extends Model {
         }
         return _yibaiquan;
     }
+
     public static Resaler getSina() {
         if (_sina == null) {
             _sina = findOneByLoginName(SINA_LOGIN_NAME);

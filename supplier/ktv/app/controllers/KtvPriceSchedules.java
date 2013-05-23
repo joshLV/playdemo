@@ -68,7 +68,6 @@ public class KtvPriceSchedules extends Controller {
         if (startDay.after(endDay)) {
             error();
         }
-        System.out.println(product+"------");
         List<KtvPriceSchedule> priceSchedules = KtvShopPriceSchedule.find(
                 "select k.schedule from KtvShopPriceSchedule k where k.shop = ? and k.schedule.roomType = ? " +
                         "and k.schedule.startDay <= ? and k.schedule.endDay >= ? and k.schedule.product = ?",
