@@ -28,8 +28,8 @@ import java.util.TreeMap;
  */
 public class TaobaoCouponUtil {
     public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
-    public static final String CODE_MERCHANT_STR = "21519243";
-    public static final long CODE_MERCHANT_ID = 21519243L;
+    public static final String CODE_MERCHANT_STR = "1705483381";
+    public static final long CODE_MERCHANT_ID = 1705483381L;
 
     /**
      * 告诉淘宝我券已经发过了.
