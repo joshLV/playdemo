@@ -1,4 +1,4 @@
-package function;
+package functional;
 
 import models.admin.SupplierUser;
 import models.sales.Category;
