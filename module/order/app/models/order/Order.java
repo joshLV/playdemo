@@ -725,20 +725,6 @@ public class Order extends Model {
         //先将用户银行支付的钱充值到自己账户上
         Account account = chargeAccount();
 
-        //  ktv 一个room被两个消费者订购，只有一个成功，另外一个则进行如果也支付成功，则对其做退款处理，并且把订单状态和orderItem状态变为CANCELED
-        /*
-        List<KtvRoomOrderInfo> ktvRoomOrderInfoList = KtvRoomOrderInfo.findByOrder(this);
-        if (ktvRoomOrderInfoList.size() > 0) {
-            for (KtvRoomOrderInfo ktvRoomOrderInfo : ktvRoomOrderInfoList) {
-                ktvRoomOrderInfo.cancelKtvRoom();
-            }
-            this.status = OrderStatus.CANCELED;
-            this.save();
-            return;
-        }
-        */
-
-        System.out.println("payAndSendECoupon ===");
         if (paid(account)) {
             generateECoupon();
             remindBigOrderRemark();
@@ -900,6 +886,7 @@ public class Order extends Model {
                         eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + "," + roomOrderInfo.getTimeRange();
                         eCoupon.save();
                     }
+
                     //记录券历史信息
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)

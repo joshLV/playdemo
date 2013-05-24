@@ -4,6 +4,7 @@ import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import models.ktv.KtvProductGoods;
 import models.ktv.KtvTaobaoUtil;
+import models.taobao.KtvSkuMessageUtil;
 import play.jobs.Job;
 import play.jobs.On;
 
@@ -21,7 +22,8 @@ public class KtvUpdateSkuJob extends JobWithHistory {
     public void doJobWithHistory() {
         List<KtvProductGoods> ktvProductGoodsList = KtvProductGoods.findAll();
         for (KtvProductGoods productGoods : ktvProductGoodsList) {
-            KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);
+            //更新sku信息,加到mq
+            KtvSkuMessageUtil.send(null, productGoods.id);
         }
     }
 }

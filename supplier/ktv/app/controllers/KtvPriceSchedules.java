@@ -160,7 +160,8 @@ public class KtvPriceSchedules extends Controller {
             strategy.save();
 
         }
-        KtvSkuMessageUtil.send(priceStrategy.id);
+        //把价格策略加到mq
+        KtvSkuMessageUtil.send(priceStrategy.id,null);
 
         index(shopCountMap.keySet().iterator().next().id, priceStrategy.roomType, priceStrategy.product.id);
     }
@@ -316,7 +317,8 @@ public class KtvPriceSchedules extends Controller {
         updSchedule.save();
 
         if (updSchedule.price.compareTo(price) != 0) {
-            KtvSkuMessageUtil.send(id);
+            //把价格策略加到mq
+            KtvSkuMessageUtil.send(id,null);
         }
         index(shop.id, updSchedule.roomType, updSchedule.product.id);
     }

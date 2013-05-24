@@ -62,12 +62,12 @@ public class ResalerProducts extends Controller {
         Map<String, List<ResalerProduct>> partnerProducts = new HashMap<>();
         for (models.sales.Goods goods : goodsPage.getCurrentPage()) {
             List<ResalerProduct> products = ResalerProduct.find("goods = ? and status != ? and deleted = ? and resaler.operator.code=?",
-                    goods, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED,condition.operatorCode).fetch();
+                    goods, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED, condition.operatorCode).fetch();
             for (ResalerProduct product : products) {
-                List<ResalerProduct> p = partnerProducts.get(goods.id + "-"+product.resaler.id.toString());
+                List<ResalerProduct> p = partnerProducts.get(goods.id + "-" + product.resaler.id.toString());
                 if (p == null) {
                     p = new ArrayList<>();
-                    partnerProducts.put(goods.id + "-"+product.resaler.id.toString(), p);
+                    partnerProducts.put(goods.id + "-" + product.resaler.id.toString(), p);
                 }
                 p.add(product);
             }
@@ -137,6 +137,7 @@ public class ResalerProducts extends Controller {
             if (product.lastModifierId != null)
                 product.lastModifier = ((OperateUser) OperateUser.findById(product.lastModifierId)).userName;
         }
+        System.out.println(goods.getShopList());
         render(products);
     }
 
@@ -196,6 +197,11 @@ public class ResalerProducts extends Controller {
         product.status = ResalerProductStatus.UPLOADED;
         product.deleted = DeletedStatus.UN_DELETED;
         product.creator(OperateRbac.currentUser().id);
+        if (product.partner == OuterOrderPartner.TB) {
+            product.resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+        } else {
+            product.resaler = Resaler.findApprovedByLoginName(product.partner.partnerLoginName());
+        }
         product.save();
 
         showProducts(product.partner.toString().toLowerCase(), product.goods.id, product.resaler.loginName);

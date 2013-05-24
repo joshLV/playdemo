@@ -12,12 +12,14 @@ import models.accounts.AccountType;
 import models.admin.SupplierUser;
 import models.ktv.KtvProduct;
 import models.ktv.KtvProductGoods;
+import models.ktv.KtvTaobaoUtil;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.*;
 import models.supplier.Supplier;
+import models.taobao.KtvSkuMessageUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
@@ -64,7 +66,6 @@ public class KtvProductTaobaoBind extends Controller {
             //找到淘宝的token
             OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
 
-
             ItemGetRequest req = new ItemGetRequest();
             req.setNumIid(taobaoProductId);
             req.setFields("title");
@@ -91,6 +92,15 @@ public class KtvProductTaobaoBind extends Controller {
      * 绑定产品,创建goods信息以及resalerProduct
      */
     public static void bindProduct(Shop shop, KtvProduct product, String taobaoProductId) {
+        if (shop.id == null) {
+            renderJSON("{\"error\":\"门店信息不存在\"}");
+        }
+        if (product.id == null) {
+            renderJSON("{\"error\":\"产品信息不存在\"}");
+        }
+        if (StringUtils.isBlank(taobaoProductId)) {
+            renderJSON("{\"error\":\"淘宝产品编号不存在\"}");
+        }
         KtvProductGoods ktvProductGoods = KtvProductGoods.findGoods(shop, product);
         SupplierUser supplierUser = SupplierRbac.currentUser();
         Resaler resaler = Resaler.findById(supplierUser.supplier.defaultResalerId);
@@ -98,16 +108,24 @@ public class KtvProductTaobaoBind extends Controller {
             Goods goods = new Goods();
             goods.shops = new HashSet<>();
             goods.shops.add(shop);
-            goods.materialType=MaterialType.ELECTRONIC;
+            goods.materialType = MaterialType.ELECTRONIC;
             goods.status = GoodsStatus.ONSALE;
             goods.name = shop.name + product.name;
-            goods.title = shop.name + product.name;
+            goods.shortName = goods.name;
+            goods.title = goods.name;
+            goods.setDetails(goods.name);
+            goods.setPrompt(goods.name);
+            goods.setExhibition(goods.name);
             goods.product = product;
+            goods.isAllShop = false;
+            goods.faceValue = BigDecimal.ONE;
+            goods.cumulativeStocks = 9999L;
             goods.supplierId = supplierUser.supplier.id;
             goods.salePrice = BigDecimal.ONE;
             goods.originalPrice = BigDecimal.ONE;
             goods.deleted = DeletedStatus.UN_DELETED;
             goods.lockVersion = 0;
+            goods.resetCode();
             goods.save();
 
             ktvProductGoods = new KtvProductGoods();
@@ -121,6 +139,9 @@ public class KtvProductTaobaoBind extends Controller {
             //保存商品状态
             resalerProduct.creator(supplierUser.id).partnerProduct(taobaoProductId)
                     .status(ResalerProductStatus.UPLOADED).save();
+
+            //更新sku信息,加到mq
+            KtvSkuMessageUtil.send(null, ktvProductGoods.id);
 
             renderJSON("{\"info\":\"" + shop.name + product.name + "\",\"taobaoProductId\":\"" + taobaoProductId + "\"}");
         } else {
@@ -136,13 +157,10 @@ public class KtvProductTaobaoBind extends Controller {
                 //保存商品状态
                 resalerProduct.creator(supplierUser.id).partnerProduct(taobaoProductId)
                         .status(ResalerProductStatus.UPLOADED).save();
-            } else if (StringUtils.isBlank(resalerProduct.partnerProductId)) {
-                resalerProduct.partnerProductId = taobaoProductId;
-                resalerProduct.save();
-            } else {
-                renderJSON("{\"error\":\"该商品已经绑定过了\"}");
+
+                renderJSON("{\"info\":\"" + shop.name + product.name + "\",\"taobaoProductId\":\"" + taobaoProductId + "\"}");
             }
-            renderJSON("{\"info\":\"" + shop.name + product.name + "\",\"taobaoProductId\":\"" + taobaoProductId + "\"}");
         }
+        renderJSON("{\"error\":\"该商品已经绑定过了\"}");
     }
 }

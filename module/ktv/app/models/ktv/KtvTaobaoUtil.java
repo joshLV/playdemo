@@ -71,8 +71,6 @@ public class KtvTaobaoUtil {
      * @param productGoods KTV商品.
      */
     public static void updateTaobaoSkuByProductGoods(KtvProductGoods productGoods) {
-
-
         //构建新的淘宝SKU列表
         List<KtvTaobaoSku> newTaobaoSkuList = buildTaobaoSku(productGoods);
         //从数据库中查出目前的淘宝SKU列表
