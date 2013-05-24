@@ -1,7 +1,7 @@
 package unit.ecoupon;
 
-import java.math.BigDecimal;
-
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
@@ -14,15 +14,11 @@ import models.sales.Category;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
-import navigation.RbacLoader;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
-import play.vfs.VirtualFile;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+
+import java.math.BigDecimal;
 
 /**
  * 验证售价低于进价的产品.
