@@ -1,28 +1,28 @@
-<!--���¼��Ź������ϼܽӿ� ��Ӧ ����Ӧ��-->
+<!--已下架团购重新上架接口 响应 京东应答-->
 <?xml version="1.0" encoding="utf-8"?>
-<Response xmlns="http://tuan.jd.com/Response">
-	<!--�汾-->
+<Response xmlns="http://tuan.360buy.com/Response">
+	<!--版本-->
 	<Version>1.0</Version>
-	<!--�������ID-->
+	<!--合作伙伴ID-->
 	<VenderId>100000</VenderId>
-	<!--�Ƿ�ѹ�� Ĭ�ϲ�ѹ��-->
+	<!--是否压缩 默认不压缩-->
 	<Zip>false</Zip>
-	<!--�Ƿ����-->
+	<!--是否加密-->
 	<Encrypt>true</Encrypt>
-	<!--���ؽ�� (200�ɹ� ��200ʧ�� 301-�Ź�����ʱ�����ڵ�ǰʱ�� 302-�Ź���ʼʱ�������Ź�����ʱ�� 303-�Ź���Ŀ������)-->
+	<!--返回结果 (200成功 非200失败 301-团购结束时间早于当前时间 302-团购开始时间晚于团购结束时间 303-团购项目不存在)-->
 	<ResultCode>200</ResultCode>
-	<!--��Ӧ��Ϣ-->
+	<!--响应信息-->
 	<ResultMessage>success</ResultMessage>
-	<!--�ύ���-->
+	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.jd.com/TeamRestartResponse">
-			<!--�����Ź�ID [����]---->
+		<Message xmlns="http://tuan.360buy.com/TeamRestartResponse">
+			<!--京东团购ID [必填]---->
 			<JdTeamId>12345</JdTeamId>
-			<!--�������Ź�ID [����]-->
+			<!--合作方团购ID [必填]-->
 			<VenderTeamId>123456</VenderTeamId>
-			<!--���ú���Ź���ʼʱ�� unixʱ��� ������Ϊ yyyy-MM-dd hh:mm:ss[����] -->
+			<!--重置后的团购开始时间 unix时间戳 解析后为 yyyy-MM-dd hh:mm:ss[必填] -->
 			<BeginTime>1320595200</BeginTime>
-			<!--���ú���Ź�����ʱ�� unixʱ��� ������Ϊ yyyy-MM-dd hh:mm:ss[����] -->
+			<!--重置后的团购结束时间 unix时间戳 解析后为 yyyy-MM-dd hh:mm:ss[必填] -->
 			<EndTime>1320940800</EndTime>
 		</Message>
 	</Data>

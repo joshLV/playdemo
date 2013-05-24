@@ -1,28 +1,28 @@
-<!--�����˿�֪ͨ ���� ��������-->
+<!--订单退款通知 请求 京东请求-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.jd.com/Request">
-	<!--�汾-->
+<Request xmlns="http://tuan.360buy.com/Request">
+	<!--版本-->
 	<Version>1.0</Version>
-	<!--�������ID-->
+	<!--合作伙伴ID-->
 	<VenderId>100000</VenderId>
-	<!--�������Key-->
+	<!--合作伙伴Key-->
 	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
-	<!--�Ƿ�ѹ�� Ĭ�ϲ�ѹ��-->
+	<!--是否压缩 默认不压缩-->
 	<Zip>false</Zip>
-	<!--�Ƿ����-->
+	<!--是否加密-->
 	<Encrypt>true</Encrypt>
-	<!--�ύ���-->
+	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.jd.com/SendOrderRefundRequest">
-			<!--��������ID [����]-->
+		<Message xmlns="http://tuan.360buy.com/SendOrderRefundRequest">
+			<!--京东订单ID [必填]-->
 			<JdOrderId>2323</JdOrderId>
-			<!--������鶩��ID [����]-->
+			<!--合作伙伴订单ID [必填]-->
 			<VenderOrderId>345643</VenderOrderId>
-			<!--�����˿��� ��λ����  [����]-->
+			<!--申请退款金额 单位：分  [必填]-->
 			<RefundMoney>6600</RefundMoney>
-			<!--�Ƿ�õ�ȫ�� [����]-->
+			<!--是否该单全退 [必填]-->
 			<IsAllBack>true</IsAllBack>
-			<!--�����Ż�ȯ���б?����д���[����]-->
+			<!--京东优惠券号列表，可填写多个[必填]-->
 			<Coupons>
 				<Coupon>xxxxxxxxxxxxxxxxx</Coupon>
 				<Coupon>xxxxxxxxxxxxxxxxx</Coupon>

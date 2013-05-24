@@ -1,26 +1,26 @@
-<!--���¼��Ź������ϼܽӿ� ���� �����������-->
+<!--已下架团购重新上架接口 请求 合作伙伴请求-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.jd.com/Request">
-    <!--�汾-->
+<Request xmlns="http://tuan.360buy.com/Request">
+    <!--版本-->
     <Version>1.0</Version>
-    <!--�������ID-->
+    <!--合作伙伴ID-->
     <VenderId>100000</VenderId>
-    <!--�������Key-->
+    <!--合作伙伴Key-->
     <VenderKey>xxxxxxxxxxxxxxxxxx</VenderKey>
-    <!--�Ƿ�ѹ�� Ĭ�ϲ�ѹ��-->
+    <!--是否压缩 默认不压缩-->
     <Zip>false</Zip>
-    <!--�Ƿ����-->
+    <!--是否加密-->
     <Encrypt>true</Encrypt>
-    <!--�ύ���-->
+    <!--提交数据-->
     <Data>
-		<Message xmlns="http://tuan.jd.com/TeamRestartRequest">
-			<!--�����Ź�ID [����]---->
+		<Message xmlns="http://tuan.360buy.com/TeamRestartRequest">
+			<!--京东团购ID [必填]---->
 			<JdTeamId>12345</JdTeamId>
-			<!--�������Ź�ID [����]-->
+			<!--合作方团购ID [必填]-->
 			<VenderTeamId>123456</VenderTeamId>
-			<!--�Ź���ʼʱ�� unixʱ��� ������Ϊ yyyy-MM-dd hh:mm:ss[����] -->
+			<!--团购开始时间 unix时间戳 解析后为 yyyy-MM-dd hh:mm:ss[必填] -->
 			<BeginTime>1320595200</BeginTime>
-			<!--�Ź�����ʱ�� unixʱ��� ������Ϊ yyyy-MM-dd hh:mm:ss[����] -->
+			<!--团购结束时间 unix时间戳 解析后为 yyyy-MM-dd hh:mm:ss[必填] -->
 			<EndTime>1320940800</EndTime>
 		</Message>
     </Data>

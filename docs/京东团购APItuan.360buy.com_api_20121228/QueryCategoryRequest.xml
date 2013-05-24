@@ -1,20 +1,20 @@
-<!--��ȡ�����б� ���� �����������-->
+<!--获取分类列表 请求 合作伙伴请求-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.jd.com/Request">
-	<!--�汾-->
+<Request xmlns="http://tuan.360buy.com/Request">
+	<!--版本-->
 	<Version>1.0</Version>
-	<!--�������ID-->
+	<!--合作伙伴ID-->
 	<VenderId>100000</VenderId>
-	<!--�������Key-->
+	<!--合作伙伴Key-->
 	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
-	<!--�Ƿ�ѹ�� Ĭ�ϲ�ѹ��-->
+	<!--是否压缩 默认不压缩-->
 	<Zip>false</Zip>
-	<!--�Ƿ����-->
+	<!--是否加密-->
 	<Encrypt>true</Encrypt>
-	<!--�ύ���-->
+	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.jd.com/QueryCategoryRequest">
-			<!--һ������ID ֻ��Ϊ���� ����ȡһ�������б?��˽ڵ㲻��ֵ��0������ȡһ�������¶���������˽ڵ���д��Ӧһ������ID ѡ��-->
+		<Message xmlns="http://tuan.360buy.com/QueryCategoryRequest">
+			<!--一级分类ID 只能为数字 若获取一级分类列表，则此节点不传值或传0，若获取一级分类下二级分类则此节点填写相应一级分类ID 选填-->
 			<CategoryId>111</CategoryId>
 		</Message>
 	</Data>

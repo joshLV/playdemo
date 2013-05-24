@@ -1,21 +1,21 @@
-<!--�ϱ��Ź���� Ӧ�� ����Ӧ��-->
+<!--上报团购数据 应答 京东应答-->
 <?xml version="1.0" encoding="utf-8"?>
-<Response xmlns="http://tuan.jd.com/Response">
-	<!--�汾-->
+<Response xmlns="http://tuan.360buy.com/Response">
+	<!--版本-->
 	<Version>1.0</Version>
-	<!--�������ID-->
+	<!--合作伙伴ID-->
 	<VenderId>100000</VenderId>
-	<!--�Ƿ�ѹ�� Ĭ�ϲ�ѹ��-->
+	<!--是否压缩 默认不压缩-->
 	<Zip>false</Zip>
-	<!--�Ƿ����-->
+	<!--是否加密-->
 	<Encrypt>true</Encrypt>
-	<!--��Ӧ����(200�ɹ�����200ʧ��)-->
+	<!--响应代码(200成功；非200失败)-->
 	<ResultCode>200</ResultCode>
-	<!--��Ӧ��Ϣ-->
+	<!--响应信息-->
 	<ResultMessage>success</ResultMessage>
 	<Data>
-		<Message xmlns="http://tuan.jd.com/UploadTeamResponse">
-			<!--�����Ź�ID [����]-->
+		<Message xmlns="http://tuan.360buy.com/UploadTeamResponse">
+			<!--京东团购ID [必填]-->
 			<JdTeamId>100</JdTeamId>
 		</Message>
 	</Data>

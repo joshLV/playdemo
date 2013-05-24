@@ -1,30 +1,30 @@
-<!--�Ż�ȯ��֤�ӿ� ��Ӧ ����Ӧ��-->
+<!--优惠券验证接口 响应 京东应答-->
 <?xml version="1.0" encoding="utf-8"?>
-<Response xmlns="http://tuan.jd.com/Response">
-	<!--�汾-->
+<Response xmlns="http://tuan.360buy.com/Response">
+	<!--版本-->
 	<Version>1.0</Version>
-	<!--�������ID-->
+	<!--合作伙伴ID-->
 	<VenderId>100000</VenderId>
-	<!--�Ƿ�ѹ�� Ĭ�ϲ�ѹ��-->
+	<!--是否压缩 默认不压缩-->
 	<Zip>false</Zip>
-	<!--�Ƿ����-->
+	<!--是否加密-->
 	<Encrypt>true</Encrypt>
-	<!--��Ӧ���(200 �ɹ� ��200ʧ��)-->
+	<!--响应结果(200 成功 非200失败)-->
 	<ResultCode>200</ResultCode>
-	<!--��Ӧ��Ϣ-->
+	<!--响应信息-->
 	<ResultMessage>success</ResultMessage>
-	<!--�ύ���-->
+	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.jd.com/VerifyCouponResponse">
-			<!--��������ID [����]-->
+		<Message xmlns="http://tuan.360buy.com/VerifyCouponResponse">
+			<!--京东订单ID [必填]-->
 			<JdOrderId>12232</JdOrderId>
-			<!--ȯ�� [����] -->
+			<!--券号 [必填] -->
 			<CouponId>xxxxxxxxxxxxxxxxx</CouponId>
-			<!--���� [����] -->
+			<!--密码 [必填] -->
 			<CouponPwd>xxxxxxxxxxxxxxxxx</CouponPwd>
-			<!--��֤ʱ��(ResultCode=200ʱ��Ч)unixʱ��� [����]-->
+			<!--验证时间(ResultCode=200时有效)unix时间戳 [必填]-->
 			<VerifyTime>1317090426</VerifyTime>
-			<!--��֤��� 200-��֤�ɹ���301-�Ż�ȯ�����ڣ�302-�Ż�ȯ�ѹ��ڣ�303-�Ż�ȯ��ʹ�ã�304-�Ż�ȯ�ȴ��˿305-�Ż�ȯ���˿� [����]-->
+			<!--验证结果 200-验证成功；301-优惠券不存在；302-优惠券已过期；303-优惠券已使用；304-优惠券等待退款；305-优惠券已退款 [必填]-->
 			<VerifyResult>200</VerifyResult>
 		</Message>
 	</Data>

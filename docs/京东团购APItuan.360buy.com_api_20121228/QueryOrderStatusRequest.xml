@@ -1,20 +1,20 @@
-<!--��ѯ����״̬ ���� �����������-->
+<!--查询订单状态 请求 合作伙伴请求-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.jd.com/Request">
-    <!--�汾-->
+<Request xmlns="http://tuan.360buy.com/Request">
+    <!--版本-->
     <Version>1.0</Version>
-    <!--�������ID-->
+    <!--合作伙伴ID-->
     <VenderId>100000</VenderId>
-    <!--�������Key-->
+    <!--合作伙伴Key-->
     <VenderKey>xxxxxxxxxxxxxxxxxx</VenderKey>
-    <!--�Ƿ�ѹ�� Ĭ�ϲ�ѹ��-->
+    <!--是否压缩 默认不压缩-->
     <Zip>false</Zip>
-    <!--�Ƿ����-->
+    <!--是否加密-->
     <Encrypt>true</Encrypt>
-    <!--�ύ���-->
+    <!--提交数据-->
     <Data>
-		<Message xmlns="http://tuan.jd.com/QueryOrderStatusRequest">
-			<!--��������ID [����]---->
+		<Message xmlns="http://tuan.360buy.com/QueryOrderStatusRequest">
+			<!--京东订单ID [必填]---->
 			<JdOrderId>12345</JdOrderId>
 		</Message>
     </Data>

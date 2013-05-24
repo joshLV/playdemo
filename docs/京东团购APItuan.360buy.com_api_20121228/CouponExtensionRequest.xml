@@ -1,6 +1,6 @@
 <!--团购优惠券有效期延期的接口请求 合作伙伴请求-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.jd.com/Request">
+<Request xmlns="http://tuan.360buy.com/Request">
 	<!--版本-->
 	<Version>1.0</Version>
 	<!--合作伙伴ID-->
@@ -13,7 +13,7 @@
 	<Encrypt>true</Encrypt>
     <!--提交数据-->
     <Data>
-      <Message xmlns="http://tuan.r.status='UPLOADED'360buy.com/CouponExtensionRequest">
+      <Message xmlns="http://tuan.360buy.com/CouponExtensionRequest">
         <!--京东产品[必填]-->
         <JdTeamId>12232</JdTeamId>
 		<!--外团产品ID[必填]-->

@@ -1,6 +1,6 @@
 <!--更新团购商户的接口 应答 京东应答-->
 <?xml version="1.0" encoding="utf-8"?>
-<Response xmlns="http://tuan.jd.com/Response">
+<Response xmlns="http://tuan.360buy.com/Response">
 	<!--版本-->
 	<Version>1.0</Version>
 	<!--合作伙伴ID-->
@@ -15,7 +15,7 @@
 	<ResultMessage>success</ResultMessage>
 	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.jd.com/UpdateTeamPartnerResponse">
+		<Message xmlns="http://tuan.360buy.com/UpdateTeamPartnerResponse">
 			<!--合作伙伴方团购ID 必须大于0 [必填] -->
 			<VenderTeamId>432243</VenderTeamId>
 			<!--京东团购ID 必须大于0 [必填] -->
