@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Response xmlns="http://tuan.360buy.com/Response">
+<Response xmlns="http://tuan.jd.com/Response">
     <Version>1.0</Version>
     <VenderId>100000</VenderId>
     <Zip>false</Zip>
@@ -7,7 +7,7 @@
     <ResultCode>200</ResultCode>
     <ResultMessage>success</ResultMessage>
     <Data>
-        <Message xmlns="http://tuan.360buy.com/VerifyCouponResponse">
+        <Message xmlns="http://tuan.jd.com/VerifyCouponResponse">
             <JdOrderId>12232</JdOrderId>
             <CouponId>xxxxxxxxxxxxxxxxx</CouponId>
             <CouponPwd>xxxxxxxxxxxxxxxxx</CouponPwd>

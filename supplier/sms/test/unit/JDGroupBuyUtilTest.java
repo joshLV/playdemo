@@ -21,9 +21,9 @@ public class JDGroupBuyUtilTest extends UnitTest {
 
     @Test
     public void testParseEncryptedMessage(){
-        String messageXml = "<Message xmlns=\"http://tuan.360buy.com/QueryCityResponse\"><Cities></Cities></Message>";
+        String messageXml = "<Message xmlns=\"http://tuan.jd.com/QueryCityResponse\"><Cities></Cities></Message>";
         String encryptedResponse = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-                "<Response xmlns=\"http://tuan.360buy.com/Response\">\n" +
+                "<Response xmlns=\"http://tuan.jd.com/Response\">\n" +
                 "    <Version>1.0</Version>\n" +
                 "    <VenderId>1022</VenderId>\n" +
                 "    <Zip>false</Zip>\n" +
@@ -43,14 +43,14 @@ public class JDGroupBuyUtilTest extends UnitTest {
 
     @Test
     public void testParsePlainMessage() {
-        String messageXml = "<Message xmlns=\"http://tuan.360buy.com/QueryCityResponse\">" +
+        String messageXml = "<Message xmlns=\"http://tuan.jd.com/QueryCityResponse\">" +
                 "<Cities>" +
                 "<City><Id>1</Id><Name>abc</Name></City>" +
                 "<City><Id>2</Id><Name>abc</Name></City>" +
                 "<City><Id>3</Id><Name>abc</Name></City>" +
                 "</Cities></Message>";
         String plainResponse = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-                "<Response xmlns=\"http://tuan.360buy.com/Response\">\n" +
+                "<Response xmlns=\"http://tuan.jd.com/Response\">\n" +
                 "    <Version>1.0</Version>\n" +
                 "    <VenderId>1022</VenderId>\n" +
                 "    <Zip>false</Zip>\n" +

@@ -1,20 +1,20 @@
-<!--»ñÈ¡³ÇÊÐÏÂÇøÓòÁÐ±í ÇëÇó ºÏ×÷»ï°éÇëÇó-->
+<!--ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.360buy.com/Request">
-	<!--°æ±¾-->
+<Request xmlns="http://tuan.jd.com/Request">
+	<!--ï¿½æ±¾-->
 	<Version>1.0</Version>
-	<!--ºÏ×÷»ï°éID-->
+	<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID-->
 	<VenderId>100000</VenderId>
-	<!--ºÏ×÷»ï°éKey-->
+	<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Key-->
 	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
-	<!--ÊÇ·ñÑ¹Ëõ Ä¬ÈÏ²»Ñ¹Ëõ-->
+	<!--ï¿½Ç·ï¿½Ñ¹ï¿½ï¿½ Ä¬ï¿½Ï²ï¿½Ñ¹ï¿½ï¿½-->
 	<Zip>false</Zip>
-	<!--ÊÇ·ñ¼ÓÃÜ-->
+	<!--ï¿½Ç·ï¿½ï¿½ï¿½ï¿½-->
 	<Encrypt>true</Encrypt>
-	<!--Ìá½»Êý¾Ý-->
+	<!--ï¿½á½»ï¿½ï¿½ï¿½-->
 	<Data>
-		<Message xmlns="http://tuan.360buy.com/QueryDistrictRequest">
-			<!--³ÇÊÐID ±ØÐëÎªÊý×Ö ±ØÌî-->
+		<Message xmlns="http://tuan.jd.com/QueryDistrictRequest">
+			<!--ï¿½ï¿½ï¿½ï¿½ID ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½-->
 			<CityId>25</CityId>
 		</Message>
 	</Data>

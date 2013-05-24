@@ -1,4 +1,4 @@
-<Message xmlns="http://tuan.360buy.com/UploadTeamRequest">
+<Message xmlns="http://tuan.jd.com/UploadTeamRequest">
     *{ 合作伙伴团购产品ID [必填] }*
     <VenderTeamId>${venderTeamId}</VenderTeamId>
     *{ 团购标题名称  最长200个[必填] }*

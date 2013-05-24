@@ -1,4 +1,4 @@
-<Message xmlns="http://tuan.360buy.com/UpdateBImageRequest">
+<Message xmlns="http://tuan.jd.com/UpdateBImageRequest">
     *{ 更新团购主图的接口 请求 合作伙伴请求 }*
     *{ 合作伙伴方团购ID 必须大于0 [必填] }*
     <VenderTeamId>${venderTeamId}</VenderTeamId>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.360buy.com/Request">
+<Request xmlns="http://tuan.jd.com/Request">
     <!--版本-->
     <Version>1.0</Version>
     <!--合作伙伴ID-->
@@ -12,7 +12,7 @@
     <Encrypt>false</Encrypt>
     <!--提交数据-->
     <Data>
-        <Message xmlns="http://tuan.360buy.com/SendSmsRequest">
+        <Message xmlns="http://tuan.jd.com/SendSmsRequest">
             <!--京东优惠券号 [必填]-->
             <JdCouponId>${jdCouponId}</JdCouponId>
             <!--合作伙伴优惠券号 [必填]-->

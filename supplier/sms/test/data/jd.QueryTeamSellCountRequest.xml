@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.360buy.com/Request">
+<Request xmlns="http://tuan.jd.com/Request">
     <!-- 查询团购销量接口 请求 京东请求-->
 	<!--版本-->
 	<Version>1.0</Version>
@@ -13,7 +13,7 @@
 	<Encrypt>false</Encrypt>
 	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.360buy.com/QueryTeamSellCountRequest">
+		<Message xmlns="http://tuan.jd.com/QueryTeamSellCountRequest">
 			<!--合作伙伴方团购ID 必须大于0 [必填] -->
 			<VenderTeamId>${venderTeamId}</VenderTeamId>
 			<!--在京东团购销量（购买份数） 必须大于等于0 [必填] -->

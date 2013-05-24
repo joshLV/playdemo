@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.360buy.com/Request">
+<Request xmlns="http://tuan.jd.com/Request">
     <!--订单退款通知 请求 京东请求-->
 	<!--版本-->
 	<Version>1.0</Version>
@@ -13,7 +13,7 @@
 	<Encrypt>false</Encrypt>
 	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.360buy.com/SendOrderRefundRequest">
+		<Message xmlns="http://tuan.jd.com/SendOrderRefundRequest">
 			<!--京东订单ID [必填]-->
 			<JdOrderId>2323</JdOrderId>
 			<!--合作伙伴订单ID [必填]-->

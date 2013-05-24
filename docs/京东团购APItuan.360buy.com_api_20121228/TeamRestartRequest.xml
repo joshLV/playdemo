@@ -1,26 +1,26 @@
-<!--ÒÑÏÂ¼ÜÍÅ¹ºÖØÐÂÉÏ¼Ü½Ó¿Ú ÇëÇó ºÏ×÷»ï°éÇëÇó-->
+<!--ï¿½ï¿½ï¿½Â¼ï¿½ï¿½Å¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼Ü½Ó¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.360buy.com/Request">
-    <!--°æ±¾-->
+<Request xmlns="http://tuan.jd.com/Request">
+    <!--ï¿½æ±¾-->
     <Version>1.0</Version>
-    <!--ºÏ×÷»ï°éID-->
+    <!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID-->
     <VenderId>100000</VenderId>
-    <!--ºÏ×÷»ï°éKey-->
+    <!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Key-->
     <VenderKey>xxxxxxxxxxxxxxxxxx</VenderKey>
-    <!--ÊÇ·ñÑ¹Ëõ Ä¬ÈÏ²»Ñ¹Ëõ-->
+    <!--ï¿½Ç·ï¿½Ñ¹ï¿½ï¿½ Ä¬ï¿½Ï²ï¿½Ñ¹ï¿½ï¿½-->
     <Zip>false</Zip>
-    <!--ÊÇ·ñ¼ÓÃÜ-->
+    <!--ï¿½Ç·ï¿½ï¿½ï¿½ï¿½-->
     <Encrypt>true</Encrypt>
-    <!--Ìá½»Êý¾Ý-->
+    <!--ï¿½á½»ï¿½ï¿½ï¿½-->
     <Data>
-		<Message xmlns="http://tuan.360buy.com/TeamRestartRequest">
-			<!--¾©¶«ÍÅ¹ºID [±ØÌî]---->
+		<Message xmlns="http://tuan.jd.com/TeamRestartRequest">
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½Å¹ï¿½ID [ï¿½ï¿½ï¿½ï¿½]---->
 			<JdTeamId>12345</JdTeamId>
-			<!--ºÏ×÷·½ÍÅ¹ºID [±ØÌî]-->
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¹ï¿½ID [ï¿½ï¿½ï¿½ï¿½]-->
 			<VenderTeamId>123456</VenderTeamId>
-			<!--ÍÅ¹º¿ªÊ¼Ê±¼ä unixÊ±¼ä´Á ½âÎöºóÎª yyyy-MM-dd hh:mm:ss[±ØÌî] -->
+			<!--ï¿½Å¹ï¿½ï¿½ï¿½Ê¼Ê±ï¿½ï¿½ unixÊ±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª yyyy-MM-dd hh:mm:ss[ï¿½ï¿½ï¿½ï¿½] -->
 			<BeginTime>1320595200</BeginTime>
-			<!--ÍÅ¹º½áÊøÊ±¼ä unixÊ±¼ä´Á ½âÎöºóÎª yyyy-MM-dd hh:mm:ss[±ØÌî] -->
+			<!--ï¿½Å¹ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ unixÊ±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª yyyy-MM-dd hh:mm:ss[ï¿½ï¿½ï¿½ï¿½] -->
 			<EndTime>1320940800</EndTime>
 		</Message>
     </Data>

@@ -1,21 +1,21 @@
-<!--ÏÂ¼ÜÍÅ¹º²úÆ· Ó¦´ð ¾©¶«Ó¦´ð-->
+<!--ï¿½Â¼ï¿½ï¿½Å¹ï¿½ï¿½ï¿½Æ· Ó¦ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½-->
 <?xml version="1.0" encoding="utf-8"?>
-<Response xmlns="http://tuan.360buy.com/Response">
-	<!--°æ±¾-->
+<Response xmlns="http://tuan.jd.com/Response">
+	<!--ï¿½æ±¾-->
 	<Version>1.0</Version>
-	<!--ºÏ×÷»ï°éID-->
+	<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID-->
 	<VenderId>100000</VenderId>
-	<!--ÊÇ·ñÑ¹Ëõ Ä¬ÈÏ²»Ñ¹Ëõ-->
+	<!--ï¿½Ç·ï¿½Ñ¹ï¿½ï¿½ Ä¬ï¿½Ï²ï¿½Ñ¹ï¿½ï¿½-->
 	<Zip>false</Zip>
-	<!--ÊÇ·ñ¼ÓÃÜ-->
+	<!--ï¿½Ç·ï¿½ï¿½ï¿½ï¿½-->
 	<Encrypt>true</Encrypt>
-    <!--ÏìÓ¦´úÂë(200-³É¹¦ ·Ç200Ê§°Ü)-->
+    <!--ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½(200-ï¿½É¹ï¿½ ï¿½ï¿½200Ê§ï¿½ï¿½)-->
     <ResultCode>0</ResultCode>
-    <!--ÏìÓ¦ÐÅÏ¢-->
+    <!--ï¿½ï¿½Ó¦ï¿½ï¿½Ï¢-->
     <ResultMessage>success</ResultMessage>
     <Data>
-		<Message xmlns="http://tuan.360buy.com/CancelTeamResponse">
-			<!--ºÏ×÷»ï°éÍÅ¹ºID [±ØÌî]-->
+		<Message xmlns="http://tuan.jd.com/CancelTeamResponse">
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¹ï¿½ID [ï¿½ï¿½ï¿½ï¿½]-->
 			<VenderTeamId>343234</VenderTeamId>
 		</Message>
     </Data>

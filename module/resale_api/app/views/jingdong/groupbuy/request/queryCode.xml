@@ -1,4 +1,4 @@
-<Message xmlns="http://tuan.360buy.com/QueryCouponRequest">
+<Message xmlns="http://tuan.jd.com/QueryCouponRequest">
     *{ 京东订单ID [必填] }*
     <JdOrderId>${jdOrderId}</JdOrderId>
     *{ 券号12位 [必填] }*
