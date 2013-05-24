@@ -28,7 +28,7 @@ import java.util.TreeMap;
  */
 public class TaobaoCouponUtil {
     public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
-    public static final String CODE_MERCHANT_STR = "1705483381";
+    public static final String CODE_MERCHANT_APP_KEY = "21519243";
     public static final long CODE_MERCHANT_ID = 1705483381L;
 
     /**
@@ -62,7 +62,7 @@ public class TaobaoCouponUtil {
         request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setVerifyCodes(verifyCodes.toString());
         request.setToken(token);
-        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_STR)) {
+        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             request.setCodemerchantId(CODE_MERCHANT_ID);
         }
         Logger.info("tell taobao coupon send request. orderId: %s, verifyCodes: %s, token: %s",
@@ -141,7 +141,7 @@ public class TaobaoCouponUtil {
         request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setVerifyCodes(verifyCodes.toString());
         request.setToken(token);
-        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_STR)) {
+        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             request.setCodemerchantId(CODE_MERCHANT_ID);
         }
 
@@ -191,7 +191,7 @@ public class TaobaoCouponUtil {
         request.setVerifyCode(coupon.getSafeECouponSN());
         request.setConsumeNum(1L);
         request.setToken(token);
-        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_STR)) {
+        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             request.setCodemerchantId(CODE_MERCHANT_ID);
         }
 
@@ -269,7 +269,7 @@ public class TaobaoCouponUtil {
         request.setReverseNum(1L);
         request.setConsumeSecialNum(coupon.partnerCouponId);
         request.setToken(token);
-        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_STR)) {
+        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             request.setCodemerchantId(CODE_MERCHANT_ID);
         }
         try {
