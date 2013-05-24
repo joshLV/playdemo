@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--同步订单 请求 京东请求-->
-<Request xmlns="http://tuan.360buy.com/Request">
+<Request xmlns="http://tuan.jd.com/Request">
 	<!--版本-->
 	<Version>1.0</Version>
 	<!--合作伙伴ID-->
@@ -13,7 +13,7 @@
 	<Encrypt>false</Encrypt>
 	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.360buy.com/SendOrderRequest">
+		<Message xmlns="http://tuan.jd.com/SendOrderRequest">
 			<!--京东团购ID [必填]-->
 			<JdTeamId>12232</JdTeamId>
 			<!--合作伙伴团购ID [必填]-->

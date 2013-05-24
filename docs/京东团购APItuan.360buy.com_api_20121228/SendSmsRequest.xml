@@ -1,24 +1,24 @@
-<!--·¢ËÍÓÅ»ÝÈ¯¶ÌÐÅ ÇëÇó ¾©¶«ÇëÇó-->
+<!--ï¿½ï¿½ï¿½ï¿½ï¿½Å»ï¿½È¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.360buy.com/Request">
-	<!--°æ±¾-->
+<Request xmlns="http://tuan.jd.com/Request">
+	<!--ï¿½æ±¾-->
 	<Version>1.0</Version>
-	<!--ºÏ×÷»ï°éID-->
+	<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID-->
 	<VenderId>100000</VenderId>
-	<!--ºÏ×÷»ï°éKey-->
+	<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Key-->
 	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
-	<!--ÊÇ·ñÑ¹Ëõ Ä¬ÈÏ²»Ñ¹Ëõ-->
+	<!--ï¿½Ç·ï¿½Ñ¹ï¿½ï¿½ Ä¬ï¿½Ï²ï¿½Ñ¹ï¿½ï¿½-->
 	<Zip>false</Zip>
-	<!--ÊÇ·ñ¼ÓÃÜ-->
+	<!--ï¿½Ç·ï¿½ï¿½ï¿½ï¿½-->
 	<Encrypt>true</Encrypt>
-	<!--Ìá½»Êý¾Ý-->
+	<!--ï¿½á½»ï¿½ï¿½ï¿½-->
 	<Data>
-		<Message xmlns="http://tuan.360buy.com/SendSmsRequest">
-			<!--¾©¶«ÓÅ»ÝÈ¯ºÅ [±ØÌî]-->
+		<Message xmlns="http://tuan.jd.com/SendSmsRequest">
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½Å»ï¿½È¯ï¿½ï¿½ [ï¿½ï¿½ï¿½ï¿½]-->
 			<JdCouponId>12232</JdCouponId>
-			<!--ºÏ×÷»ï°éÓÅ»ÝÈ¯ºÅ [±ØÌî]-->
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å»ï¿½È¯ï¿½ï¿½ [ï¿½ï¿½ï¿½ï¿½]-->
 			<VenderCouponId>343234</VenderCouponId>
-			<!--·¢ËÍÊÖ»úºÅ [±ØÌî]-->
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ [ï¿½ï¿½ï¿½ï¿½]-->
 			<Mobile>13911111111</Mobile>     
 		</Message>
 	</Data>

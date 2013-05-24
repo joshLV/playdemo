@@ -1,4 +1,4 @@
-<Message xmlns="http://tuan.360buy.com/QueryTeamSellCountResponse">
+<Message xmlns="http://tuan.jd.com/QueryTeamSellCountResponse">
     *{ --合作伙伴方团购ID [必填] }*
     <VenderTeamId>${venderTeamId}</VenderTeamId>
     *{ --该团购项目在合作伙伴方的总销量（购买份数） 必须大于等于0 [必填] }*

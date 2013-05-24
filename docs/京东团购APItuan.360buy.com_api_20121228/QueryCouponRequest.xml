@@ -1,24 +1,24 @@
-<!--²éÑ¯ÓÅ»ÝÈ¯×´Ì¬µÄ½Ó¿Ú ÇëÇó ºÏ×÷»ï°éÇëÇó-->
+<!--ï¿½ï¿½Ñ¯ï¿½Å»ï¿½È¯×´Ì¬ï¿½Ä½Ó¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.360buy.com/Request">
-    <!--°æ±¾-->
+<Request xmlns="http://tuan.jd.com/Request">
+    <!--ï¿½æ±¾-->
     <Version>1.0</Version>
-    <!--ºÏ×÷»ï°éID-->
+    <!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID-->
     <VenderId>100000</VenderId>
-    <!--ºÏ×÷»ï°éKey-->
+    <!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Key-->
     <VenderKey>xxxxxxxxxxxxxxxxxx</VenderKey>
-    <!--ÊÇ·ñÑ¹Ëõ Ä¬ÈÏ²»Ñ¹Ëõ-->
+    <!--ï¿½Ç·ï¿½Ñ¹ï¿½ï¿½ Ä¬ï¿½Ï²ï¿½Ñ¹ï¿½ï¿½-->
     <Zip>false</Zip>
-    <!--ÊÇ·ñ¼ÓÃÜ-->
+    <!--ï¿½Ç·ï¿½ï¿½ï¿½ï¿½-->
     <Encrypt>true</Encrypt>
-    <!--Ìá½»Êý¾Ý-->
+    <!--ï¿½á½»ï¿½ï¿½ï¿½-->
     <Data>
-		<Message xmlns="http://tuan.360buy.com/QueryCouponRequest">
-			<!--¾©¶«¶©µ¥ID [±ØÌî]---->
+		<Message xmlns="http://tuan.jd.com/QueryCouponRequest">
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID [ï¿½ï¿½ï¿½ï¿½]---->
 			<JdOrderId>12345</JdOrderId>
-			<!--È¯ºÅ12Î» [±ØÌî]-->
+			<!--È¯ï¿½ï¿½12Î» [ï¿½ï¿½ï¿½ï¿½]-->
 			<CouponId>123456</CouponId>
-			<!--ÃÜÂë6Î» [±ØÌî] -->
+			<!--ï¿½ï¿½ï¿½ï¿½6Î» [ï¿½ï¿½ï¿½ï¿½] -->
 			<CouponPwd>234543</CouponPwd>
 		</Message>
     </Data>

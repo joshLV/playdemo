@@ -1,4 +1,4 @@
-<Message xmlns="http://tuan.360buy.com/TeamExtensionRequest">
+<Message xmlns="http://tuan.jd.comTeam/ExtensionRequest">
     *{ 京东产品[必填] }*
     <JdTeamId>${jdTeamId}</JdTeamId>
     *{ 外团产品ID[必填] }*

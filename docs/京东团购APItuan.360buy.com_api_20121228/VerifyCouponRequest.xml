@@ -1,26 +1,26 @@
-<!--ÓÅ»ÝÈ¯ÑéÖ¤½Ó¿Ú ÇëÇó ºÏ×÷»ï°éÇëÇó-->
+<!--ï¿½Å»ï¿½È¯ï¿½ï¿½Ö¤ï¿½Ó¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.360buy.com/Request">
-	<!--°æ±¾-->
+<Request xmlns="http://tuan.jd.com/Request">
+	<!--ï¿½æ±¾-->
 	<Version>1.0</Version>
-	<!--ºÏ×÷»ï°éID-->
+	<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID-->
 	<VenderId>100000</VenderId>
-	<!--ºÏ×÷»ï°éKey-->
+	<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Key-->
 	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
-	<!--ÊÇ·ñÑ¹Ëõ Ä¬ÈÏ²»Ñ¹Ëõ-->
+	<!--ï¿½Ç·ï¿½Ñ¹ï¿½ï¿½ Ä¬ï¿½Ï²ï¿½Ñ¹ï¿½ï¿½-->
 	<Zip>false</Zip>
-	<!--ÊÇ·ñ¼ÓÃÜ-->
+	<!--ï¿½Ç·ï¿½ï¿½ï¿½ï¿½-->
 	<Encrypt>true</Encrypt>
-	<!--Ìá½»Êý¾Ý-->
+	<!--ï¿½á½»ï¿½ï¿½ï¿½-->
 	<Data>
-		<Message xmlns="http://tuan.360buy.com/VerifyCouponRequest">
-			<!--ÑéÖ¤ÀàÐÍ 0 - ¾©¶«È¯ºÅ+¾©¶«ÃÜÂë ´ËÄ£Ê½µÄÑ¡ÔñºÍÉÏ±¨ÍÅ¹ºÖÐµÄCouponVerifyMode½ÚµãÑ¡ÔñÃ»ÓÐ¹ØÏµ [±ØÌî]-->
+		<Message xmlns="http://tuan.jd.com/VerifyCouponRequest">
+			<!--ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ 0 - ï¿½ï¿½ï¿½ï¿½È¯ï¿½ï¿½+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä£Ê½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½Å¹ï¿½ï¿½Ðµï¿½CouponVerifyModeï¿½Úµï¿½Ñ¡ï¿½ï¿½Ã»ï¿½Ð¹ï¿½Ïµ [ï¿½ï¿½ï¿½ï¿½]-->
 			<VerifyType>0</VerifyType>
-			<!--¾©¶«¶©µ¥ID [±ØÌî]-->
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID [ï¿½ï¿½ï¿½ï¿½]-->
 			<JdOrderId>12232</JdOrderId>
-			<!--È¯ºÅ(12Î») [±ØÌî]-->
+			<!--È¯ï¿½ï¿½(12Î») [ï¿½ï¿½ï¿½ï¿½]-->
 			<CouponId>xxxxxxxxxxxxxxxxx</CouponId>
-			<!--ÃÜÂë(6Î») [±ØÌî]-->
+			<!--ï¿½ï¿½ï¿½ï¿½(6Î») [ï¿½ï¿½ï¿½ï¿½]-->
 			<CouponPwd>xxxxxxxxxxxxxxxxx</CouponPwd>
 		</Message>
 	</Data>

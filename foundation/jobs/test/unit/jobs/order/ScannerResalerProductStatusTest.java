@@ -48,7 +48,7 @@ public class ScannerResalerProductStatusTest extends UnitTest {
 
     @Test
     public void test_Job() {
-        product.url = "http://tuan.360buy.com/team-10515352.html";
+        product.url = "http://tuan.jd.com/team-10515352.html";
         product.save();
 
         String succTxt = "<a href=\"/team/buy.php";

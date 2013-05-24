@@ -1,4 +1,4 @@
-<Message xmlns="http://tuan.360buy.com/QueryCategoryRequest">
+<Message xmlns="http://tuan.jd.com/QueryCategoryRequest">
     *{ 一级分类ID 只能为数字 若获取一级分类列表，则此节点不传值或传0，若获取一级分类下二级分类则此节点填写相应一级分类ID 选填 }*
     <CategoryId>${categoryId}</CategoryId>
 </Message>

@@ -1,4 +1,4 @@
-<Message xmlns="http://tuan.360buy.com/QueryAreaRequest">
+<Message xmlns="http://tuan.jd.com/QueryAreaRequest">
     *{ 区域ID 必须为数字 必填 }*
     <DistrictId>${districtId}</DistrictId>
 </Message>

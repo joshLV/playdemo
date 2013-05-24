@@ -1,22 +1,22 @@
-<!-- ²éÑ¯ÍÅ¹ºÏúÁ¿½Ó¿Ú ÇëÇó ¾©¶«ÇëÇó-->
+<!-- ï¿½ï¿½Ñ¯ï¿½Å¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.360buy.com/Request">
-	<!--°æ±¾-->
+<Request xmlns="http://tuan.jd.com/Request">
+	<!--ï¿½æ±¾-->
 	<Version>1.0</Version>
-	<!--ºÏ×÷»ï°éID-->
+	<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID-->
 	<VenderId>100000</VenderId>
-	<!--ºÏ×÷»ï°éKey-->
+	<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Key-->
 	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
-	<!--ÊÇ·ñÑ¹Ëõ Ä¬ÈÏ²»Ñ¹Ëõ-->
+	<!--ï¿½Ç·ï¿½Ñ¹ï¿½ï¿½ Ä¬ï¿½Ï²ï¿½Ñ¹ï¿½ï¿½-->
 	<Zip>false</Zip>
-	<!--ÊÇ·ñ¼ÓÃÜ-->
+	<!--ï¿½Ç·ï¿½ï¿½ï¿½ï¿½-->
 	<Encrypt>true</Encrypt>
-	<!--Ìá½»Êý¾Ý-->
+	<!--ï¿½á½»ï¿½ï¿½ï¿½-->
 	<Data>
-		<Message xmlns="http://tuan.360buy.com/QueryTeamSellCountRequest">
-			<!--ºÏ×÷»ï°é·½ÍÅ¹ºID ±ØÐë´óÓÚ0 [±ØÌî] -->
+		<Message xmlns="http://tuan.jd.com/QueryTeamSellCountRequest">
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é·½ï¿½Å¹ï¿½ID ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0 [ï¿½ï¿½ï¿½ï¿½] -->
 			<VenderTeamId>234</VenderTeamId>
-			<!--ÔÚ¾©¶«ÍÅ¹ºÏúÁ¿£¨¹ºÂò·ÝÊý£© ±ØÐë´óÓÚµÈÓÚ0 [±ØÌî] -->
+			<!--ï¿½Ú¾ï¿½ï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½0 [ï¿½ï¿½ï¿½ï¿½] -->
 			<SellCount>90</SellCount>
 		</Message>
 	</Data>
