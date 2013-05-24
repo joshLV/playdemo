@@ -139,6 +139,9 @@ GET     /weibo/wap/coupon/{couponId}/refund          WebUserSinaVouchers.showRef
 POST    /weibo/wap/coupon/{couponId}                WebUserSinaVouchers.refund
 POST    /ktv/roominfo/json-search                  KtvAPI.jsonRoom
 
+# KTV预订系统回调页面
+GET     /ktv/taobao/welcome                     KtvAuth.taobao
+
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

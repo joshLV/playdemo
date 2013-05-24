@@ -48,9 +48,25 @@ public class KtvProductTaobaoBind extends Controller {
      * 产品绑定页面
      */
     public static void index() {
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Supplier supplier = SupplierRbac.currentUser().supplier;
+        Long supplierId = supplier.id;
         List<Shop> shops = Shop.findShopBySupplier(supplierId);
         List<KtvProduct> products = KtvProduct.findProductBySupplier(supplierId);
+
+        if (supplier.defaultResalerId == null) {
+            render("KtvProductTaobaoBind/auth.html");
+        }
+        Resaler resaler = Resaler.findById(supplier.defaultResalerId);
+        if (resaler != null) {
+            OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+            if (token == null) {
+                render("KtvProductTaobaoBind/auth.html", resaler);
+            }
+        }else {
+            render("KtvProductTaobaoBind/auth.html");
+        }
+
+
         render(shops, products);
     }
 

@@ -485,12 +485,15 @@
     <div class="lead">
         <div class="wrap">
             <header>
-                <a href="/"><img src="http://img.uhcdn.com/images/y/logo.png" id="logo" ></a>
+                <a href="#"><img src="http://img.uhcdn.com/images/y/logo.png" id="logo" ></a>
 
+                <nav>
+                    <a href="https://oauth.taobao.com/authorize?response_type=code&client_id=21519243&redirect_uri=http://www.yibaiquan.com/ktv/taobao/welcome&scope=item&view=web&state=${resalerId}">请求授权</a>
+                </nav>
             </header>
 
-            <h1>授权成功</h1>
-            <h2><em>欢迎你</em> ${result.get("taobao_user_nick").getAsString()}</h2>
+            <h1>欢迎使用一百券KTV预订系统</h1>
+            <!--<h2><em>玩转淘宝KTV</em> 就在一百券KTV预订系统 </h2>-->
 
             <div class="call-to-action">
                 <!-- BEGIN Mailchimp form -->
@@ -498,6 +501,7 @@
 
         </div>
     </div>
+
 
     *{
     <div class="points wrap cf">

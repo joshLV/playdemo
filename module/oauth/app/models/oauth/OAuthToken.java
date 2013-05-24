@@ -17,6 +17,9 @@ public class OAuthToken extends Model{
     @Column(name = "account_type")
     public AccountType accountType;
 
+    @Column(name = "identity")
+    public String identity;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "web_site")
     public WebSite webSite;
@@ -40,7 +43,7 @@ public class OAuthToken extends Model{
     public String extra;
 
     public boolean isExpired(){
-        return (this.accessTokenExpiresAt.getTime() - new Date().getTime()) <= 0;
+        return this.accessTokenExpiresAt.after(new Date());
     }
 
     public static OAuthToken getOAuthToken(String serviceUserId, WebSite webSite){
@@ -48,7 +51,8 @@ public class OAuthToken extends Model{
     }
 
     public static OAuthToken getOAuthToken(Long userId, AccountType accountType, WebSite webSite){
-        return OAuthToken.find("byUserIdAndAccountTypeAndWebSite", userId, accountType, webSite).first();
+        return OAuthToken.find("byIdentityAndWebSite", accountType+"_" + userId, webSite).first();
+//        return OAuthToken.find("byUserIdAndAccountTypeAndWebSite", userId, accountType, webSite).first();
 //        if(token != null && token.isExpired()){
 //            token.delete();
 //            return null;
