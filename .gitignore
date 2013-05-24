@@ -18,6 +18,10 @@ logs
 test-result
 version.conf
 
+**/modules
+**/tmp
+**/lib
+
 # selenium
 [0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*
 
@@ -27,11 +31,5 @@ module/sales/conf/test/solr/goods/collection1/data/
 .DS_Store
 */*/core
 */*/target
-*/*/lib
-*/*/modules
-*/*/tmp
-*/tmp
-*/modules
-*/lib
 .idea
 precompiled
