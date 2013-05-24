@@ -1,6 +1,6 @@
 <!--团购优惠券有效期延期的接口响应 京东响应-->
 <?xml version="1.0" encoding="utf-8"?>
-<Response xmlns="http://tuan.jd.com/Response">
+<Response xmlns="http://tuan.360buy.com/Response">
 	<!--版本-->
 	<Version>1.0</Version>
 	<!--合作伙伴ID-->
@@ -15,7 +15,7 @@
 	<ResultMessage>success</ResultMessage>
 	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.jd.com/CouponExtensionResponse">
+		<Message xmlns="http://tuan.360buy.com/CouponExtensionResponse">
 			<!--京东产品[必填]-->
 			<JdTeamId>12232</JdTeamId>
 			<!--外团产品ID[必填]-->

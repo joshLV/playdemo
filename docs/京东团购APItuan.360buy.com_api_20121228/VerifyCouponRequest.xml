@@ -1,26 +1,26 @@
-<!--�Ż�ȯ��֤�ӿ� ���� �����������-->
+<!--优惠券验证接口 请求 合作伙伴请求-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.jd.com/Request">
-	<!--�汾-->
+<Request xmlns="http://tuan.360buy.com/Request">
+	<!--版本-->
 	<Version>1.0</Version>
-	<!--�������ID-->
+	<!--合作伙伴ID-->
 	<VenderId>100000</VenderId>
-	<!--�������Key-->
+	<!--合作伙伴Key-->
 	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
-	<!--�Ƿ�ѹ�� Ĭ�ϲ�ѹ��-->
+	<!--是否压缩 默认不压缩-->
 	<Zip>false</Zip>
-	<!--�Ƿ����-->
+	<!--是否加密-->
 	<Encrypt>true</Encrypt>
-	<!--�ύ���-->
+	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.jd.com/VerifyCouponRequest">
-			<!--��֤���� 0 - ����ȯ��+�������� ��ģʽ��ѡ����ϱ��Ź��е�CouponVerifyMode�ڵ�ѡ��û�й�ϵ [����]-->
+		<Message xmlns="http://tuan.360buy.com/VerifyCouponRequest">
+			<!--验证类型 0 - 京东券号+京东密码 此模式的选择和上报团购中的CouponVerifyMode节点选择没有关系 [必填]-->
 			<VerifyType>0</VerifyType>
-			<!--��������ID [����]-->
+			<!--京东订单ID [必填]-->
 			<JdOrderId>12232</JdOrderId>
-			<!--ȯ��(12λ) [����]-->
+			<!--券号(12位) [必填]-->
 			<CouponId>xxxxxxxxxxxxxxxxx</CouponId>
-			<!--����(6λ) [����]-->
+			<!--密码(6位) [必填]-->
 			<CouponPwd>xxxxxxxxxxxxxxxxx</CouponPwd>
 		</Message>
 	</Data>

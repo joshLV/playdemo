@@ -1,27 +1,27 @@
-<!--��ѯ����״̬ Ӧ�� ����Ӧ��-->
+<!--查询订单状态 应答 京东应答-->
 <?xml version="1.0" encoding="utf-8"?>
-<Response xmlns="http://tuan.jd.com/Response">
-	<!--�汾-->
+<Response xmlns="http://tuan.360buy.com/Response">
+	<!--版本-->
 	<Version>1.0</Version>
-	<!--�������ID-->
+	<!--合作伙伴ID-->
 	<VenderId>100000</VenderId>
-	<!--�Ƿ�ѹ�� Ĭ�ϲ�ѹ��-->
+	<!--是否压缩 默认不压缩-->
 	<Zip>false</Zip>
-	<!--�Ƿ����-->
+	<!--是否加密-->
 	<Encrypt>true</Encrypt>
-	<!--���ؽ��(200-�ɹ� ��200ʧ��)-->
+	<!--返回结果(200-成功 非200失败)-->
 	<ResultCode>200</ResultCode>
-	<!--��Ӧ��Ϣ-->
+	<!--响应信息-->
 	<ResultMessage>success</ResultMessage>
-	<!--�ύ���-->
+	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.jd.com/QueryOrderStatusResponse">
-			<!--��������ID [����]---->
+		<Message xmlns="http://tuan.360buy.com/QueryOrderStatusResponse">
+			<!--京东订单ID [必填]---->
 			<JdOrderId>12345</JdOrderId>
-			<!--����״̬���� [����]-->
+			<!--订单状态代码 [必填]-->
 			<Status>1<Status>
-			<!--����״̬˵�� [����]-->
-			<Explain>�������<Explain>
+			<!--订单状态说明 [必填]-->
+			<Explain>付款完成<Explain>
 		</Message>
 	</Data>
 </Response>

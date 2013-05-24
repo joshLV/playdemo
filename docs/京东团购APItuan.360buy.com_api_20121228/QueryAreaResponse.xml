@@ -1,29 +1,29 @@
-<!--��ȡ������������Ȧ�б� Ӧ�� ����Ӧ��-->
+<!--获取城市区域下商圈列表 应答 京东应答-->
 <?xml version="1.0" encoding="utf-8"?>
-<Response xmlns="http://tuan.jd.com/Response">
-	<!--�汾-->
+<Response xmlns="http://tuan.360buy.com/Response">
+	<!--版本-->
 	<Version>1.0</Version>
-	<!--�������ID-->
+	<!--合作伙伴ID-->
 	<VenderId>100000</VenderId>
-	<!--�Ƿ�ѹ�� Ĭ�ϲ�ѹ��-->
+	<!--是否压缩 默认不压缩-->
 	<Zip>false</Zip>
-	<!--�Ƿ����-->
+	<!--是否加密-->
 	<Encrypt>true</Encrypt>
-	<!--���ؽ��(200-�ɹ� ��200ʧ��) 510 - û�д�������ID -->
+	<!--返回结果(200-成功 非200失败) 510 - 没有传递区域ID -->
 	<ResultCode>200</ResultCode>
-	<!--��Ӧ��Ϣ-->
+	<!--响应信息-->
 	<ResultMessage>success</ResultMessage>
-	<!--�ύ���-->
+	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.jd.com/QueryAreaResponse">
+		<Message xmlns="http://tuan.360buy.com/QueryAreaResponse">
 			<Areas>
 				<Area>
 					<Id>1</Id>
-					<Name>����</Name>
+					<Name>西单</Name>
 				</Area>
 				<Area>
 					<Id>2</Id>
-					<Name>����</Name>
+					<Name>西四</Name>
 				</Area>
 			</Areas>
 		</Message>

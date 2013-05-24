@@ -1,32 +1,32 @@
-<!--��ѯ�Ź���Ϣ�ӿ� Ӧ�� ����Ӧ��-->
+<!--查询团购信息接口 应答 京东应答-->
 <?xml version="1.0" encoding="utf-8"?>
-<Response xmlns="http://tuan.jd.com/Response">
-	<!--�汾-->
+<Response xmlns="http://tuan.360buy.com/Response">
+	<!--版本-->
 	<Version>1.0</Version>
-	<!--�������ID-->
+	<!--合作伙伴ID-->
 	<VenderId>100000</VenderId>
-	<!--�Ƿ�ѹ�� Ĭ�ϲ�ѹ��-->
+	<!--是否压缩 默认不压缩-->
 	<Zip>false</Zip>
-	<!--�Ƿ����-->
+	<!--是否加密-->
 	<Encrypt>true</Encrypt>
-	<!--���ؽ��(200-�ɹ� ��200ʧ�� 300-�Ź���Ŀ������  500-�쳣����)-->
+	<!--返回结果(200-成功 非200失败 300-团购项目不存在  500-异常错误)-->
 	<ResultCode>200</ResultCode>
-	<!--��Ӧ��Ϣ-->
+	<!--响应信息-->
 	<ResultMessage>success</ResultMessage>
-	<!--�ύ���-->
+	<!--提交数据-->
 	<Data>
-		<Message xmlns="http://tuan.jd.com/QueryTeamInfoResponse">
-			<!--������鷽�Ź�ID �������0 [����] -->
+		<Message xmlns="http://tuan.360buy.com/QueryTeamInfoResponse">
+			<!--合作伙伴方团购ID 必须大于0 [必填] -->
 			<VenderTeamId>432243</VenderTeamId>
-			<!--�����Ź�ID �������0 [����] -->
+			<!--京东团购ID 必须大于0 [必填] -->
 			<JdTeamId>10003943</JdTeamId>
-			<!--�Ź���ʼʱ�� unixʱ��� [����]-->
+			<!--团购开始时间 unix时间戳 [必填]-->
 			<BeginTime>1320595200</BeginTime>
-			<!--�Ź�����ʱ�� unixʱ��� [����]-->
+			<!--团购结束时间 unix时间戳 [必填]-->
 			<EndTime>1320940800</EndTime>
-			<!--ȯ����Ч�ڽ���ʱ�� unixʱ��� [����]-->
+			<!--券的有效期截至时间 unix时间戳 [必填]-->
 			<CouponExpireTime>1325260800</CouponExpireTime>
-			<!--�Ź����״̬ 0 - �ȴ���� 1 - ���ͨ�� 2 - δͨ�� [����]-->
+			<!--团购审核状态 0 - 等待审核 1 - 审核通过 2 - 未通过 [必填]-->
 			<AuditStatus>0</AuditStatus>
 		</Message>
 	</Data>
