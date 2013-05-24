@@ -51,7 +51,6 @@ public class ResalerProduct extends Model {
     public String url;                      //第三方的url
 
     @Column(name = "lock_version")
-    @Column(name = "lock_version")
     @Version
     public int lockVersion;
 
