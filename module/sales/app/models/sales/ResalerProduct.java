@@ -187,7 +187,6 @@ public class ResalerProduct extends Model {
                                                    OuterOrderPartner partner) {
         ResalerProduct product = ResalerProduct.find("goods=? and partner=? and resaler.id=?",
                 goods, partner, resalerId).first();
-        System.out.println(product+"---------"+goods);
         return product == null ? null : product;
     }
 }

@@ -6,6 +6,7 @@ import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.ItemGetRequest;
 import com.taobao.api.response.ItemGetResponse;
+import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
 import models.accounts.AccountType;
 import models.admin.SupplierUser;
@@ -72,9 +73,12 @@ public class KtvProductTaobaoBind extends Controller {
                 ItemGetResponse response = taobaoClient.execute(req, token.accessToken);
                 if (StringUtils.isBlank(response.getErrorCode())) {
                     renderJSON("{\"info\":\"" + response.getItem().getTitle() + "\",\"taobaoProductId\":\"" + taobaoProductId + "\"}");
+                } else {
+                    renderJSON("{\"error\":\"请求淘宝API失败,错误信息:\"" + response.getMsg() + "\"}");
                 }
             } catch (ApiException e) {
-                Logger.info(e, "update sku to taobao failed");
+                Logger.info(e, "taobao itemget request failed");
+                renderJSON("{\"error\":\"taobao itemget request failed!\"}");
             }
 
         } else {
@@ -94,6 +98,7 @@ public class KtvProductTaobaoBind extends Controller {
             Goods goods = new Goods();
             goods.shops = new HashSet<>();
             goods.shops.add(shop);
+            goods.materialType=MaterialType.ELECTRONIC;
             goods.status = GoodsStatus.ONSALE;
             goods.name = shop.name + product.name;
             goods.title = shop.name + product.name;
@@ -101,6 +106,8 @@ public class KtvProductTaobaoBind extends Controller {
             goods.supplierId = supplierUser.supplier.id;
             goods.salePrice = BigDecimal.ONE;
             goods.originalPrice = BigDecimal.ONE;
+            goods.deleted = DeletedStatus.UN_DELETED;
+            goods.lockVersion = 0;
             goods.save();
 
             ktvProductGoods = new KtvProductGoods();
@@ -111,13 +118,31 @@ public class KtvProductTaobaoBind extends Controller {
 
             ResalerProduct resalerProduct = ResalerProduct.alloc(OuterOrderPartner.TB, resaler, goods);
             resalerProduct.partnerProductId = taobaoProductId;
-            resalerProduct.save();
             //保存商品状态
             resalerProduct.creator(supplierUser.id).partnerProduct(taobaoProductId)
                     .status(ResalerProductStatus.UPLOADED).save();
 
             renderJSON("{\"info\":\"" + shop.name + product.name + "\",\"taobaoProductId\":\"" + taobaoProductId + "\"}");
+        } else {
+            Goods goods = Goods.find("select g from Goods g join g.shops s where g.supplierId=? and g.deleted=? and s.id=? and g.status =? " +
+                    "and g.product=?", supplierUser.supplier.id, DeletedStatus.UN_DELETED, shop.id, GoodsStatus.ONSALE, product).first();
+            if (goods == null) {
+                renderJSON("{\"error\":\"没有找到该门店下对应的产品信息！\"}");
+            }
+            ResalerProduct resalerProduct = ResalerProduct.getResalerProduct(goods, resaler.id, OuterOrderPartner.TB);
+            if (resalerProduct == null) {
+                resalerProduct = ResalerProduct.alloc(OuterOrderPartner.TB, resaler, goods);
+                resalerProduct.partnerProductId = taobaoProductId;
+                //保存商品状态
+                resalerProduct.creator(supplierUser.id).partnerProduct(taobaoProductId)
+                        .status(ResalerProductStatus.UPLOADED).save();
+            } else if (StringUtils.isBlank(resalerProduct.partnerProductId)) {
+                resalerProduct.partnerProductId = taobaoProductId;
+                resalerProduct.save();
+            } else {
+                renderJSON("{\"error\":\"该商品已经绑定过了\"}");
+            }
+            renderJSON("{\"info\":\"" + shop.name + product.name + "\",\"taobaoProductId\":\"" + taobaoProductId + "\"}");
         }
-        renderJSON("{\"error\":\"该商品已经绑定过了\"}");
     }
 }

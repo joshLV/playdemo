@@ -58,14 +58,15 @@
                     if (ktvProduct !=null){
                     resalerProduct=models.sales.ResalerProduct.getResalerProduct(ktvProduct.goods,product.supplier.defaultResalerId,models.order.OuterOrderPartner.TB);
                     }
+
                     }%
                     <tr>
                         <td>${shop.name}</td>
 
                         <td>${product.name}</td>
                         <td id="id_${shop.id}_${product.id}" data-shop-id="${shop.id}" data-product-id="${product.id}">
-                            #{if ktvProduct !=null}
-                                <a href="${resalerProduct?.url}">${shop.name}${product.name}</a>
+                            #{if ktvProduct !=null && (resalerProduct !=null && !"".equals(resalerProduct.partnerProductId))}
+                                <a href="${resalerProduct.url}">${shop.name}${product.name}</a>
                             #{/if}
                             #{else}
                                 <a href="#" data-shop-id="${shop.id}" data-product-id="${product.id}">绑定</a>
@@ -157,8 +158,12 @@
                 type: "post",
                 data: {"url": $(this).prev().val()},
                 success: function (data) {
-                    $("#taobaoTitle").text(data.info);
-                    $("#taobaoProductId").val(data.taobaoProductId);
+                    if (!data.error) {
+                        $("#taobaoTitle").text(data.info);
+                        $("#taobaoProductId").val(data.taobaoProductId);
+                    } else {
+                        $(".bind_error").show().text("绑定失败：" + data.error);
+                    }
                 },
                 error: function (data) {
                     $(".bind_error").show().text("服务器请求失败");
@@ -179,8 +184,8 @@
             var taobaoTitle = $("#taobaoTitle").text();
             var shopName = $("#shopName").text();
             var productName = $("#productName").text();
-            if (taobaoTitle != (shopName + productName)) {
-                if (!confirm("所选择产品信息和淘宝产品不一致，请确认")) {
+            if (taobaoTitle.indexOf(shopName) == -1 || taobaoTitle.indexOf(productName) == -1) {
+                if (!confirm("所选择产品信息和淘宝产品标题不一致，要绑定吗？")) {
                     return;
                 }
             }
