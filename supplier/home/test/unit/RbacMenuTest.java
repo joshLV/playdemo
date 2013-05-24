@@ -27,10 +27,12 @@ public class RbacMenuTest extends UnitTest {
     @SuppressWarnings("unchecked")
     public void setupDatabase() {
         FactoryBoy.deleteAll();
+        NavigationHandler.clearMenuContext();
         FactoryBoy.create(SupplierNavigation.class);
         // 加载test/rbac.xml配置文件
         VirtualFile file = VirtualFile.open("test/rbac.xml");
         RbacLoader.init(file);
+        NavigationHandler.initNamedMenus();
     }
 
     @After
@@ -42,18 +44,18 @@ public class RbacMenuTest extends UnitTest {
 
     @Test
     public void theNoDefinedNavigationWillBeDeleted() {
-        SupplierNavigation mainNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "main").first();
+        SupplierNavigation mainNav = SupplierNavigation.find("byApplicationNameAndName", "traders-home", "main").first();
         assertNotNull(mainNav);
         assertNotNull(mainNav.permissions);
         assertEquals(4, mainNav.permissions.size());
 
-        SupplierNavigation userNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "user_add").first();
+        SupplierNavigation userNav = SupplierNavigation.find("byApplicationNameAndName", "traders-home", "user_add").first();
         assertNotNull(userNav);
         assertNotNull(userNav.permissions);
         assertEquals(2, userNav.permissions.size());
 
         // 加载后，数据库中没有在yml定义的导航记录必须被删除
-        SupplierNavigation toDeleteNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "to_delete").first();
+        SupplierNavigation toDeleteNav = SupplierNavigation.find("byApplicationNameAndName", "traders-home", "to_delete").first();
         assertNull(toDeleteNav);
     }
 
@@ -64,15 +66,15 @@ public class RbacMenuTest extends UnitTest {
         assertNotNull(menu);
 
         // 加载后，数据库中必须有相关的记录
-        List<SupplierNavigation> menus = SupplierNavigation.find("byApplicationName", "traders-admin").fetch();
+        List<SupplierNavigation> menus = SupplierNavigation.find("byApplicationName", "traders-home").fetch();
         assertTrue(menus.size() > 0);
 
-        SupplierNavigation mainNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "main")
+        SupplierNavigation mainNav = SupplierNavigation.find("byApplicationNameAndName", "traders-home", "main")
                 .first();
         assertNotNull(mainNav);
         assertEquals("系统管理", mainNav.text);
         assertEquals(new Integer(99), mainNav.displayOrder);
-        SupplierNavigation homeNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "home")
+        SupplierNavigation homeNav = SupplierNavigation.find("byApplicationNameAndName", "traders-home", "home")
                 .first();
         assertNotNull(homeNav);
         assertEquals(new Integer(0), homeNav.displayOrder);

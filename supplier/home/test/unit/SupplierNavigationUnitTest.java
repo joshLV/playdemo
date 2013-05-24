@@ -3,13 +3,10 @@ package unit;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.admin.SupplierNavigation;
-import navigation.RbacLoader;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.Play;
 import play.test.UnitTest;
-import play.vfs.VirtualFile;
 
 import java.util.List;
 
@@ -54,13 +51,6 @@ public class SupplierNavigationUnitTest extends UnitTest {
             }
         });
         navigation.refresh();
-    }
-
-    @After
-    public void initPluginAgain() {
-        // 重新加载配置文件
-        VirtualFile file = VirtualFile.open("conf/rbac.xml");
-        RbacLoader.init(file);
     }
 
     @Test
