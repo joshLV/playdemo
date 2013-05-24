@@ -81,16 +81,31 @@ error:'supplier.operator'}
                value="${ktvSupplier}" ${"1".equals(ktvSupplier)?'checked':''}/>&{'supplier.ktvSupplier'}
     </div>
 </div>
+*{<div class="control-group">}*
+*{<label class="control-label">选择分销商</label>}*
+
+*{<div class="controls">}*
+*{#{list items:resalerList,as:'resaler'}}*
+*{<input type="checkbox" name="supplier.resalers.id" value="${resaler.id}"}*
+*{#{if resalerIds?.contains(resaler.id)}checked#{/if}/>${resaler.userName}}*
+*{#{/list}}*
+*{</div>}*
+
+*{</div>}*
 <div class="control-group">
-    <label class="control-label">选择分销商</label>
+    <label class="control-label">&{'supplier.defaultResalerId'}</label>
 
     <div class="controls">
+        <select name="supplier.defaultResalerId" class="span2">
         #{list items:resalerList,as:'resaler'}
-        <input type="checkbox" name="supplier.resalers.id" value="${resaler.id}" #{if resalerIds?.contains(resaler.id)}checked#{/if}/>${resaler.userName}
+            <option value="">--请选择--</option>
+            <option value="${resaler.id}"
+                    #{if resaler.id==supplier?.defaultResalerId}selected #{/if}>${resaler.userName}</option>
         #{/list}
+        </select><span id="note_supplier_defaultResalerId">(KTV商户请选择一个分销商，一般商户不用设置)</span>
     </div>
-
 </div>
+
 #{layout_operate.radio2Field name:'supplier.showSellingState', value:supplier?.showSellingState?:false, value1:true, value2:false/}
 *{#{layout_operate.timeScope2Field name:'supplier.shopHour', begin:'supplier.shopBeginHour',end:'supplier.shopEndHour',}*
 *{beginValue:supplier?.shopBeginHour, endValue:supplier?.shopEndHour/}}*

@@ -236,8 +236,8 @@ public class Suppliers extends Controller {
 
         List<Resaler> resalerList = Resaler.find("operator !=? and status=?", Operator.defaultOperator(), ResalerStatus.APPROVED).fetch();
         renderArgs.put("resalerList", resalerList);
-        List<Long> resalerIds = getResalerIds(supplier.resalers);
-        renderArgs.put("resalerIds", resalerIds);
+//        List<Long> resalerIds = getResalerIds(supplier.resalers);
+//        renderArgs.put("resalerIds", resalerIds);
 
         render(supplier, supplierCategoryList, independentShopList, hasSupplierCodeEditPermission, admin, id, withdrawAccounts, operateUserList, page);
     }
