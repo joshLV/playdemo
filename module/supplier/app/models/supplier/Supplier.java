@@ -7,8 +7,11 @@ import com.uhuila.common.util.PathUtil;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.admin.SupplierUser;
+import models.operator.OperateRole;
 import models.operator.OperateUser;
+import models.operator.Operator;
 import models.order.Prepayment;
+import models.resale.Resaler;
 import models.sales.Brand;
 import models.sales.Goods;
 import models.sales.Shop;
@@ -24,17 +27,7 @@ import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 import play.modules.view_ext.annotation.Mobile;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.beans.Transient;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -205,6 +198,12 @@ public class Supplier extends Model {
     @Column(name = "weibo_id")
     public String weiboId;
 
+//    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+//    @JoinTable(name = "suppliers_resalers",
+//            inverseJoinColumns = @JoinColumn(name = "resaler_id"),
+//            joinColumns = @JoinColumn(name = "supplier_id"))
+//    public List<Resaler> resalers;
+
     /**
      * 商户类别
      */
@@ -237,6 +236,11 @@ public class Supplier extends Model {
     @Column(name = "show_selling_state")
     public Boolean showSellingState = false;
 
+    /**
+     * 商户默认分销商
+     */
+    @Column(name = "default_resaler_id")
+    public Long defaultResalerId;
 
     //=================================================以上是全部数据库相关属性================================================
 
@@ -411,6 +415,8 @@ public class Supplier extends Model {
         sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
+//        sp.resalers = supplier.resalers;
+        sp.defaultResalerId = supplier.defaultResalerId;
         sp.showSellingState = supplier.showSellingState == null ? false : supplier.showSellingState;
         if (sp.supplierCategory == null || (sp.supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != sp.supplierCategory.id)) {
             sp.resetCode(supplier.supplierCategory);

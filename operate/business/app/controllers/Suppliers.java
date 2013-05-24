@@ -7,7 +7,11 @@ import models.accounts.util.AccountUtil;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
+import models.operator.OperateRole;
 import models.operator.OperateUser;
+import models.operator.Operator;
+import models.resale.Resaler;
+import models.resale.ResalerStatus;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import models.supplier.SupplierCategory;
@@ -25,9 +29,7 @@ import play.mvc.With;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * 商户管理的控制器.
@@ -59,8 +61,9 @@ public class Suppliers extends Controller {
         List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
         renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
         List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
-        renderArgs.put("sellECoupon","1");
-        render(operateUserList, supplierCategoryList);
+        renderArgs.put("sellECoupon", "1");
+        List<Resaler> resalerList = Resaler.find("operator !=? and status=?", Operator.defaultOperator(), ResalerStatus.APPROVED).fetch();
+        render(operateUserList, supplierCategoryList, resalerList);
     }
 
     private static int getPage() {
@@ -93,6 +96,7 @@ public class Suppliers extends Controller {
         Validation.match("validation.jobNumber", admin.jobNumber, "^[0-9]*");
 
         if (Validation.hasErrors()) {
+            System.out.println(Validation.errors().get(0).message());
             List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
             renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
             List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
@@ -229,7 +233,25 @@ public class Suppliers extends Controller {
 
         List<Shop> independentShopList = Shop.findIndependentList(supplier.id);
         Boolean hasSupplierCodeEditPermission = ContextedPermission.hasPermission("SUPPLIER_CODE_EDIT");
+
+        List<Resaler> resalerList = Resaler.find("operator !=? and status=?", Operator.defaultOperator(), ResalerStatus.APPROVED).fetch();
+        renderArgs.put("resalerList", resalerList);
+//        List<Long> resalerIds = getResalerIds(supplier.resalers);
+//        renderArgs.put("resalerIds", resalerIds);
+
         render(supplier, supplierCategoryList, independentShopList, hasSupplierCodeEditPermission, admin, id, withdrawAccounts, operateUserList, page);
+    }
+
+    private static List<Long> getResalerIds(List<Resaler> resalers) {
+        List<Long> resalerIds = new ArrayList<>();
+        if (resalers != null && !resalers.isEmpty()) {
+            for (Resaler resaler : resalers) {
+                if (resalerIds != null) {
+                    resalerIds.add(resaler.id);
+                }
+            }
+        }
+        return resalerIds;
     }
 
     public static void withdrawAccountCreateAndUpdate(@Valid WithdrawAccount withdrawAccount, Long supplierId) {

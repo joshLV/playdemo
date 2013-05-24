@@ -35,15 +35,24 @@ import java.util.*;
  * Time: 下午3:18
  */
 @OnApplicationStart(async = true)
-public class KtvSkuConsumer extends RabbitMQConsumerWithTx<Long> {
+public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
     @Override
-    public void consumeWithTx(Long scheduledId) {
-        KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(scheduledId);
+    public void consumeWithTx(KtvSkuMessage message) {
+        //根据价格策略更新sku
+        if (message.ktvProductGoodsId == null && message.scheduledId != null) {
+            KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(message.scheduledId);
+        } else {
+            //根据ktv产品更新sku
+            KtvProductGoods ktvProductGoods = KtvProductGoods.findById(message.ktvProductGoodsId);
+            if (ktvProductGoods != null) {
+                KtvTaobaoUtil.updateTaobaoSkuByProductGoods(ktvProductGoods);
+            }
+        }
     }
 
     @Override
     protected Class getMessageType() {
-        return Long.class;
+        return KtvSkuMessage.class;
     }
 
     @Override

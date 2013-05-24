@@ -268,7 +268,7 @@ supplier.ktvSupplier=ktv商户
 supplier.canSaleReal=是否销售实物
 supplier.canSaleReal_1=是
 supplier.canSaleReal_2=否
-
+supplier.defaultResalerId=默认分销商
 supplier.sellECoupon=是否销售电子券
 supplier.sellECoupon_1=是
 supplier.sellECoupon_2=否

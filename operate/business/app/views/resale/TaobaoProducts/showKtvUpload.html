@@ -53,15 +53,18 @@
                 <input type="text" id="inputSalePrice" name="price" value="${goods.salePrice}" readonly>
             </div>
         </div>
+    #{if models.resale.Resaler.TMALL_LOGIN_NAME.equals(loginName)}
         <div class="control-group">
             <label class="control-label" for="inputAuctionPoint">
-                <a href="http://api.taobao.com/apidoc/api.htm?spm=0.0.0.0.CtmvJU&path=cid:4-apiId:22" target="_blank">积分返点比例 *</a>
+                <a href="http://api.taobao.com/apidoc/api.htm?spm=0.0.0.0.CtmvJU&path=cid:4-apiId:22" target="_blank">积分返点比例
+                    *</a>
             </label>
 
             <div class="controls">
-                <input type="text" id="inputAuctionPoint" name="auctionPoint" value="0" >
+                <input type="text" id="inputAuctionPoint" name="auctionPoint" value="0">
             </div>
         </div>
+    #{/if}
         <div class="control-group">
             <label class="control-label" for="inputProvince">省份 *</label>
 

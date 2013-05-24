@@ -278,6 +278,7 @@ public class OperateGoods extends Controller {
         if (goods.getSupplier().isKtvSupplier()) {
             Shop shop = Shop.findById(Long.valueOf(request.params.getAll("goods.shops.id")[0]));
             goods.shops = new HashSet<>();
+            goods.isAllShop = false;
             goods.shops.add(shop);
             goods.save();
             KtvProductGoods productGoods = new KtvProductGoods();

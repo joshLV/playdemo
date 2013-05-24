@@ -3,31 +3,36 @@
 #{include '/share/nav.html' /}
 #{set 'moreStyles'}
     #{asset.css src:['/ztree/zTreeStyle.css'] /}
-    <style type="text/css">
-        ul.ztree{
-            margin-top: 1px;
-            border: 1px solid #ccc;
-            background: #f5f5f5;
-            overflow-y: scroll;
-            overflow-x: auto;
-        }
-    </style>
+<style type="text/css">
+    ul.ztree {
+        margin-top: 1px;
+        border: 1px solid #ccc;
+        background: #f5f5f5;
+        overflow-y: scroll;
+        overflow-x: auto;
+    }
+</style>
 #{/set}
 <div class="body">
-    <legend>淘宝上传商品：<a href="/goods/${goods.id}" target="_blank">
-        ${goods.shortName}</a>
+    <legend>淘宝上传商品${goods.getSupplier().supplierCategory?.code}：<a href="/goods/${goods.id}" target="_blank">
+    ${goods.shortName}</a>
     </legend>
     <form class="form-horizontal" method="POST" action="/resaler-products/tb/upload">
-
+    %{ supplierCategoryCode=goods.getSupplier().supplierCategory?.code;
+        isWedding="07".equals(supplierCategoryCode);
+        }%
         <div class="control-group">
             <label class="control-label" for="inputTeamTitle">标题名称 *</label>
+
             <div class="controls">
-                <input type="text" id="inputTeamTitle" class="input-block-level" name="title" data-max-length="30" value="${goods.name}">
+                <input type="text" id="inputTeamTitle" class="input-block-level" name="title" data-max-length="30"
+                       value="${goods.name}">
                 <span class="help-block">不超过30个字符<span id="inputTeamTitle-monitor"></span></span>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">店铺类目 *</label>
+
             <div class="controls">
                 <label class="checkbox">
                     <input type="checkbox" value="510052565" name="sellerCids">餐饮美食
@@ -48,71 +53,105 @@
         </div>
         <div class="control-group">
             <label class="control-label" for="inputMarketPrice">面值 *</label>
+
             <div class="controls">
-                <input type="text" id="inputMarketPrice" name="faceValue" value="${goods.faceValue.setScale(0, java.math.BigDecimal.ROUND_UP)}">
+                <input type="text" id="inputMarketPrice" name="faceValue"
+                       value="${goods.faceValue.setScale(0, java.math.BigDecimal.ROUND_UP)}">
                 <span class="help-inline">只能是整数</span>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="inputSalePrice">销售价 *</label>
+
             <div class="controls">
                 <input type="text" id="inputSalePrice" name="price" value="${goods.salePrice}" readonly>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="inputProvince">省份 *</label>
+
             <div class="controls">
                 <input type="text" id="inputProvince" name="locationState" value="上海">
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="inputCity">城市 *</label>
+
             <div class="controls">
                 <input type="text" id="inputCity" name="locationCity" value="上海">
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="inputMaxNumber">商品总库存 *</label>
+
             <div class="controls">
                 <input type="text" id="inputMaxNumber" name="num" value="${goods.getRealStocks()}">
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="inputPros">其他属性 *</label>
+
             <div class="controls">
-                <input type="text" id="inputPros" name="props" value="3816036:38927036;16651034:137887611;8648373:29423;8648185:29423;37914425:230692985;40222658:60052047;13747180:20213;" class="input-xxlarge">
+            #{if isWedding}
+                <input type="text" id="inputPros" name="props"
+                       value="11040794:3295459;8648373:29423;8648185:29423;"
+                       class="input-xxlarge">
+            #{/if}
+            #{else}
+                <input type="text" id="inputPros" name="props"
+                       value="3816036:38927036;16651034:137887611;8648373:29423;8648185:29423;37914425:230692985;40222658:60052047;13747180:20213;"
+                       class="input-xxlarge">
+            #{/else}
                 <span class="help-inline">编辑勿动，开发人员可酌情修改此参数</span>
             </div>
+
         </div>
+    #{if loginName.equals(models.resale.Resaler.TMALL_LOGIN_NAME)}
+        <div class="control-group">
+            <label class="control-label" for="inputAuctionPoint">
+                <a href="http://api.taobao.com/apidoc/api.htm?spm=0.0.0.0.CtmvJU&path=cid:4-apiId:22" target="_blank">积分返点比例
+                    *</a>
+            </label>
+
+            <div class="controls">
+                <input type="text" id="inputAuctionPoint" name="auctionPoint" value="0">
+            </div>
+        </div>
+    #{/if}
         <div class="control-group">
             <label class="control-label">商品详情</label>
+
             <div class="controls">
-                <textarea rows="8" cols="100"  name="desc" id="prodDescription" style="width:850px;height:550px;display:hidden;">
+                <textarea rows="8" cols="100" name="desc" id="prodDescription"
+                          style="width:850px;height:550px;display:hidden;">
                     <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                         <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品详情</span>
                     </p>
-                    ${goods.exhibition.raw()}
+                ${goods.exhibition.raw()}
                     <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                         <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
                     </p>
-                    ${goods.prompt.raw()}
+                ${goods.prompt.raw()}
                     <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                         <span style="font-family:SimSun;font-size:small;color:#ffffff;">小贴士</span>
                     </p>
 
                     <p>·本商品为电子券，购买后会以短信形式发送一串数字到您的手机</p>
+
                     <p>·如果您不小心遗失了您的电子券，请拨打一百券客服热线</p>
+
                     <p>·发票由最终服务提供商开具 用户跟商家索取发票</p>
+
                     <p>·本产品由【一百券】提供，客服热线：400-686-5151 </p>
 
                     <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                         <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
                     </p>
-                    ${goods.details.raw()}
+                ${goods.details.raw()}
                     <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                         <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
                     </p>
-                    ${goods.supplierDes.raw()}
+                ${goods.supplierDes.raw()}
 
                     <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                         <span style="font-family:SimSun;font-size:small;color:#ffffff;">适用门店</span>
@@ -120,11 +159,11 @@
 
                     <table border="1" cellpadding="4" cellspacing="0">
                     #{list items:goods.getShopList(), as:'shop'}
-                    <tr>
-                        <td width="150px">${shop.name}</td>
-                        <td width="380px">地址：${shop.address}<br/> 电话：${shop.phone}</td>
-                        <td width="200px">交通：${shop.transport}</td>
-                    </tr>
+                        <tr>
+                            <td width="150px">${shop.name}</td>
+                            <td width="380px">地址：${shop.address}<br/> 电话：${shop.phone}</td>
+                            <td width="200px">交通：${shop.transport}</td>
+                        </tr>
                     #{/list}
                     </table>
                 </textarea>
@@ -132,11 +171,16 @@
         </div>
 
         <div class="form-actions">
-            <input type="hidden" name="goodsId" value="${goods.id}" >
-            <input type="hidden" name="stuffStatus" value="new" >
-            <input type="hidden" name="type" value="fixed" >
-            <input type="hidden" name="approveStatus" value="instock" >
-            <input type="hidden" name="cid" value="50015757" >
+            <input type="hidden" name="goodsId" value="${goods.id}">
+            <input type="hidden" name="stuffStatus" value="new">
+            <input type="hidden" name="type" value="fixed">
+            <input type="hidden" name="approveStatus" value="instock">
+        #{if isWedding}
+            <input type="hidden" name="cid" value="50050480">
+        #{/if}
+        #{else}
+            <input type="hidden" name="cid" value="50015757">
+        #{/else}
             <input type="hidden" name="loginName" value="${loginName}">
             <button type="submit" id="submit" class="btn btn-primary">发布</button>
         </div>
@@ -149,25 +193,25 @@
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/jquery.migrate.js'}" type="text/javascript"
         charset="UTF-8"></script>
-#{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
+    #{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
 <script src="@{'/public/javascripts/ztree-helper.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
-    $("#inputTeamTitle").each(function(){
+    $("#inputTeamTitle").each(function () {
         var ele = $(this);
         var maxLength = parseInt(ele.attr('data-max-length'));
         var monitor = $('#' + ele.attr('id') + '-monitor');
-        ele.keyup(function (){
-            var length =  ele.val().length;
+        ele.keyup(function () {
+            var length = ele.val().length;
             monitor.text('(' + length + '/' + maxLength + ')');
             monitor.css('color', length > maxLength ? 'red' : 'green');
         });
         ele.keyup();
     });
     KindEditor.create('textarea',
-    {
-        uploadJson:'/goods/images',
-        filterMode:false,
-        allowFileManager:false
-    });
+            {
+                uploadJson: '/goods/images',
+                filterMode: false,
+                allowFileManager: false
+            });
 </script>
 #{/set}

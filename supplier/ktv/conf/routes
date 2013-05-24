@@ -5,13 +5,10 @@
 # Home page
 GET     /                                           KtvPriceSchedules.index
 
-# [v2]ktvRoom
-GET     /ktv/room-type                              KtvRoomTypes.index
-GET     /ktv/room-type/new                          KtvRoomTypes.add
-POST    /ktv/room-type                              KtvRoomTypes.create
-GET     /ktv/room-type/{id}/edit                    KtvRoomTypes.edit
-DELETE  /ktv/room-type/{id}                         KtvRoomTypes.delete
-PUT     /ktv/room-type/{id}                         KtvRoomTypes.update
+# [v2]
+GET     /ktv/product-bind                              KtvProductTaobaoBind.index
+POST    /ktv/product-query-taobao                      KtvProductTaobaoBind.queryTaobaoProduct
+POST    /ktv/product-bind                              KtvProductTaobaoBind.bindProduct
 
 #ktv 价格设置
 GET     /ktv/price-schedule                              KtvPriceSchedules.index

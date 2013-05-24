@@ -2,10 +2,10 @@ package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.order.OuterOrderPartner;
-import models.resale.Resaler;
 import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
 
+import models.resale.Resaler;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -90,12 +90,12 @@ public class ResalerProduct extends Model {
         this.deleted = DeletedStatus.UN_DELETED;
     }
 
-    private static ResalerProduct generate(OuterOrderPartner partner, Goods goods,Resaler resaler) {
+    private static ResalerProduct generate(OuterOrderPartner partner, Goods goods, Resaler resaler) {
         ResalerProduct product = new ResalerProduct().save();
         product.partner = partner;
         product.goods = goods;
         product.goodsLinkId = product.id + 20000;
-        product.resaler=resaler;
+        product.resaler = resaler;
         return product.save();
     }
 
@@ -103,7 +103,7 @@ public class ResalerProduct extends Model {
         ResalerProduct product = ResalerProduct.find("partner=? and goods=? and status=? and deleted=? and resaler=?",
                 partner, goods, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED, resaler).first();
         if (product == null) {
-            product = generate(partner, goods,resaler);
+            product = generate(partner, goods, resaler);
         }
         return product;
     }
@@ -178,4 +178,10 @@ public class ResalerProduct extends Model {
         return this;
     }
 
+    public static ResalerProduct getResalerProduct(Goods goods, Long resalerId,
+                                                   OuterOrderPartner partner) {
+        ResalerProduct product = ResalerProduct.find("goods=? and partner=? and resaler.id=?",
+                goods, partner, resalerId).first();
+        return product == null ? null : product;
+    }
 }

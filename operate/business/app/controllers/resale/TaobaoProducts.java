@@ -51,7 +51,7 @@ public class TaobaoProducts extends Controller {
         if (goods.isKtvSupplier()) {
             render("resale/TaobaoProducts/showKtvUpload.html", goods, loginName);
         }
-        render(goods);
+        render(goods,loginName);
     }
 
     @ActiveNavigation("resale_partner_product")
