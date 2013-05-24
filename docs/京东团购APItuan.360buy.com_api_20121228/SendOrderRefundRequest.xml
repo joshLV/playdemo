@@ -1,28 +1,28 @@
-<!--¶©µ¥ÍË¿îÍ¨Öª ÇëÇó ¾©¶«ÇëÇó-->
+<!--ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½Í¨Öª ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-->
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.360buy.com/Request">
-	<!--°æ±¾-->
+<Request xmlns="http://tuan.jd.com/Request">
+	<!--ï¿½æ±¾-->
 	<Version>1.0</Version>
-	<!--ºÏ×÷»ï°éID-->
+	<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID-->
 	<VenderId>100000</VenderId>
-	<!--ºÏ×÷»ï°éKey-->
+	<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Key-->
 	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
-	<!--ÊÇ·ñÑ¹Ëõ Ä¬ÈÏ²»Ñ¹Ëõ-->
+	<!--ï¿½Ç·ï¿½Ñ¹ï¿½ï¿½ Ä¬ï¿½Ï²ï¿½Ñ¹ï¿½ï¿½-->
 	<Zip>false</Zip>
-	<!--ÊÇ·ñ¼ÓÃÜ-->
+	<!--ï¿½Ç·ï¿½ï¿½ï¿½ï¿½-->
 	<Encrypt>true</Encrypt>
-	<!--Ìá½»Êý¾Ý-->
+	<!--ï¿½á½»ï¿½ï¿½ï¿½-->
 	<Data>
-		<Message xmlns="http://tuan.360buy.com/SendOrderRefundRequest">
-			<!--¾©¶«¶©µ¥ID [±ØÌî]-->
+		<Message xmlns="http://tuan.jd.com/SendOrderRefundRequest">
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID [ï¿½ï¿½ï¿½ï¿½]-->
 			<JdOrderId>2323</JdOrderId>
-			<!--ºÏ×÷»ï°é¶©µ¥ID [±ØÌî]-->
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¶©ï¿½ï¿½ID [ï¿½ï¿½ï¿½ï¿½]-->
 			<VenderOrderId>345643</VenderOrderId>
-			<!--ÉêÇëÍË¿î½ð¶î µ¥Î»£º·Ö  [±ØÌî]-->
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½ï¿½ï¿½ ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½  [ï¿½ï¿½ï¿½ï¿½]-->
 			<RefundMoney>6600</RefundMoney>
-			<!--ÊÇ·ñ¸Ãµ¥È«ÍË [±ØÌî]-->
+			<!--ï¿½Ç·ï¿½Ãµï¿½È«ï¿½ï¿½ [ï¿½ï¿½ï¿½ï¿½]-->
 			<IsAllBack>true</IsAllBack>
-			<!--¾©¶«ÓÅ»ÝÈ¯ºÅÁÐ±í£¬¿ÉÌîÐ´¶à¸ö[±ØÌî]-->
+			<!--ï¿½ï¿½ï¿½ï¿½ï¿½Å»ï¿½È¯ï¿½ï¿½ï¿½Ð±?ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½]-->
 			<Coupons>
 				<Coupon>xxxxxxxxxxxxxxxxx</Coupon>
 				<Coupon>xxxxxxxxxxxxxxxxx</Coupon>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Request xmlns="http://tuan.360buy.com/Request">
+<Request xmlns="http://tuan.jd.com/Request">
     *{ 版本 }*
     <Version>${version}</Version>
     *{ 合作伙伴ID }*

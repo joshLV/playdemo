@@ -86,7 +86,7 @@ public class KtvProducts extends Controller {
     public static void showKtvProducts(Long supplierId) {
         Supplier supplier = Supplier.findById(supplierId);
         boolean ktvSupplier = false;
-        if (supplier.getProperty("ktvSupplier").equals("1")) {
+        if ("1".equals(supplier.getProperty("ktvSupplier"))) {
             ktvSupplier = true;
         }
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(supplierId);

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<application text="系统管理">
+    <role key="system" text="系统管理员"/>
+    <role key="admin" text="管理员"/>
+    <role key="sales" text="销售人员"/>
+    <role key="clerk" text="店员"/>
+    <role key="editor" text="编辑人员"/>
+    <role key="test" text="测试角色"/>
+
+    <permission key="USER" text="用户管理">
+        <permission key="USER_ADD" text="新增" roles="admin,system"/>
+        <permission key="USER_EDIT" text="修改"/>
+        <permission key="USER_ACTIVITY" text="用户操作历史"/>
+    </permission>
+
+    <permission key="ROLE" text="角色管理">
+        <permission key="ROLE_ADD" text="新增" roles="admin,system"/>
+        <permission key="ROLE_EDIT" text="修改"/>
+    </permission>
+
+    <permission key="PERM_TEST" text="测试权限" roles="test">
+    </permission>
+
+    <navigation key="main" text="系统管理" action="SupplierHome.index" display-order="99">
+        <navigation key="home" text="主页" permissions="USER"/>
+        <navigation key="user" text="用户管理" permissions="USER">
+            <navigation key="user_add" text="新增用户" action="AccountSequences.add" permissions="USER, USER_ADD"/>
+            <navigation key="user_search" text="查询用户" action="AccountSequences.index" permissions="USER"/>
+        </navigation>
+        <navigation key="role" text="角色管理" permissions="ROLE"/>
+        <navigation key="bar" text="BarTest" permissions="PERM_TEST"/>
+        <navigation key="google" text="Google" url="http://www.google.com" permissions="PERM_TEST"/>
+    </navigation>
+
+</application>

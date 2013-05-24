@@ -1,11 +1,17 @@
 package navigation;
 
 import models.admin.SupplierNavigation;
+import play.Logger;
 import play.Play;
 import play.mvc.Http.Request;
 import play.supplier.cas.CASUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class NavigationHandler {
 
@@ -91,6 +97,9 @@ public class NavigationHandler {
 
     public static ContextedMenu getMenu(String name) {
         Menu menu = namedMenus.get(name);
+        for (String key : namedMenus.keySet()) {
+            Logger.info("   key=" + key + ", value=" + namedMenus.get(key));
+        }
         if (menu == null) {
             String fullName = Play.configuration.getProperty("application.name") + "." + name;
             menu = namedMenus.get(fullName);

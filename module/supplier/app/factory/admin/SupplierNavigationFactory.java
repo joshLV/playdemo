@@ -22,10 +22,10 @@ public class SupplierNavigationFactory extends ModelFactory<SupplierNavigation> 
         navigation.url="http://www.google.com";
         navigation.action = "systemManager";
         navigation.actived = true;
-        navigation.applicationName = "traders-admin";
+        navigation.applicationName = "traders-home";
         navigation.createdAt = new Date();
         navigation.description = "";
-        navigation.devBaseUrl = "http://localhost:9107/";
+        navigation.devBaseUrl = "http://localhost:9101/";
         navigation.displayOrder = 100;
         navigation.labels = "";
         return navigation;

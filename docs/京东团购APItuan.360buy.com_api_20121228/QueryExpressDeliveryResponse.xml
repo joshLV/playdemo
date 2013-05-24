@@ -1,29 +1,29 @@
-<!--»ñÈ¡³ÇÊÐÁÐ±í Ó¦´ð ¾©¶«Ó¦´ð-->
+<!--ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½ Ó¦ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½-->
 <?xml version="1.0" encoding="utf-8"?>
-<Response xmlns="http://tuan.360buy.com/Response">
-	<!--°æ±¾-->
+<Response xmlns="http://tuan.jd.com/Response">
+	<!--ï¿½æ±¾-->
 	<Version>1.0</Version>
-	<!--ºÏ×÷»ï°éID-->
+	<!--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID-->
 	<VenderId>100000</VenderId>
-	<!--ÊÇ·ñÑ¹Ëõ Ä¬ÈÏ²»Ñ¹Ëõ-->
+	<!--ï¿½Ç·ï¿½Ñ¹ï¿½ï¿½ Ä¬ï¿½Ï²ï¿½Ñ¹ï¿½ï¿½-->
 	<Zip>false</Zip>
-	<!--ÊÇ·ñ¼ÓÃÜ-->
+	<!--ï¿½Ç·ï¿½ï¿½ï¿½ï¿½-->
 	<Encrypt>true</Encrypt>
-	<!--·µ»Ø½á¹û(200-³É¹¦ ·Ç200Ê§°Ü)-->
+	<!--ï¿½ï¿½ï¿½Ø½ï¿½ï¿½(200-ï¿½É¹ï¿½ ï¿½ï¿½200Ê§ï¿½ï¿½)-->
 	<ResultCode>200</ResultCode>
-	<!--ÏìÓ¦ÐÅÏ¢-->
+	<!--ï¿½ï¿½Ó¦ï¿½ï¿½Ï¢-->
 	<ResultMessage>success</ResultMessage>
-	<!--Ìá½»Êý¾Ý-->
+	<!--ï¿½á½»ï¿½ï¿½ï¿½-->
 	<Data>
-		<Message xmlns="http://tuan.360buy.com/QueryExpressDeliveryResponse">
+		<Message xmlns="http://tuan.jd.com/QueryExpressDeliveryResponse">
 			<ExpressType>
 				<Express>
 					<Id>1</Id>
-					<Name>EMS¿ìµÝ</Name>
+					<Name>EMSï¿½ï¿½ï¿½</Name>
 				</Express>
 				<Express>
 					<Id>2</Id>
-					<Name>ÉêÍ¨¿ìµÝ</Name>
+					<Name>ï¿½ï¿½Í¨ï¿½ï¿½ï¿½</Name>
 				</Express>
 			</ExpressType>
 		</Message>

@@ -1,0 +1,5 @@
+# Default play-app-version messages
+# You can specialize this file for each language.
+# For exemple, for french create a messages.fr file
+
+#play-app-version.name=play-app-version

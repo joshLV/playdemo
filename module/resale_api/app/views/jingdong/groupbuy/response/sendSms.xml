@@ -1,4 +1,4 @@
-<Message xmlns="http://tuan.360buy.com/SendSmsResponse">
+<Message xmlns="http://tuan.jd.com/SendSmsResponse">
     *{ 京东优惠券号 [必填] }*
     <JdCouponId>${jdCouponId}</JdCouponId>
     *{ 合作伙伴优惠券号 [必填] }*

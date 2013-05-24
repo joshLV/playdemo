@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Response xmlns="http://tuan.jd.com/Response">
+    <Version>1.0</Version>
+    <VenderId>100000</VenderId>
+    <Zip>false</Zip>
+    <Encrypt>false</Encrypt>
+    <ResultCode>200</ResultCode>
+    <ResultMessage>success</ResultMessage>
+    <Data>
+        <Message xmlns="http://tuan.jd.com/VerifyCouponResponse">
+            <CouponStatus>30</CouponStatus>
+        </Message>
+    </Data>
+</Response>

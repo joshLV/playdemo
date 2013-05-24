@@ -1,4 +1,4 @@
-<Message xmlns="http://tuan.360buy.com/CouponExtensionRequest">
+<Message xmlns="http://tuan.jd.com/CouponExtensionRequest">
     *{ 团购优惠券有效期延期的接口请求 合作伙伴请求 }*
     *{ 京东产品[必填] }*
     <JdTeamId>${jdTeamId}</JdTeamId>

@@ -5,13 +5,7 @@ import models.order.OuterOrderPartner;
 import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
 
-import javax.persistence.*;
-import java.util.*;
-
 import models.resale.Resaler;
-import org.hibernate.annotations.Index;
-import play.db.jpa.Model;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -149,7 +143,7 @@ public class ResalerProduct extends Model {
         this.partnerProductId = partnerProductId;
         switch (partner) {
             case JD:
-                this.url = "http://tuan.360buy.com/team-" + partnerProductId + ".html";
+                this.url = "http://tuan.jd.com/team-" + partnerProductId + ".html";
                 break;
             case DD:
                 this.url = "http://tuan.dangdang.com/product.php?product_id=" + partnerProductId;
