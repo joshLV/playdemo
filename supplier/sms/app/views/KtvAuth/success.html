@@ -485,12 +485,13 @@
     <div class="lead">
         <div class="wrap">
             <header>
-                <a href="/"><img src="http://img.uhcdn.com/images/y/logo.png" id="logo" ></a>
+                <a href="#"><img src="http://img.uhcdn.com/images/y/logo.png" id="logo" ></a>
 
             </header>
 
             <h1>授权成功</h1>
-            <h2><em>欢迎你</em> ${result.get("taobao_user_nick").getAsString()}</h2>
+            <h2><em>欢迎你</em> ${java.net.URLDecoder.decode(result.get("taobao_user_nick").getAsString(), "UTF-8")}</h2>
+            <h2><em>用户ID</em> ${result.get("taobao_user_id").getAsString()}</h2>
 
             <div class="call-to-action">
                 <!-- BEGIN Mailchimp form -->

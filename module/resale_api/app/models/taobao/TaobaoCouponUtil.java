@@ -8,6 +8,7 @@ import com.taobao.api.request.*;
 import com.taobao.api.response.*;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
+import models.oauth.WebSite;
 import models.order.*;
 import models.resale.Resaler;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -29,6 +30,7 @@ import java.util.TreeMap;
 public class TaobaoCouponUtil {
     public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
     public static final String CODE_MERCHANT_APP_KEY = "21519243";
+    public static final String CODE_MERCHANT_APP_SECRET_KEY = "cb95f0bb25cbd99917696314cdb6bc43";
     public static final long CODE_MERCHANT_ID = 1705483381L;
 
     /**
@@ -41,7 +43,6 @@ public class TaobaoCouponUtil {
         if (Play.runingInTestMode()) {
             return;
         }
-        OAuthToken oAuthToken = getToken(outerOrder.resaler);
 
         // 组合券
         List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
@@ -53,8 +54,6 @@ public class TaobaoCouponUtil {
             verifyCodes.append(eCoupons.get(i).getSafeECouponSN()).append(":1"); //1表示数量
         }
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(
-                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
@@ -62,6 +61,10 @@ public class TaobaoCouponUtil {
         request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setVerifyCodes(verifyCodes.toString());
         request.setToken(token);
+
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(
+                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
+        OAuthToken oAuthToken = getTokenOfTaobaoCodePlatform(outerOrder.resaler);
         if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             request.setCodemerchantId(CODE_MERCHANT_ID);
         }
@@ -116,7 +119,6 @@ public class TaobaoCouponUtil {
         if (Play.runingInTestMode()) {
             return true;
         }
-        OAuthToken oAuthToken = getToken(outerOrder.resaler);
         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
@@ -135,12 +137,14 @@ public class TaobaoCouponUtil {
             i++;
         }
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(
-                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
         VmarketEticketResendRequest request = new VmarketEticketResendRequest();
         request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setVerifyCodes(verifyCodes.toString());
         request.setToken(token);
+
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(
+                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
+        OAuthToken oAuthToken = getTokenOfTaobaoCodePlatform(outerOrder.resaler);
         if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             request.setCodemerchantId(CODE_MERCHANT_ID);
         }
@@ -175,7 +179,6 @@ public class TaobaoCouponUtil {
             return ExtensionResult.INVALID_CALL;
         }
 
-        OAuthToken oAuthToken = getToken(coupon.order.getResaler());
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndYbqOrder", OuterOrderPartner.TB, coupon.order).first();
         if (outerOrder == null) {
             Logger.info("consume on taobao failed: outerOrder not found");
@@ -184,13 +187,15 @@ public class TaobaoCouponUtil {
         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(
-                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
         VmarketEticketConsumeRequest request = new VmarketEticketConsumeRequest();
         request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setVerifyCode(coupon.getSafeECouponSN());
         request.setConsumeNum(1L);
         request.setToken(token);
+
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(
+                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
+        OAuthToken oAuthToken = getTokenOfTaobaoCodePlatform(outerOrder.resaler);
         if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             request.setCodemerchantId(CODE_MERCHANT_ID);
         }
@@ -240,7 +245,7 @@ public class TaobaoCouponUtil {
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(
                 URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
-        OAuthToken oAuthToken = getToken(outerOrder.resaler);
+        OAuthToken oAuthToken = getTokenOfTaobaoCodePlatform(outerOrder.resaler);
         try {
             return taobaoClient.execute(request, oAuthToken.accessToken);
         } catch (ApiException e) {
@@ -252,7 +257,6 @@ public class TaobaoCouponUtil {
      * 在淘宝上撤销验证（冲正）
      */
     public static boolean reverseOnTaobao(ECoupon coupon) {
-        OAuthToken oAuthToken = getToken(coupon.order.getResaler());
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndYbqOrder", OuterOrderPartner.TB, coupon.order).first();
         if (outerOrder == null) {
             Logger.info("consume on taobao failed: outerOrder not found");
@@ -261,14 +265,20 @@ public class TaobaoCouponUtil {
         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(
-                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
         VmarketEticketReverseRequest request = new VmarketEticketReverseRequest();
         request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setReverseCode(coupon.getSafeECouponSN());
         request.setReverseNum(1L);
         request.setConsumeSecialNum(coupon.partnerCouponId);
         request.setToken(token);
+
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(
+                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
+        OAuthToken oAuthToken = getTokenOfTaobaoCodePlatform(outerOrder.resaler);
+        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
+            request.setCodemerchantId(CODE_MERCHANT_ID);
+        }
+
         if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             request.setCodemerchantId(CODE_MERCHANT_ID);
         }
@@ -286,13 +296,27 @@ public class TaobaoCouponUtil {
     }
 
 
-    public static OAuthToken getToken(Resaler resaler) {
+    /**
+     * 获取淘宝电子凭证平台的OauthToken与一般使用方式不同。
+     *
+     * 在与淘宝电子凭证平台交互时，如果是自己发码，需要使用自身淘宝账户的token，如果是码商发码，需要使用码商的token
+     *
+     * @param resaler 分销商
+     * @return 淘宝 OAuthToken
+     */
+    public static OAuthToken getTokenOfTaobaoCodePlatform(Resaler resaler) {
         if (resaler == null) {
             throw new RuntimeException("no resaler found");
         }
-        OAuthToken token = OAuthToken.find("byUserIdAndAccountType", resaler.id, AccountType.RESALER).first();
+        OAuthToken token;
+        if (resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
+            //如果是码商
+            token = OAuthToken.find("byServiceUserId", String.valueOf(CODE_MERCHANT_ID)).first();
+        }else {
+            token =  OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+        }
         if (token == null || token.isExpired()) {
-            throw new UnexpectedException("!!!!!!!!!!!!!!!!!! 淘宝 token 过期 请联系技术人员");
+            throw new UnexpectedException("!!!!!!!!!!!!!!!!!! 淘宝 token 过期 请联系技术人员(" + resaler.id + ")");
         }
         return token;
     }
