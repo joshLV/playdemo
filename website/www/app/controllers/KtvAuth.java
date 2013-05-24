@@ -6,12 +6,12 @@ import com.taobao.api.internal.util.WebUtils;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
+import models.resale.Resaler;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import play.mvc.Controller;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,12 +21,15 @@ import java.util.Map;
  *
  */
 public class KtvAuth extends Controller {
-    public static void taobao(String code, String error, String error_description) {
+    public static void taobao(String code, String resalerId, String error, String error_description) {
 
         if (StringUtils.isBlank(code)) {
-            render("KtvAuth/welcome.html");
+            render("KtvAuth/welcome.html", resalerId);
         }
 
+        if (StringUtils.isNotBlank(error) || StringUtils.isNotBlank(error_description)) {
+            renderText(error + "<br/>" + error_description);
+        }
 
         Map<String, String> param = new HashMap<>();
         param.put("grant_type", "authorization_code");
@@ -45,9 +48,14 @@ public class KtvAuth extends Controller {
             return;
         }
 
+        Resaler resaler = Resaler.findById(Long.parseLong(resalerId));
+        if (resaler == null) {
+            renderText("分销商不存在");
+        }
 
         JsonParser jsonParser = new JsonParser();
         JsonObject result = jsonParser.parse(jsonResponse).getAsJsonObject();
+
 
         String taobaoUserId = result.get("taobao_user_id").getAsString().trim();
         OAuthToken token = OAuthToken.find("byServiceUserIdAndWebSite", taobaoUserId, WebSite.TAOBAO).first();
@@ -56,19 +64,16 @@ public class KtvAuth extends Controller {
             token.webSite = WebSite.TAOBAO;
             token.accountType = AccountType.RESALER;
         }
+        token.identity = AccountType.RESALER + "_" + resaler.id;
         token.accessToken =  result.get("access_token").getAsString().trim();
 
         Date now = new Date();
-        token.accessTokenExpiresAt = DateUtils.addMilliseconds(now,result.get("expires_in").getAsInt());
+        token.accessTokenExpiresAt = DateUtils.addMilliseconds(now, result.get("expires_in").getAsInt());
 
         token.refreshToken = result.get("refresh_token").getAsString().trim();
         token.refreshTokenExpiresAt = DateUtils.addMilliseconds(now,result.get("r1_expires_in").getAsInt());
         token.save();
 
-        if (result.has(error)) {
-            renderText("授权错误: " + result.get("error").getAsString() + " : ");
-            return;
-        }
 
         render("KtvAuth/success.html", result);
     }
