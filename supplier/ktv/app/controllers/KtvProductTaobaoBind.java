@@ -54,6 +54,11 @@ public class KtvProductTaobaoBind extends Controller {
         render(shops, products);
     }
 
+    /**
+     * 根据淘宝URL，取得该淘宝的产品名称信息
+     *
+     * @param url 淘宝URL
+     */
     public static void queryTaobaoProduct(String url) {
         Matcher matcher = taobaoProductIdPattern.matcher(url);
         Supplier supplier = SupplierRbac.currentUser().supplier;

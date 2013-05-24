@@ -29,11 +29,13 @@
         border: 5px solid #ddd;
         padding: 5px 10px;
     }
+
     .bind_info {
         margin-top: 5px;;
         text-align: center;
         color: #c67605;
     }
+
     .bind_error {
         margin-top: 10px;;
         text-align: center;
@@ -170,7 +172,7 @@
                         $("#taobaoTitle").text(taobaoTitle);
                         $("#taobaoProductId").val(data.taobaoProductId);
                         if (taobaoTitle.indexOf(shopName) == -1 || taobaoTitle.indexOf(productName) == -1) {
-                            $(".bind_info").show().text("请确认所选择产品信息是否要和淘宝产品绑定！").attr("color","red");
+                            $(".bind_info").show().text("请确认所选择产品信息是否要和淘宝产品绑定！").attr("color", "red");
                         }
                     } else {
                         $(".bind_error").show().text("绑定失败：" + data.error);
