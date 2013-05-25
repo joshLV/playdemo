@@ -36,7 +36,7 @@ public class KtvAuth extends Controller {
         param.put("code", code);
         param.put("client_id", "21519243");
         param.put("client_secret", "cb95f0bb25cbd99917696314cdb6bc43");
-        param.put("redirect_uri", "http://api.quanfx.com/api/v1/ktv/taobao/welcome");
+        param.put("redirect_uri", "http://www.yibaiquan.com/ktv/taobao/welcome");
         param.put("scope", "item");
         param.put("view", "web");
 //        param.put("state", state);
