@@ -43,7 +43,7 @@ public class OAuthToken extends Model{
     public String extra;
 
     public boolean isExpired(){
-        return this.accessTokenExpiresAt.after(new Date());
+        return this.accessTokenExpiresAt.before(new Date());
     }
 
     public static OAuthToken getOAuthToken(String serviceUserId, WebSite webSite){
