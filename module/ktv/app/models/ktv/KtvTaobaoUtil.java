@@ -44,7 +44,9 @@ public class KtvTaobaoUtil {
      * @param priceScheduleId 价格策略ID
      */
     public static void updateTaobaoSkuByPriceSchedule(Long priceScheduleId) {
+        Logger.info("KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule method start>>>priceScheduleId:" + priceScheduleId);
         KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(priceScheduleId);
+        Logger.info("priceSchedule:" + priceSchedule);
         //找出该价格策略影响的所有门店
         List<KtvShopPriceSchedule> shopPriceSchedules = KtvShopPriceSchedule.find("bySchedule", priceSchedule).fetch();
         List<Shop> affectedShops = new ArrayList<>();
@@ -71,6 +73,7 @@ public class KtvTaobaoUtil {
      * @param productGoods KTV商品.
      */
     public static void updateTaobaoSkuByProductGoods(KtvProductGoods productGoods) {
+        Logger.info("KtvTaobaoUtil.updateTaobaoSkuByProductGoodse method start>>>priceSchedule:" + productGoods);
         //构建新的淘宝SKU列表
         List<KtvTaobaoSku> newTaobaoSkuList = buildTaobaoSku(productGoods);
         //从数据库中查出目前的淘宝SKU列表

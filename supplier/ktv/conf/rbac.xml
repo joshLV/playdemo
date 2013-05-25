@@ -3,13 +3,4 @@
     <role key="sales" text="商务销售"/>
 
     <permission key="KTV" text="KTV管理" roles="sales"/>
-
-    <navigation key="ktv" text="KTV管理" action="KtvRoomTypes.index" display-order="101">
-        <navigation key="ktv_rooms" text="包厢类型" permissions="KTV">
-            <navigation key="ktv_rooms_type" text="包厢类型" action="KtvRoomTypes.index"
-                        permissions="KTV"/>
-            <navigation key="sales_promotion" text="促销活动" action="SalesPromotions.index"
-                        permissions="KTV"/>
-        </navigation>
-    </navigation>
 </application>

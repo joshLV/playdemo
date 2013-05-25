@@ -23,6 +23,7 @@ import models.taobao.KtvSkuMessageUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
+import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -123,6 +124,7 @@ public class KtvProductTaobaoBind extends Controller {
             renderJSON("{\"error\":\"淘宝产品编号不存在\"}");
         }
         KtvProductGoods ktvProductGoods = KtvProductGoods.findGoods(shop, product);
+        Logger.info(ktvProductGoods+">>>>");
         SupplierUser supplierUser = SupplierRbac.currentUser();
         Resaler resaler = Resaler.findById(supplierUser.supplier.defaultResalerId);
         if (ktvProductGoods == null) {
@@ -161,7 +163,10 @@ public class KtvProductTaobaoBind extends Controller {
             resalerProduct.creator(supplierUser.id).partnerProduct(taobaoProductId)
                     .status(ResalerProductStatus.UPLOADED).save();
 
+            JPA.em().flush();
+
             //更新sku信息,加到mq
+            Logger.info(ktvProductGoods.id+"=========");
             KtvSkuMessageUtil.send(null, ktvProductGoods.id);
 
             renderJSON("{\"info\":\"" + shop.name + product.name + "\",\"taobaoProductId\":\"" + taobaoProductId + "\"}");

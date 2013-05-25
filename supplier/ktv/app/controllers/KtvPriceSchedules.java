@@ -64,14 +64,14 @@ public class KtvPriceSchedules extends Controller {
         render(shops, shop, roomType, product);
     }
 
-    public static void jsonSearch(Date startDay, Date endDay, Shop shop, KtvRoomType roomType,KtvProduct product) {
+    public static void jsonSearch(Date startDay, Date endDay, Shop shop, KtvRoomType roomType, KtvProduct product) {
         if (startDay.after(endDay)) {
             error();
         }
         List<KtvPriceSchedule> priceSchedules = KtvShopPriceSchedule.find(
                 "select k.schedule from KtvShopPriceSchedule k where k.shop = ? and k.schedule.roomType = ? " +
                         "and k.schedule.startDay <= ? and k.schedule.endDay >= ? and k.schedule.product = ?",
-                shop, roomType, endDay, startDay,product).fetch();
+                shop, roomType, endDay, startDay, product).fetch();
         List<Map<String, Object>> result = new ArrayList<>();
         for (KtvPriceSchedule schedule : priceSchedules) {
             Map<String, Object> o = new HashMap<>();
@@ -160,8 +160,11 @@ public class KtvPriceSchedules extends Controller {
             strategy.save();
 
         }
+
+        JPA.em().flush();
+
         //把价格策略加到mq
-        KtvSkuMessageUtil.send(priceStrategy.id,null);
+        KtvSkuMessageUtil.send(priceStrategy.id, null);
 
         index(shopCountMap.keySet().iterator().next().id, priceStrategy.roomType, priceStrategy.product.id);
     }
@@ -318,7 +321,7 @@ public class KtvPriceSchedules extends Controller {
 
         if (updSchedule.price.compareTo(price) != 0) {
             //把价格策略加到mq
-            KtvSkuMessageUtil.send(id,null);
+            KtvSkuMessageUtil.send(id, null);
         }
         index(shop.id, updSchedule.roomType, updSchedule.product.id);
     }

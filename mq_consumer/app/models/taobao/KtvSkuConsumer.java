@@ -38,6 +38,7 @@ import java.util.*;
 public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
     @Override
     public void consumeWithTx(KtvSkuMessage message) {
+        Logger.info("message.ktvProductGoodsId:%s,message.scheduledId:%s", message.ktvProductGoodsId, message.scheduledId);
         //根据价格策略更新sku
         if (message.ktvProductGoodsId == null && message.scheduledId != null) {
             KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(message.scheduledId);
@@ -46,6 +47,8 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
             KtvProductGoods ktvProductGoods = KtvProductGoods.findById(message.ktvProductGoodsId);
             if (ktvProductGoods != null) {
                 KtvTaobaoUtil.updateTaobaoSkuByProductGoods(ktvProductGoods);
+            } else {
+                Logger.info("KtvSkuConsumer process faild:ktvProductGoods is null");
             }
         }
     }
