@@ -276,7 +276,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                         int endTime = Integer.parseInt(matcher.group(2));
 
                         roomOrderInfo.scheduledTime = startTime;
-                        roomOrderInfo.duration = endTime - startTime + 1;
+                        roomOrderInfo.duration = endTime - startTime;
                     } else {
                         Logger.error("parse taobao sku failed(3): " + property);
                         return null;
