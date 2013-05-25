@@ -5,6 +5,7 @@ import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.ItemGetRequest;
+import com.taobao.api.request.ItemUpdateRequest;
 import com.taobao.api.response.ItemGetResponse;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
@@ -124,7 +125,6 @@ public class KtvProductTaobaoBind extends Controller {
             renderJSON("{\"error\":\"淘宝产品编号不存在\"}");
         }
         KtvProductGoods ktvProductGoods = KtvProductGoods.findGoods(shop, product);
-        Logger.info(ktvProductGoods+">>>>");
         SupplierUser supplierUser = SupplierRbac.currentUser();
         Resaler resaler = Resaler.findById(supplierUser.supplier.defaultResalerId);
         if (ktvProductGoods == null) {
@@ -165,10 +165,23 @@ public class KtvProductTaobaoBind extends Controller {
 
             JPA.em().flush();
 
-            //更新sku信息,加到mq
-            Logger.info(ktvProductGoods.id+"=========");
-            KtvSkuMessageUtil.send(null, ktvProductGoods.id);
+            //更新淘宝SKU
+            KtvTaobaoUtil.updateTaobaoSkuByProductGoods(ktvProductGoods);
 
+            //更新外部编码
+            TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resaler.taobaoCouponAppKey,
+                    resaler.taobaoCouponAppSecretKey);
+            //找到淘宝的token
+            OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+
+            ItemUpdateRequest itemUpdateRequest = new ItemUpdateRequest();
+            itemUpdateRequest.setOuterId(String.valueOf(resalerProduct.goodsLinkId));
+            itemUpdateRequest.setNumIid(Long.parseLong(taobaoProductId));
+            try {
+                taobaoClient.execute(itemUpdateRequest, token.accessToken);
+            }catch (ApiException e) {
+                renderJSON("{\"error\":\"更新淘宝外部商家编码失败,请手动在淘宝后台添加外部编码：" + resalerProduct.goodsLinkId + "\"}");
+            }
             renderJSON("{\"info\":\"" + shop.name + product.name + "\",\"taobaoProductId\":\"" + taobaoProductId + "\"}");
         } else {
             Goods goods = Goods.find("select g from Goods g join g.shops s where g.supplierId=? and g.deleted=? and s.id=? and g.status =? " +
