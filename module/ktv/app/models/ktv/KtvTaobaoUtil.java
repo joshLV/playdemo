@@ -204,7 +204,7 @@ public class KtvTaobaoUtil {
                         continue;
                     }
 
-                    sku.setTimeRange(startTime + "点至" + (startTime + productGoods.product.duration - 1) + "点");
+                    sku.setTimeRange(startTime + "点至" + (startTime + productGoods.product.duration) + "点");
                     sku.createdAt = new Date();
                     taobaoSkuList.add(sku);
                 }

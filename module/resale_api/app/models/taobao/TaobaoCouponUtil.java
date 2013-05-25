@@ -311,7 +311,7 @@ public class TaobaoCouponUtil {
         OAuthToken token;
         if (resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             //如果是码商
-            token = OAuthToken.find("byServiceUserId", String.valueOf(CODE_MERCHANT_ID)).first();
+            token = OAuthToken.find("byServiceUserIdAndWebSite", String.valueOf(CODE_MERCHANT_ID), WebSite.TAOBAO).first();
         }else {
             token =  OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
         }
