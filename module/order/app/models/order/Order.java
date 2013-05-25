@@ -827,7 +827,7 @@ public class Order extends Model {
         Date expireAt = null;
         if (!isWebsiteOrder()) {
             String loginName = this.getResaler().loginName;
-            String partner=this.getResaler().partner;
+            String partner = this.getResaler().partner;
             operator = "分销商：" + loginName;
             //使用淘宝传过来的截止日期
             if ("TB".equals(partner)) {
@@ -884,6 +884,8 @@ public class Order extends Model {
                     if (isKtvSupplier && roomOrderInfo != null) {
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
                         eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + "," + roomOrderInfo.getTimeRange();
+                        eCoupon.effectiveAt = new Date();
+                        eCoupon.expireAt = roomOrderInfo.scheduledDay;
                         eCoupon.save();
                     }
 
