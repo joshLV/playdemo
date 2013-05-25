@@ -21,14 +21,14 @@ import java.util.List;
  */
 
 @With({SupplierRbac.class, SupplierInjector.class})
-@ActiveNavigation("user_search")
+@ActiveNavigation("users")
 public class SupplierUsers extends Controller {
     public static int PAGE_SIZE = 15;
 
     /**
      * 操作员一览
      */
-    @ActiveNavigation("user_search")
+    @ActiveNavigation("users")
     public static void index() {
         Long supplierUserId = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
@@ -50,7 +50,7 @@ public class SupplierUsers extends Controller {
     /**
      * 操作员添加页面
      */
-    @ActiveNavigation("user_add")
+    @ActiveNavigation("users")
     public static void add() {
         List rolesList = SupplierRole.findRoleOrderById();
         Long supplierId = SupplierRbac.currentUser().supplier.id;
@@ -63,7 +63,7 @@ public class SupplierUsers extends Controller {
      *
      * @param supplierUser 操作员信息
      */
-    @ActiveNavigation("user_add")
+    @ActiveNavigation("users")
     public static void create(@Valid SupplierUser supplierUser) {
         checkValid(null, supplierUser);
         supplierUser.create(SupplierRbac.currentUser().supplier.id);

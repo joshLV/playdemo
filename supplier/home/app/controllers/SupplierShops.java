@@ -24,7 +24,7 @@ import java.util.List;
  * Time: 10:41 AM
  */
 @With({SupplierRbac.class, SupplierInjector.class})
-@ActiveNavigation("shops_index")
+@ActiveNavigation("shops")
 public class SupplierShops extends Controller {
 
     private static final int PAGE_SIZE = 20;

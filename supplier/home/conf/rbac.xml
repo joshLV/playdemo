@@ -13,12 +13,15 @@
     </permission>
 
     <permission key="HOME" text="系统主面板" roles="admin,account"/>
+    <permission key="SHOPS" text="门店管理" roles="admin"/>
+    <permission key="USERS" text="员工管理" roles="admin"/>
     <permission key="ACCOUNT" text="账户管理" roles="account">
         <permission key="ACCOUNT_REPORT" text="账户明细" roles="account"/>
         <permission key="ACCOUNT_WITHDRAW" text="账户提现" roles="account"/>
     </permission>
     <permission key="DOWNLOAD_ORDER_SHIPPING" text="下载发货单" roles="admin"/>
     <permission key="UPLOAD_ORDER_SHIPPING" text="上传发货单" roles="admin"/>
+    <permission key="HOME" text="系统主面板" roles="admin,account"/>
 
     <permission key="FINANCE" text="报表" roles="account,sales">
         <permission key="REPORT" text="财务报表" roles="account,sales"/>
@@ -26,6 +29,7 @@
 
     <navigation key="homeapp" text="面板" action="SupplierHome.index" display-order="-1">
         <navigation key="home" text="主面板" action="SupplierHome.index"/>
+        <navigation key="home" text="主面板" action="SUpplierUsers.index"/>
     </navigation>
     <navigation key="account" text="财务管理" action="AccountSequences.index" display-order="100">
         <navigation key="account_bar" text="账户" permissions="ACCOUNT_REPORT">

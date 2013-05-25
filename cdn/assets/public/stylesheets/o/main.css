@@ -23,6 +23,7 @@ table td.amount {
     *zoom: 1;
 }
 .pagination li {
+    list-style: none;
     float: left;
 }
 .pagination a {
