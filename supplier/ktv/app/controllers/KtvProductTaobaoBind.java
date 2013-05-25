@@ -64,7 +64,7 @@ public class KtvProductTaobaoBind extends Controller {
             if (token == null) {
                 render("KtvProductTaobaoBind/auth.html", resaler);
             }
-        }else {
+        } else {
             render("KtvProductTaobaoBind/auth.html");
         }
 
@@ -165,21 +165,27 @@ public class KtvProductTaobaoBind extends Controller {
 
             JPA.em().flush();
 
+            TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resaler.taobaoCouponAppKey,
+                    resaler.taobaoCouponAppSecretKey);
+
+            //找到淘宝的token
+            OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+            //判断类目是否为KTV
+            boolean isKtvPro = checkKtvProperty(taobaoClient, token, resalerProduct.partnerProductId);
+            if (!isKtvPro) {
+                renderJSON("{\"error\":\"该淘宝商品类目不是KTV，请手动在淘宝后台把此商品类目改为KTV！\"}");
+            }
+
             //更新淘宝SKU
             KtvTaobaoUtil.updateTaobaoSkuByProductGoods(ktvProductGoods);
 
-            //更新外部编码
-            TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resaler.taobaoCouponAppKey,
-                    resaler.taobaoCouponAppSecretKey);
-            //找到淘宝的token
-            OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
-
+            //更新淘宝外部编码
             ItemUpdateRequest itemUpdateRequest = new ItemUpdateRequest();
             itemUpdateRequest.setOuterId(String.valueOf(resalerProduct.goodsLinkId));
             itemUpdateRequest.setNumIid(Long.parseLong(taobaoProductId));
             try {
                 taobaoClient.execute(itemUpdateRequest, token.accessToken);
-            }catch (ApiException e) {
+            } catch (ApiException e) {
                 renderJSON("{\"error\":\"更新淘宝外部商家编码失败,请手动在淘宝后台添加外部编码：" + resalerProduct.goodsLinkId + "\"}");
             }
             renderJSON("{\"info\":\"" + shop.name + product.name + "\",\"taobaoProductId\":\"" + taobaoProductId + "\"}");
@@ -201,5 +207,24 @@ public class KtvProductTaobaoBind extends Controller {
             }
         }
         renderJSON("{\"error\":\"该商品已经绑定过了\"}");
+    }
+
+    /**
+     * 判断该淘宝商品是否属于ktv
+     */
+    private static boolean checkKtvProperty(TaobaoClient taobaoClient, OAuthToken token, String partnerTaobaoId) {
+        ItemGetRequest req = new ItemGetRequest();
+        req.setFields("cid");
+        req.setNumIid(Long.parseLong(partnerTaobaoId));
+        try {
+            ItemGetResponse response = taobaoClient.execute(req, token.accessToken);
+            if (StringUtils.isBlank(response.getErrorCode()) && response.getItem().getCid().equals(50019081L)) {
+                return true;
+            }
+        } catch (ApiException e) {
+            Logger.info(e, "get taobao props ,not ktv");
+            return false;
+        }
+        return false;
     }
 }

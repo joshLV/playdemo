@@ -3,12 +3,8 @@ package models.ktv;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
-import com.taobao.api.request.ItemSkuAddRequest;
-import com.taobao.api.request.ItemSkuDeleteRequest;
-import com.taobao.api.request.ItemSkuUpdateRequest;
-import com.taobao.api.response.ItemSkuAddResponse;
-import com.taobao.api.response.ItemSkuDeleteResponse;
-import com.taobao.api.response.ItemSkuUpdateResponse;
+import com.taobao.api.request.*;
+import com.taobao.api.response.*;
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
@@ -95,6 +91,7 @@ public class KtvTaobaoUtil {
             if (StringUtils.isBlank(resalerProduct.partnerProductId)) {
                 continue;
             }
+
             for (Map.Entry<String, List<KtvTaobaoSku>> entry : diffResult.entrySet()) {
                 switch (entry.getKey()) {
                     case "add":
