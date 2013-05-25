@@ -68,7 +68,7 @@ public class KtvAuth extends Controller {
         token.accessToken =  result.get("access_token").getAsString().trim();
 
         Date now = new Date();
-        token.accessTokenExpiresAt = DateUtils.addMilliseconds(now, result.get("expires_in").getAsInt());
+        token.accessTokenExpiresAt = DateUtils.addSeconds(now, result.get("expires_in").getAsInt());
 
         token.refreshToken = result.get("refresh_token").getAsString().trim();
         token.refreshTokenExpiresAt = DateUtils.addMilliseconds(now,result.get("r1_expires_in").getAsInt());
