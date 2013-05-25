@@ -245,7 +245,7 @@ public class TaobaoCouponUtil {
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(
                 URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
-        OAuthToken oAuthToken = getTokenOfTaobaoCodePlatform(outerOrder.resaler);
+        OAuthToken oAuthToken = OAuthToken.getOAuthToken(outerOrder.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
         try {
             return taobaoClient.execute(request, oAuthToken.accessToken);
         } catch (ApiException e) {
