@@ -83,7 +83,7 @@ public class KtvRoomOrderInfo extends Model {
     }
 
     public String getTimeRange(){
-       return this.scheduledTime + "点至" + (this.scheduledTime + this.duration - 1) + "点";
+       return this.scheduledTime + "点至" + (this.scheduledTime + this.duration) + "点";
     }
 
     /*

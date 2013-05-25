@@ -204,7 +204,7 @@
                 }
                 selectedHours.push(hour);
                 ele.addClass("hour-selected");
-                ele.text(hour + ":00 - " + (hour + duration - 1) + ":00");
+                ele.text(hour + ":00 - " + (hour + duration) + ":00");
                 ele.animate({width: (duration * 40 - 4) + "px"}, 100);
             }
             $("#inputStartTimes").val(selectedHours.join(","));
