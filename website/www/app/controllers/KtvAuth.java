@@ -21,10 +21,10 @@ import java.util.Map;
  *
  */
 public class KtvAuth extends Controller {
-    public static void taobao(String code, String resalerId, String error, String error_description) {
+    public static void taobao(String code, String error, String error_description, String state) {
 
         if (StringUtils.isBlank(code)) {
-            render("KtvAuth/welcome.html", resalerId);
+            render("KtvAuth/welcome.html", state);
         }
 
         if (StringUtils.isNotBlank(error) || StringUtils.isNotBlank(error_description)) {
@@ -48,7 +48,7 @@ public class KtvAuth extends Controller {
             return;
         }
 
-        Resaler resaler = Resaler.findById(Long.parseLong(resalerId));
+        Resaler resaler = Resaler.findById(Long.parseLong(state));
         if (resaler == null) {
             renderText("分销商不存在");
         }
