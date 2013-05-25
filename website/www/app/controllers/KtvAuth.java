@@ -58,7 +58,6 @@ public class KtvAuth extends Controller {
         if (token == null) {
             token = new OAuthToken();
             token.webSite = WebSite.TAOBAO;
-            token.accountType = AccountType.RESALER;
         }
 
         //判断是不是码商登录
@@ -73,6 +72,7 @@ public class KtvAuth extends Controller {
                 renderText("分销商不存在");
                 return;
             }
+            token.accountType = AccountType.RESALER;
             token.identity = AccountType.RESALER + "_" + resaler.id;
         }else {
             //否则 保存为 TAOBAO_{taobao.userid}
