@@ -97,8 +97,8 @@ error:'supplier.operator'}
 
     <div class="controls">
         <select name="supplier.defaultResalerId" class="span2">
-        #{list items:resalerList,as:'resaler'}
             <option value="">--请选择--</option>
+        #{list items:resalerList,as:'resaler'}
             <option value="${resaler.id}"
                     #{if resaler.id==supplier?.defaultResalerId}selected #{/if}>${resaler.userName}</option>
         #{/list}
