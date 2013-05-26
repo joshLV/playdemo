@@ -11,6 +11,7 @@ import models.oauth.OAuthToken;
 import models.oauth.WebSite;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
+import models.sales.Goods;
 import models.sales.ResalerProduct;
 import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
@@ -71,7 +72,7 @@ public class KtvTaobaoUtil {
     public static void updateTaobaoSkuByProductGoods(KtvProductGoods productGoods) {
         Logger.info("KtvTaobaoUtil.updateTaobaoSkuByProductGoodse method start>>>priceSchedule:" + productGoods);
         //构建新的淘宝SKU列表
-        List<KtvTaobaoSku> newTaobaoSkuList = buildTaobaoSku(productGoods);
+        List<KtvTaobaoSku> newTaobaoSkuList = buildTaobaoSku(productGoods.shop, productGoods.product);
         //从数据库中查出目前的淘宝SKU列表
         List<KtvTaobaoSku> oldTaobaoSkuList = KtvTaobaoSku.find("byGoods", productGoods.goods).fetch();
         //比较两者，得出三个列表，分别是：1、应该添加到淘宝的SKU列表；2、应该更新的淘宝SKU列表；3、应该删除的淘宝SKU列表
@@ -117,12 +118,15 @@ public class KtvTaobaoUtil {
     }
 
     /**
-     * 构建新的淘宝SKU列表
+     * 构建新的淘宝SKU列表.
+     * 如果传入的 shop 和 product 有对应的 KtvProductGoods，那么返回的sku中就有goods，
+     * 否则就没有,只有SKU的日期、时间价格和数量这几个信息
      *
-     * @param productGoods KTV商品
+     * @param shop 门店
+     * @param product KTV产品
      * @return 新的淘宝SKU列表
      */
-    public static List<KtvTaobaoSku> buildTaobaoSku(KtvProductGoods productGoods) {
+    public static List<KtvTaobaoSku> buildTaobaoSku(Shop shop, KtvProduct product) {
         List<KtvTaobaoSku> taobaoSkuList = new ArrayList<>();//结果集
 
         Calendar calendar = Calendar.getInstance();
@@ -142,8 +146,8 @@ public class KtvTaobaoUtil {
 
         Date endDay = DateUtils.addDays(today, 6);
 
-        query.setParameter("shop", productGoods.shop);
-        query.setParameter("product", productGoods.product);
+        query.setParameter("shop", shop);
+        query.setParameter("product", product);
         query.setParameter("startDay", today);
         query.setParameter("endDay", endDay);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
@@ -151,7 +155,15 @@ public class KtvTaobaoUtil {
 
 
         //查出该门店的该产品今天已经卖出、或者被锁定的房间信息
-        List<KtvRoomOrderInfo> roomOrderInfoList = KtvRoomOrderInfo.findScheduled(today, productGoods);
+        KtvProductGoods productGoods = KtvProductGoods.find("byShopAndProduct", shop, product).first();
+        List<KtvRoomOrderInfo> roomOrderInfoList;
+        Goods goods = null;
+        if (productGoods == null) {
+            roomOrderInfoList = new ArrayList<>();
+        }else {
+            goods = productGoods.goods;
+            roomOrderInfoList = KtvRoomOrderInfo.findScheduled(today, productGoods);
+        }
         //处理从今天开始往后的7天内，每一天的sku
         for (int i = 0; i < 7; i++) {
             Date day = DateUtils.addDays(today, i);
@@ -171,13 +183,13 @@ public class KtvTaobaoUtil {
                 }
 
                 //取出该门店在该价格策略上设置的房间数
-                KtvShopPriceSchedule shopPriceSchedule = KtvShopPriceSchedule.find("byShopAndSchedule", productGoods.shop, ps).first();
+                KtvShopPriceSchedule shopPriceSchedule = KtvShopPriceSchedule.find("byShopAndSchedule", shop, ps).first();
 
                 //取出该房型下的时间安排
                 Set<Integer> startTimeArray = ps.getStartTimesAsSet();
                 for (Integer startTime : startTimeArray) {
                     KtvTaobaoSku sku = new KtvTaobaoSku();
-                    sku.goods = productGoods.goods;
+                    sku.goods = goods;
                     sku.setRoomType(ps.roomType.getTaobaoId());
                     sku.setDate(dateFormat.format(day));
                     sku.price = ps.price;
@@ -188,10 +200,10 @@ public class KtvTaobaoUtil {
                         if (orderInfo.scheduledDay.compareTo(day) != 0) {
                             continue;
                         }
-                        if (orderInfo.duration != productGoods.product.duration) {
+                        if (orderInfo.duration != product.duration) {
                             continue;
                         }
-                        if (orderInfo.scheduledTime < (startTime + productGoods.product.duration)
+                        if (orderInfo.scheduledTime < (startTime + product.duration)
                                 && (orderInfo.scheduledTime + orderInfo.duration) > startTime) {
                             sku.quantity -= 1;
                         }
@@ -201,7 +213,7 @@ public class KtvTaobaoUtil {
                         continue;
                     }
 
-                    sku.setTimeRange(startTime + "点至" + (startTime + productGoods.product.duration) + "点");
+                    sku.setTimeRange(startTime + "点至" + (startTime + product.duration) + "点");
                     sku.createdAt = new Date();
                     taobaoSkuList.add(sku);
                 }
@@ -209,6 +221,30 @@ public class KtvTaobaoUtil {
         }
         return taobaoSkuList;
 
+    }
+
+    /**
+     * 返回 以 包厢 -》 日期 -》 SKU 三级形式的 Map
+     *
+     * @param skuList
+     * @return
+     */
+    public static Map<String, Map<String, List<KtvTaobaoSku>>> taobaoSkuListToMap(List<KtvTaobaoSku> skuList) {
+        Map<String, Map<String, List<KtvTaobaoSku>>> result = new HashMap<>();
+        for (KtvTaobaoSku sku : skuList) {
+            Map<String, List<KtvTaobaoSku>> skuListByRoomType = result.get(sku.getRoomType());
+            if (skuListByRoomType == null) {
+                skuListByRoomType = new HashMap<>();
+                result.put(sku.getRoomType(), skuListByRoomType);
+            }
+            List<KtvTaobaoSku> skuListByDate = skuListByRoomType.get(sku.getDate());
+            if (skuListByDate == null) {
+                skuListByDate = new ArrayList<>();
+                skuListByRoomType.put(sku.getDate(), skuListByDate);
+            }
+            skuListByDate.add(sku);
+        }
+        return result;
     }
 
     /**

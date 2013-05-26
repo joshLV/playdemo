@@ -176,11 +176,4 @@ public class ResalerProduct extends Model {
         this.status = status;
         return this;
     }
-
-    public static ResalerProduct getResalerProduct(Goods goods, Long resalerId,
-                                                   OuterOrderPartner partner) {
-        ResalerProduct product = ResalerProduct.find("goods=? and partner=? and resaler.id=?",
-                goods, partner, resalerId).first();
-        return product == null ? null : product;
-    }
 }

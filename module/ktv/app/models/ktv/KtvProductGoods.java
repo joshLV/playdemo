@@ -36,8 +36,4 @@ public class KtvProductGoods extends Model {
     @ManyToOne
     @JoinColumn(name = "product_id")
     public KtvProduct product;
-
-    public static KtvProductGoods findGoods(Shop shop, KtvProduct product) {
-        return KtvProductGoods.find("shop=? and product=? ", shop, product).first();
-    }
 }

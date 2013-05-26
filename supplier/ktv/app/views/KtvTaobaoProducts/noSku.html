@@ -1,0 +1,41 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'KTV淘宝产品发布' /}
+#{set menu:"ktv_taobao_products" /}
+#{set 'moreStyles'}
+<style type="text/css">
+    .field-group label {
+    font-weight:normal;
+    }
+    .sidebar {
+    display:none
+    }
+    .section {
+    float:none;
+    width:auto;
+    }
+    #message{
+    display:none;
+    }
+</style>
+#{/set}
+
+<div class="body">
+
+    <form action="/ktv/taobao-product/publish" method="post" class="form-horizontal" id="form">
+        <div class="bd">
+            <h2>发布:${shop.name}-${product.name}</h2>
+
+            <div class="field-group">
+                <label>包厢信息</label>
+                <div style="max-height:400px; overflow-y:auto; border-top:1px solid #e3e3e3;border-bottom:1px solid #e3e3e3">
+                    <div style="text-align:center">
+                        未设置10天内的可用价格策略，无法发布商品。请首先<a href="/ktv/price-schedule/new">设置价格策略</a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+</div>
+

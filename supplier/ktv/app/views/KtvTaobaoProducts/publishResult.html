@@ -1,0 +1,48 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'KTV淘宝产品发布' /}
+#{set menu:"ktv_taobao_products" /}
+#{set 'moreStyles'}
+<style type="text/css">
+    .field-group label {
+    font-weight:normal;
+    }
+    .sidebar {
+    display:none
+    }
+    .section {
+    float:none;
+    width:auto;
+    }
+    #message{
+    display:none;
+    }
+</style>
+#{/set}
+
+<div class="body">
+
+    <form action="/ktv/taobao-product/publish" method="post" class="form-horizontal" id="form">
+        <div class="bd">
+            <h2>发布:${shop.name}-${product.name}</h2>
+
+            <div class="field-group">
+                <label>发布结果</label>
+                <div style="max-height:400px; overflow-y:auto; border-top:1px solid #e3e3e3;border-bottom:1px solid #e3e3e3">
+                    <div style="text-align:center">
+                        #{if error}
+                            发布失败：${error}
+                        #{/if}
+                        #{else}
+                            发布成功：
+                        <a href="/ktv/taobao-products">返回</a> |
+                        <a href="http://item.taobao.com/item.htm?id=${taobaoProductId}" target="_blank">查看淘宝商品</a>
+                        #{/else}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+</div>
+
