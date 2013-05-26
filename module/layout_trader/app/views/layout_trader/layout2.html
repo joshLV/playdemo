@@ -88,7 +88,8 @@
             <li><a #{if "return-goods".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/real/return-entries')}">退货管理</a></li>
         #{/if}
             #{if navigation.ContextedPermission.hasPermission("KTV") && ("1".equals(ktvSupplier))}
-                <li><a #{if "ktv_product_bind".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/product-bind')}">KTV产品绑定</a></li>
+                *{<li><a #{if "ktv_product_bind".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/product-bind')}">KTV产品绑定</a></li>}*
+                <li><a #{if "ktv_taobao_products".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/taobao-products')}">淘宝产品管理</a></li>
                 <li><a #{if "ktv_price".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/price-schedule')}">KTV价格策略</a></li>
                 *{
                 <li><a #{if "ktv_promotion".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/promotion/new')}">促销活动</a></li>

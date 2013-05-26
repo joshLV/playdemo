@@ -1,0 +1,53 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'KTV淘宝产品管理' /}
+#{set menu:"ktv_taobao_products" /}
+#{set 'moreStyles'}
+#{/set}
+
+<div class="body">
+
+#{form @KtvProductTaobaoBind.index() , id:'creationForm',class:"form-horizontal" }
+    <div class="bd">
+        <h2>${title}</h2>
+
+        <table cellspacing="0" cellpadding="0" border="0" class="standard-table">
+            <thead>
+            <tr>
+                <th style="width: 150px">门店</th>
+                <th style="width: 200px;">产品名称</th>
+                <th>操 作</th>
+            </tr>
+            </thead>
+            <tbody>
+                #{list items:shops, as:'shop' }
+                    #{list items:products, as:'product' }
+
+                    %{
+                        ktvProduct = models.ktv.KtvProductGoods.find("byShopAndProduct", shop,product).first() ;
+                        if (ktvProduct !=null){
+                            resalerProduct = models.sales.ResalerProduct.find("byGoodsAndResalerAndPartner", ktvProduct.goods,resaler,models.order.OuterOrderPartner.TB).first();
+                        }
+                    }%
+                    <tr>
+                        #{if product_index == 1}
+                            <td rowspan="${products.size()}">${shop.name}</td>
+                        #{/if}
+
+                        <td>${product.name}</td>
+                        <td id="id_${shop.id}_${product.id}">
+                            #{if resalerProduct }
+                                <a href="${resalerProduct.url}">编辑</a> |
+                                <a href="${resalerProduct.url}">查看</a>
+                            #{/if}
+                            #{else}
+                                <a href="/ktv/taobao-product/publish?shop.id=${shop.id}&product.id=${product.id}" target="_blank">发布</a>
+                            #{/else}
+                        </td>
+                    </tr>
+                    #{/list}
+                #{/list}
+            </tbody>
+        </table>
+    </div>
+#{/form}
+</div>

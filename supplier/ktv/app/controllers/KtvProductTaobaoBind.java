@@ -124,7 +124,9 @@ public class KtvProductTaobaoBind extends Controller {
         if (StringUtils.isBlank(taobaoProductId)) {
             renderJSON("{\"error\":\"淘宝产品编号不存在\"}");
         }
-        KtvProductGoods ktvProductGoods = KtvProductGoods.findGoods(shop, product);
+
+        KtvProductGoods ktvProductGoods =  KtvProductGoods.find("byShopAndProduct", shop, product).first();
+
         SupplierUser supplierUser = SupplierRbac.currentUser();
         Resaler resaler = Resaler.findById(supplierUser.supplier.defaultResalerId);
         if (ktvProductGoods == null) {
@@ -195,7 +197,10 @@ public class KtvProductTaobaoBind extends Controller {
             if (goods == null) {
                 renderJSON("{\"error\":\"没有找到该门店下对应的产品信息！\"}");
             }
-            ResalerProduct resalerProduct = ResalerProduct.getResalerProduct(goods, resaler.id, OuterOrderPartner.TB);
+
+            ResalerProduct resalerProduct =  ResalerProduct.find("byGoodsAndResalerAndPartner",
+                    goods, resaler, OuterOrderPartner.TB).first();
+
             if (resalerProduct == null) {
                 resalerProduct = ResalerProduct.alloc(OuterOrderPartner.TB, resaler, goods);
                 resalerProduct.partnerProductId = taobaoProductId;

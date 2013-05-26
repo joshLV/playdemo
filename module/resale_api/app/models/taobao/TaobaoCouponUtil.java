@@ -32,6 +32,7 @@ public class TaobaoCouponUtil {
     public static final String CODE_MERCHANT_APP_KEY = "21519243";
     public static final String CODE_MERCHANT_APP_SECRET_KEY = "cb95f0bb25cbd99917696314cdb6bc43";
     public static final long CODE_MERCHANT_ID = 1705483381L;
+    public static final String CODE_MERCHANT_NICK = "kunranma";
 
     /**
      * 告诉淘宝我券已经发过了.
