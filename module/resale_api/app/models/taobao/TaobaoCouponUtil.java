@@ -33,6 +33,7 @@ public class TaobaoCouponUtil {
     public static final String CODE_MERCHANT_APP_SECRET_KEY = "cb95f0bb25cbd99917696314cdb6bc43";
     public static final long CODE_MERCHANT_ID = 1705483381L;
     public static final String CODE_MERCHANT_NICK = "kunranma";
+    public static final String CODE_MERCHANT_POSID = "7517";
 
     /**
      * 告诉淘宝我券已经发过了.
@@ -199,6 +200,7 @@ public class TaobaoCouponUtil {
         OAuthToken oAuthToken = getTokenOfTaobaoCodePlatform(outerOrder.resaler);
         if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             request.setCodemerchantId(CODE_MERCHANT_ID);
+            request.setPosid(CODE_MERCHANT_POSID);
         }
 
         Logger.info("tell taobao coupon verify request. orderId: %s, verifyCode: %s, token: %s",

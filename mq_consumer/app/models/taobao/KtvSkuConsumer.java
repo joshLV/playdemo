@@ -18,7 +18,7 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
         try {
             Thread.sleep(5000l);
         } catch (InterruptedException e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
         Logger.info("message.ktvProductGoodsId:%s,message.scheduledId:%s", message.ktvProductGoodsId, message.scheduledId);
         //根据价格策略更新sku
