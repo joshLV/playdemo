@@ -9,7 +9,7 @@
 <spring:theme code="mobile.custom.css.file" var="mobileCss" text="" />
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 	<head>
-        <title>券市场 - 商户中心 - 用户登录</title>
+        <title>一百券 - 商户中心 - 用户登录</title>
         <c:choose>
            <c:when test="${not empty requestScope['isMobile'] and not empty mobileCss}">
                 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />

@@ -6,7 +6,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>券市场 - 商户中心 - 用户登录</title>
+    <title>一百券 - 商户中心 - 用户登录</title>
     <link rel="stylesheet" href="css/traders-login.css"/>
     <script src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
     <% String url = request.getServerName();
@@ -26,7 +26,7 @@
 <body>
 <form:form method="post" id="fm1" cssClass="fm-v clearfix" commandName="${commandName}" htmlEscape="true">
 <div id="login">
-    <h1>券市场<span> - 商户管理中心<span></h1>
+    <h1>一百券<span> - 商户管理中心<span></h1>
 
     <div class="item">
         <label>用户名：</label>
@@ -56,7 +56,7 @@
     </div>
     </form:form>
 </div>
-<div id="footer">©2012 券市场 quanMX.com 版权所有 沪ICP备08114451号</div>
+<div id="footer">©2012 一百券网 quanMX.com 版权所有 沪ICP备08114451号</div>
 <script>
     (function ($) {
         var u = $('#username'),
