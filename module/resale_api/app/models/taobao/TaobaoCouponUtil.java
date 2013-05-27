@@ -280,11 +280,9 @@ public class TaobaoCouponUtil {
         OAuthToken oAuthToken = getTokenOfTaobaoCodePlatform(outerOrder.resaler);
         if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             request.setCodemerchantId(CODE_MERCHANT_ID);
+            request.setPosid(CODE_MERCHANT_POSID);
         }
 
-        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
-            request.setCodemerchantId(CODE_MERCHANT_ID);
-        }
         try {
             VmarketEticketReverseResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
             if (response != null) {
