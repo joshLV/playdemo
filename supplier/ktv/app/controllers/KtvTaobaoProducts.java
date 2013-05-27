@@ -63,12 +63,11 @@ public class KtvTaobaoProducts extends Controller {
             return;
         }
 
-        List<KtvTaobaoSku> taobaoSkuList = KtvTaobaoUtil.buildTaobaoSku(shop, product);
+        Map<String, Map<String, Map<String, KtvTaobaoSku>>> taobaoSkuMap = KtvTaobaoUtil.buildTaobaoSku(shop, product, false);
 
-        if (taobaoSkuList.size() == 0) {
+        if (taobaoSkuMap.size() == 0) {
             render("KtvTaobaoProducts/noSku.html");
         }
-        Map<String, Map<String, List<KtvTaobaoSku>>> taobaoSkuMap = KtvTaobaoUtil.taobaoSkuListToMap(taobaoSkuList);
 
         Resaler resaler = Resaler.findById(SupplierRbac.currentUser().supplier.defaultResalerId);
         TaobaoClient client=new DefaultTaobaoClient(TaobaoCouponUtil.URL, resaler.taobaoCouponAppKey, resaler.taobaoCouponAppSecretKey);
@@ -93,7 +92,7 @@ public class KtvTaobaoProducts extends Controller {
                                String ktvCityPid, String[] ktvCities, String expiryDate, String merchant,
                                String faceValuePid) {
 
-        List<KtvTaobaoSku> taobaoSkuList = KtvTaobaoUtil.buildTaobaoSku(shop, product);
+        List<KtvTaobaoSku> taobaoSkuList =  KtvTaobaoUtil.skuMapToList(KtvTaobaoUtil.buildTaobaoSku(shop, product, true), false);
         if (taobaoSkuList.size() == 0) {
             render("KtvTaobaoProducts/noSku.html", shop, product);
         }
