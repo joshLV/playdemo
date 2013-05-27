@@ -66,7 +66,7 @@ public class KtvTaobaoProducts extends Controller {
         List<KtvTaobaoSku> taobaoSkuList = KtvTaobaoUtil.buildTaobaoSku(shop, product);
 
         if (taobaoSkuList.size() == 0) {
-            render("KtvTaobaoProducts/noSku.html");
+            render("KtvTaobaoProducts/noSku.html", shop, product);
         }
         Map<String, Map<String, List<KtvTaobaoSku>>> taobaoSkuMap = KtvTaobaoUtil.taobaoSkuListToMap(taobaoSkuList);
 
