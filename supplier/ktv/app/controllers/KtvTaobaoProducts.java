@@ -147,7 +147,7 @@ public class KtvTaobaoProducts extends Controller {
         Long num = 0L;//商品数量
         BigDecimal minPrice = null;//设置商品价格为所有价格中最小的那一个
         BigDecimal maxPrice = BigDecimal.ZERO;//设置面值为所有的价格之中最大的那一个，还要再乘以1.5并取整
-        Set<String> propSet = new HashSet<>();
+        Set<String> propSet = new HashSet<>();//房间类型因为是KTV类目的已有销售属性，因此要加入到props里（我们的日期和欢唱时间属于自定销售属性）
         for (KtvTaobaoSku taobaoSku : taobaoSkuList) {
             skuProperties.add(taobaoSku.getProperties());//添加SKU 属性
             skuQuantities.add(taobaoSku.quantity.toString());//添加SKU数量
