@@ -23,7 +23,7 @@ public class KtvTaobaoImgUpload extends Controller {
     public static void upload(Long resalerId, File imgFile) {
         Resaler resaler = Resaler.findById(resalerId);
         if (resaler == null || imgFile == null) {
-            renderJSON("{\"error\":1,\"message\":\"参数错误01\"}");
+            renderText("{\"error\":1,\"message\":\"参数错误01\"}");
             return;
         }
         PictureUploadRequest request = new PictureUploadRequest();
@@ -39,13 +39,13 @@ public class KtvTaobaoImgUpload extends Controller {
         try {
             response = taobaoClient.execute(request, token.accessToken);
         } catch (ApiException e) {
-            renderJSON("{\"error\":1,\"message\":\"" + e.getErrMsg() + "\"}");
+            renderText("{\"error\":1,\"message\":\"" + e.getErrMsg() + "\"}");
             return;
         }
         String url = response.getPicture().getPicturePath();
         if (url.startsWith("http://img.taobaocdn.com/imgextra/http://")) {
             url = url.substring(34);
         }
-        renderJSON("{\"error\":0,\"url\":\"" + url + "\"}");
+        renderText("{\"error\":0,\"url\":\"" + url + "\"}");
     }
 }
