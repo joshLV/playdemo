@@ -119,14 +119,7 @@ public class TaobaoCouponAPI extends Controller {
             renderJSON("{\"code\":504}");
             return;//没找到外部商品ID
         }
-        List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-        for (ECoupon coupon : eCoupons) {
-            final String errInfo = ECoupon.applyRefund(coupon);
-            if (!errInfo.equals(ECoupon.ECOUPON_REFUND_OK)) {
-                Logger.error("taobao refund error !!!!!!!! coupon id: %s. %s", coupon.id, errInfo);
-            }
-        }
-        outerOrder.status = OuterOrderStatus.REFUND_SYNCED;
+        outerOrder.status = OuterOrderStatus.REFUND_COPY;
         outerOrder.save();
         Logger.info("taobao refund success");
         renderJSON("{\"code\":200}");
