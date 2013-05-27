@@ -120,11 +120,11 @@ public class KtvTaobaoUtil {
     /**
      * 构建新的淘宝SKU列表.
      * 如果传入的 shop 和 product 有对应的 KtvProductGoods，那么返回的sku中就有goods，
-     * 否则就没有,只有SKU的日期、时间价格和数量这几个信息
+     * 否则就没有,SKU中只有日期、时间价格和数量这几个信息，没有 goods 信息
      *
      * @param shop 门店
      * @param product KTV产品
-     * @return 新的淘宝SKU列表
+     * @return 新的淘宝SKU列表（未 save 到数据库）
      */
     public static List<KtvTaobaoSku> buildTaobaoSku(Shop shop, KtvProduct product) {
         List<KtvTaobaoSku> taobaoSkuList = new ArrayList<>();//结果集

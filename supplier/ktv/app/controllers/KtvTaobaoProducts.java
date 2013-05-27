@@ -216,6 +216,11 @@ public class KtvTaobaoProducts extends Controller {
         ktvProductGoods.shop = shop;
         ktvProductGoods.save();
 
+        for (KtvTaobaoSku sku : taobaoSkuList) {
+            sku.goods = goods;
+            sku.save();//将SKU信息保存到数据库
+        }
+
         render("KtvTaobaoProducts/publishResult.html",taobaoProductId, shop, product);
     }
 
