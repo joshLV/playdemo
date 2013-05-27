@@ -100,10 +100,8 @@ public class Suppliers extends Controller {
             List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
             renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
             List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
-            String canSaleReal = request.params.get(Supplier.CAN_SALE_REAL);
-            String sellECoupon = request.params.get(Supplier.SELL_ECOUPON);
-            String ktvSupplier = request.params.get(Supplier.KTV_SUPPLIER);
-            render("Suppliers/add.html", supplier, operateUserList, supplierCategoryList, sellECoupon, canSaleReal, ktvSupplier);
+            renderProperties();
+            render("Suppliers/add.html", supplier, operateUserList, supplierCategoryList);
         }
         supplier.loginName = admin.loginName;
         supplier.create();
@@ -137,6 +135,9 @@ public class Suppliers extends Controller {
         supplier.setProperty(Supplier.CAN_SALE_REAL, request.params.get(Supplier.CAN_SALE_REAL));
         supplier.setProperty(Supplier.SELL_ECOUPON, request.params.get(Supplier.SELL_ECOUPON));
         supplier.setProperty(Supplier.KTV_SUPPLIER, request.params.get(Supplier.KTV_SUPPLIER));
+        supplier.setProperty(Supplier.KTV_SKU_OPTION, request.params.get(Supplier.KTV_SKU_OPTION));
+        supplier.setProperty(Supplier.KTV_SKU_START_TIME, request.params.get(Supplier.KTV_SKU_START_TIME));
+        supplier.setProperty(Supplier.KTV_SKU_END_TIME, request.params.get(Supplier.KTV_SKU_END_TIME));
 
     }
 
@@ -294,10 +295,8 @@ public class Suppliers extends Controller {
         if (Validation.hasErrors()) {
             List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
             renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
-            String sellECoupon = request.params.get(Supplier.SELL_ECOUPON);
-            String canSaleReal = request.params.get(Supplier.CAN_SALE_REAL);
-            String ktvSupplier = request.params.get(Supplier.KTV_SUPPLIER);
-            render("/Suppliers/edit.html", supplier, id, operateUserList, page, sellECoupon, canSaleReal, ktvSupplier);
+            renderProperties();
+            render("/Suppliers/edit.html", supplier, id, operateUserList, page);
         }
 
         Supplier.update(id, supplier);
@@ -306,6 +305,21 @@ public class Suppliers extends Controller {
         setSupplierProperty(id);
 
         redirectUrl(page);
+    }
+
+    private static void renderProperties() {
+        String sellECoupon = request.params.get(Supplier.SELL_ECOUPON);
+        String canSaleReal = request.params.get(Supplier.CAN_SALE_REAL);
+        String ktvSupplier = request.params.get(Supplier.KTV_SUPPLIER);
+        String ktvSkuOption = request.params.get(Supplier.KTV_SKU_OPTION);
+        String ktvSkuStartTime = request.params.get(Supplier.KTV_SKU_START_TIME);
+        String ktvSkuEndTime = request.params.get(Supplier.KTV_SKU_END_TIME);
+        renderArgs.put("sellECoupon", sellECoupon);
+        renderArgs.put("canSaleReal", canSaleReal);
+        renderArgs.put("ktvSupplier", ktvSupplier);
+        renderArgs.put("ktvSkuOption", ktvSkuOption);
+        renderArgs.put("ktvSkuStartTime", ktvSkuStartTime);
+        renderArgs.put("ktvSkuEndTime", ktvSkuEndTime);
     }
 
     public static void updateCode(Long id, Long supplierCategoryId) {

@@ -19,6 +19,7 @@ validation.moreThanFaceValue=%s不能超过原价!
 validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
 validation.beforeThanUseTime=%s要大于开始时间!
 validation.allRequiredUseTime=请把可用时段输入完整!
+validation.match=无效的%s!
 
 trade_type.CHARGE=充值
 trade_type.WITHDRAW=提现
@@ -69,6 +70,7 @@ shop.address=门店地址
 shop.districtId=区域
 shop.cityId=城市
 shop.areaId=商圈
+shop.managerMobiles=手机号码
 
 supplierUser.oldPassword=原密码
 supplierUser.newPassword=新密码
@@ -91,9 +93,6 @@ dateScope=选择日期
 entry.HANDLING=退货中
 entry.RETURNED=已退货
 entry.UNRETURNED=未收到退货
-
-validation.required=请输入%s!
-validation.future=%s必须填写未来的时间!
 
 ktvRoomType.name=包厢类型
 priceSchedule.shop=门店
