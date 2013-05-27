@@ -82,9 +82,7 @@ public class KtvRoomOrderInfo extends Model {
         this.scheduledTime = scheduledTime;
     }
 
-    public String getTimeRange(){
-       return this.scheduledTime + "点至" + (this.scheduledTime + this.duration) + "点";
-    }
+
 
     /*
     public static List<KtvRoomOrderInfo> findScheduledInfos(Date scheduleDay, Shop shop) {

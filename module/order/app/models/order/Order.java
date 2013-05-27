@@ -883,7 +883,7 @@ public class Order extends Model {
                     //ktv商户的话，更新券的价格信息
                     if (isKtvSupplier && roomOrderInfo != null) {
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
-                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + "," + roomOrderInfo.getTimeRange();
+                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + "," + getKtvScheduleTime(roomOrderInfo.scheduledTime, roomOrderInfo.duration);
                         eCoupon.effectiveAt = new Date();
                         eCoupon.expireAt = roomOrderInfo.scheduledDay;
                         eCoupon.save();
@@ -900,7 +900,7 @@ public class Order extends Model {
                     roomOrderInfo.dealKtvRoom();
                     String roomDay = dateFormat.format(roomOrderInfo.scheduledDay);
                     KtvTaobaoSku ktvSku = KtvTaobaoSku.find("goods=? and roomType=? and timeRange =? and date=?",
-                            goods, roomOrderInfo.roomType.getTaobaoId(), roomOrderInfo.getTimeRange(), roomDay).first();
+                            goods, roomOrderInfo.roomType.getTaobaoId(), getKtvScheduleTime(roomOrderInfo.scheduledTime, roomOrderInfo.duration), roomDay).first();
                     if (ktvSku != null) {
                         ktvSku.quantity -= orderItem.buyNumber.intValue();
                         ktvSku.save();
@@ -912,6 +912,10 @@ public class Order extends Model {
             sendPaidMail(goods, orderItem);
         }
 
+    }
+
+    private String getKtvScheduleTime(int scheduledTime, int duration) {
+        return scheduledTime + "点至" + (scheduledTime + duration) + "点";
     }
 
     /**

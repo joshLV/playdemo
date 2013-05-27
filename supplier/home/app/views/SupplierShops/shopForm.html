@@ -29,5 +29,12 @@
     <span class="error">#{error 'shop.phone'/}</span>
 </div>
 <div class="field-group">
+    <label>门店手机</label>
+    <input class="text" name="shop.managerMobiles" type="text" value="${shop?.managerMobiles}"/>
+
+    <p class="controls">以半角逗号','分割，每日给这些手机号发送当天的KTV预订信息</p>
+    <span class="error">#{error 'shop.managerMobiles'/}</span>
+</div>
+<div class="field-group">
     <input type="submit" class="btn" value="确定"/> <a href="/shops">取消</a>
 </div>

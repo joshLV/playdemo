@@ -27,8 +27,6 @@ import java.util.List;
 @ActiveNavigation("shops")
 public class SupplierShops extends Controller {
 
-    private static final int PAGE_SIZE = 20;
-
     /**
      * 门店一览信息
      */
@@ -44,6 +42,10 @@ public class SupplierShops extends Controller {
      * @param shop 门店对象
      */
     public static void create(@Valid Shop shop) {
+        String[] mobileArray = StringUtils.trimToEmpty(shop.managerMobiles).split(",");
+        for (String mobile : mobileArray) {
+            Validation.match("shop.managerMobiles", mobile, "^1\\d{10}$");
+        }
         if (Validation.hasErrors()) {
             renderParams(shop);
             render("SupplierShops/add.html", shop);
@@ -65,10 +67,6 @@ public class SupplierShops extends Controller {
     }
 
     private static void renderParams(Shop shop) {
-
-        Supplier supplier = SupplierRbac.currentUser().supplier;
-        renderArgs.put("ktvRoomTypeList", KtvRoomType.values());
-        renderArgs.put("supplier", supplier);
 
         Area district = Area.findParent(shop.areaId);
         if (StringUtils.isEmpty(shop.areaId) || district == null) {
@@ -119,6 +117,10 @@ public class SupplierShops extends Controller {
      */
     public static void update(long id, @Valid Shop shop) {
         Shop sp = Shop.findById(id);
+        String[] mobileArray = StringUtils.trimToEmpty(shop.managerMobiles).split(",");
+        for (String mobile : mobileArray) {
+            Validation.match("shop.managerMobiles", mobile, "^1\\d{10}$");
+        }
         if (Validation.hasErrors()) {
             shop.id = id;
             renderParams(shop);
@@ -132,6 +134,7 @@ public class SupplierShops extends Controller {
         sp.name = shop.name;
         sp.address = shop.address;
         sp.phone = shop.phone;
+        sp.managerMobiles = shop.managerMobiles;
         sp.updatedAt = new Date();
         sp.save();
 
