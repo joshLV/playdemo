@@ -418,7 +418,7 @@ public class OperateGoods extends Controller {
     }
 
     private static void setGoodsProduct(Goods goods) {
-        if (goods.isKtvSupplier()) {
+        if (goods.isKtvSupplier() && !goods.isAllShop) {
             KtvProductGoods productGoods = KtvProductGoods.find("goods=? and shop=?", goods, goods.shops.iterator().next()).first();
             if (productGoods != null) {
                 goods.product = productGoods.product;
