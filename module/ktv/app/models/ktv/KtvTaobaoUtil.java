@@ -3,14 +3,17 @@ package models.ktv;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
-import com.taobao.api.request.*;
-import com.taobao.api.response.*;
+import com.taobao.api.request.ItemSkuAddRequest;
+import com.taobao.api.request.ItemSkuDeleteRequest;
+import com.taobao.api.request.ItemSkuUpdateRequest;
+import com.taobao.api.response.ItemSkuAddResponse;
+import com.taobao.api.response.ItemSkuDeleteResponse;
+import com.taobao.api.response.ItemSkuUpdateResponse;
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
 import models.order.OuterOrderPartner;
-import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import models.sales.Shop;
@@ -22,7 +25,13 @@ import play.db.jpa.JPA;
 
 import javax.persistence.Query;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * User: yan
@@ -165,7 +174,7 @@ public class KtvTaobaoUtil {
             roomOrderInfoList = KtvRoomOrderInfo.findScheduled(today, productGoods);
         }
         //处理从今天开始往后的7天内，每一天的sku
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 14; i++) {
             Date day = DateUtils.addDays(today, i);
             //抓出所有相关的价格策略，以日期范围 和 星期 为条件，筛选出合适的，然后进一步处理
             for (KtvPriceSchedule ps : priceScheduleList) {
