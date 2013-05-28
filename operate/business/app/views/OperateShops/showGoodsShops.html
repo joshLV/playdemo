@@ -69,7 +69,9 @@
             $("#ktv_product").hide();
             $("#select_all_shops").show();
             $("#ktv_supplier_shops").hide();
-//            if (action == 'edit') {
+            $("#ktv_products").hide();
+            $("#ktv_products_label").hide();
+            //            if (action == 'edit') {
             if ($("input[name='goods.isAllShop']:checked").val() == 'false') {
                 $("#shop").show()
             }
@@ -78,7 +80,12 @@
             }
         }
         else if (ktvProduct) {
-            $("#ktv_product").show();
+            if ($("#action").val() == 'copy' || $("#action").val() == 'edit') {
+                $("#ktv_product").hide();
+            }
+            else {
+                $("#ktv_product").show();
+            }
             $("#select_all_shops").hide();
             $("#ktv_supplier_shops").show();
             $("#shop").show();

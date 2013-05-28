@@ -230,7 +230,7 @@ public class OperateGoods extends Controller {
      * @param goods
      */
     @ActiveNavigation("goods_add")
-    public static void create(@Valid models.sales.Goods goods, @Required File imagePath) {
+    public static void create(@Valid models.sales.Goods goods, @Required File imagePath, Boolean ktvProduct) {
         Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         checkImageFile(imagePath);
         checkExpireAt(goods);
@@ -244,7 +244,7 @@ public class OperateGoods extends Controller {
             renderInit(goods);
 
             boolean ktvSupplier = goods.getSupplier().isKtvSupplier();
-            render("OperateGoods/add.html", productList, ktvSupplier, selectAll, hasApproveGoodsPermission);
+            render("OperateGoods/add.html", productList, ktvSupplier, selectAll, hasApproveGoodsPermission,ktvProduct);
         }
         //预览
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
@@ -443,9 +443,14 @@ public class OperateGoods extends Controller {
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
         setGoodsProduct(goods);
         renderInit(goods);
-
+        boolean ktvProduct = true;
+        //普通产品
+        if (KtvProductGoods.find("goods.id = ?", id).first() == null) {
+            ktvSupplier = false;
+            ktvProduct = false;
+        }
         renderArgs.put("imageLargePath", goods.getImageLargePath());
-        render(id, ktvSupplier, productList);
+        render(id, ktvSupplier, productList,ktvProduct);
 
     }
 
