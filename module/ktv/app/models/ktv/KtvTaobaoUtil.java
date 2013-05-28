@@ -17,6 +17,7 @@ import models.order.OuterOrderPartner;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import models.sales.Shop;
+import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
@@ -126,7 +127,7 @@ public class KtvTaobaoUtil {
      * 如果传入的 shop 和 product 有对应的 KtvProductGoods，那么返回的sku中就有goods，
      * 否则就没有,SKU中只有日期、时间价格和数量这几个信息，没有 goods 信息
      *
-     * @param shop 门店
+     * @param shop    门店
      * @param product KTV产品
      * @param isPerfect 是否构建 Perfect Tree
      *      如果该选项为真，则表明该树是 [Perfect Tree] (https://en.wikipedia.org/wiki/Binary_tree)
@@ -142,23 +143,70 @@ public class KtvTaobaoUtil {
         SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
         Date today = DateUtils.truncate(new Date(), Calendar.DATE);
 
+        String skuDay = product.supplier.getProperty(Supplier.KTV_SKU_OPTION) == null ? "0" : product.supplier.getProperty(Supplier.KTV_SKU_OPTION);
+        String skuStartTime = product.supplier.getProperty(Supplier.KTV_SKU_START_TIME) == null ? "18" : product.supplier.getProperty(Supplier.KTV_SKU_START_TIME);
+        String skuEndTime = product.supplier.getProperty(Supplier.KTV_SKU_END_TIME) == null ? "18" : product.supplier.getProperty(Supplier.KTV_SKU_END_TIME);
+
         //当天18点到24点之后sku不更新，并删除
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if (hour > 18) {
-            today = DateUtils.addDays(today, 1);
+        if (hour >= Integer.parseInt(skuStartTime) && hour <= Integer.parseInt(skuEndTime)) {
+            today = DateUtils.addDays(today, Integer.parseInt(skuDay));
         }
 
-        //查出与该KTV商品有关联的、最近7天的所有价格策略
         Query query = JPA.em().createQuery("select s.schedule from KtvShopPriceSchedule s where s.shop = :shop "
+                + "and s.schedule.product = :product and s.schedule.endDay >= :today and s.schedule.deleted = :deleted order by s.schedule.startDay ");
+        query.setParameter("shop", shop);
+        query.setParameter("product", product);
+        query.setParameter("today", today);
+        query.setParameter("deleted", DeletedStatus.UN_DELETED);
+        List<KtvPriceSchedule> allPriceScheduleList = query.getResultList();
+
+        Set<KtvRoomType> roomTypeList = new HashSet<>();
+        Set<Object> scheduledDayList = new HashSet<>();
+        Set<Object> scheduledTimeList = new HashSet<>();
+        Map<KtvRoomType, Date> roomTypeMapMap = new HashMap<>();
+        Map<Date, Integer> scheduleDayMap = new HashMap<>();
+        long skuCount = 0L;
+        int beginDay = 0;
+        int endDay = 14;
+
+        for (KtvPriceSchedule priceSchedule : allPriceScheduleList) {
+            roomTypeList.add(priceSchedule.roomType);
+
+            calendar.setTime(priceSchedule.startDay);
+            beginDay = calendar.get(Calendar.DAY_OF_MONTH);
+            calendar.setTime(priceSchedule.endDay);
+            endDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+            for (int i = 0; i < endDay - beginDay + 1; i++) {
+                roomTypeMapMap.put(priceSchedule.roomType, DateUtils.addDays(priceSchedule.startDay, i));
+                scheduledDayList.add(roomTypeMapMap);
+
+                Set<Integer> startTimeArray = priceSchedule.getStartTimesAsSet();
+                for (Integer startTime : startTimeArray) {
+                    scheduleDayMap.put(DateUtils.addDays(priceSchedule.startDay, i), startTime);
+
+                    scheduledTimeList.add(scheduleDayMap);
+                }
+            }
+            skuCount = roomTypeList.size() * scheduledDayList.size() * scheduledTimeList.size();
+
+            if (skuCount > 6000) {
+                break;
+            }
+        }
+
+        //查出与该KTV商品有关联的、最近14天的所有价格策略
+        query = JPA.em().createQuery("select s.schedule from KtvShopPriceSchedule s where s.shop = :shop "
                 + "and s.schedule.product = :product and s.schedule.startDay <= :endDay and s.schedule.endDay >= :startDay and s.schedule.deleted = :deleted");
 
 
-        Date endDay = DateUtils.addDays(today, 6);
+        Date endDate = DateUtils.addDays(today, 13);
 
         query.setParameter("shop", shop);
         query.setParameter("product", product);
         query.setParameter("startDay", today);
-        query.setParameter("endDay", endDay);
+        query.setParameter("endDay", endDate);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         List<KtvPriceSchedule> priceScheduleList = query.getResultList();
 
@@ -169,12 +217,12 @@ public class KtvTaobaoUtil {
         Goods goods = null;
         if (productGoods == null) {
             roomOrderInfoList = new ArrayList<>();
-        }else {
+        } else {
             goods = productGoods.goods;
             roomOrderInfoList = KtvRoomOrderInfo.findScheduled(today, productGoods);
         }
-        //处理从今天开始往后的7天内，每一天的sku
-        for (int i = 0; i < 14; i++) {
+        //处理从今天开始往后的14天内，每一天的sku
+        for (int i = 0; i < endDay; i++) {
             Date day = DateUtils.addDays(today, i);
             //抓出所有相关的价格策略，以日期范围 和 星期 为条件，筛选出合适的，然后进一步处理
             for (KtvPriceSchedule ps : priceScheduleList) {

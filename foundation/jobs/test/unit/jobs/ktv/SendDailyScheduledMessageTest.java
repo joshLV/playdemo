@@ -74,42 +74,44 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         ktvRoomOrderInfo.save();
     }
 
+//    @Test
+//    //ok
+//    public void testJob_相同包间() throws Exception {
+//        create1HourOrderInfo();
+//        create2HourOrderInfo();
+//        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
+//        job.doJobWithHistory();
+//        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+//
+//        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
+//    }
+//
+//    @Test
+//    //ok
+//    public void testJob_1个包间() throws Exception {
+//        create1HourOrderInfo();
+//        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
+//        job.doJobWithHistory();
+//        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+//
+//        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
+//    }
+//
+//    @Test
+//    public void testJob_不同包间() throws Exception {
+//        create1HourOrderInfo();
+//        create3HourOrderInfo();
+//        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
+//        job.doJobWithHistory();
+//        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+//        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
+//        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+//        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
+//
+//    }
+
     @Test
-    @Ignore
-    public void testJob_相同包间() throws Exception {
-        create1HourOrderInfo();
-        create2HourOrderInfo();
-        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-        job.doJobWithHistory();
-        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
-    }
-
-    @Test
-    public void testJob_1个包间() throws Exception {
-        create1HourOrderInfo();
-        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-        job.doJobWithHistory();
-        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
-    }
-
-    @Test
-    public void testJob_不同包间() throws Exception {
-        create1HourOrderInfo();
-        create3HourOrderInfo();
-        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-        job.doJobWithHistory();
-        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
-        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
-    }
-
-    @Test
+    //ok
     @Ignore
     public void testJob_不同包间_2相同1个不同() throws Exception {
         create1HourOrderInfo();
@@ -118,10 +120,11 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         SendDailyScheduledMessage job = new SendDailyScheduledMessage();
         job.doJobWithHistory();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+        System.out.println(msg.getContent());
         assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
         msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-
         assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
+
     }
 
     @Test

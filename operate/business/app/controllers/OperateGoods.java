@@ -613,7 +613,7 @@ public class OperateGoods extends Controller {
         goodsItem.refresh();
         String createdFrom = "Op";
         goodsItem.createHistory(createdFrom);
-        if (goods.getSupplier().isKtvSupplier()) {
+        if (goodsItem.getSupplier().isKtvSupplier()) {
             KtvProductGoods productGoods = KtvProductGoods.find("goods=?", goodsItem).first();
             if (productGoods != null) {
                 productGoods.shop = goodsItem.shops.iterator().next();
@@ -621,7 +621,7 @@ public class OperateGoods extends Controller {
                 productGoods.save();
             } else {
                 productGoods = new KtvProductGoods();
-                productGoods.goods = goods;
+                productGoods.goods = goodsItem;
                 productGoods.shop = goodsItem.shops.iterator().next();
                 productGoods.product = goods.product;
                 productGoods.save();
