@@ -74,6 +74,8 @@ public class KtvAuth extends Controller {
             }
             token.accountType = AccountType.RESALER;
             token.identity = AccountType.RESALER + "_" + resaler.id;
+//            resaler.taobaoSellerId = Long.parseLong(taobaoUserId);
+//            resaler.save();
         }else {
             //否则 保存为 TAOBAO_{taobao.userid}
             token.identity = "TAOBAO_" + taobaoUserId;
@@ -85,7 +87,7 @@ public class KtvAuth extends Controller {
         token.accessTokenExpiresAt = DateUtils.addSeconds(now, result.get("expires_in").getAsInt());
 
         token.refreshToken = result.get("refresh_token").getAsString().trim();
-        token.refreshTokenExpiresAt = DateUtils.addMilliseconds(now,result.get("r1_expires_in").getAsInt());
+        token.refreshTokenExpiresAt = DateUtils.addSeconds(now,result.get("r1_expires_in").getAsInt());
         token.save();
 
 

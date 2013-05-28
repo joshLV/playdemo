@@ -24,14 +24,9 @@ import play.Play;
 import play.db.jpa.JPA;
 
 import javax.persistence.Query;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: yan
@@ -81,7 +76,7 @@ public class KtvTaobaoUtil {
     public static void updateTaobaoSkuByProductGoods(KtvProductGoods productGoods) {
         Logger.info("KtvTaobaoUtil.updateTaobaoSkuByProductGoodse method start>>>priceSchedule:" + productGoods);
         //构建新的淘宝SKU列表
-        List<KtvTaobaoSku> newTaobaoSkuList = buildTaobaoSku(productGoods.shop, productGoods.product);
+        List<KtvTaobaoSku> newTaobaoSkuList = skuMapToList(buildTaobaoSku(productGoods.shop, productGoods.product, true), false);
         //从数据库中查出目前的淘宝SKU列表
         List<KtvTaobaoSku> oldTaobaoSkuList = KtvTaobaoSku.find("byGoods", productGoods.goods).fetch();
         //比较两者，得出三个列表，分别是：1、应该添加到淘宝的SKU列表；2、应该更新的淘宝SKU列表；3、应该删除的淘宝SKU列表
@@ -133,9 +128,14 @@ public class KtvTaobaoUtil {
      *
      * @param shop 门店
      * @param product KTV产品
+     * @param isPerfect 是否构建 Perfect Tree
+     *      如果该选项为真，则表明该树是 [Perfect Tree] (https://en.wikipedia.org/wiki/Binary_tree)
+     *          依照淘宝，对于无价格/数量信息的叶子节点，我们将其价格设置为最低，数量设置为0
+     *
+     *      如果该选项为假，则对于无价格/数量信息的叶子节点，将忽略之，不加入到Map中
      * @return 新的淘宝SKU列表（未 save 到数据库）
      */
-    public static List<KtvTaobaoSku> buildTaobaoSku(Shop shop, KtvProduct product) {
+    public static Map<String, Map<String, Map<String, KtvTaobaoSku>>> buildTaobaoSku(Shop shop, KtvProduct product, boolean isPerfect) {
         List<KtvTaobaoSku> taobaoSkuList = new ArrayList<>();//结果集
 
         Calendar calendar = Calendar.getInstance();
@@ -228,33 +228,114 @@ public class KtvTaobaoUtil {
                 }
             }
         }
-        return taobaoSkuList;
-
+        return skuListToMap(taobaoSkuList, goods, isPerfect);
     }
 
     /**
-     * 返回 以 包厢 -》 日期 -》 SKU 三级形式的 Map
+     * 返回 以 包厢 -》 日期 -》 时长 三级形式的 树状 sku map
      *
-     * @param skuList
-     * @return
+     * @param perfect 是否构建 Perfect Tree
+     *      如果该选项为真，则表明该树是 [Perfect Tree] (https://en.wikipedia.org/wiki/Binary_tree)
+     *          依照淘宝，对于无价格/数量信息的叶子节点，我们将其价格设置为最低，数量设置为0
+     *
+     *      如果该选项为假，则对于无价格/数量信息的叶子节点，将忽略之，不加入到Map中
+     *
+     * (发布到淘宝后台，是让淘宝后台以包厢-》时长-》日期 的形式显示的，不影响逻辑。以上面所说的三级形保存，是为了方便在我方页面显示相应信息)
+     *
      */
-    public static Map<String, Map<String, List<KtvTaobaoSku>>> taobaoSkuListToMap(List<KtvTaobaoSku> skuList) {
-        Map<String, Map<String, List<KtvTaobaoSku>>> result = new HashMap<>();
+    public static Map<String, Map<String, Map<String, KtvTaobaoSku>>> skuListToMap(List<KtvTaobaoSku> skuList, Goods goods, boolean perfect ) {
+        Map<String, Map<String, Map<String, KtvTaobaoSku>>> result = new HashMap<>();
         for (KtvTaobaoSku sku : skuList) {
-            Map<String, List<KtvTaobaoSku>> skuListByRoomType = result.get(sku.getRoomType());
-            if (skuListByRoomType == null) {
-                skuListByRoomType = new HashMap<>();
-                result.put(sku.getRoomType(), skuListByRoomType);
+            Map<String, Map<String, KtvTaobaoSku>> skuMapByRoomType = result.get(sku.getRoomType());
+            if (skuMapByRoomType == null) {
+                skuMapByRoomType = new HashMap<>();
+                result.put(sku.getRoomType(), skuMapByRoomType);
             }
-            List<KtvTaobaoSku> skuListByDate = skuListByRoomType.get(sku.getDate());
-            if (skuListByDate == null) {
-                skuListByDate = new ArrayList<>();
-                skuListByRoomType.put(sku.getDate(), skuListByDate);
+            Map<String, KtvTaobaoSku> skuMapByDate = skuMapByRoomType.get(sku.getDate());
+            if (skuMapByDate == null) {
+                skuMapByDate = new HashMap<>();
+                skuMapByRoomType.put(sku.getDate(), skuMapByDate);
             }
-            skuListByDate.add(sku);
+            skuMapByDate.put(sku.getTimeRange(), sku);
+        }
+        if (!perfect) {
+            return result;
+        }
+
+        //构建 Perfect Tree
+
+        Set<String> roomTypeSet = new HashSet<>();
+        Set<String> dateSet = new HashSet<>();
+        Set<String> timeRangeSet = new HashSet<>();
+        BigDecimal price = null;//最低价
+        for (KtvTaobaoSku sku : skuList) {
+            if (sku.quantity == 0) {
+                continue;
+            }
+            roomTypeSet.add(sku.getRoomType());
+            dateSet.add(sku.getDate());
+            timeRangeSet.add(sku.getTimeRange());
+            if (price == null) {
+                price = sku.price;
+            }else if (price.compareTo(sku.price) > 0) {
+                price = sku.price;
+            }
+
+        }
+        for (String roomType : roomTypeSet) {
+            for (String date : dateSet) {
+                for (String timeRange : timeRangeSet) {
+                    Map<String, Map<String, KtvTaobaoSku>> skuMapByRoomType = result.get(roomType);
+                    if (skuMapByRoomType == null) {
+                        skuMapByRoomType = new HashMap<>();
+                        result.put(roomType, skuMapByRoomType);
+                    }
+                    Map<String, KtvTaobaoSku> skuMapByDate = skuMapByRoomType.get(date);
+                    if (skuMapByDate == null) {
+                        skuMapByDate = new HashMap<>();
+                        skuMapByRoomType.put(date, skuMapByDate);
+                    }
+                    if (skuMapByDate.get(timeRange) == null){
+                        //填充
+                        KtvTaobaoSku sku = new KtvTaobaoSku();
+                        sku.goods = goods;
+                        sku.setRoomType(roomType);
+                        sku.setDate(date);
+                        sku.price = price;
+                        sku.quantity = 0;
+                    }
+                }
+            }
         }
         return result;
     }
+
+    /**
+     *
+     * @param skuMap sku 树
+     *
+     * @param reduce 是否输出简化列表
+     *      如果该选项为真，则输出时剔除数量为0的SKU
+     *      如果该选项为假，则完成输出map中的所有sku
+     *
+     * @return sku 列表
+     */
+    public static List<KtvTaobaoSku> skuMapToList(Map<String, Map<String, Map<String, KtvTaobaoSku>>> skuMap, boolean reduce) {
+        List<KtvTaobaoSku> skuList = new ArrayList<>();
+        for (Map.Entry<String, Map<String, Map<String, KtvTaobaoSku>>> entryA : skuMap.entrySet()) {
+            for (Map.Entry<String, Map<String, KtvTaobaoSku>> entryB : entryA.getValue().entrySet()) {
+                for (Map.Entry<String, KtvTaobaoSku> entryC : entryB.getValue().entrySet()) {
+                    KtvTaobaoSku sku = entryC.getValue();
+                    if (sku.quantity == 0 && reduce) {
+                        continue;
+                    }
+                    skuList.add(sku);
+                }
+            }
+        }
+        return skuList;
+    }
+
 
     /**
      * 在淘宝上删除一个SKU
@@ -332,26 +413,37 @@ public class KtvTaobaoUtil {
         //应该添加的列表
         List<KtvTaobaoSku> tobeAdded = new ArrayList<>();
         //应该删除的列表。为了不影响传入的列表，此处浅拷贝一份出来
-        List<KtvTaobaoSku> tobeDeleted = new ArrayList<>(oldSkuList.size());
+        Map<String, KtvTaobaoSku> tobeDeleted = new HashMap<>(oldSkuList.size());
+
+        Set<String> roomTypeSet = new HashSet<>();
+        Set<String> dateSet = new HashSet<>();
+        Set<String> timeRangeSet = new HashSet<>();
         for (KtvTaobaoSku oldSaleProperty : oldSkuList) {
-            tobeDeleted.add(oldSaleProperty);
+            tobeDeleted.put(oldSaleProperty.getProperties(), oldSaleProperty);
+            roomTypeSet.add(oldSaleProperty.getRoomType());
+            dateSet.add(oldSaleProperty.getDate());
+            timeRangeSet.add(oldSaleProperty.getTimeRange());
         }
 
         for (KtvTaobaoSku newProperty : newSkuList) {
             boolean found = false;
-            for (int i = 0; i < tobeDeleted.size(); i++) {
+            for (Map.Entry<String, KtvTaobaoSku> entry : tobeDeleted.entrySet()) {
                 //如果两者的销售属性相同（包厢、日期、时间段），则不是更新，就是忽略
-                if (newProperty.getProperties().equals(tobeDeleted.get(i).getProperties())) {
-                    //从待删除中去除
-                    KtvTaobaoSku oldProperty = tobeDeleted.remove(i);
-                    //如果数量或者价格有所不同，则添加到待更新的列表里，否则即是忽略
-                    if (!oldProperty.quantity.equals(newProperty.quantity)
-                            || oldProperty.price.compareTo(newProperty.price) != 0) {
-                        oldProperty.quantity = newProperty.quantity;
-                        oldProperty.price = newProperty.price;
+                if (newProperty.getProperties().equals(entry.getValue().getProperties())) {
+                    if (newProperty.quantity != 0) {
+                        //从待删除中去除
+                        KtvTaobaoSku oldProperty = tobeDeleted.remove(entry.getKey());
+                        //如果数量或者价格有所不同，则添加到待更新的列表里，否则即是忽略
+                        if (!oldProperty.quantity.equals(newProperty.quantity)
+                                || oldProperty.price.compareTo(newProperty.price) != 0) {
+                            oldProperty.quantity = newProperty.quantity;
+                            oldProperty.price = newProperty.price;
 
-                        //oldProperty摇身一变，成为了待更新的SKU
-                        tobeUpdated.add(oldProperty);
+                            //oldProperty摇身一变，成为了待更新的SKU
+                            tobeUpdated.add(oldProperty);
+                        }//else ignore
+                    }else {
+                        entry.getValue().quantity = newProperty.quantity;
                     }
                     found = true;
                     break;
@@ -362,9 +454,52 @@ public class KtvTaobaoUtil {
                 tobeAdded.add(newProperty);
             }
         }
+
+        //将待删除的再重新筛选一遍，只有可以完整删除某一销售属性时，才删除那个销售属性下的所有SKU。剩余的回归到tobeUpdated列表中去（quantity已设为0）
+        Map<String, Map<String, Map<String, KtvTaobaoSku>>> tobeDeletedMap =
+                skuListToMap(new ArrayList<>(tobeDeleted.values()), null, false);
+        Map<String, KtvTaobaoSku> realDeletedMap = new HashMap<>();
+        Set<String> tobeDeletedProperties = new HashSet<>(tobeDeleted.keySet());
+
+        //尝试删除同一日期下的所有欢唱时间
+        for (String roomType : roomTypeSet) {
+            for (String date : dateSet) {
+                Set<String> properties = new HashSet<>();
+                for (String timeRange : timeRangeSet) {
+                    properties.add(KtvTaobaoSku.buildProperties(roomType, timeRange, date));
+                }
+                if (tobeDeletedProperties.containsAll(properties)) {
+                    for (String timeRange : timeRangeSet) {
+                        KtvTaobaoSku sku = tobeDeletedMap.get(roomType).get(date).get(timeRange);
+                        realDeletedMap.put(sku.getProperties(), sku);
+                        tobeDeleted.remove(sku.getProperties());
+                    }
+                }
+            }
+        }
+        //尝试删除同一 欢唱时间下的 所有日期
+        for (String roomType : roomTypeSet) {
+            for (String timeRange : timeRangeSet) {
+                Set<String> properties = new HashSet<>();
+                for (String date : dateSet) {
+                    properties.add(KtvTaobaoSku.buildProperties(roomType, timeRange, date));
+                }
+                if (tobeDeletedProperties.containsAll(properties)) {
+                    for (String date : dateSet) {
+                        KtvTaobaoSku sku = tobeDeletedMap.get(roomType).get(date).get(timeRange);
+                        realDeletedMap.put(sku.getProperties(), sku);
+                        tobeDeleted.remove(sku.getProperties());
+                    }
+                }
+            }
+        }
+
+        tobeUpdated.addAll(tobeDeleted.values());
+        tobeDeleted =  realDeletedMap;
+
         result.put("update", tobeUpdated);
         result.put("add", tobeAdded);
-        result.put("delete", tobeDeleted);
+        result.put("delete", new ArrayList(tobeDeleted.values()));
         return result;
     }
 }

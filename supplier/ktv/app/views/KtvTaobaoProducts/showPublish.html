@@ -39,7 +39,9 @@
                     #{list items:taobaoSkuMap.keySet(), as:'roomType'}
                         %{skuMapOfRoomType = taobaoSkuMap.get(roomType)}%
                         #{list items:skuMapOfRoomType.keySet(), as:'date'}
-                            #{list items:skuMapOfRoomType.get(date), as:'sku'}
+                            %{skuMapOfDate = skuMapOfRoomType.get(date)}%
+                            #{list items:skuMapOfDate.keySet(), as:'key'}
+                                %{sku = skuMapOfDate.get(key)}%
                                 <tr>
                                     <td>${models.ktv.KtvRoomType.getRoomTypeByTaobaoId(sku.roomType).getName()}</td>
                                     <td>${sku.date}</td>
