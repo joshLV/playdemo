@@ -37,14 +37,36 @@
                         <th>价格</th>
                     </tr>
                     #{list items:taobaoSkuMap.keySet(), as:'roomType'}
-                        %{skuMapOfRoomType = taobaoSkuMap.get(roomType)}%
-                        #{list items:skuMapOfRoomType.keySet(), as:'date'}
-                            %{skuMapOfDate = skuMapOfRoomType.get(date)}%
-                            #{list items:skuMapOfDate.keySet(), as:'key'}
-                                %{sku = skuMapOfDate.get(key)}%
+                        %{
+                            skuMapOfRoomType = taobaoSkuMap.get(roomType)
+                            sortedDateKeys = new java.util.ArrayList(skuMapOfRoomType.keySet())
+                            java.util.Collections.sort(sortedDateKeys)
+                        }%
+                        #{list items:sortedDateKeys, as:'date'}
+                            %{
+                                skuMapOfDate = skuMapOfRoomType.get(date)
+                                sortedTimeKeys = new java.util.ArrayList(skuMapOfDate.keySet())
+                                java.util.Collections.sort(sortedTimeKeys)
+                            }%
+                            #{list items:sortedTimeKeys, as:'time'}
+                                %{sku = skuMapOfDate.get(time)}%
                                 <tr>
-                                    <td>${models.ktv.KtvRoomType.getRoomTypeByTaobaoId(sku.roomType).getName()}</td>
-                                    <td>${sku.date}</td>
+                                    #{if date_index ==1  && time_index ==1 }
+                                        %{
+                                            size = 0
+                                            skuMapOfRoomType.each { key, value ->
+                                                value.each{ k, v ->
+                                                    size +=1
+                                                }
+                                            }
+                                        }%
+                                        <td rowspan="${size}" >
+                                            ${models.ktv.KtvRoomType.getRoomTypeByTaobaoId(sku.roomType).getName()}
+                                        </td>
+                                    #{/if}
+                                    #{if time_index ==1}
+                                        <td rowspan="${sortedTimeKeys.size()}">${sku.date}</td>
+                                    #{/if}
                                     <td>${sku.timeRange}</td>
                                     <td>${sku.quantity}</td>
                                     <td>${sku.price}</td>
