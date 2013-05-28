@@ -328,9 +328,21 @@ var KTVOrder = (function  () {
             var scheduleTime = Number(order.scheduledTime);
 
             var holder = ktv.getAvaliableHolder(order.roomType.toLowerCase(), scheduleTime, order.duration, "order");
+            holder.div.attr("data-phone",order.phone);
             holder.div.addClass("wk-order-room-reserved");
+            holder.div.hover( hoverInScheduledCell, hoverOutInScheduledCell )
         }
     };
+
+    function hoverInScheduledCell(){
+        var ele = $(this);
+        ele.text( ele.attr("data-phone"));
+    }
+    function hoverOutInScheduledCell(){
+        var ele = $(this);
+        ele.text("");
+    }
+
     return KTVOrder;
 })();
 

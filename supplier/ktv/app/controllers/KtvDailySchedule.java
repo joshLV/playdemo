@@ -22,7 +22,7 @@ import java.util.*;
 @With({SupplierRbac.class, SupplierInjector.class})
 public class KtvDailySchedule extends Controller {
 
-    public static void index(Long shopId){
+    public static void index(Long shopId) {
         List<Shop> shops = SupplierRbac.currentUser().supplier.getShops();
         if (shopId == null && shops.size() > 0) {
             shopId = shops.get(0).id;
@@ -39,9 +39,9 @@ public class KtvDailySchedule extends Controller {
         List<KtvShopPriceSchedule> shopPriceSchedules = KtvShopPriceSchedule.find(
                 "select k from KtvShopPriceSchedule k where k.shop = ? and " +
                         "k.schedule.startDay <= ? and k.schedule.endDay >= ? and k.schedule.deleted = ?",
-                shop,  day, day, DeletedStatus.UN_DELETED).fetch();
+                shop, day, day, DeletedStatus.UN_DELETED).fetch();
         List<Map<String, Object>> priceScheduleMaps = new ArrayList<>();
-        for (KtvShopPriceSchedule shopPriceSchedule: shopPriceSchedules) {
+        for (KtvShopPriceSchedule shopPriceSchedule : shopPriceSchedules) {
             Map<String, Object> priceScheduleMap = new HashMap<>();
             priceScheduleMap.put("startDay", shopPriceSchedule.schedule.startDay);
             priceScheduleMap.put("endDay", shopPriceSchedule.schedule.endDay);
@@ -66,6 +66,7 @@ public class KtvDailySchedule extends Controller {
             o.put("scheduledDay", orderInfo.scheduledDay);
             o.put("scheduledTime", orderInfo.scheduledTime);
             o.put("duration", orderInfo.duration);
+            o.put("phone", orderInfo.orderItem.phone);
             orderInfoMaps.add(o);
         }
         result.put("orders", orderInfoMaps);
