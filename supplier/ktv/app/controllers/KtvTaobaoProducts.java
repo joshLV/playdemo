@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
-import com.taobao.api.domain.ItemProp;
 import com.taobao.api.request.ItemAddRequest;
 import com.taobao.api.request.ItempropsGetRequest;
 import com.taobao.api.response.ItemAddResponse;
@@ -22,7 +21,6 @@ import models.sales.*;
 import models.supplier.Supplier;
 import models.taobao.TaobaoCouponUtil;
 import org.apache.commons.lang.StringUtils;
-import play.libs.WS;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -63,12 +61,11 @@ public class KtvTaobaoProducts extends Controller {
             return;
         }
 
-        List<KtvTaobaoSku> taobaoSkuList = KtvTaobaoUtil.buildTaobaoSku(shop, product);
+        Map<String, Map<String, Map<String, KtvTaobaoSku>>> taobaoSkuMap = KtvTaobaoUtil.buildTaobaoSku(shop, product, false);
 
-        if (taobaoSkuList.size() == 0) {
+        if (taobaoSkuMap.size() == 0) {
             render("KtvTaobaoProducts/noSku.html", shop, product);
         }
-        Map<String, Map<String, List<KtvTaobaoSku>>> taobaoSkuMap = KtvTaobaoUtil.taobaoSkuListToMap(taobaoSkuList);
 
         Resaler resaler = Resaler.findById(SupplierRbac.currentUser().supplier.defaultResalerId);
         TaobaoClient client=new DefaultTaobaoClient(TaobaoCouponUtil.URL, resaler.taobaoCouponAppKey, resaler.taobaoCouponAppSecretKey);
@@ -93,7 +90,7 @@ public class KtvTaobaoProducts extends Controller {
                                String ktvCityPid, String[] ktvCities, String expiryDate, String merchant,
                                String faceValuePid) {
 
-        List<KtvTaobaoSku> taobaoSkuList = KtvTaobaoUtil.buildTaobaoSku(shop, product);
+        List<KtvTaobaoSku> taobaoSkuList =  KtvTaobaoUtil.skuMapToList(KtvTaobaoUtil.buildTaobaoSku(shop, product, true), false);
         if (taobaoSkuList.size() == 0) {
             render("KtvTaobaoProducts/noSku.html", shop, product);
         }
