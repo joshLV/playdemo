@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
-import com.taobao.api.domain.ItemProp;
 import com.taobao.api.request.ItemAddRequest;
 import com.taobao.api.request.ItempropsGetRequest;
 import com.taobao.api.response.ItemAddResponse;
@@ -22,7 +21,6 @@ import models.sales.*;
 import models.supplier.Supplier;
 import models.taobao.TaobaoCouponUtil;
 import org.apache.commons.lang.StringUtils;
-import play.libs.WS;
 import play.mvc.Controller;
 import play.mvc.With;
 
