@@ -150,6 +150,12 @@ public class Goods extends Model {
     public Boolean freeShipping = Boolean.FALSE;
 
     /**
+     * 是否是Ktv产品
+     */
+    @Transient
+    public Boolean ktvProduct;
+
+    /**
      * 给推荐者的返利金额
      */
     @Column(name = "promoter_price")

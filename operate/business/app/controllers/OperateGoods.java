@@ -155,7 +155,6 @@ public class OperateGoods extends Controller {
             goods.isAllShop = true;
         }
 
-
         Long id = OperateRbac.currentUser().id;
 
         if (goods.supplierId != null) {
@@ -231,7 +230,7 @@ public class OperateGoods extends Controller {
      * @param goods
      */
     @ActiveNavigation("goods_add")
-    public static void create(@Valid models.sales.Goods goods, @Required File imagePath) {
+    public static void create(@Valid models.sales.Goods goods, @Required File imagePath, Boolean ktvProduct) {
         Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         checkImageFile(imagePath);
         checkExpireAt(goods);
@@ -245,7 +244,7 @@ public class OperateGoods extends Controller {
             renderInit(goods);
 
             boolean ktvSupplier = goods.getSupplier().isKtvSupplier();
-            render("OperateGoods/add.html", productList, ktvSupplier, selectAll, hasApproveGoodsPermission);
+            render("OperateGoods/add.html", productList, ktvSupplier, selectAll, hasApproveGoodsPermission,ktvProduct);
         }
         //预览
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
@@ -410,10 +409,17 @@ public class OperateGoods extends Controller {
         renderArgs.put("queryString", queryString);
 
         boolean ktvSupplier = goods.isKtvSupplier();
+        boolean ktvProduct = true;
+        //普通产品
+        if (KtvProductGoods.find("goods.id = ?", id).first() == null) {
+            ktvSupplier = false;
+            ktvProduct = false;
+        }
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
         setGoodsProduct(goods);
         renderInit(goods);
-        render(id, hasApproveGoodsPermission, ktvSupplier, productList);
+        System.out.println("ktvProduct = " + ktvProduct);
+        render(id, hasApproveGoodsPermission, ktvSupplier, productList, ktvProduct);
 
     }
 
@@ -426,16 +432,6 @@ public class OperateGoods extends Controller {
         }
     }
 
-    /**
-     * 取得指定商品信息
-     */
-    public static void edit(Long id) {
-        models.sales.Goods goods = models.sales.Goods.findById(id);
-        checkShops(goods.supplierId);
-        renderInit(goods);
-        renderArgs.put("imageLargePath", goods.getImageLargePath());
-        render(id);
-    }
 
     /**
      * 取得指定商品信息
@@ -447,9 +443,14 @@ public class OperateGoods extends Controller {
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
         setGoodsProduct(goods);
         renderInit(goods);
-
+        boolean ktvProduct = true;
+        //普通产品
+        if (KtvProductGoods.find("goods.id = ?", id).first() == null) {
+            ktvSupplier = false;
+            ktvProduct = false;
+        }
         renderArgs.put("imageLargePath", goods.getImageLargePath());
-        render(id, ktvSupplier, productList);
+        render(id, ktvSupplier, productList,ktvProduct);
 
     }
 

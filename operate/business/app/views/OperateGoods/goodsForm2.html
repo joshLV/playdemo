@@ -25,6 +25,7 @@
     #{/if}
     #{else}
     <input type="hidden" id="goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">
+
         #{layout_operate.textField name:'goods.supplier', value:goods?.supplier?.fullName, disabled:true/}
     #{/else}
 <div class="control-group">
@@ -60,6 +61,7 @@
     </div>
     <span id="err-isLottery"></span>
 </div>
+
 <div class="control-group">
     <label class="control-label"><span style="color: red; ">*</span>商品分类</label>
 
@@ -168,6 +170,13 @@
     #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images', required:true/}
     #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
     #{layout_operate.htmlField name:'goods.supplierDes', value:goods?.supplierDes, uploadImgUrl:'/goods/images', required:true/}
+
+*{style="display: none;"}*
+
+<span id="ktv_product">
+    #{layout_operate.radioField name:'goods.ktvProduct', value:ktvProduct?:false, required:true/}
+</span>
+
 <span id="select_all_shops" style="display: none;">
     #{layout_operate.radioField name:'goods.isAllShop', value:isAllShop?:false, required:true/}
 </span>
@@ -224,189 +233,249 @@
         #{vx.cancelButton url:"/goods?page="+(page?:1), class:'btn btn-primary'/}
     #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.getStatus()?:'OFFSALE'}"/>
+    <input type="hidden" id="ktv_supplier" name="ktvSupplier" value="${ktvSupplier}"/>
+    <input type="hidden" id="action" name="action" value="${action}"/>
+
 </div>
 
 <script type="text/javascript">
 
 
-        #{if "edit".equals(action)}
-        $("#goods_coupon_type").hide();
-        if ($("#noRefund").val() == 'false') {
-            $("#no_refund").hide();
-        }
-        else {
-            $("#no_refund").hide();
-            $("#display_no_refund").show();
-        }
-        #{/if}
-
-
-
-    if ($("#coupon_type_import").attr("checked")) {
-        $("#goods_coupon_type").hide();
-        $("#goods_cumulative_stock").hide();
+    #{if "edit".equals(action)}
+    $("#goods_coupon_type").hide();
+    if ($("#noRefund").val() == 'false') {
+        $("#no_refund").hide();
     }
-
-    $(function () {
-        var checkedFuc = function () {
-            if ($("#coupon_type_generate").is(":checked")) {
-                $("#goods_cumulativeStocks").attr("readonly", false);
-
-            }
-            if ($("#coupon_type_import").is(":checked")) {
-                $("#goods_cumulativeStocks").attr("readonly", true);
-                $("#goods_cumulativeStocks").attr("value", '0');//填充内容
-            }
-        }
-        $("#coupon_type_generate").click(checkedFuc);
-        $("#coupon_type_import").click(checkedFuc);
-    });
-    $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
-
-
-    if ($("#selectWeekDayAll").attr("checked")) {
-        $("[name='useWeekDay[]']").attr("checked", 'true');//全选
-        var week = [];
-        if ($("[name='useWeekDay[]']").attr("checked")) {
-            $("input[name='useWeekDay[]']:checked").each(function () {
-                week.push($(this).val())
-            })
-        }
-        $("#goods_useWeekDay").val(week.join(","));
+    else {
+        $("#no_refund").hide();
+        $("#display_no_refund").show();
     }
+    #{/if}
 
-    if ($("#goods_materialType_2").attr("checked")) {
-        $("#hi").show();
-        $("#goods_coupon_type").hide();
+
+
+if ($("#coupon_type_import").attr("checked")) {
+    $("#goods_coupon_type").hide();
+    $("#goods_cumulative_stock").hide();
+}
+
+$(function () {
+    var checkedFuc = function () {
+        if ($("#coupon_type_generate").is(":checked")) {
+            $("#goods_cumulativeStocks").attr("readonly", false);
+
+        }
+        if ($("#coupon_type_import").is(":checked")) {
+            $("#goods_cumulativeStocks").attr("readonly", true);
+            $("#goods_cumulativeStocks").attr("value", '0');//填充内容
+        }
+    }
+    $("#coupon_type_generate").click(checkedFuc);
+    $("#coupon_type_import").click(checkedFuc);
+});
+$("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
+
+
+if ($("#selectWeekDayAll").attr("checked")) {
+    $("[name='useWeekDay[]']").attr("checked", 'true');//全选
+    var week = [];
+    if ($("[name='useWeekDay[]']").attr("checked")) {
+        $("input[name='useWeekDay[]']:checked").each(function () {
+            week.push($(this).val())
+        })
+    }
+    $("#goods_useWeekDay").val(week.join(","));
+}
+
+if ($("#goods_materialType_2").attr("checked")) {
+    $("#hi").show();
+    $("#goods_coupon_type").hide();
 //        $("#goods_cumulative_stock").hide();
-        $("#free_shipping").show();
+    $("#free_shipping").show();
+    if ($("#id_supplierName").val() != 5 && $("#goods_supplierId").val() != 5) {
+        $("#sku").hide();
+    }
+
+}
+
+if ($("#goods_materialType_1").attr("checked")) {
+    $("#free_shipping").hide();
+    $("#sku").hide();
+//        $("#goods_cumulative_stock").show();
+    $("#goods_coupon_type").show();
+    $("input[id=freeShipping]").attr("checked", false);
+}
+
+showAddedRebate();
+function showAddedRebate() {
+    var goods_salePrice = $("#goods_salePrice").val() == null ? 0 : $("#goods_salePrice").val();
+    var goods_promoterPrice = parseFloat($('#goods_promoterPrice').val());
+    goods_promoterPrice = goods_promoterPrice == null || goods_promoterPrice.toString() == 'NaN' ? 0 : goods_promoterPrice;
+    $("#promoterPrice").html((goods_salePrice * goods_promoterPrice * 0.01).toFixed(2));
+
+    var goods_invitedPrice = parseFloat($('#goods_invitedUserPrice').val());
+    goods_invitedPrice = goods_invitedPrice == null || goods_invitedPrice.toString() == 'NaN' ? 0 : goods_invitedPrice;
+    $("#invitedPrice").html((goods_salePrice * goods_invitedPrice * 0.01).toFixed(2));
+}
+
+$(function () {
+    $("#goods_faceValue").keyup(function () {
+        limitMoneyFormat(this, $("#goods_faceValue").val());
+    })
+
+    $("#goods_salePrice").keyup(function () {
+        limitMoneyFormat(this, $("#goods_salePrice").val());
+        showAddedRebate();
+    })
+
+    $("#goods_isAllShop_2").click(function () {
+        $("#shop").show();//显示门店列表
+        #{if "edit".equals(action)}
+            $("#selectAll").click();
+        #{/if}
+    });
+
+    if ($("#goods_ktvProduct_2").attr("checked")) {
+        $("#select_all_shops").show();
+        $("#ktv_supplier_shops").hide();
+        $("#shop").hide();
+        $("#ktv_products").hide();
+        $("#ktv_products_label").hide();
+        $("#ktv_product").hide();
+    }
+
+    if ($("#goods_ktvProduct_1").attr("checked")) {
+        $("#select_all_shops").hide();
+        $("#ktv_supplier_shops").show();
+        $("#shop").show();
+        $("#ktv_products").show();
+        $("#ktv_products_label").show();
+        $("#ktv_product").hide();
+    }
+
+    if ($("#goods_isAllShop_2").attr("checked")) {
+        $("#shop").show();//显示门店列表
+    }
+
+    //普通产品
+    $("#goods_ktvProduct_2").click(function () {
+        $("#select_all_shops").show();
+        $("#ktv_supplier_shops").hide();
+        $("#shop").hide();
+        $("#ktv_products").hide();
+        $("#ktv_products_label").hide();
+        ktvProduct = $("input[name='goods.ktvProduct']:checked").val();
+        supplierId = $("#supplierId").val();
+        $("#tableShop").load("/shops/" + supplierId + "/showGoodsShops?ktvProduct=" + ktvProduct, function (data) {
+            $("#selectAll").click();
+        });
+    });
+
+    //Ktv产品
+    $("#goods_ktvProduct_1").click(function () {
+        $("#select_all_shops").hide();
+        $("#ktv_supplier_shops").show();
+        $("#shop").show();
+        $("#ktv_products").show();
+        $("#ktv_products_label").show();
+        ktvProduct = $("input[name='goods.ktvProduct']:checked").val();
+        supplierId = $("#supplierId").val();
+        $("#tableShop").load("/shops/" + supplierId + "/showGoodsShops?ktvProduct=" + ktvProduct, function (data) {
+            $("#selectAll").click();
+        });
+    });
+
+
+    $("#supplierName").blur(function () {
+
+
+        var found = false;
+        var m = list.length;
+        var id = null;
+        for (i = 0; i < m; i++) {
+            if (list[i].name == $("#supplierName").val()) {
+                found = true;
+                id = list[i].id;
+            }
+        }
         if ($("#id_supplierName").val() != 5 && $("#goods_supplierId").val() != 5) {
             $("#sku").hide();
         }
-
-    }
-
-    if ($("#goods_materialType_1").attr("checked")) {
-        $("#free_shipping").hide();
-        $("#sku").hide();
-//        $("#goods_cumulative_stock").show();
-        $("#goods_coupon_type").show();
-        $("input[id=freeShipping]").attr("checked", false);
-    }
-
-    showAddedRebate();
-    function showAddedRebate() {
-        var goods_salePrice = $("#goods_salePrice").val() == null ? 0 : $("#goods_salePrice").val();
-        var goods_promoterPrice = parseFloat($('#goods_promoterPrice').val());
-        goods_promoterPrice = goods_promoterPrice == null || goods_promoterPrice.toString() == 'NaN' ? 0 : goods_promoterPrice;
-        $("#promoterPrice").html((goods_salePrice * goods_promoterPrice * 0.01).toFixed(2));
-
-        var goods_invitedPrice = parseFloat($('#goods_invitedUserPrice').val());
-        goods_invitedPrice = goods_invitedPrice == null || goods_invitedPrice.toString() == 'NaN' ? 0 : goods_invitedPrice;
-        $("#invitedPrice").html((goods_salePrice * goods_invitedPrice * 0.01).toFixed(2));
-    }
-
-    $(function () {
-        $("#goods_faceValue").keyup(function () {
-            limitMoneyFormat(this, $("#goods_faceValue").val());
-        })
-
-        $("#goods_salePrice").keyup(function () {
-            limitMoneyFormat(this, $("#goods_salePrice").val());
-            showAddedRebate();
-        })
-
-        $("#goods_isAllShop_2").click(function () {
-            $("#shop").show();//显示门店列表
-            #{if "edit".equals(action)}
-                $("#selectAll").click();
-            #{/if}
-        });
-
-        $("#supplierName").blur(function () {
-
-
-            var found = false;
-            var m = list.length;
-            var id = null;
-            for (i = 0; i < m; i++) {
-                if (list[i].name == $("#supplierName").val()) {
-                    found = true;
-                    id = list[i].id;
-                }
-            }
-            if ($("#id_supplierName").val() != 5 && $("#goods_supplierId").val() != 5) {
-                $("#sku").hide();
-            }
-            else if ($("#goods_materialType_2").attr("checked")) {
-                $("#sku").show();
-            }
-            if (!found) {
-                $("#id_supplierName").val(-1);
-                $("#save").attr('disabled', true);
-                $("#goods_brand_id").empty();
-            } else {
-                $("#err-supplierUser_supplier_id").html("");
-                $("#save").attr('disabled', false);
-                $("#brands").load("/goods_brands/" + id, function (data) {
-                    $("#sku").load("/goods-skus/" + $("#goods_brand_id").val(), function (data) {
-                    });
-                });
-
-
-                $("#tableShop").load("/shops/" + id + "/showGoodsShops", function (data) {
-                    $("#selectAll").click();
-                });
-                $("#tableKtvProducts").load("/ktv-products/" + id + "/showKtvProducts", function (data) {
-
-                });
-
-
-            }
-
-            if ($("#supplierName").val().trim() == '') {
-                $("#id_supplierName").val(0);
-                $("#save").attr('disabled', true);
-                $("#goods_brand_id").empty();
-            }
-
-        });
-
-    });
-
-
-    function limitMoneyFormat(obj, value) {
-        if (value != null && value != '') {
-            var decimalIndex = value.indexOf('.');
-            if (decimalIndex == '-1') {
-                return false;
-            } else {
-                var decimalPart = value.substring(decimalIndex + 1, value.length);
-                if (decimalPart.length > 2) {
-
-                    $(obj).val(value.substring(0, decimalIndex + 3));
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    $("#goods_materialType_2").click(function () {
-        $("#free_shipping").show();
-//        $("#goods_cumulative_stock").hide();
-        $("#goods_coupon_type").hide();
-        if ($("#id_supplierName").val() == 5 || $("#goods_supplierId").val() == 5) {
+        else if ($("#goods_materialType_2").attr("checked")) {
             $("#sku").show();
         }
+        if (!found) {
+            $("#id_supplierName").val(-1);
+            $("#save").attr('disabled', true);
+            $("#goods_brand_id").empty();
+        } else {
+            $("#err-supplierUser_supplier_id").html("");
+            $("#save").attr('disabled', false);
+            $("#brands").load("/goods_brands/" + id, function (data) {
+                $("#sku").load("/goods-skus/" + $("#goods_brand_id").val(), function (data) {
+                });
+            });
+
+            $("#tableShop").load("/shops/" + id + "/showGoodsShops", function (data) {
+                $("#selectAll").click();
+            });
+            $("#tableKtvProducts").load("/ktv-products/" + id + "/showKtvProducts", function (data) {
+
+            });
+        }
+        if ($("input[name='goods.ktvProduct']:checked").val() == 'true') {
+            $("#select_all_shops").hide();
+        }
+//        action = $("#action").val();
+//        if ($("#ktv_supplier").val() == true && action == "add") {
+//            $("#ktv_product").show();
+//        }
+//        else {
+//            $("#ktv_product").hide();
+//        }
+        if ($("#supplierName").val().trim() == '') {
+            $("#id_supplierName").val(0);
+            $("#save").attr('disabled', true);
+            $("#goods_brand_id").empty();
+        }
+
     });
 
-    $("#goods_materialType_1").click(function () {
-        $("#free_shipping").hide();
+});
+
+
+function limitMoneyFormat(obj, value) {
+    if (value != null && value != '') {
+        var decimalIndex = value.indexOf('.');
+        if (decimalIndex == '-1') {
+            return false;
+        } else {
+            var decimalPart = value.substring(decimalIndex + 1, value.length);
+            if (decimalPart.length > 2) {
+
+                $(obj).val(value.substring(0, decimalIndex + 3));
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+$("#goods_materialType_2").click(function () {
+    $("#free_shipping").show();
+//        $("#goods_cumulative_stock").hide();
+    $("#goods_coupon_type").hide();
+    if ($("#id_supplierName").val() == 5 || $("#goods_supplierId").val() == 5) {
+        $("#sku").show();
+    }
+});
+
+$("#goods_materialType_1").click(function () {
+    $("#free_shipping").hide();
 //        $("#goods_cumulative_stock").show();
-        $("#goods_coupon_type").show();
-        $("#sku").hide();
-        $("input[id=freeShipping]").attr("checked", false);
-    });
+    $("#goods_coupon_type").show();
+    $("#sku").hide();
+    $("input[id=freeShipping]").attr("checked", false);
+});
 </script>
 #{/else}
