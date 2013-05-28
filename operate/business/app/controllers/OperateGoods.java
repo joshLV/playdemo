@@ -426,16 +426,7 @@ public class OperateGoods extends Controller {
         }
     }
 
-    /**
-     * 取得指定商品信息
-     */
-    public static void edit(Long id) {
-        models.sales.Goods goods = models.sales.Goods.findById(id);
-        checkShops(goods.supplierId);
-        renderInit(goods);
-        renderArgs.put("imageLargePath", goods.getImageLargePath());
-        render(id);
-    }
+
 
     /**
      * 取得指定商品信息

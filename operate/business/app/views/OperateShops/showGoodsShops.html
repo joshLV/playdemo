@@ -1,6 +1,6 @@
 <tbody>
 <tr>
-#{if ktvSupplier==false || ktvSupplier == null}
+#{if (ktvSupplier==false || ktvSupplier == null ) && ktvProduct  == false}
     <td>
         #{if "add".equals(action)}
             #{vx.selectAllField listName:"goods.shops.id", selected:selectAll/}
@@ -24,10 +24,10 @@
 </SCRIPT>
 #{list items:shopList, as:'shop' }
 <tr>
-    <td><input #{if ktvSupplier} type="radio" #{/if}#{else}type="checkbox"#{/else} id="shops"
-                                 value="${shop?.id}"
-                                 name="goods.shops.id"
-                                 #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}
+    <td><input #{if ktvSupplier && ktvProduct } type="radio" #{/if}#{else}type="checkbox"#{/else} id="shops"
+                                                value="${shop?.id}"
+                                                name="goods.shops.id"
+                                                #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}
             /> ${shop.name}
     </td>
     <td>${shop.address}</td>
@@ -37,12 +37,16 @@
 #{/list}
 <input type="hidden" id="ktv_supplier" name="ktvSupplier" value="${ktvSupplier}"/>
 <input type="hidden" id="action" name="action" value="${action}"/>
-
+<input type="hidden" id="ktv_product_value" name="ktvProduct" value="${ktvProduct}"/>
 
 </tbody>
 <script type="text/javascript">
     $(function () {
+        alert($("#ktv_product_value").val());
         ktvSupplier = $("#ktv_supplier").val();
+        ktvProduct = $("input[name='goods.ktvProduct']:checked").val();
+        $("#ktv_product_value").val(ktvProduct);
+        alert(ktvProduct);
         action = $("#action").val();
         if (ktvSupplier == 'false' || ktvSupplier == null) {
             $("#select_all_shops").show();
@@ -55,7 +59,7 @@
                 $("#shop").hide();
             }
         }
-        else {
+        else if (ktvProduct) {
             $("#select_all_shops").hide();
             $("#ktv_supplier_shops").show();
             $("#shop").show();

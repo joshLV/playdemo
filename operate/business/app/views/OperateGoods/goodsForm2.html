@@ -168,6 +168,11 @@
     #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images', required:true/}
     #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
     #{layout_operate.htmlField name:'goods.supplierDes', value:goods?.supplierDes, uploadImgUrl:'/goods/images', required:true/}
+
+<span id="ktv_product">
+    #{layout_operate.radioField name:'goods.ktvProduct', value:ktvProduct?:false, required:true/}
+</span>
+
 <span id="select_all_shops" style="display: none;">
     #{layout_operate.radioField name:'goods.isAllShop', value:isAllShop?:false, required:true/}
 </span>
@@ -224,6 +229,8 @@
         #{vx.cancelButton url:"/goods?page="+(page?:1), class:'btn btn-primary'/}
     #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.getStatus()?:'OFFSALE'}"/>
+    <input type="hidden" id="ktv_product_value" name="ktvProduct" value="${ktvProduct}"/>
+
 </div>
 
 <script type="text/javascript">
@@ -322,6 +329,21 @@
                 $("#selectAll").click();
             #{/if}
         });
+
+        //普通产品
+        $("#goods_ktvProduct_2").click(function () {
+            $("#select_all_shops").show();
+            $("#ktv_supplier_shops").hide();
+            $("#shop").hide();
+        });
+
+        //Ktv产品
+        $("#goods_ktvProduct_1").click(function () {
+            $("#select_all_shops").hide();
+            $("#ktv_supplier_shops").show();
+            $("#shop").show();
+        });
+
 
         $("#supplierName").blur(function () {
 
