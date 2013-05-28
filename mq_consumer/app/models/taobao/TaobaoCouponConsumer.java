@@ -101,6 +101,16 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             //我们发货了，但还没有通知淘宝成功，于是继续通知
             TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder);
             outerOrder.save();
+        } else if (outerOrder.status == OuterOrderStatus.REFUND_COPY) {
+            List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
+            for (ECoupon coupon : eCoupons) {
+                final String errInfo = ECoupon.applyRefund(coupon);
+                if (!errInfo.equals(ECoupon.ECOUPON_REFUND_OK)) {
+                    Logger.error("taobao refund error !!!!!!!! coupon id: %s. %s", coupon.id, errInfo);
+                }
+            }
+            outerOrder.status= OuterOrderStatus.REFUND_SYNCED;
+            outerOrder.save();
         }
     }
 

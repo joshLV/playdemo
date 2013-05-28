@@ -84,7 +84,7 @@ public class SupplierRbac extends Controller {
         String userName = getDomainUserName(session.get(SESSION_USER_KEY));
         String subDomain = CASUtils.getSubDomain();
 
-        Logger.info(" currentUser = " + userName + ", domain=" + subDomain
+        Logger.debug(" currentUser = " + userName + ", domain=" + subDomain
                 + ", cache=" + Cache.get(SESSION_USER_KEY + userName));
 
         SupplierUser user = null;

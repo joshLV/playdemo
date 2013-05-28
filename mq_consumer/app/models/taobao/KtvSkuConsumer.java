@@ -1,33 +1,10 @@
 package models.taobao;
 
-import com.taobao.api.ApiException;
-import com.taobao.api.DefaultTaobaoClient;
-import com.taobao.api.TaobaoClient;
-import com.taobao.api.request.ItemSkuAddRequest;
-import com.taobao.api.request.ItemSkuDeleteRequest;
-import com.taobao.api.request.ItemSkuUpdateRequest;
-import com.taobao.api.response.ItemSkuAddResponse;
-import com.taobao.api.response.ItemSkuDeleteResponse;
-import com.taobao.api.response.ItemSkuUpdateResponse;
-import com.uhuila.common.constants.DeletedStatus;
 import models.RabbitMQConsumerWithTx;
-import models.accounts.AccountType;
-import models.ktv.*;
-import models.oauth.OAuthToken;
-import models.oauth.WebSite;
-import models.order.OuterOrderPartner;
-import models.resale.Resaler;
-import models.sales.ResalerProduct;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
+import models.ktv.KtvProductGoods;
+import models.ktv.KtvTaobaoUtil;
 import play.Logger;
-import play.Play;
-import play.db.jpa.JPA;
 import play.jobs.OnApplicationStart;
-
-import javax.persistence.Query;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * User: yan
@@ -38,6 +15,11 @@ import java.util.*;
 public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
     @Override
     public void consumeWithTx(KtvSkuMessage message) {
+        try {
+            Thread.sleep(5000l);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Logger.info("message.ktvProductGoodsId:%s,message.scheduledId:%s", message.ktvProductGoodsId, message.scheduledId);
         //根据价格策略更新sku
         if (message.ktvProductGoodsId == null && message.scheduledId != null) {

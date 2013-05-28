@@ -66,7 +66,7 @@ public class KtvTaobaoProducts extends Controller {
         Map<String, Map<String, Map<String, KtvTaobaoSku>>> taobaoSkuMap = KtvTaobaoUtil.buildTaobaoSku(shop, product, false);
 
         if (taobaoSkuMap.size() == 0) {
-            render("KtvTaobaoProducts/noSku.html");
+            render("KtvTaobaoProducts/noSku.html", shop, product);
         }
 
         Resaler resaler = Resaler.findById(SupplierRbac.currentUser().supplier.defaultResalerId);
@@ -130,7 +130,7 @@ public class KtvTaobaoProducts extends Controller {
         //找到默认的分销商
         Resaler resaler = Resaler.findById(supplierUser.supplier.defaultResalerId);
         //根据已知信息，创建一个符合KTV需求的商品
-        Goods goods = autoCreateGoods(shop, product, supplierUser.supplier.defaultResalerId);
+        Goods goods = autoCreateGoods(shop, product, supplierUser.supplier);
         //根据此商品,创建一个resalerProduct
         ResalerProduct resalerProduct = ResalerProduct.alloc(OuterOrderPartner.TB, resaler, goods);
         //设置外部商品ID
@@ -223,7 +223,7 @@ public class KtvTaobaoProducts extends Controller {
         render("KtvTaobaoProducts/publishResult.html",taobaoProductId, shop, product);
     }
 
-    public static Goods autoCreateGoods(Shop shop, KtvProduct product, Long supplierId){
+    public static Goods autoCreateGoods(Shop shop, KtvProduct product, Supplier supplier){
         Goods goods = new Goods();
         goods.shops = new HashSet<>();
         goods.shops.add(shop);
@@ -239,7 +239,7 @@ public class KtvTaobaoProducts extends Controller {
         goods.isAllShop = false;
         goods.faceValue = BigDecimal.ONE;
         goods.cumulativeStocks = 9999L;
-        goods.supplierId = supplierId;
+        goods.supplierId = supplier.id;
         goods.salePrice = BigDecimal.ONE;
         goods.originalPrice = BigDecimal.ONE;
         goods.deleted = DeletedStatus.UN_DELETED;

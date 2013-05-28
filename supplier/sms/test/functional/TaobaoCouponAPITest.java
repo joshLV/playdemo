@@ -117,12 +117,7 @@ Resaler resaler;
 
     @Test
     public void testCancel() {
-        List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-        assertTrue(couponList.size() > 0);
-        for (ECoupon coupon : couponList) {
-            assertFalse(coupon.status == ECouponStatus.REFUND);
-        }
-
+        assertEquals(OuterOrderStatus.ORDER_COPY, outerOrder.status);
         Map<String, String> params = prepareParams();
         params.put("method", "cancel");
         resign(params);
@@ -132,12 +127,8 @@ Resaler resaler;
         assertIsOk(response);
         assertContentEquals("{\"code\":200}", response);
 
-
-        for (ECoupon coupon : couponList) {
-            coupon.refresh();
-            assertTrue(coupon.status == ECouponStatus.REFUND);
-        }
-
+        outerOrder.refresh();
+        assertEquals(OuterOrderStatus.REFUND_COPY, outerOrder.status);
 
         params.put("order_id", "123321");
         resign(params);

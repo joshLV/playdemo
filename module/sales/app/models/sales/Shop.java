@@ -51,6 +51,10 @@ public class Shop extends Model {
 
     @SolrField
     public String transport;
+    /**
+     * 门店手机
+     */
+    public String tel;
 
     @Column(name = "is_close")
     public String isClose;
