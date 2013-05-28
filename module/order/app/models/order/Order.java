@@ -851,7 +851,7 @@ public class Order extends Model {
 
         Resaler sinaResaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
+        SimpleDateFormat format = new SimpleDateFormat("M月d日");
         for (OrderItems orderItem : this.orderItems) {
             Goods goods = orderItem.goods;
             if (goods == null) {
@@ -898,7 +898,7 @@ public class Order extends Model {
                 //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
                 if (isKtvSupplier && roomOrderInfo != null) {
                     roomOrderInfo.dealKtvRoom();
-                    String roomDay = dateFormat.format(roomOrderInfo.scheduledDay);
+                    String roomDay = format.format(roomOrderInfo.scheduledDay);
                     KtvTaobaoSku ktvSku = KtvTaobaoSku.find("goods=? and roomType=? and timeRange =? and date=?",
                             goods, roomOrderInfo.roomType.getTaobaoId(), getKtvScheduleTime(roomOrderInfo.scheduledTime, roomOrderInfo.duration), roomDay).first();
                     if (ktvSku != null) {
@@ -1469,8 +1469,25 @@ public class Order extends Model {
      * 发送此订单的所有券的购买通知短信
      */
     public void sendOrderSMS(String remark) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
         for (OrderItems item : this.orderItems) {
             OrderECouponMessage.with(item).remark(remark).sendToMQ();
+            //ktv商户发送给店员短信
+            if (item.goods.isKtvSupplier()) {
+                KtvRoomOrderInfo roomOrderInfo = KtvRoomOrderInfo.find("orderItem", item).first();
+                if (roomOrderInfo.shop.managerMobiles.length() == 0) {
+                    break;
+                }
+                if (roomOrderInfo.scheduledDay.compareTo(new Date()) == 0) {
+                    String content = dateFormat.format(roomOrderInfo.scheduledDay) + "," + roomOrderInfo.shop.name +
+                            "预订【" + item.phone + roomOrderInfo.roomType.getName() + "(" + item.buyNumber + "间)" +
+                            getKtvScheduleTime(roomOrderInfo.scheduledTime, roomOrderInfo.duration) + "】";
+                    String[] mobileArray = StringUtils.trimToEmpty(roomOrderInfo.shop.managerMobiles).split(",");
+                    for (String mobile : mobileArray) {
+                        new SMSMessage(content, mobile).send();
+                    }
+                }
+            }
         }
     }
 

@@ -8,7 +8,10 @@ import models.ktv.KtvRoomOrderInfo;
 import models.ktv.KtvRoomType;
 import models.order.OrderItems;
 import models.sales.Goods;
+import models.sales.Shop;
+import org.apache.commons.lang.time.DateUtils;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -23,8 +26,9 @@ public class KtvRoomOrderInfoFactory extends ModelFactory<KtvRoomOrderInfo> {
         KtvRoomOrderInfo roomOrderInfo = new KtvRoomOrderInfo(FactoryBoy.lastOrCreate(Goods.class),
                 FactoryBoy.create(OrderItems.class),
                 KtvRoomType.MIDDLE, new Date(), 9);
-        roomOrderInfo.scheduledDay=new Date();
+        roomOrderInfo.scheduledDay = DateUtils.truncate(new Date(), Calendar.DATE);
         roomOrderInfo.status = KtvOrderStatus.LOCK;
+        roomOrderInfo.shop = FactoryBoy.lastOrCreate(Shop.class);
         roomOrderInfo.createdAt = new Date();
         return roomOrderInfo;
     }
@@ -49,7 +53,7 @@ public class KtvRoomOrderInfoFactory extends ModelFactory<KtvRoomOrderInfo> {
 
     @Factory(name = "time4")
     public KtvRoomOrderInfo roomOrderWithT4(KtvRoomOrderInfo orderInfo) {
-        orderInfo.scheduledTime =15;
+        orderInfo.scheduledTime = 15;
         return orderInfo;
     }
 }
