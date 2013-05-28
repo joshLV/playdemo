@@ -9,6 +9,9 @@ goods.UNCREATED=未创建
 goods.APPLY=申请上架
 goods.REJECT=拒绝上架
 
+goods.ktvProduct = 产品类型
+goods.ktvProduct_1 = ktv商品
+goods.ktvProduct_2 = 普通商品
 
 
 goods.REAL=实物

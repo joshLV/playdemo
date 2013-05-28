@@ -13,17 +13,16 @@
 </tr>
 #{/list}
 <input type="hidden" name="ktvSupplier" id="ktv_supplier" value="${ktvSupplier}"/>
-<input type="hidden" id="ktv_product_value" name="ktvProduct" value="${ktvProduct}"/>
 
 <script type="text/javascript">
     $(function () {
         ktvSupplier = $("#ktv_supplier").val();
-        ktvProduct = $("#ktv_product_value").val();
-        if (ktvSupplier == 'false' || ktvSupplier == null) {
+        ktvProduct = $("input[name='goods.ktvProduct']:checked").val();
+        if (ktvProduct == 'false') {
             $("#ktv_products").hide();
             $("#ktv_products_label").hide();
         }
-        else if (ktvProduct) {
+        else if (ktvProduct && ktvSupplier) {
             $("#ktv_products").show();
             $("#ktv_products_label").show();
         }

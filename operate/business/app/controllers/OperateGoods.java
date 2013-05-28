@@ -155,7 +155,6 @@ public class OperateGoods extends Controller {
             goods.isAllShop = true;
         }
 
-
         Long id = OperateRbac.currentUser().id;
 
         if (goods.supplierId != null) {
@@ -410,10 +409,17 @@ public class OperateGoods extends Controller {
         renderArgs.put("queryString", queryString);
 
         boolean ktvSupplier = goods.isKtvSupplier();
+        boolean ktvProduct = true;
+        //普通产品
+        if (KtvProductGoods.find("goods.id = ?", id).first() == null) {
+            ktvSupplier = false;
+            ktvProduct = false;
+        }
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
         setGoodsProduct(goods);
         renderInit(goods);
-        render(id, hasApproveGoodsPermission, ktvSupplier, productList);
+        System.out.println("ktvProduct = " + ktvProduct);
+        render(id, hasApproveGoodsPermission, ktvSupplier, productList, ktvProduct);
 
     }
 
@@ -425,7 +431,6 @@ public class OperateGoods extends Controller {
             }
         }
     }
-
 
 
     /**
