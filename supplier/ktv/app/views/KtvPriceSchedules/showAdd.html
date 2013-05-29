@@ -4,7 +4,7 @@
 #{set 'moreStyles'}
 <style type="text/css">
     .hour {
-        width: 36px;
+        width: 40px;
         line-height: 30px;
         background-color: #eaf6fd;
         border: 1px solid #b4d3eb;
@@ -30,6 +30,43 @@
     #roomCountTable tr {
         height: 35px;
     }
+    .field-group label {
+        font-weight:normal;
+    }
+    .sidebar {
+        display:none
+    }
+    .section {
+        float:none;
+        width:auto;
+    }
+    #message{
+        display:none;
+    }
+    .field-group {
+        padding-left:180px;
+    }
+    .field-group label {
+        width:150px;
+    }
+    .switch_time_range{
+        padding:7px;
+        border: 1px solid #eee;
+        cursor:pointer;
+        float:left;
+    }
+    .preview_box {
+        border:1px dotted #eee;
+        width:500px;
+        padding:20px;
+        10px;
+     }
+    .delDay {
+        border: 1px solid #eee;
+        padding:0 5px;
+        cursor:pointer;
+        margin-left:5px;
+    }
 </style>
 #{/set}
 <div class="body">
@@ -39,28 +76,46 @@
 
         <div class="field-group">
             <label>可预订日期</label>
-            <input type="text" class="time" id="startDay" name="priceStrategy.startDay"
-                   onfocus="WdatePicker({readOnly:true})"
+            <input type="text" class="time" id="startDay"  onfocus="WdatePicker({readOnly:true})"
                    value="${new java.util.Date().format()}">
             <span>到</span>
-            <input type="text" class="time" id="endDay" name="priceStrategy.endDay"
-                   onfocus="WdatePicker({readOnly:true})" value="">(包括)
+            <input type="text" class="time" id="endDay"  onfocus="WdatePicker({readOnly:true})" value="">(包括)
+            <span class="btn" id="addDate"> 添加</span>
+        </div>
+        <div class="field-group">
+            <div class="preview_box" id="dayPreview">
+                未添加，请选择日期范围，并点击添加
+            </div>
+            <input type="hidden" name="days" id="inputDays">
         </div>
 
         <div class="field-group">
-            <label>筛选日期</label>
-        %{ useWeekNames=["一","二","三","四","五","六","日"]; }%
-            #{list items:1..7, as:'i'}
-                <input type="checkbox" name="useWeekDays" class="input-medium" value="${i}" checked>
-                星期${useWeekNames[i-1]}
-            #{/list}
+            <label>可预订时段</label>
+            <div>
+                <div class="switch_time_range" data-offset="0">&lt;</div>
+                <div style="width:600px; overflow:hidden; position:relative;border:1px solid #eee; padding:5px;float:left;margin-left:5px;">
+                    <div style="position:relative; height:30px;left:0;" id="timeRangeBox">
+                        #{list items:0..23, as:'hour'}
+                        %{ hourStr = hour < 10 ? "0" + hour : "" + hour; }%
+                        <div class="hour" style="z-index:${50-hour};left:${hour*44}px" data-hour="${hourStr}:00">${hourStr}:00</div>
+                        #{/list}
+                    </div>
+                </div>
+                <div class="switch_time_range" style="margin-left:5px;" data-offset="-460px">&gt;</div>
+            </div>
+            <div style="clear:both"></div>
         </div>
+        <div class="field-group">
+            <div class="preview_box" id="hourPreview">
+                未选择时间段，请在上部并点击添加
+            </div>
+        </div>
+        <input type="hidden" name="priceStrategy.startTimes" id="inputStartTimes">
 
         <div class="field-group">
             <label>适用包厢</label>
             #{list items:models.ktv.KtvRoomType.values(), as:'roomType'}
-                <input type="radio" name="priceStrategy.roomType" value="${roomType}" #{if roomType.type=='MIDDLE'}
-                       checked #{/if} />${roomType.name} &nbsp;&nbsp;
+                <input type="radio" name="priceStrategy.roomType" value="${roomType}"/>${roomType.name} &nbsp;&nbsp;
             #{/list}
         </div>
 
@@ -78,29 +133,6 @@
             <input type="text" id="price" name="priceStrategy.price"/> 元 / 每 <span id="durationPer"></span> 小时
         </div>
 
-        <div class="field-group">
-            <label>可预订时段</label>
-
-            <div style="position:relative; height:30px">
-                <div class="hour" style="z-index:50;left:0px" data-hour="08:00">08:00</div>
-                <div class="hour" style="z-index:49;left:40px" data-hour="09:00">09:00</div>
-                <div class="hour" style="z-index:48;left:80px" data-hour="10:00">10:00</div>
-                <div class="hour" style="z-index:47;left:120px" data-hour="11:00">11:00</div>
-                <div class="hour" style="z-index:46;left:160px" data-hour="12:00">12:00</div>
-                <div class="hour" style="z-index:45;left:200px" data-hour="13:00">13:00</div>
-                <div class="hour" style="z-index:44;left:240px" data-hour="14:00">14:00</div>
-                <div class="hour" style="z-index:43;left:280px" data-hour="15:00">15:00</div>
-                <div class="hour" style="z-index:42;left:320px" data-hour="16:00">16:00</div>
-                <div class="hour" style="z-index:41;left:360px" data-hour="17:00">17:00</div>
-                <div class="hour" style="z-index:40;left:400px" data-hour="18:00">18:00</div>
-                <div class="hour" style="z-index:19;left:440px" data-hour="19:00">19:00</div>
-                <div class="hour" style="z-index:18;left:480px" data-hour="20:00">20:00</div>
-                <div class="hour" style="z-index:17;left:520px" data-hour="21:00">21:00</div>
-                <div class="hour" style="z-index:16;left:560px" data-hour="22:00">22:00</div>
-                <div class="hour" style="z-index:15;left:600px" data-hour="23:00">23:00</div>
-            </div>
-            <input type="hidden" name="priceStrategy.startTimes" id="inputStartTimes">
-        </div>
 
         <div class="field-group">
             <label>选择适用门店</label>
@@ -111,7 +143,7 @@
         </div>
 
         <div class="field-group">
-            <label>包厢数量</label>
+            <label>每时段包厢数量</label>
             <table cellpadding="0" cellspacing="0" id="roomCountTable">
                 <tr>
                     <td>统一设置 &nbsp;&nbsp;</td>
@@ -133,6 +165,14 @@
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript">
     var selectedHours = [];
+    var selectedDays =[];
+    function resetDayInput(){
+        var days = [];
+        $.each(selectedDays, function(index, entry){
+            days.push(dateToHan(entry[0])+"-"+dateToHan(entry[1]));
+        });
+        $("#inputDays").val(days.join(";"));
+    }
     function resetSelectedHours() {
         selectedHours = [];
         $(".hour").each(function () {
@@ -142,6 +182,35 @@
             ele.text(ele.attr("data-hour"));
             ele.animate({width: "36px"}, 100);
         });
+    }
+    function fill2(n){
+        if (n < 10) return "0" + n;
+        return "" + n;
+    }
+    function dateToHan(date) {
+        return date.getFullYear()+"年" + fill2(date.getMonth()+1) + "月" + fill2(date.getDate()) + "日";
+    }
+    function delDayClick() {
+        var ele = $(this);
+        var startTime = new Date(ele.attr("data-start")).getTime();
+        var endTime = new Date(ele.attr("data-end")).getTime();
+        var index = -1;
+        for(var i = 0 ; i < selectedDays.length; i ++){
+            var entry = selectedDays[i];
+            if(startTime == entry[0].getTime() && endTime == entry[1].getTime()){
+                index = i;
+                break;
+            }
+        }
+        if (index >=0 ) {
+            selectedDays.splice(index, 1);
+            ele.unbind("click");
+            ele.parent().remove();
+            if(selectedDays.length==0) {
+                $("#dayPreview").text("未添加，请选择日期范围，并点击添加");
+            }
+            resetDayInput();
+        }
     }
     $(function () {
         $("#durationPer").text($("#priceStrategy_product_id option:selected").attr("data-duration"));
@@ -169,6 +238,59 @@
                 $("#roomCountTable tr[row-shop-id='" + $(this).attr("data-shop-id") + "']").remove();
             }
         });
+        //左右移动时间范围
+        $(".switch_time_range").click(function(){
+            $("#timeRangeBox").animate({left: $(this).attr("data-offset")},100);
+        });
+        var startDayEle = $("#startDay");
+        var endDayEle = $("#endDay");
+        var dayPreview = $("#dayPreview");
+        //点击添加日期
+        $("#addDate").click(function(){
+            var startDayVal = startDayEle.val()
+            var endDayVal = endDayEle.val()
+            if(!startDayVal || !endDayVal){
+                alert("请选择日期");return;
+            }
+            startDay = new Date(startDayVal);
+            endDay = new Date(endDayVal);
+            if(startDay.getTime() > endDay.getTime()){
+                alert("结束日期不可小于开始日期");return;
+            }
+            var today = new Date();
+            today = new Date(today.getFullYear() + "-" + today.getMonth() + "-" + today.getDate());
+            if(endDay < today) {
+                alert("结束日期必须大于等于今天");return;
+            }
+            //检查冲突
+            var startDayTime = startDay.getTime();
+            var endDayTime = endDay.getTime();
+
+            $.each(selectedDays, function(index, entry){
+            //for(var i = 0 ; i < selectedDays.length; i ++){
+            //    var entry = selectedDays[i];
+                if (startDayTime <= entry[1].getTime() && endDayTime >=entry[0].getTime()){
+                    conflict = true;
+                    alert("与 " + dateToHan(entry[0]) + " - " + dateToHan(entry[1]) + " 日期范围重合，请重新选择");
+                    return;
+                }
+            }
+            );
+
+            if(selectedDays.length == 0){
+                dayPreview.empty();
+            }
+            var text = dateToHan(startDay) + " - " + dateToHan(endDay);
+            dayPreview.append(
+                $("<div>")
+                    .append( $("<span>",{text: text}))
+                    .append($("<span>",{text:"x", class:"delDay", "data-start":startDayVal,"data-end":endDayVal, click:delDayClick}))
+            );
+            selectedDays.push([startDay, endDay]);
+            startDayEle.val("");
+            endDayEle.val("");
+            resetDayInput();
+        });
         //设置统一的门店数量
         $("#roomCountAll").keyup(function () {
             $("#roomCountTable input[data-shop-id]").val($(this).val());
@@ -179,20 +301,21 @@
             $("#durationPer").text(ele.attr("data-duration"));
             resetSelectedHours();
         });
+        var hourPreview = $("#hourPreview");
         //点击时间点
         $(".hour").click(function () {
             var ele = $(this);
             var hour = Number(ele.attr("data-hour").substring(0, 2));
 
             var index = $.inArray(hour, selectedHours);
+            var eleSelectedDuration = $("#priceStrategy_product_id option:selected");
+            var duration = Number(eleSelectedDuration.attr("data-duration"));
             if (index >= 0) {
                 selectedHours.splice(index, 1);
                 ele.removeClass("hour-selected");
                 ele.text(ele.attr("data-hour"));
                 ele.animate({width: "36px"}, 100);
             } else {
-                var eleSelectedDuration = $("#priceStrategy_product_id option:selected");
-                var duration = Number(eleSelectedDuration.attr("data-duration"));
                 if (hour + duration > 24) {
                     return;
                 }
@@ -204,29 +327,32 @@
                 }
                 selectedHours.push(hour);
                 ele.addClass("hour-selected");
-                ele.text(hour + ":00 - " + (hour + duration) + ":00");
-                ele.animate({width: (duration * 40 - 4) + "px"}, 100);
+                start = hour < 10 ? "0" + hour : hour;
+                end = hour+duration;
+                end = end < 10 ? "0" + end : end;
+                ele.text(start + ":00 - " + end + ":00");
+                ele.animate({width: (duration * 44 - 4) + "px"}, 80);
             }
+            selectedHours.sort(function(a,b){return a-b})
             $("#inputStartTimes").val(selectedHours.join(","));
+            if(selectedHours.length == 0){
+                hourPreview.text("未选择时间段，请在上部并点击添加");
+            }else{
+                hourPreview.empty();
+                $.each(selectedHours, function(index, hour){
+                    hourPreview.append(
+                        $("<span>",{text: fill2(hour) + ":00 - " + fill2(hour+duration) + ":00; "})
+                    );
+                    if((index+1)%3 == 0){
+                        hourPreview.append($("<br>"));
+                    }
+                });
+            }
         });
         $("#createButton").click(function () {
-            var startDay = $("#startDay").val();
-            if (!startDay) {
-                alert("请选择起始日期");
-                return;
-            }
-            ;
-
-            var endDay = $("#endDay").val();
-            if (!endDay) {
-                alert("请选择结束日期");
-                return;
-            }
-            ;
-
-            var useWeekDayInputs = $("input[name='useWeekDays']:checked");
-            if (useWeekDayInputs.length == 0) {
-                alert("请筛选日期");
+            var inputDays = $("#inputDays").val();
+            if (!inputDays) {
+                alert("请添加预订日期范围");
                 return;
             }
             ;
@@ -276,10 +402,6 @@
             shopInputs.each(function () {
                 shopIds.push($(this).attr("data-shop-id"));
             });
-            var useWeekDays = [];
-            useWeekDayInputs.each(function () {
-                useWeekDays.push($(this).val());
-            });
 
             //检查是否有冲突
             var noCollision = true;
@@ -289,11 +411,9 @@
                 url: '/ktv/price-schedule/collision-detect',
                 data: {
                     "priceStrategy.product.id": $("#priceStrategy_product_id").val(),
-                    "priceStrategy.startDay": startDay,
-                    "priceStrategy.endDay": endDay,
                     "priceStrategy.roomType": roomType,
+                    "days":inputDays,
                     "shopIds": shopIds.join(","),
-                    "useWeekDays": useWeekDays.join(","),
                     "startTimes": inputStartTimes
                 },
                 success: function (data) {
@@ -303,7 +423,6 @@
                             alert(data.error);
                         } else if (data.shopName) {
                             alert("价格设置在时间上有冲突：\n门店：" + data.shopName
-                                    + "\n星期：" + data.weekDays
                                     + "\n起始时间：" + data.startTime);
                         }
                         ;
