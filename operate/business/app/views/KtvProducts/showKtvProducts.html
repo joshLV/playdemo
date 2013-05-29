@@ -17,11 +17,12 @@
 <script type="text/javascript">
     $(function () {
         ktvSupplier = $("#ktv_supplier").val();
-        if (ktvSupplier == 'false' || ktvSupplier == null) {
+        ktvProduct = $("input[name='goods.ktvProduct']:checked").val();
+        if (ktvProduct == 'false') {
             $("#ktv_products").hide();
             $("#ktv_products_label").hide();
         }
-        else {
+        else if (ktvProduct && ktvSupplier) {
             $("#ktv_products").show();
             $("#ktv_products_label").show();
         }

@@ -9,6 +9,8 @@
 <div class="body">
 #{form @OperateGoods.create() , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
 <legend>${title}</legend>
+    #{set action:"copy"/}
+
     #{if noShopTip != null}
     <h1>${noShopTip.raw()}</h1>
     #{/if}
@@ -65,6 +67,8 @@
         #{/if}
         #{else}
         <input type="hidden" id="goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">
+        <input type="hidden" id="ktvProduct" name="ktvProduct" value="${ktvProduct}">
+
             #{layout_operate.textField name:'goods.supplier', value:goods?.supplier?.fullName, disabled:true/}
         #{/else}
 
@@ -151,9 +155,16 @@
         #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
         #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images'/}
         #{layout_operate.htmlField name:'goods.supplierDes', value:goods?.supplierDes, uploadImgUrl:'/goods/images', required:true/}
+    <span id="ktv_product">
+        #{layout_operate.radioField name:'goods.ktvProduct', value:ktvProduct?:false, required:true/}
+    </span>
+    <span id="all_shops_selection">
         #{layout_operate.radioField name:'goods.isAllShop', value:isAllShop?:false, required:true/}
-        #{layout_operate.textField name:'goods.keywords', value:goods?.keywords /}
+    </span>
 
+
+        #{layout_operate.textField name:'goods.keywords', value:goods?.keywords /}
+    <span id="select_shops_label"></span>
     <div class="control-group">
         <label class="control-label"></label>
 
@@ -177,7 +188,7 @@
     </div>
     <div class="form-actions">
         <input class="btn btn-primary" id="save" type="submit" value="保存"/>
-        *{<input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>}*
+    *{<input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>}*
     *{<input class="btn btn-primary" id="preview" type="submit" value="预览"/>}*
         #{if "edit".equals(action)}
             #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
@@ -240,6 +251,60 @@
             }
             return true;
         }
+
+        if ($("#goods_ktvProduct_2").attr("checked")) {
+            $("#select_all_shops").show();
+            $("#ktv_supplier_shops").hide();
+            $("#shop").hide();
+            $("#ktv_products").hide();
+            $("#ktv_products_label").hide();
+            $("#ktv_product").hide();
+        }
+
+        if ($("#goods_ktvProduct_1").attr("checked")) {
+            $("#select_all_shops").hide();
+            $("#ktv_supplier_shops").show();
+            $("#shop").show();
+            $("#ktv_products").show();
+            $("#ktv_products_label").show();
+            $("#ktv_product").hide();
+            $("#all_shops_selection").hide();
+            $("#select_shops_label").html("选择门店");
+
+        }
+
+        if ($("#goods_isAllShop_2").attr("checked")) {
+            $("#shop").show();//显示门店列表
+        }
+
+        //普通产品
+        $("#goods_ktvProduct_2").click(function () {
+            $("#select_all_shops").show();
+            $("#ktv_supplier_shops").hide();
+            $("#shop").hide();
+            $("#ktv_products").hide();
+            $("#ktv_products_label").hide();
+            ktvProduct = $("input[name='goods.ktvProduct']:checked").val();
+            supplierId = $("#supplierId").val();
+            $("#tableShop").load("/shops/" + supplierId + "/showGoodsShops?ktvProduct=" + ktvProduct, function (data) {
+                $("#selectAll").click();
+            });
+        });
+
+        //Ktv产品
+        $("#goods_ktvProduct_1").click(function () {
+            $("#select_all_shops").hide();
+            $("#ktv_supplier_shops").show();
+            $("#shop").show();
+            $("#ktv_products").show();
+            $("#ktv_products_label").show();
+            ktvProduct = $("input[name='goods.ktvProduct']:checked").val();
+            supplierId = $("#supplierId").val();
+            $("#tableShop").load("/shops/" + supplierId + "/showGoodsShops?ktvProduct=" + ktvProduct, function (data) {
+                $("#selectAll").click();
+            });
+        });
+
     </script>
     #{/else}
 #{/form}

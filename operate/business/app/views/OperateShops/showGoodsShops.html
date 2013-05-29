@@ -1,6 +1,6 @@
 <tbody>
 <tr>
-#{if ktvSupplier==false || ktvSupplier == null}
+#{if (ktvSupplier==false || ktvSupplier == null ) && ktvProduct  == false}
     <td>
         #{if "add".equals(action)}
             #{vx.selectAllField listName:"goods.shops.id", selected:selectAll/}
@@ -24,30 +24,54 @@
 </SCRIPT>
 #{list items:shopList, as:'shop' }
 <tr>
-    <td><input #{if ktvSupplier} type="radio" #{/if}#{else}type="checkbox"#{/else} id="shops"
-                                 value="${shop?.id}"
-                                 name="goods.shops.id"
-                                 #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}
-            /> ${shop.name}
+    <td>
+        <input #{if ktvProduct} type="radio" #{/if}#{else} type="checkbox"#{/else}
+                                id="shops"
+                                value="${shop?.id}"
+                                name="goods.shops.id"
+                                #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}
+                /> ${shop.name}
     </td>
     <td>${shop.address}</td>
     <td>${shop.phone}</td>
     <td><a href="/shops/${shop.id}/edit" target="_blank">修改门店</a></td>
 </tr>
 #{/list}
+
+*{<span id="normal_product_display">}*
+*{#{list items:shopList, as:'shop' }}*
+*{<tr>}*
+*{<td><input type="checkbox"}*
+*{id="shops"}*
+*{value="${shop?.id}"}*
+*{name="goods.shops.id"}*
+*{#{if shopIds?.contains(","+shop?.id+",")}checked#{/if}}*
+*{/> ${shop.name}}*
+*{</td>}*
+*{<td>${shop.address}</td>}*
+*{<td>${shop.phone}</td>}*
+*{<td><a href="/shops/${shop.id}/edit" target="_blank">修改门店</a></td>}*
+*{</tr>}*
+*{#{/list}}*
+*{</span>}*
+
 <input type="hidden" id="ktv_supplier" name="ktvSupplier" value="${ktvSupplier}"/>
 <input type="hidden" id="action" name="action" value="${action}"/>
-
+<input type="hidden" id="supplierId" name="supplierId" value="${supplierId}">
 
 </tbody>
 <script type="text/javascript">
     $(function () {
         ktvSupplier = $("#ktv_supplier").val();
+        ktvProduct = $("input[name='goods.ktvProduct']:checked").val();
         action = $("#action").val();
         if (ktvSupplier == 'false' || ktvSupplier == null) {
+            $("#ktv_product").hide();
             $("#select_all_shops").show();
             $("#ktv_supplier_shops").hide();
-//            if (action == 'edit') {
+            $("#ktv_products").hide();
+            $("#ktv_products_label").hide();
+            //            if (action == 'edit') {
             if ($("input[name='goods.isAllShop']:checked").val() == 'false') {
                 $("#shop").show()
             }
@@ -55,7 +79,13 @@
                 $("#shop").hide();
             }
         }
-        else {
+        else if (ktvProduct) {
+            if ($("#action").val() == 'copy' || $("#action").val() == 'edit') {
+                $("#ktv_product").hide();
+            }
+            else {
+                $("#ktv_product").show();
+            }
             $("#select_all_shops").hide();
             $("#ktv_supplier_shops").show();
             $("#shop").show();

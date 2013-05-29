@@ -8,8 +8,8 @@ GET     /goods                                  OperateGoods.index
 GET     /goods/new                              OperateGoods.add
 POST    /goods                                  OperateGoods.create
 GET     /goods/{id}/histories                   OperateGoods.showHistory
-GET     /goods/{id}/edit                        OperateGoods.edit
 GET     /goods/{id}/edit2                       OperateGoods.edit2
+GET     /goods/{id}/edit                        OperateGoods.edit2
 GET     /goods/{id}/copy                        OperateGoods.copy
 GET     /goods/{id}                             OperateGoods.show
 PUT     /goods/{id}                             OperateGoods.update

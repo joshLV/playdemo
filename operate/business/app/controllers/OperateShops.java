@@ -209,14 +209,15 @@ public class OperateShops extends Controller {
     }
 
     @ActiveNavigation("goods_add")
-    public static void showGoodsShops(Long supplierId) {
+    public static void showGoodsShops(Long supplierId, Boolean ktvProduct) {
         Supplier supplier = Supplier.findById(supplierId);
         boolean ktvSupplier = false;
         if ("1".equals(supplier.getProperty(Supplier.KTV_SUPPLIER))) {
             ktvSupplier = true;
         }
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-        render(shopList, ktvSupplier);
+        System.out.println("supplierId = " + supplierId);
+        render(shopList, ktvSupplier, ktvProduct, supplierId);
     }
 
     @ActiveNavigation("supplierUsers_add")
