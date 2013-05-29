@@ -127,13 +127,13 @@ public class KtvTaobaoUtil {
      * 如果传入的 shop 和 product 有对应的 KtvProductGoods，那么返回的sku中就有goods，
      * 否则就没有,SKU中只有日期、时间价格和数量这几个信息，没有 goods 信息
      *
-     * @param shop    门店
-     * @param product KTV产品
+     * @param shop      门店
+     * @param product   KTV产品
      * @param isPerfect 是否构建 Perfect Tree
-     *      如果该选项为真，则表明该树是 [Perfect Tree] (https://en.wikipedia.org/wiki/Binary_tree)
-     *          依照淘宝，对于无价格/数量信息的叶子节点，我们将其价格设置为最低，数量设置为0
-     *
-     *      如果该选项为假，则对于无价格/数量信息的叶子节点，将忽略之，不加入到Map中
+     *                  如果该选项为真，则表明该树是 [Perfect Tree] (https://en.wikipedia.org/wiki/Binary_tree)
+     *                  依照淘宝，对于无价格/数量信息的叶子节点，我们将其价格设置为最低，数量设置为0
+     *                  <p/>
+     *                  如果该选项为假，则对于无价格/数量信息的叶子节点，将忽略之，不加入到Map中
      * @return 新的淘宝SKU列表（未 save 到数据库）
      */
     public static Map<String, Map<String, Map<String, KtvTaobaoSku>>> buildTaobaoSku(Shop shop, KtvProduct product, boolean isPerfect) {
@@ -142,71 +142,23 @@ public class KtvTaobaoUtil {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
         Date today = DateUtils.truncate(new Date(), Calendar.DATE);
-
-        String skuDay = product.supplier.getProperty(Supplier.KTV_SKU_OPTION) == null ? "0" : product.supplier.getProperty(Supplier.KTV_SKU_OPTION);
-        String skuStartTime = product.supplier.getProperty(Supplier.KTV_SKU_START_TIME) == null ? "18" : product.supplier.getProperty(Supplier.KTV_SKU_START_TIME);
-        String skuEndTime = product.supplier.getProperty(Supplier.KTV_SKU_END_TIME) == null ? "18" : product.supplier.getProperty(Supplier.KTV_SKU_END_TIME);
-
         //当天18点到24点之后sku不更新，并删除
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if (hour >= Integer.parseInt(skuStartTime) && hour <= Integer.parseInt(skuEndTime)) {
-            today = DateUtils.addDays(today, Integer.parseInt(skuDay));
+        if (hour > 18) {
+            today = DateUtils.addDays(today, 1);
         }
 
+        //查出与该KTV商品有关联的、最近7天的所有价格策略
         Query query = JPA.em().createQuery("select s.schedule from KtvShopPriceSchedule s where s.shop = :shop "
-                + "and s.schedule.product = :product and s.schedule.endDay >= :today and s.schedule.deleted = :deleted order by s.schedule.startDay ");
-        query.setParameter("shop", shop);
-        query.setParameter("product", product);
-        query.setParameter("today", today);
-        query.setParameter("deleted", DeletedStatus.UN_DELETED);
-        List<KtvPriceSchedule> allPriceScheduleList = query.getResultList();
-
-        Set<KtvRoomType> roomTypeList = new HashSet<>();
-        Set<Object> scheduledDayList = new HashSet<>();
-        Set<Object> scheduledTimeList = new HashSet<>();
-        Map<KtvRoomType, Date> roomTypeMapMap = new HashMap<>();
-        Map<Date, Integer> scheduleDayMap = new HashMap<>();
-        long skuCount = 0L;
-        int beginDay = 0;
-        int endDay = 14;
-
-        for (KtvPriceSchedule priceSchedule : allPriceScheduleList) {
-            roomTypeList.add(priceSchedule.roomType);
-
-            calendar.setTime(priceSchedule.startDay);
-            beginDay = calendar.get(Calendar.DAY_OF_MONTH);
-            calendar.setTime(priceSchedule.endDay);
-            endDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-            for (int i = 0; i < endDay - beginDay + 1; i++) {
-                roomTypeMapMap.put(priceSchedule.roomType, DateUtils.addDays(priceSchedule.startDay, i));
-                scheduledDayList.add(roomTypeMapMap);
-
-                Set<Integer> startTimeArray = priceSchedule.getStartTimesAsSet();
-                for (Integer startTime : startTimeArray) {
-                    scheduleDayMap.put(DateUtils.addDays(priceSchedule.startDay, i), startTime);
-
-                    scheduledTimeList.add(scheduleDayMap);
-                }
-            }
-            skuCount = roomTypeList.size() * scheduledDayList.size() * scheduledTimeList.size();
-
-            if (skuCount > 6000) {
-                break;
-            }
-        }
-
-        //查出与该KTV商品有关联的、最近14天的所有价格策略
-        query = JPA.em().createQuery("select s.schedule from KtvShopPriceSchedule s where s.shop = :shop "
                 + "and s.schedule.product = :product and s.schedule.startDay <= :endDay and s.schedule.endDay >= :startDay and s.schedule.deleted = :deleted");
 
 
-        Date endDate = DateUtils.addDays(today, 13);
+        Date endDay = DateUtils.addDays(today, 13);
 
         query.setParameter("shop", shop);
         query.setParameter("product", product);
         query.setParameter("startDay", today);
-        query.setParameter("endDay", endDate);
+        query.setParameter("endDay", endDay);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         List<KtvPriceSchedule> priceScheduleList = query.getResultList();
 
@@ -222,7 +174,7 @@ public class KtvTaobaoUtil {
             roomOrderInfoList = KtvRoomOrderInfo.findScheduled(today, productGoods);
         }
         //处理从今天开始往后的14天内，每一天的sku
-        for (int i = 0; i < endDay; i++) {
+        for (int i = 0; i < 14; i++) {
             Date day = DateUtils.addDays(today, i);
             //抓出所有相关的价格策略，以日期范围 和 星期 为条件，筛选出合适的，然后进一步处理
             for (KtvPriceSchedule ps : priceScheduleList) {
@@ -283,15 +235,14 @@ public class KtvTaobaoUtil {
      * 返回 以 包厢 -》 日期 -》 时长 三级形式的 树状 sku map
      *
      * @param perfect 是否构建 Perfect Tree
-     *      如果该选项为真，则表明该树是 [Perfect Tree] (https://en.wikipedia.org/wiki/Binary_tree)
-     *          依照淘宝，对于无价格/数量信息的叶子节点，我们将其价格设置为最低，数量设置为0
-     *
-     *      如果该选项为假，则对于无价格/数量信息的叶子节点，将忽略之，不加入到Map中
-     *
-     * (发布到淘宝后台，是让淘宝后台以包厢-》时长-》日期 的形式显示的，不影响逻辑。以上面所说的三级形保存，是为了方便在我方页面显示相应信息)
-     *
+     *                如果该选项为真，则表明该树是 [Perfect Tree] (https://en.wikipedia.org/wiki/Binary_tree)
+     *                依照淘宝，对于无价格/数量信息的叶子节点，我们将其价格设置为最低，数量设置为0
+     *                <p/>
+     *                如果该选项为假，则对于无价格/数量信息的叶子节点，将忽略之，不加入到Map中
+     *                <p/>
+     *                (发布到淘宝后台，是让淘宝后台以包厢-》时长-》日期 的形式显示的，不影响逻辑。以上面所说的三级形保存，是为了方便在我方页面显示相应信息)
      */
-    public static Map<String, Map<String, Map<String, KtvTaobaoSku>>> skuListToMap(List<KtvTaobaoSku> skuList, Goods goods, boolean perfect ) {
+    public static Map<String, Map<String, Map<String, KtvTaobaoSku>>> skuListToMap(List<KtvTaobaoSku> skuList, Goods goods, boolean perfect) {
         Map<String, Map<String, Map<String, KtvTaobaoSku>>> result = new HashMap<>();
         for (KtvTaobaoSku sku : skuList) {
             Map<String, Map<String, KtvTaobaoSku>> skuMapByRoomType = result.get(sku.getRoomType());
@@ -325,7 +276,7 @@ public class KtvTaobaoUtil {
             timeRangeSet.add(sku.getTimeRange());
             if (price == null) {
                 price = sku.price;
-            }else if (price.compareTo(sku.price) > 0) {
+            } else if (price.compareTo(sku.price) > 0) {
                 price = sku.price;
             }
 
@@ -343,7 +294,7 @@ public class KtvTaobaoUtil {
                         skuMapByDate = new HashMap<>();
                         skuMapByRoomType.put(date, skuMapByDate);
                     }
-                    if (skuMapByDate.get(timeRange) == null){
+                    if (skuMapByDate.get(timeRange) == null) {
                         //填充
                         KtvTaobaoSku sku = new KtvTaobaoSku();
                         sku.goods = goods;
@@ -359,13 +310,10 @@ public class KtvTaobaoUtil {
     }
 
     /**
-     *
      * @param skuMap sku 树
-     *
      * @param reduce 是否输出简化列表
-     *      如果该选项为真，则输出时剔除数量为0的SKU
-     *      如果该选项为假，则完成输出map中的所有sku
-     *
+     *               如果该选项为真，则输出时剔除数量为0的SKU
+     *               如果该选项为假，则完成输出map中的所有sku
      * @return sku 列表
      */
     public static List<KtvTaobaoSku> skuMapToList(Map<String, Map<String, Map<String, KtvTaobaoSku>>> skuMap, boolean reduce) {
@@ -490,7 +438,7 @@ public class KtvTaobaoUtil {
                             //oldProperty摇身一变，成为了待更新的SKU
                             tobeUpdated.add(oldProperty);
                         }//else ignore
-                    }else {
+                    } else {
                         entry.getValue().quantity = newProperty.quantity;
                     }
                     found = true;
@@ -543,7 +491,7 @@ public class KtvTaobaoUtil {
         }
 
         tobeUpdated.addAll(tobeDeleted.values());
-        tobeDeleted =  realDeletedMap;
+        tobeDeleted = realDeletedMap;
 
         result.put("update", tobeUpdated);
         result.put("add", tobeAdded);

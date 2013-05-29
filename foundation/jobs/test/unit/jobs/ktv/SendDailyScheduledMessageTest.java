@@ -35,6 +35,94 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         shop = FactoryBoy.lastOrCreate(Shop.class);
     }
 
+    @Test
+    public void testJob_相同包间() throws Exception {
+        create1HourOrderInfo();
+        create2HourOrderInfo();
+        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
+        job.doJobWithHistory();
+        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
+    }
+
+    @Test
+    public void testJob_1个包间() throws Exception {
+        create1HourOrderInfo();
+        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
+        job.doJobWithHistory();
+        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
+    }
+
+    @Test
+    public void testJob_不同包间() throws Exception {
+        create1HourOrderInfo();
+        create3HourOrderInfo();
+        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
+        job.doJobWithHistory();
+        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
+        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
+
+    }
+
+    @Test
+    public void testJob_不同包间_2相同1个不同() throws Exception {
+        create1HourOrderInfo();
+        create2HourOrderInfo();
+        create3HourOrderInfo();
+        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
+        job.doJobWithHistory();
+        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
+        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
+
+    }
+
+    @Test
+    public void testJob_不同包间_相同门店顺序错乱的() throws Exception {
+        create1HourOrderInfo();
+        create3HourOrderInfo();
+        create2HourOrderInfo();
+        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
+        job.doJobWithHistory();
+        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
+        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
+    }
+
+    @Test
+    @Ignore
+    public void testJob_超过12个包间() throws Exception {
+        create12OrderInfo();
+        create4HourOrderInfo();
+        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
+        job.doJobWithHistory();
+        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至12点】", msg.getContent());
+        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至12点】", msg.getContent());
+        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+        assertSMSContentEquals(dateFormat.format(new Date()) + "徐汇店预订【15026682165中包(1间)9点至14点】", msg.getContent());
+    }
+
+    private void create12OrderInfo() {
+        FactoryBoy.batchCreate(5, KtvRoomOrderInfo.class, new BuildCallback<KtvRoomOrderInfo>() {
+            @Override
+            public void build(KtvRoomOrderInfo target) {
+                target.status = KtvOrderStatus.DEAL;
+                target.duration = 3;
+                target.shop = shop;
+                target.save();
+            }
+        });
+    }
 
     private void create1HourOrderInfo() {
         KtvRoomOrderInfo ktvRoomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class);
@@ -66,106 +154,13 @@ public class SendDailyScheduledMessageTest extends UnitTest {
     private void create4HourOrderInfo() {
         Shop shop = FactoryBoy.create(Shop.class);
         shop.name = "徐汇店";
+        shop.managerMobiles = "1300000000";
         shop.save();
         KtvRoomOrderInfo ktvRoomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class);
         ktvRoomOrderInfo.status = KtvOrderStatus.DEAL;
         ktvRoomOrderInfo.shop = shop;
         ktvRoomOrderInfo.duration = 5;
         ktvRoomOrderInfo.save();
-    }
-
-//    @Test
-//    //ok
-//    public void testJob_相同包间() throws Exception {
-//        create1HourOrderInfo();
-//        create2HourOrderInfo();
-//        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-//        job.doJobWithHistory();
-//        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-//
-//        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
-//    }
-//
-//    @Test
-//    //ok
-//    public void testJob_1个包间() throws Exception {
-//        create1HourOrderInfo();
-//        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-//        job.doJobWithHistory();
-//        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-//
-//        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
-//    }
-//
-//    @Test
-//    public void testJob_不同包间() throws Exception {
-//        create1HourOrderInfo();
-//        create3HourOrderInfo();
-//        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-//        job.doJobWithHistory();
-//        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-//        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
-//        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-//        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
-//
-//    }
-
-    @Test
-    //ok
-    @Ignore
-    public void testJob_不同包间_2相同1个不同() throws Exception {
-        create1HourOrderInfo();
-        create2HourOrderInfo();
-        create3HourOrderInfo();
-        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-        job.doJobWithHistory();
-        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        System.out.println(msg.getContent());
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
-        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
-
-    }
-
-    @Test
-    @Ignore
-    public void testJob_不同包间_相同门店顺序错乱的() throws Exception {
-        create1HourOrderInfo();
-        create3HourOrderInfo();
-        create2HourOrderInfo();
-        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-        job.doJobWithHistory();
-        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
-        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-
-        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
-    }
-
-    @Test
-    @Ignore
-    public void testJob_超过12个包间() throws Exception {
-        create12OrderInfo();
-//        create4HourOrderInfo();
-        SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-        job.doJobWithHistory();
-        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
-        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至12点】", msg.getContent());
-//
-    }
-
-    private void create12OrderInfo() {
-        FactoryBoy.batchCreate(5, KtvRoomOrderInfo.class, new BuildCallback<KtvRoomOrderInfo>() {
-            @Override
-            public void build(KtvRoomOrderInfo target) {
-                target.status = KtvOrderStatus.DEAL;
-                target.duration = 3;
-                target.shop = shop;
-                target.save();
-            }
-        });
     }
 
     /**

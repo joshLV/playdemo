@@ -48,14 +48,6 @@ public class TaobaoProducts extends Controller {
         if (goods == null) {
             notFound();
         }
-
-        //ktv商户并且是KTV商品才直接展示ktv上传页面
-        if (goods.isKtvSupplier() && !goods.isAllShop) {
-            KtvProductGoods productGoods = KtvProductGoods.find("goods=? and shop=?", goods, goods.shops.iterator().next()).first();
-            if (productGoods != null) {
-                render("resale/TaobaoProducts/showKtvUpload.html", goods, loginName);
-            }
-        }
         render(goods, loginName);
     }
 
