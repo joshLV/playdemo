@@ -146,7 +146,7 @@ public class KtvTaobaoUtilTest extends UnitTest {
         Map<String, List<KtvTaobaoSku>> result = KtvTaobaoUtil.diffTaobaoSku(newKtvTaobaoSkuList, oldKtvTaobaoSkuList);
         assertEquals(0, result.get("add").size());
         assertEquals(0, result.get("update").size());
-        assertEquals(2, result.get("delete").size());
+        assertEquals(4, result.get("delete").size());
     }
 
     KtvPriceSchedule schedule;
