@@ -1,0 +1,64 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'KTV淘宝产品管理' /}
+#{include '/share/nav.html' /}
+
+<div class="body">
+
+    <div class="body">
+        <h2>${title}</h2>
+
+    #{form @resale.KtvTaobaoProducts.index() , id:'creationForm',class:"form-horizontal" }
+        商户：#{vx.selectInputField name:"supplierName", id:"supplierId", list:supplierList,
+    value:supplierId, array:"supplierArray",importJs:true/}
+        <button class="btn btn-primary" type="submit"> 搜索</button>
+    #{/form}
+
+        <table class="table table-bordered ">
+            <thead>
+            <tr>
+                <th style="width: 150px">门店</th>
+                <th style="width: 200px;">产品名称</th>
+                <th>操 作</th>
+            </tr>
+            </thead>
+            <tbody>
+            #{list items:shops, as:'shop' }
+                #{list items:products, as:'product' }
+
+                %{
+                ktvProductGoods = models.ktv.KtvProductGoods.find("byShopAndProduct", shop,product).first() ;
+
+                if (ktvProductGoods !=null){
+                System.out.println(ktvProductGoods.goods);
+                resalerProduct = models.sales.ResalerProduct.find("byGoodsAndResalerAndPartner",
+                ktvProductGoods.goods,resaler,models.order.OuterOrderPartner.TB).first();
+                System.out.println(resalerProduct);
+                }
+                }%
+                <tr>
+                    #{if product_index == 1}
+                        <td rowspan="${products.size()}">${shop.name}</td>
+                    #{/if}
+
+                    <td>${product.name}</td>
+                    <td id="id_${shop.id}_${product.id}">
+                        #{if resalerProduct }
+                            <a href="${resalerProduct.url}">编辑</a> |
+                            <a href="${resalerProduct.url}">查看</a>
+                        #{/if}
+                        #{else}
+                            <a href="/ktv/taobao-product/publish?shop.id=${shop.id}&product.id=${product.id}"
+                               target="_blank">发布</a>
+                        #{/else}
+                    </td>
+                </tr>
+                %{
+                ktvProductGoods = null;
+                resalerProduct = null;
+                }%
+                #{/list}
+            #{/list}
+            </tbody>
+        </table>
+    </div>
+</div>

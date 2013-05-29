@@ -111,6 +111,7 @@
     -ms-user-select: none;  
 }
 .wk-order-room-reserved {
+    color: beige;
     background-color: #ef581f;
     border: 1px solid #ac2b0c;
 }

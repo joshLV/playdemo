@@ -159,6 +159,8 @@
             <navigation key="goods_index" action="OperateGoods.index" text="商品管理" permissions="GOODS"/>
             <navigation key="resale_partner_product" action="ResalerProducts.index" text="分销商品管理"
                         permissions="GOODS"/>
+            <navigation key="ktv_taobao_product" action="resale.KtvTaobaoProducts.index" text="KTV淘宝商品管理"
+                        permissions="GOODS"/>
             <navigation key="category_admin_index" action="CategoryAdmin.index" text="类别管理" permissions="GOODS"/>
             <navigation key="hot_keywords" action="OperateSearchHotKeywords.index" text="热门搜索词查询"
                         permissions="HOT_KEYWORDS"/>

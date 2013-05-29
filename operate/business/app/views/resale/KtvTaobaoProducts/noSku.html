@@ -1,0 +1,33 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'KTV淘宝产品发布' /}
+#{include '/share/nav.html' /}
+#{set 'moreStyles'}
+<style type="text/css">
+    .field-group label {
+    font-weight:normal;
+    }
+    .sidebar {
+    display:none
+    }
+    .section {
+    float:none;
+    width:auto;
+    }
+    #message{
+    display:none;
+    }
+</style>
+#{/set}
+
+<div class="body">
+        <div class="bd">
+            <h2>发布:${shop.name}-${product.name}</h2>
+
+            <div style="max-height:400px; overflow-y:auto; border-top:1px solid #e3e3e3;border-bottom:1px solid #e3e3e3">
+                <div style="text-align:center">
+                    未设置10天内的可用价格策略，无法发布商品。请首先<a href="http://${product?.supplier?.domainName}/ktv/price-schedule/new">设置价格策略</a>
+                </div>
+            </div>
+        </div>
+</div>
+

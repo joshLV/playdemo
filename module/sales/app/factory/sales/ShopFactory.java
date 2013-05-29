@@ -34,6 +34,7 @@ public class ShopFactory extends ModelFactory<Shop> {
 		shop.areaId = area.id;
         shop.name = "测试店";
         shop.deleted = DeletedStatus.UN_DELETED;
+        shop.managerMobiles="15026682165";
         shop.lockVersion = 0;
         return shop;
     }

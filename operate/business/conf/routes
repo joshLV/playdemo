@@ -109,6 +109,13 @@ POST    /resaler-products/dd/upload                     resale.DDGroupBuyProduct
 GET     /resaler-products/{partner}/upload/{goodsId}/{loginName}    resale.TaobaoProducts.showUpload
 POST    /resaler-products/tb/upload                     resale.TaobaoProducts.upload
 
+#淘宝KTV商品发布
+GET     /ktv/taobao-products                           resale.KtvTaobaoProducts.index
+GET     /ktv/taobao-product/publish                    resale.KtvTaobaoProducts.showPublish
+POST    /ktv/taobao-product/publish                    resale.KtvTaobaoProducts.publish
+
+POST    /ktv/taobao/img-upload/{resalerId}             resale.KtvTaobaoImgUpload.upload
+
 
 # 新浪卡券
 GET     /resaler-products/sina/upload/{goodsId}         resale.SinaVouchers.showUpload

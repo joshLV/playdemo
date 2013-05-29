@@ -22,8 +22,7 @@ public class KtvUpdateSkuJob extends JobWithHistory {
     public void doJobWithHistory() {
         List<KtvProductGoods> ktvProductGoodsList = KtvProductGoods.findAll();
         for (KtvProductGoods productGoods : ktvProductGoodsList) {
-            //更新sku信息,加到mq
-            KtvSkuMessageUtil.send(null, productGoods.id);
+            KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);
         }
     }
 }

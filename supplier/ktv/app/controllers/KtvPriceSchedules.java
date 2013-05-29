@@ -171,11 +171,11 @@ public class KtvPriceSchedules extends Controller {
 
     //
     public static void make(long priceScheduleId) {
-//       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
-        List<KtvProductGoods> ktvProductGoodsList = KtvProductGoods.findAll();
-        for (KtvProductGoods productGoods : ktvProductGoodsList) {
-            KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);
-        }
+       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
+//        List<KtvProductGoods> ktvProductGoodsList = KtvProductGoods.findAll();
+//        for (KtvProductGoods productGoods : ktvProductGoodsList) {
+//            KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);
+//        }
 //        ECoupon eCoupon = ECoupon.findById(63959L);
 //        //ktv商户
 //        //更新淘宝ktv sku信息

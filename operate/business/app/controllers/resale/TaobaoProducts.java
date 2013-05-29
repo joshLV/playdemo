@@ -13,6 +13,7 @@ import com.taobao.api.response.ItemImgUploadResponse;
 import com.taobao.api.response.ItemSkuAddResponse;
 import controllers.OperateRbac;
 import models.accounts.AccountType;
+import models.ktv.KtvProductGoods;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
 import models.operator.OperateUser;
@@ -47,11 +48,7 @@ public class TaobaoProducts extends Controller {
         if (goods == null) {
             notFound();
         }
-        //ktv商户直接展示ktv上传页面
-        if (goods.isKtvSupplier()) {
-            render("resale/TaobaoProducts/showKtvUpload.html", goods, loginName);
-        }
-        render(goods,loginName);
+        render(goods, loginName);
     }
 
     @ActiveNavigation("resale_partner_product")

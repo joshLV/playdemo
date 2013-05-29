@@ -1,0 +1,168 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'KTV淘宝产品发布' /}
+#{include '/share/nav.html' /}
+#{set 'moreStyles'}
+<style type="text/css">
+    .field-group label {
+        font-weight: normal;
+    }
+
+    .sidebar {
+        display: none
+    }
+
+    .section {
+        float: none;
+        width: auto;
+    }
+
+    #message {
+        display: none;
+    }
+</style>
+#{/set}
+
+<div class="body">
+
+    <form action="/ktv/taobao-product/publish" method="post" class="form-horizontal" id="form">
+        <div class="body">
+            <legend>发布:${shop.name}-${product.name}</legend>
+
+            <div class="control-group">
+                <label class="control-label">包厢信息 *</label>
+
+                <div class="controls">
+                    <div style="max-height:300px; overflow-y:auto; border-top:1px solid #e3e3e3;border-bottom:1px solid #e3e3e3">
+                        <table class="table table-bordered ">
+                            <tr>
+                                <th>包厢类型</th>
+                                <th>日期</th>
+                                <th>时间段</th>
+                                <th>数量</th>
+                                <th>价格</th>
+                            </tr>
+                        #{list items:taobaoSkuMap.keySet(), as:'roomType'}
+                        %{
+                            skuMapOfRoomType = taobaoSkuMap.get(roomType)
+                            sortedDateKeys = new java.util.ArrayList(skuMapOfRoomType.keySet())
+                            java.util.Collections.sort(sortedDateKeys)
+                            }%
+                            #{list items:sortedDateKeys, as:'date'}
+                            %{
+                                skuMapOfDate = skuMapOfRoomType.get(date)
+                                sortedTimeKeys = new java.util.ArrayList(skuMapOfDate.keySet())
+                                java.util.Collections.sort(sortedTimeKeys)
+                                }%
+                                #{list items:sortedTimeKeys, as:'time'}
+                                %{sku = skuMapOfDate.get(time)}%
+                                    <tr>
+                                        #{if date_index ==1  && time_index ==1 }
+                                        %{
+                                            size = 0
+                                            skuMapOfRoomType.each { key, value ->
+                                            value.each{ k, v ->
+                                            size +=1
+                                            }
+                                            }
+                                            }%
+                                            <td rowspan="${size}">
+                                            ${models.ktv.KtvRoomType.getRoomTypeByTaobaoId(sku.roomType).getName()}
+                                            </td>
+                                        #{/if}
+                                        #{if time_index ==1}
+                                            <td rowspan="${sortedTimeKeys.size()}">${sku.date}</td>
+                                        #{/if}
+                                        <td>${sku.timeRange}</td>
+                                        <td>${sku.quantity}</td>
+                                        <td>${sku.price}</td>
+                                    </tr>
+                                #{/list}
+                            #{/list}
+                        #{/list}
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">包厢信息 *</label>
+
+                <div class="controls">
+                    <input type="text" size="70" name="title" id="title">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">宝贝所在地</label>
+
+                <div class="controls">
+                    <select id="location_province" style="width:150px" name="locationProvince"></select>
+                    <select id="location_city" style="width:150px" name="locationCity"></select>
+                    <span style="color:#999">(若无您所需要的地点，请联系视惠信息)</span>
+                </div>
+            </div>
+
+            <div class="control-group" id="brand_field">
+                <label class="control-label">品牌</label>
+            </div>
+            <div class="control-group" id="ktv_provinces">
+                <label class="control-label">适用省份</label>
+            </div>
+            <div class="control-group" id="ktv_cities">
+                <label class="control-label">适用城市</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">主图</label>
+
+                <div class="controls">
+                    <span class="btn" id="buttonProdImg">选择图片</span>
+                    <span style="color:#999">建议大小800*800 或以上的图片, 不超过500kb</span>
+                    <br/>
+                    <img src="http://img0.uhcdn.com/p/1/1/1/default.png" alt="" id="imgProdImg">
+                    <input type="hidden" id="inputProdImg" name="prodImg">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">宝贝描述</label>
+
+                <div class="controls">
+                    <textarea rows="8" cols="100" name="desc" id="prodDescription"
+                              style="width:800px;height:550px;display:hidden;">
+                    </textarea>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">发布选项</label>
+
+                <div class="controls">
+                    <input type="checkbox" name="onsale" value="false" >直接上架
+                </div>
+            </div>
+
+            <div class="field-group">
+                <input type="hidden" id="goodsId" value="${goodsId}">
+                <input type="hidden" name="shop.id" value="${shop.id}">
+                <input type="hidden" name="product.id" value="${product.id}">
+                <input type="hidden" name="expiryDate" value="30">
+                <input type="hidden" name="cid" value="50019081">
+
+
+                <input type="hidden" id="ktvProvincePid" name="ktvProvincePid">
+                <input type="hidden" id="ktvCityPid" name="ktvCityPid">
+                <input type="hidden" id="ktvBrandPid" name="ktvBrandPid">
+                <input type="hidden" id="faceValuePid" name="faceValuePid">
+                <br/>
+                <input type="button" class="btn" value="发布" id="createButton"/>
+            </div>
+
+        </div>
+    </form>
+</div>
+#{set 'moreScripts'}
+<script type="text/javascript" charset="utf-8"> var props = ${props.raw()}</script>
+<script src="@{'/public/javascripts/kindeditor/kindeditor-all-min.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/taobao-publish.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+
