@@ -3,6 +3,7 @@ package models.order;
 import cache.CacheHelper;
 import com.google.gson.JsonObject;
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -883,9 +884,9 @@ public class Order extends Model {
                     //ktv商户的话，更新券的价格信息
                     if (isKtvSupplier && roomOrderInfo != null) {
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
-                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + "," + getKtvScheduleTime(roomOrderInfo.scheduledTime, roomOrderInfo.duration);
+                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + eCoupon.salePrice + "元," + getKtvScheduleTime(roomOrderInfo.scheduledTime, roomOrderInfo.duration);
                         eCoupon.effectiveAt = new Date();
-                        eCoupon.expireAt = roomOrderInfo.scheduledDay;
+                        eCoupon.expireAt = DateUtil.getEndOfDay(roomOrderInfo.scheduledDay);
                         eCoupon.save();
                     }
 
@@ -1473,12 +1474,12 @@ public class Order extends Model {
         for (OrderItems item : this.orderItems) {
             OrderECouponMessage.with(item).remark(remark).sendToMQ();
             //ktv商户发送给店员短信
-            if (item.goods.isKtvSupplier()) {
+            if (item.goods.isKtvSupplier() ) {
                 KtvRoomOrderInfo roomOrderInfo = KtvRoomOrderInfo.find("orderItem", item).first();
                 if (roomOrderInfo.shop.managerMobiles.length() == 0) {
                     break;
                 }
-                if (roomOrderInfo.scheduledDay.compareTo(new Date()) == 0) {
+                if (roomOrderInfo.scheduledDay.compareTo(DateUtils.truncate(new Date(), Calendar.DATE)) >= 0) {
                     String content = dateFormat.format(roomOrderInfo.scheduledDay) + "," + roomOrderInfo.shop.name +
                             "预订【" + item.phone + roomOrderInfo.roomType.getName() + "(" + item.buyNumber + "间)" +
                             getKtvScheduleTime(roomOrderInfo.scheduledTime, roomOrderInfo.duration) + "】";

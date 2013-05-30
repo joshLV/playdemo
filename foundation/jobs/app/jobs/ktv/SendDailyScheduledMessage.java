@@ -9,12 +9,18 @@ import models.sales.Shop;
 import models.sms.SMSMessage;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
-import play.data.validation.Validation;
 import play.jobs.On;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * User: yan
@@ -34,21 +40,24 @@ public class SendDailyScheduledMessage extends JobWithHistory {
         SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
         DecimalFormat decimalFormat = new DecimalFormat(DECIMAL_FORMAT);
         Set<Shop> shopSet = new HashSet<>();
+        List<Shop> shopList = new ArrayList<>();
 
         //查出有几个门店
         for (KtvRoomOrderInfo roomOrderInfo : roomOrderInfoList) {
+            if (!shopSet.contains(roomOrderInfo.shop)) {
+                shopList.add(roomOrderInfo.shop);
+            }
             shopSet.add(roomOrderInfo.shop);
         }
         //遍历查出每个门店对应的预订信息，预订信息超过12个则换一个短信发送。每条短信长度最多300个
-        String info = "";
         int msgCount = 0;
-        for (Shop shop : shopSet) {
+        for (Shop shop : shopList) {
             Map<Shop, String> shopScheduledMap = new HashMap<>();
             List<Map<Shop, String>> scheduledList = new ArrayList<>();
             StringBuilder scheduleInfo = new StringBuilder();
             String code = decimalFormat.format(msgCount + 1000);
             for (KtvRoomOrderInfo orderInfo : roomOrderInfoList) {
-                info = shopScheduledMap.get(orderInfo.shop);
+                String info = shopScheduledMap.get(orderInfo.shop);
                 if (!orderInfo.shop.id.equals(shop.id)) {
                     continue;
                 }

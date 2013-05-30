@@ -1,6 +1,5 @@
 package unit.jobs.ktv;
 
-import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import jobs.ktv.SendDailyScheduledMessage;
@@ -9,7 +8,6 @@ import models.ktv.KtvRoomOrderInfo;
 import models.order.Order;
 import models.sales.Shop;
 import models.sms.SMSMessage;
-import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,7 +30,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
     public void setUp() {
         FactoryBoy.deleteAll();
         MockMQ.clear();
-        shop = FactoryBoy.lastOrCreate(Shop.class);
+        shop = FactoryBoy.create(Shop.class);
     }
 
     @Test
@@ -63,9 +61,9 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         SendDailyScheduledMessage job = new SendDailyScheduledMessage();
         job.doJobWithHistory();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
-        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
         assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
+        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
 
     }
 
@@ -77,9 +75,9 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         SendDailyScheduledMessage job = new SendDailyScheduledMessage();
         job.doJobWithHistory();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
-        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
         assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
+        msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
 
     }
 
@@ -141,24 +139,30 @@ public class SendDailyScheduledMessageTest extends UnitTest {
     }
 
     private void create3HourOrderInfo() {
-        Shop shop = FactoryBoy.create(Shop.class);
-        shop.name = "test店";
-        shop.save();
+        Shop shop1 = FactoryBoy.create(Shop.class, new BuildCallback<Shop>() {
+            @Override
+            public void build(Shop target) {
+                target.name = "test店";
+            }
+        });
         KtvRoomOrderInfo ktvRoomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class);
         ktvRoomOrderInfo.status = KtvOrderStatus.DEAL;
-        ktvRoomOrderInfo.shop = shop;
+        ktvRoomOrderInfo.shop = shop1;
         ktvRoomOrderInfo.duration = 4;
         ktvRoomOrderInfo.save();
     }
 
     private void create4HourOrderInfo() {
-        Shop shop = FactoryBoy.create(Shop.class);
-        shop.name = "徐汇店";
-        shop.managerMobiles = "1300000000";
-        shop.save();
+        Shop shop1 = FactoryBoy.create(Shop.class, new BuildCallback<Shop>() {
+            @Override
+            public void build(Shop target) {
+                target.name = "徐汇店";
+                target.managerMobiles = "1300000000";
+            }
+        });
         KtvRoomOrderInfo ktvRoomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class);
         ktvRoomOrderInfo.status = KtvOrderStatus.DEAL;
-        ktvRoomOrderInfo.shop = shop;
+        ktvRoomOrderInfo.shop = shop1;
         ktvRoomOrderInfo.duration = 5;
         ktvRoomOrderInfo.save();
     }
