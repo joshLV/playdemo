@@ -56,6 +56,12 @@ public class KtvPriceSchedule extends GenericModel {
     @Column(name = "created_at")
     public Date createdAt;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
+    public List<KtvShopPriceSchedule> shopSchedules;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
+    public List<KtvDateRangePriceSchedule>  dateRanges;
+
     public KtvPriceSchedule() {
         this.createdAt = new Date();
         this.deleted = DeletedStatus.UN_DELETED;

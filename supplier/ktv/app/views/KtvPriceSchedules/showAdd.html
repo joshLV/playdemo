@@ -4,7 +4,7 @@
 #{set 'moreStyles'}
 <style type="text/css">
     .hour {
-        width: 36px;
+        width: 40px;
         line-height: 30px;
         background-color: #eaf6fd;
         border: 1px solid #b4d3eb;
@@ -21,7 +21,6 @@
         -moz-user-select: none;
         -ms-user-select: none;
     }
-
     .hour-selected {
         background-color: #1ABC9C;
         color: #fff;
@@ -30,41 +29,88 @@
     #roomCountTable tr {
         height: 35px;
     }
+    .field-group label {
+        font-weight:normal;
+    }
+    .sidebar {
+        display:none
+    }
+    .section {
+        float:none;
+        width:auto;
+    }
+    #message{
+        display:none;
+    }
+    .field-group {
+        padding-left:180px;
+    }
+    .field-group label {
+        width:150px;
+    }
+    .switch_time_range{
+        padding:10px;
+        border: 1px solid #eee;
+        cursor:pointer;
+        float:left;
+    }
+    .preview_box {
+        border:1px dotted #eee;
+        width:500px;
+        padding:10px 20px;
+        color: #888;
+        font-size: 12px;
+     }
+    .delDay {
+        border: 1px solid #eee;
+        padding:0 5px;
+        cursor:pointer;
+        margin-left:5px;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+    .alert_error {
+        background-color: #f2dede;
+        color: #b94a48;
+        padding: 8px 14px;
+    }
+    .alert_error a,
+    .alert_error strong {
+        color: #4875b9;
+    }
 </style>
 #{/set}
 <div class="body">
-#{form @KtvPriceSchedules.create() , id:'creationForm',class:"form-horizontal" }
+#{if !priceSchedule}
+    <form method="post" action="/ktv/price-schedule" id="creationForm" class="form-horizontal">
+        <input type="hidden" id="excludeProductId" value="-1">
+#{/if}
+#{else}
+    <form method="post" action="/ktv/price-schedule/${priceSchedule.id}" id="creationForm" class="form-horizontal">
+        <input type="hidden" id="excludeProductId" value="${priceSchedule.id}">
+#{/else}
     <div class="bd">
         <h2>${title}</h2>
 
         <div class="field-group">
             <label>可预订日期</label>
-            <input type="text" class="time" id="startDay" name="priceStrategy.startDay"
-                   onfocus="WdatePicker({readOnly:true})"
+            <input type="text" class="time" id="startDay"  onfocus="WdatePicker({readOnly:true})"
                    value="${new java.util.Date().format()}">
             <span>到</span>
-            <input type="text" class="time" id="endDay" name="priceStrategy.endDay"
-                   onfocus="WdatePicker({readOnly:true})" value="">(包括)
+            <input type="text" class="time" id="endDay"  onfocus="WdatePicker({readOnly:true})" value="">(包括)
+            <span class="btn" id="addDate"> 添加</span>
+        </div>
+        <div class="field-group">
+            <div class="preview_box" id="dayPreview">
+                未添加，请选择日期范围，并点击添加。一次可【添加多个】日期范围。
+            </div>
+            <input type="hidden" name="days" id="inputDays">
         </div>
 
-        <div class="field-group">
-            <label>筛选日期</label>
-        %{ useWeekNames=["一","二","三","四","五","六","日"]; }%
-            #{list items:1..7, as:'i'}
-                <input type="checkbox" name="useWeekDays" class="input-medium" value="${i}" checked>
-                星期${useWeekNames[i-1]}
-            #{/list}
-        </div>
-
-        <div class="field-group">
-            <label>适用包厢</label>
-            #{list items:models.ktv.KtvRoomType.values(), as:'roomType'}
-                <input type="radio" name="priceStrategy.roomType" value="${roomType}" #{if roomType.type=='MIDDLE'}
-                       checked #{/if} />${roomType.name} &nbsp;&nbsp;
-            #{/list}
-        </div>
-
-        <div class="field-group">
+        <div class="field-group" id="productGroup">
             <label>套餐产品</label>
             <select name="priceStrategy.product.id" id="priceStrategy_product_id" style="width: auto">
                 #{list ktvProductList,as :'product'}
@@ -74,35 +120,42 @@
         </div>
 
         <div class="field-group">
+            <label>可预订时段</label>
+            <div>
+                <div class="switch_time_range" data-offset="0">&lt;</div>
+                <div style="width:600px; overflow:hidden; position:relative;border:6px solid #eee; padding:4px;float:left;margin-left:5px;">
+                    <div style="position:relative; height:30px;left:0;" id="timeRangeBox">
+                        #{list items:0..23, as:'hour'}
+                        %{ hourStr = hour < 10 ? "0" + hour : "" + hour; }%
+                        <div class="hour" style="z-index:${50-hour};left:${hour*44}px" data-hour="${hourStr}:00">${hourStr}:00</div>
+                        #{/list}
+                    </div>
+                </div>
+                <div class="switch_time_range" style="margin-left:5px;" data-offset="-460px">&gt;</div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div class="field-group">
+            <div class="preview_box" id="hourPreview">
+                未选择时间段，请点击以上所列时间【可多选】
+            </div>
+        </div>
+        <input type="hidden" name="priceStrategy.startTimes" id="inputStartTimes">
+
+        <div class="field-group" id="roomTypeGroup">
+            <label>适用包厢</label>
+            #{list items:models.ktv.KtvRoomType.values(), as:'roomType'}
+                <input type="radio" name="priceStrategy.roomType" value="${roomType}"/>${roomType.name} &nbsp;&nbsp;
+            #{/list}
+        </div>
+
+        <div class="field-group">
             <label>包厢价格</label>
             <input type="text" id="price" name="priceStrategy.price"/> 元 / 每 <span id="durationPer"></span> 小时
         </div>
 
-        <div class="field-group">
-            <label>可预订时段</label>
 
-            <div style="position:relative; height:30px">
-                <div class="hour" style="z-index:50;left:0px" data-hour="08:00">08:00</div>
-                <div class="hour" style="z-index:49;left:40px" data-hour="09:00">09:00</div>
-                <div class="hour" style="z-index:48;left:80px" data-hour="10:00">10:00</div>
-                <div class="hour" style="z-index:47;left:120px" data-hour="11:00">11:00</div>
-                <div class="hour" style="z-index:46;left:160px" data-hour="12:00">12:00</div>
-                <div class="hour" style="z-index:45;left:200px" data-hour="13:00">13:00</div>
-                <div class="hour" style="z-index:44;left:240px" data-hour="14:00">14:00</div>
-                <div class="hour" style="z-index:43;left:280px" data-hour="15:00">15:00</div>
-                <div class="hour" style="z-index:42;left:320px" data-hour="16:00">16:00</div>
-                <div class="hour" style="z-index:41;left:360px" data-hour="17:00">17:00</div>
-                <div class="hour" style="z-index:40;left:400px" data-hour="18:00">18:00</div>
-                <div class="hour" style="z-index:19;left:440px" data-hour="19:00">19:00</div>
-                <div class="hour" style="z-index:18;left:480px" data-hour="20:00">20:00</div>
-                <div class="hour" style="z-index:17;left:520px" data-hour="21:00">21:00</div>
-                <div class="hour" style="z-index:16;left:560px" data-hour="22:00">22:00</div>
-                <div class="hour" style="z-index:15;left:600px" data-hour="23:00">23:00</div>
-            </div>
-            <input type="hidden" name="priceStrategy.startTimes" id="inputStartTimes">
-        </div>
-
-        <div class="field-group">
+        <div class="field-group" id="shopGroup">
             <label>选择适用门店</label>
             #{list items:shops,as:'shop'}
                 <input type="checkbox" class="shops" data-shop-id="${shop.id}" data-name="${shop.name}"/>${shop.name}
@@ -111,7 +164,7 @@
         </div>
 
         <div class="field-group">
-            <label>包厢数量</label>
+            <label>每时段包厢数量</label>
             <table cellpadding="0" cellspacing="0" id="roomCountTable">
                 <tr>
                     <td>统一设置 &nbsp;&nbsp;</td>
@@ -122,200 +175,72 @@
                 </tr>
             </table>
         </div>
+        <div class="field-group" >
+            <div class="alert_error" id="errorMsg" style="display: none">
+            </div>
+        </div>
         <div class="field-group">
             <input type="button" class="btn" value="创建" id="createButton"/>
         </div>
 
     </div>
-#{/form}
+</form>
 </div>
+
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-<script type="text/javascript">
-    var selectedHours = [];
-    function resetSelectedHours() {
-        selectedHours = [];
-        $(".hour").each(function () {
-            var ele = $(this);
-            ele.removeClass("hour-selected");
-            ele.removeClass("hour-selected");
-            ele.text(ele.attr("data-hour"));
-            ele.animate({width: "36px"}, 100);
-        });
-    }
-    $(function () {
-        $("#durationPer").text($("#priceStrategy_product_id option:selected").attr("data-duration"));
-        //选择门店
-        $("input[data-shop-id]").change(function () {
-            var roomCountAll = $("#roomCountAll").val();
-            var ele = $(this);
-            if (ele.is(":checked")) {
-                $("#roomCountTable").append(
-                        $("<tr/>").attr("row-shop-id", ele.attr("data-shop-id")).append(
-                                        $("<td/>").text(ele.attr("data-name"))
-                                ).append(
-                                        $("<td/>").append(
-                                                $("<input/>", {
-                                                    type: "text",
-                                                    name: "shop-" + ele.attr("data-shop-id"),
-                                                    size: "3",
-                                                    "data-shop-name": ele.attr("data-name"),
-                                                    "data-shop-id": ele.attr("data-shop-id"),
-                                                    value: roomCountAll})
-                                        ).append($("<span/>").text("个"))
-                                )
-                )
-            } else {
-                $("#roomCountTable tr[row-shop-id='" + $(this).attr("data-shop-id") + "']").remove();
-            }
-        });
-        //设置统一的门店数量
-        $("#roomCountAll").keyup(function () {
-            $("#roomCountTable input[data-shop-id]").val($(this).val());
-        });
-        //切换时长radio
-        $("#priceStrategy_product_id").change(function () {
-            var ele = $("#priceStrategy_product_id option:selected");
-            $("#durationPer").text(ele.attr("data-duration"));
-            resetSelectedHours();
-        });
-        //点击时间点
-        $(".hour").click(function () {
-            var ele = $(this);
-            var hour = Number(ele.attr("data-hour").substring(0, 2));
-
-            var index = $.inArray(hour, selectedHours);
-            if (index >= 0) {
-                selectedHours.splice(index, 1);
-                ele.removeClass("hour-selected");
-                ele.text(ele.attr("data-hour"));
-                ele.animate({width: "36px"}, 100);
-            } else {
-                var eleSelectedDuration = $("#priceStrategy_product_id option:selected");
-                var duration = Number(eleSelectedDuration.attr("data-duration"));
-                if (hour + duration > 24) {
-                    return;
-                }
-                for (var i = 1; i < duration; i++) {
-                    var j = $.inArray(hour + i, selectedHours);
-                    if (j >= 0) {
-                        return;
-                    }
-                }
-                selectedHours.push(hour);
-                ele.addClass("hour-selected");
-                ele.text(hour + ":00 - " + (hour + duration) + ":00");
-                ele.animate({width: (duration * 40 - 4) + "px"}, 100);
-            }
-            $("#inputStartTimes").val(selectedHours.join(","));
-        });
-        $("#createButton").click(function () {
-            var startDay = $("#startDay").val();
-            if (!startDay) {
-                alert("请选择起始日期");
-                return;
-            }
-            ;
-
-            var endDay = $("#endDay").val();
-            if (!endDay) {
-                alert("请选择结束日期");
-                return;
-            }
-            ;
-
-            var useWeekDayInputs = $("input[name='useWeekDays']:checked");
-            if (useWeekDayInputs.length == 0) {
-                alert("请筛选日期");
-                return;
-            }
-            ;
-
-            var roomType = $("input[name='priceStrategy.roomType']:checked").val();
-            if (!roomType) {
-                alert("请选择包厢类型");
-                return;
-            }
-            ;
-
-            var price = $("#price").val();
-            if (!price) {
-                alert("请填写价格");
-                return;
-            }
-            ;
-
-            var inputStartTimes = $("#inputStartTimes").val();
-            if (!inputStartTimes) {
-                alert("请选择预订时段");
-                return;
-            }
-            ;
-
-            var shopInputs = $(".shops:checked");
-            if (shopInputs.length == 0) {
-                alert("请选择适用门店");
-                return;
-            }
-            ;
-            var allRoomCountSet = true;
-            $("input[name^='shop-']").each(function () {
+<script src="@{'/public/javascripts/ktv-price-schedule.js'}" type="text/javascript" charset="UTF-8"></script>
+    #{if priceSchedule}
+    <script type="text/javascript" charset="UTF-8">
+        function prepareEditData(priceSchedule){
+            //准备日期
+            $.each(priceSchedule.dateRanges, function(index, dateRange){
+                addDateRange(dateRange.startDay, dateRange.endDay);
+            });
+            //准备产品
+            $("#priceStrategy_product_id option").each(function(){
                 var ele = $(this);
-                if (!ele.val()) {
-                    allRoomCountSet = false;
-                    alert("请设置 [" + ele.attr("data-shop-name") + "] 的包厢数量");
+                if(ele.val() == priceSchedule.product.id) {
+                    ele.attr("selected", true);
                     return false;
                 }
-                ;
             });
-            if (!allRoomCountSet) {
-                return
-            }
-            ;
-            var shopIds = [];
-            shopInputs.each(function () {
-                shopIds.push($(this).attr("data-shop-id"));
-            });
-            var useWeekDays = [];
-            useWeekDayInputs.each(function () {
-                useWeekDays.push($(this).val());
-            });
-
-            //检查是否有冲突
-            var noCollision = true;
-            $.ajax({
-                type: 'POST',
-                async: false,
-                url: '/ktv/price-schedule/collision-detect',
-                data: {
-                    "priceStrategy.product.id": $("#priceStrategy_product_id").val(),
-                    "priceStrategy.startDay": startDay,
-                    "priceStrategy.endDay": endDay,
-                    "priceStrategy.roomType": roomType,
-                    "shopIds": shopIds.join(","),
-                    "useWeekDays": useWeekDays.join(","),
-                    "startTimes": inputStartTimes
-                },
-                success: function (data) {
-                    if (!data.isOk) {
-                        noCollision = false;
-                        if (data.error) {
-                            alert(data.error);
-                        } else if (data.shopName) {
-                            alert("价格设置在时间上有冲突：\n门店：" + data.shopName
-                                    + "\n星期：" + data.weekDays
-                                    + "\n起始时间：" + data.startTime);
-                        }
-                        ;
-                    }
+            $("#priceStrategy_product_id").hide().parent().append($("<span>", {text: priceSchedule.product.name}));
+            //准备时间段
+            $("#timeRangeBox div[data-hour]").each(function(){
+                var ele = $(this);
+                var hour = Number(ele.attr("data-hour").substring(0, 2));
+                var index = $.inArray(hour, priceSchedule.startTimes);
+                if (index >= 0) {
+                    toggleHour(ele);
                 }
             });
-            if (!noCollision) {
-                return;
-            }
-            ;
-            $("#creationForm").submit();
-        });
-    });
-</script>
+            //准备门店
+            $.each(priceSchedule.shops, function(index, shop){
+                $("#shopGroup input[data-shop-id='" + shop.shopId + "']").click();
+                setInterval(function(){
+                    $("#roomCountTable input[data-shop-id='" + shop.shopId + "']").val(shop.roomCount);
+                }, 0);
+            });
+            $("#roomTypeGroup input[value='" + priceSchedule.roomType + "']").attr("checked", true);
+            $("#price").val(priceSchedule.price);
+            $("#createButton").val("提交修改");
+        }
+        $(function(){
+            prepareEditData(
+                {
+                    "shops": ${shopPriceScheduleJson.raw()},
+                    "dateRanges": ${dateRangePriceScheduleJson.raw()},
+                    "startTimes": ${"[" + priceSchedule.startTimes + "]"},
+                    "product":{
+                        "id": ${priceSchedule.product.id},
+                        "name": ${('"' + priceSchedule.product.name + '"').raw()}
+                    },
+                    "roomType":${('"'+priceSchedule.roomType + '"').raw()},
+                    "price":${('"'+priceSchedule.price + '"').raw()}
+                }
+            );
+        })
+    </script>
+    #{/if}
 #{/set}

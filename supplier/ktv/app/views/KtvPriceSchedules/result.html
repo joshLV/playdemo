@@ -1,0 +1,45 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'价格策略' /}
+#{set menu:"ktv_price" /}
+#{set 'moreStyles'}
+<style>
+    #message{
+        display:none;
+    }
+    .alert_success{
+        color: #468847;
+        background-color: #dff0d8;
+        padding:8px 14px;
+    }
+    .alert_success a,
+    .alert_success strong {
+        color: #075e08;
+    }
+    .alert_error {
+        background-color: #f2dede;
+        color: #b94a48;
+        padding: 8px 14px;
+    }
+    .alert_error a,
+    .alert_error strong {
+        color: #4875b9;
+    }
+</style>
+#{/set}
+<div class="body">
+    <div class="bd">
+
+        #{if error}
+            <div class="alert_error">
+                ${error}
+            </div>
+        #{/if}
+        #{else}
+            <div class="alert_success">
+                成功！点击进行 <a href="/ktv/price-schedule/${currentSchedule.id}">编辑</a> 或，
+                <a href="/ktv/price-schedule?roomType=${currentSchedule.roomType}&productId=${currentSchedule.product.id}&shopId=${shopId}">查看价格策略</a>
+            </div>
+        #{/else}
+
+    </div>
+</div>

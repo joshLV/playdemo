@@ -98,20 +98,22 @@ public class KtvTaobaoUtil {
                 continue;
             }
 
-            for (Map.Entry<String, List<KtvTaobaoSku>> entry : diffResult.entrySet()) {
-                switch (entry.getKey()) {
+            String[] keys = new String[]{"delete", "update", "add"};//先删，后更新，再添加
+            for (String key : keys) {
+                List<KtvTaobaoSku> skuList = diffResult.get(key);
+                switch (key) {
                     case "add":
-                        for (KtvTaobaoSku p : entry.getValue()) {
+                        for (KtvTaobaoSku p : skuList) {
                             addSaleSkuOnTaobao(taobaoClient, token, resalerProduct, p);
                         }
                         break;
                     case "update":
-                        for (KtvTaobaoSku p : entry.getValue()) {
+                        for (KtvTaobaoSku p : skuList) {
                             updateSaleSkuOnTaobao(taobaoClient, token, resalerProduct, p);
                         }
                         break;
                     case "delete":
-                        for (KtvTaobaoSku p : entry.getValue()) {
+                        for (KtvTaobaoSku p : skuList) {
                             deleteSaleSkuOnTaobao(taobaoClient, token, resalerProduct, p);
                         }
                         break;
@@ -148,17 +150,17 @@ public class KtvTaobaoUtil {
             today = DateUtils.addDays(today, 1);
         }
 
-        //查出与该KTV商品有关联的、最近7天的所有价格策略
-        Query query = JPA.em().createQuery("select s.schedule from KtvShopPriceSchedule s where s.shop = :shop "
-                + "and s.schedule.product = :product and s.schedule.startDay <= :endDay and s.schedule.endDay >= :startDay and s.schedule.deleted = :deleted");
+        int maxSkuCount = 600;
+        int maxDateCount = 10;
 
+        //查出与该KTV商品有关联的、today(包含)之后的所有价格
+        Query query = JPA.em().createQuery("select s from KtvPriceSchedule s join s.dateRanges r where "
+                + "and s.schedule.product = :product and s.schedule.endDay >= :today and s.schedule.deleted = :deleted");
 
-        Date endDay = DateUtils.addDays(today, 13);
 
         query.setParameter("shop", shop);
         query.setParameter("product", product);
-        query.setParameter("startDay", today);
-        query.setParameter("endDay", endDay);
+        query.setParameter("today", today);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         List<KtvPriceSchedule> priceScheduleList = query.getResultList();
 
