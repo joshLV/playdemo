@@ -21,6 +21,6 @@ public class KtvSkuMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "taobao sku message:scheduledId= " + scheduledId + "&ktvProductGoodsId=" + ktvProductGoodsId;
+        return "taobao sku message:scheduledId= " + scheduledId + ",ktvProductGoodsId=" + ktvProductGoodsId;
     }
 }

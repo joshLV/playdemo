@@ -22,17 +22,19 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
         }
         Logger.info("message.ktvProductGoodsId:%s,message.scheduledId:%s", message.ktvProductGoodsId, message.scheduledId);
         //根据价格策略更新sku
-        if (message.ktvProductGoodsId == null && message.scheduledId != null) {
+        if (message.scheduledId != null) {
             KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(message.scheduledId);
-        } else {
-            //根据ktv产品更新sku
-            KtvProductGoods ktvProductGoods = KtvProductGoods.findById(message.ktvProductGoodsId);
-            if (ktvProductGoods != null) {
-                KtvTaobaoUtil.updateTaobaoSkuByProductGoods(ktvProductGoods);
-            } else {
-                Logger.info("KtvSkuConsumer process faild:ktvProductGoods is null");
-            }
+//        } else {
+//            //根据ktv产品更新sku
+//            KtvProductGoods ktvProductGoods = KtvProductGoods.findById(message.ktvProductGoodsId);
+//            if (ktvProductGoods != null) {
+//                KtvTaobaoUtil.updateTaobaoSkuByProductGoods(ktvProductGoods);
+//            } else {
+//                Logger.info("KtvSkuConsumer process faild:ktvProductGoods is null");
+//            }
         }
+
+        Logger.info("KtvSkuConsumer process faild:message.scheduleId is null");
     }
 
     @Override

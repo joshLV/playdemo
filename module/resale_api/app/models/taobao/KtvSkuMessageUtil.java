@@ -12,7 +12,7 @@ import java.util.Map;
  * Time: 下午3:12
  */
 public class KtvSkuMessageUtil {
-    public static final String QUEUE_NAME = Play.mode.isProd() ? "ktv_sku" : "ktv_sku_dev";
+    public static final String QUEUE_NAME = Play.mode.isProd() ? "taobao_ktv_sku" : "taobao_ktv_sku_dev";
 
     private KtvSkuMessageUtil() {
     }
