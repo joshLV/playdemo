@@ -20,8 +20,8 @@ public class KtvSkuMessageUtil {
     /**
      * 淘宝商品ID
      */
-    public static void send(Long scheduledId, Long ktvProductGoodsId) {
-        KtvSkuMessage message = new KtvSkuMessage(scheduledId, ktvProductGoodsId);
+    public static void send(Long scheduledId) {
+        KtvSkuMessage message = new KtvSkuMessage(scheduledId);
         MQPublisher.publish(QUEUE_NAME, message);
     }
 }

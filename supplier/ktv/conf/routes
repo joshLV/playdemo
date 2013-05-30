@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                                           KtvPriceSchedules.index
+GET     /                                           KtvPriceSchedules.tableShow
 
 # [v2]
 GET     /ktv/product-bind                              KtvProductTaobaoBind.index
