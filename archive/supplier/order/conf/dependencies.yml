@@ -24,7 +24,7 @@ require:
     - accounts -> accounts
     - supplier_rbac -> supplier_rbac
     - org.jsoup -> jsoup 1.6.1
-    - com.taobao -> taobao-top 20121130
+    - com.taobao -> taobao-top 20130520
     - sms -> sms
     - cms -> cms
     - supports -> supports

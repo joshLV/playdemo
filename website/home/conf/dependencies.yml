@@ -31,7 +31,7 @@ require:
     - emaillogs -> emaillogs
     - cache_helper -> cache_helper
     - commons-httpclient -> commons-httpclient 3.1
-    - com.taobao -> taobao-top 20121130
+    - com.taobao -> taobao-top 20130520
     - oauth -> oauth
     - supports -> supports
     - resale_api -> resale_api

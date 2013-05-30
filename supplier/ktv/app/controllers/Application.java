@@ -1,5 +1,6 @@
 package controllers;
 
+import models.ktv.KtvTaobaoUtil;
 import play.*;
 import play.mvc.*;
 
@@ -11,6 +12,10 @@ public class Application extends Controller {
 
     public static void index() {
         render();
+    }
+
+    public static void updateProduct(Long id) {
+        KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(id);
     }
 
 }

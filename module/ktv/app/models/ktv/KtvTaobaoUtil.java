@@ -446,6 +446,7 @@ public class KtvTaobaoUtil {
         req.setProperties(p.getProperties());
         req.setQuantity((long) p.quantity);
         req.setPrice(p.price.toString());
+        req.setItemPrice(p.price.toString());
 
         try {
             ItemSkuUpdateResponse response = taobaoClient.execute(req, token.accessToken);

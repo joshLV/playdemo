@@ -15,7 +15,7 @@ require:
     - view_ext -> view_ext
     - commons-lang -> commons-lang 2.6
     - commons-httpclient -> commons-httpclient 3.1
-    - com.taobao -> taobao-top 20121130
+    - com.taobao -> taobao-top 20130520
     - sales -> sales
     - resale -> resale
     - supplier -> supplier

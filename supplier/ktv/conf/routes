@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                                           KtvPriceSchedules.tableShow
+GET     /test/{id}                                  Application.updateProduct
 
 # [v2]
 GET     /ktv/product-bind                              KtvProductTaobaoBind.index

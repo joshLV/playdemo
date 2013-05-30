@@ -35,7 +35,7 @@ require:
     - supplier_api -> supplier_api
     - commons-httpclient -> commons-httpclient 3.1
     - oauth -> oauth
-    - com.taobao -> taobao-top 20121130
+    - com.taobao -> taobao-top 20130520
     - ktv -> ktv
 
 repositories:

@@ -36,7 +36,7 @@ require:
     - resale_api -> resale_api
     - supplier_api -> supplier_api
     - oauth -> oauth
-    - com.taobao -> taobao-top 20121130
+    - com.taobao -> taobao-top 20130520
     - supports -> supports
     - commons-httpclient -> commons-httpclient 3.1
     - ktv -> ktv
