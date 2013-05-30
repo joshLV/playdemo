@@ -30,7 +30,7 @@ public class KtvAutoVerifyCoupon extends JobWithHistory {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
         List<KtvRoomOrderInfo> roomOrderInfoList = KtvRoomOrderInfo.find("select k from KtvRoomOrderInfo k where " +
-                "k.scheduledDay = ? and k.status = ? and (k.scheduledTime + k.duration) <= ? order by k.id",
+                "k.scheduledDay = ? and k.status = ? and (k.scheduledTime + k.product.duration) <= ? order by k.id",
                 DateUtils.truncate(new Date(), Calendar.DATE), KtvOrderStatus.DEAL, hour).fetch();
         for (KtvRoomOrderInfo roomOrderInfo : roomOrderInfoList) {
             List<ECoupon> couponList = ECoupon.find("orderItems = ? and status = ? and expireAt >= ?",
