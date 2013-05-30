@@ -68,8 +68,11 @@ public class KtvPriceSchedules extends Controller {
 
     public static void tableShow(Long shopId, KtvRoomType roomType, Long productId) {
 
-        StringBuilder sql = new StringBuilder("select s from KtvPriceSchedule s join s.shopSchedules ss where 1=1 ");
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        StringBuilder sql = new StringBuilder("select s from KtvPriceSchedule s join s.shopSchedules ss " +
+                "where s.product.supplier.id = :supplierId ");
         Map<String, Object> params = new HashMap<>();
+        params.put("supplierId", supplierId);
         if (shopId != null) {
             sql.append(" and ss.shop.id = :shopId");
             params.put("shopId", shopId);
@@ -88,7 +91,6 @@ public class KtvPriceSchedules extends Controller {
         }
         List<KtvPriceSchedule> priceScheduleList = query.getResultList();
 
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
         List<Shop> shops = Shop.findShopBySupplier(supplierId);
         List<KtvProduct> products = KtvProduct.findProductBySupplier(supplierId);
 

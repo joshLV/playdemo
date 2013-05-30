@@ -70,7 +70,7 @@ public class KtvTaobaoProducts extends Controller {
         Resaler resaler = Resaler.findById(SupplierRbac.currentUser().supplier.defaultResalerId);
         TaobaoClient client=new DefaultTaobaoClient(TaobaoCouponUtil.URL, resaler.taobaoCouponAppKey, resaler.taobaoCouponAppSecretKey);
         ItempropsGetRequest req=new ItempropsGetRequest();
-        req.setCid(50019081L);
+        req.setCid(KtvTaobaoUtil.defaultCid);
         ItempropsGetResponse response;
         try {
              response = client.execute(req);

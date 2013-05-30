@@ -39,6 +39,7 @@ import java.util.*;
 public class KtvTaobaoUtil {
     // 淘宝电子凭证的secret
     public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
+    public static final long defaultCid = 50644003L;
 
 
     /**
