@@ -16,9 +16,7 @@ import play.test.UnitTest;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: yan
@@ -149,6 +147,56 @@ public class KtvTaobaoUtilTest extends UnitTest {
         assertEquals(0, result.get("add").size());
         assertEquals(0, result.get("update").size());
         assertEquals(4, result.get("delete").size());
+    }
+
+    @Test
+    public void testSkuMapToList() {
+        SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> maps = new TreeMap<>();
+
+        //准备 skuA
+        KtvTaobaoSku skuA = setSkuA(new KtvTaobaoSku());
+        SortedMap<Integer, KtvTaobaoSku> timeRangeMap = new TreeMap<>();
+        timeRangeMap.put(skuA.getTimeRangeCode(), skuA);
+        SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>> dateMap = new TreeMap<>();
+        dateMap.put(skuA.getDay(), timeRangeMap);
+        maps.put(skuA.getRoomType(), dateMap);
+
+        //准备 skuC
+        KtvTaobaoSku skuC = setSkuC(new KtvTaobaoSku());
+        timeRangeMap = new TreeMap<>();
+        timeRangeMap.put(skuC.getTimeRangeCode(), skuC);
+
+        dateMap = maps.get(skuC.getRoomType());
+        dateMap.put(skuC.getDay(), timeRangeMap);
+
+        //准备 skuD
+        KtvTaobaoSku skuD = setSkuD(new KtvTaobaoSku());
+        skuD.quantity = 0;
+        dateMap = maps.get(skuC.getRoomType());
+        timeRangeMap = dateMap.get(skuD.getDay());
+        timeRangeMap.put(skuD.getTimeRangeCode(), skuD);
+
+
+        List<KtvTaobaoSku> listNotReduce = KtvTaobaoUtil.skuMapToList(maps, false);
+        assertEquals(3, listNotReduce.size());
+
+        List<KtvTaobaoSku> listReduce = KtvTaobaoUtil.skuMapToList(maps, true);
+        assertEquals(2, listReduce.size());
+    }
+
+    @Test
+    public void testSkuListToMap() {
+        List<KtvTaobaoSku> skuList = new ArrayList<>();
+        skuList.add(setSkuA(new KtvTaobaoSku()));
+        skuList.add(setSkuD(new KtvTaobaoSku()));
+
+        SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> mapNotPerfect
+                = KtvTaobaoUtil.skuListToMap(skuList, null, false);
+
+        assertEquals(2, KtvTaobaoUtil.skuMapToList(mapNotPerfect, false).size());
+        SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> mapPerfect
+                = KtvTaobaoUtil.skuListToMap(skuList, null, true);
+        assertEquals(4, KtvTaobaoUtil.skuMapToList(mapPerfect, false).size());
     }
 
     KtvPriceSchedule schedule;
