@@ -10,12 +10,10 @@ import models.ktv.KtvRoomOrderInfo;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.OrderItems;
-import models.sales.Shop;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.UnitTest;
-import util.mq.MockMQ;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -97,13 +95,17 @@ public class KtvAutoVerifyCouponTest extends UnitTest {
     }
 
     @Test
-    public void test满足条件的() {
+    public void test满足条件的() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        roomOrderInfo.scheduledTime = hour-2;
+        roomOrderInfo.save();
         createWithPasswordCoupons(1);
         assertEquals(ECouponStatus.UNCONSUMED, couponList.get(0).status);
         assertNull(couponList.get(0).consumedAt);
         KtvAutoVerifyCoupon job = new KtvAutoVerifyCoupon();
         job.doJobWithHistory();
-
+        Thread.sleep(500l);
         couponList.get(0).refresh();
         assertEquals(ECouponStatus.CONSUMED, couponList.get(0).status);
         assertNotNull(couponList.get(0).consumedAt);
