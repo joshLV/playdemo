@@ -36,7 +36,7 @@ require:
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
     - oauth -> oauth
-    - com.taobao -> taobao-top 20121130
+    - com.taobao -> taobao-top 20130520
     - supports -> supports
     - ktv -> ktv
 

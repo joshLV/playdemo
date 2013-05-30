@@ -32,7 +32,7 @@ require:
     - com.uhuila.utils -> tenpay 1.1.1
     - org.apache.httpcomponents -> httpclient 4.1.3
     - org.jsoup -> jsoup 1.6.1
-    - com.taobao -> taobao-top 20121130
+    - com.taobao -> taobao-top 20130520
     - view_ext -> view_ext
     - asset_package -> asset_package
     - layout_website -> layout_website
