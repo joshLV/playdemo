@@ -342,6 +342,7 @@ public class KtvTaobaoUtil {
                         sku.setDay(day);
                         sku.price = price;
                         sku.quantity = 0;
+                        skuMapByDate.put(timeRange, sku);
                     }
                 }
             }
