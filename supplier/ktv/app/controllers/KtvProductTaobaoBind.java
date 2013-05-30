@@ -223,7 +223,7 @@ public class KtvProductTaobaoBind extends Controller {
         req.setNumIid(Long.parseLong(partnerTaobaoId));
         try {
             ItemGetResponse response = taobaoClient.execute(req, token.accessToken);
-            if (StringUtils.isBlank(response.getErrorCode()) && response.getItem().getCid().equals(50019081L)) {
+            if (StringUtils.isBlank(response.getErrorCode()) && response.getItem().getCid().equals(KtvTaobaoUtil.defaultCid)) {
                 return true;
             }
         } catch (ApiException e) {
