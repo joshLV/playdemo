@@ -145,11 +145,10 @@ public class KtvTaobaoUtil {
         List<KtvTaobaoSku> taobaoSkuList = new ArrayList<>();//结果集
 
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
         Date startDay = DateUtils.truncate(new Date(), Calendar.DATE);
         //当天18点到24点之后sku不更新，并删除
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if (hour > 18) {
+        if (hour >= 18) {
             startDay = DateUtils.addDays(startDay, 1);
         }
 
@@ -170,6 +169,7 @@ public class KtvTaobaoUtil {
         Goods goods = productGoods == null ? null : productGoods.goods;
 
         /**
+         * 实例：
          *
          * 策略A        AAAAAA     AAAAAA           AAAAAAA
          * 策略B    BBBBBB       BBBB       BBBBB              BBBBB
@@ -266,9 +266,6 @@ public class KtvTaobaoUtil {
                     taobaoSkuList.add(sku);
                 }
             }
-        }
-        for (KtvTaobaoSku sku : taobaoSkuList) {
-            System.out.println(sku.getProperties());
         }
         return skuListToMap(taobaoSkuList, goods, isPerfect);
     }
