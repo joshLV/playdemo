@@ -20,6 +20,8 @@ import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -138,97 +140,135 @@ public class KtvTaobaoUtil {
      *                  如果该选项为假，则对于无价格/数量信息的叶子节点，将忽略之，不加入到Map中
      * @return 新的淘宝SKU列表（未 save 到数据库）
      */
-    public static Map<String, Map<String, Map<String, KtvTaobaoSku>>> buildTaobaoSku(Shop shop, KtvProduct product, boolean isPerfect) {
+    public static SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> buildTaobaoSku(
+            Shop shop, KtvProduct product, boolean isPerfect) {
         List<KtvTaobaoSku> taobaoSkuList = new ArrayList<>();//结果集
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
-        Date today = DateUtils.truncate(new Date(), Calendar.DATE);
+        Date startDay = DateUtils.truncate(new Date(), Calendar.DATE);
         //当天18点到24点之后sku不更新，并删除
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         if (hour > 18) {
-            today = DateUtils.addDays(today, 1);
+            startDay = DateUtils.addDays(startDay, 1);
         }
 
-        int maxSkuCount = 600;
-        int maxDateCount = 10;
-
         //查出与该KTV商品有关联的、today(包含)之后的所有价格
-        Query query = JPA.em().createQuery("select s from KtvPriceSchedule s join s.dateRanges r where "
-                + "and s.schedule.product = :product and s.schedule.endDay >= :today and s.schedule.deleted = :deleted");
+        Query query = JPA.em().createQuery(
+                "select s from KtvPriceSchedule s join s.dateRanges r join s.shopSchedules ss where "
+                + "s.product = :product and s.deleted = :deleted and r.endDay >= :startDay and ss.shop = :shop");
 
 
         query.setParameter("shop", shop);
         query.setParameter("product", product);
-        query.setParameter("today", today);
+        query.setParameter("startDay", startDay);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         List<KtvPriceSchedule> priceScheduleList = query.getResultList();
 
 
-        //查出该门店的该产品今天已经卖出、或者被锁定的房间信息
         KtvProductGoods productGoods = KtvProductGoods.find("byShopAndProduct", shop, product).first();
-        List<KtvRoomOrderInfo> roomOrderInfoList;
-        Goods goods = null;
-        if (productGoods == null) {
-            roomOrderInfoList = new ArrayList<>();
-        } else {
-            goods = productGoods.goods;
-            roomOrderInfoList = KtvRoomOrderInfo.findScheduled(today, productGoods);
+        Goods goods = productGoods == null ? null : productGoods.goods;
+
+        /**
+         *
+         * 策略A        AAAAAA     AAAAAA           AAAAAAA
+         * 策略B    BBBBBB       BBBB       BBBBB              BBBBB
+         * 时间     ------------------------------------------------
+         *
+         * 构造一个按日期顺序排列的 策略列表的 列表
+         * 每一个日期，都对应 至少一个 价格策略
+         *
+         * 最终我们只选取 从startDay 开始往后数，不超过14天的 日期
+         */
+        TreeMap<Date, List<KtvPriceSchedule>> orderedScheduleMap = new TreeMap<>();
+        for (KtvPriceSchedule schedule : priceScheduleList) {
+            for (KtvDateRangePriceSchedule dateRange : schedule.dateRanges) {
+                DateTime sd = new DateTime(dateRange.startDay);
+                DateTime ed = new DateTime(dateRange.endDay);
+                int difference = Days.daysBetween(sd, ed).getDays();
+                for (int i = 0 ; i <= difference ; i++) {
+                    Date d = DateUtils.addDays(dateRange.startDay, i);
+                    if (d.before(startDay)) {
+                        continue;
+                    }
+                    List<KtvPriceSchedule> schedules = orderedScheduleMap.get(d);
+                    if (schedules == null) {
+                        schedules = new ArrayList<>();
+                        orderedScheduleMap.put(d, schedules);
+                    }
+                    schedules.add(schedule);
+                }
+            }
         }
-        //处理从今天开始往后的14天内，每一天的sku
-        for (int i = 0; i < 14; i++) {
-            Date day = DateUtils.addDays(today, i);
-            //抓出所有相关的价格策略，以日期范围 和 星期 为条件，筛选出合适的，然后进一步处理
-            for (KtvPriceSchedule ps : priceScheduleList) {
 
-                calendar.setTime(day);
-                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                dayOfWeek = (dayOfWeek == 1) ? dayOfWeek + 6 : dayOfWeek - 1;
-                //如果日期范围不包括当天，跳过
-                if (ps.startDay.after(day) || ps.endDay.before(day)) {
-                    continue;
-                }
-                //如果 当天 不在设置的星期范围内，跳过
-                if (!ps.getDayOfWeeksAsSet().contains(dayOfWeek)) {
-                    continue;
-                }
+        Set<KtvRoomType> uniqRoomTypes = new HashSet<>();//唯一 房型
+        Set<Date> uniqDates = new HashSet<>();//唯一日期
+        Set<String> uniqTimeRanges = new HashSet<>();//唯一时间范围
 
-                //取出该门店在该价格策略上设置的房间数
-                KtvShopPriceSchedule shopPriceSchedule = KtvShopPriceSchedule.find("byShopAndSchedule", shop, ps).first();
+        int maxSkuCount = 600;
+        int dateCount = 14;//从startDay 开始，依次往后选择不超过14个不同的日期
+
+        List<KtvRoomOrderInfo> roomOrderInfoList = new ArrayList<>();
+        Date tenMinutesAgo = DateUtils.addMinutes(new Date(), - KtvRoomOrderInfo.LOCK_MINUTE);
+
+        mainLoop:
+        for (Map.Entry<Date, List<KtvPriceSchedule>> entry : orderedScheduleMap.entrySet()) {
+            dateCount -= 1;
+            if (dateCount < 0) {
+                continue;
+            }
+            Date day = entry.getKey();
+            //查出该门店的该产品这一天已经卖出、或者被锁定的房间信息
+            if (goods != null){
+                roomOrderInfoList = KtvRoomOrderInfo.find(
+                        "goods=? and shop=? and scheduledDay = ? and  (status =? or (status=? and createdAt >=?))",
+                        goods, shop, day,  KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, tenMinutesAgo).fetch();
+            }
+
+            for (KtvPriceSchedule schedule : entry.getValue()) {
+                //查出门店数量
+                KtvShopPriceSchedule shopPriceSchedule = KtvShopPriceSchedule.find("byShopAndSchedule", shop, schedule).first();
+                uniqRoomTypes.add(schedule.roomType);
+                uniqDates.add(day);
 
                 //取出该房型下的时间安排
-                Set<Integer> startTimeArray = ps.getStartTimesAsSet();
+                SortedSet<Integer> startTimeArray = schedule.getStartTimesAsSet();
                 for (Integer startTime : startTimeArray) {
-                    KtvTaobaoSku sku = new KtvTaobaoSku();
-                    sku.goods = goods;
-                    sku.setRoomType(ps.roomType.getTaobaoId());
-                    sku.setDate(dateFormat.format(day));
-                    sku.price = ps.price;
-                    sku.quantity = shopPriceSchedule.roomCount;
-
+                    //房型数 x 日期数 x 时间段数 不能超过600
+                    uniqTimeRanges.add(startTime + "-" + (startTime + product.duration));
+                    if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
+                        break mainLoop;
+                    }
+                    int roomCountLeft = shopPriceSchedule.roomCount;
                     //排除掉已预订的房间所占用的数量
                     for (KtvRoomOrderInfo orderInfo : roomOrderInfoList) {
-                        if (orderInfo.scheduledDay.compareTo(day) != 0) {
-                            continue;
-                        }
                         if (orderInfo.duration != product.duration) {
                             continue;
                         }
                         if (orderInfo.scheduledTime < (startTime + product.duration)
                                 && (orderInfo.scheduledTime + orderInfo.duration) > startTime) {
-                            sku.quantity -= 1;
+                            roomCountLeft -= 1;
                         }
                     }
                     //如果预订满了，就不再有此SKU
-                    if (sku.quantity <= 0) {
+                    if (roomCountLeft <= 0) {
                         continue;
                     }
 
-                    sku.setTimeRange(startTime + "点至" + (startTime + product.duration) + "点");
+                    KtvTaobaoSku sku = new KtvTaobaoSku();
+                    sku.goods = goods;
+                    sku.setRoomType(schedule.roomType.getTaobaoId());
+                    sku.setDay(day);
+                    sku.price = schedule.price;
+                    sku.quantity = roomCountLeft;
+                    sku.setTimeRangeCode(startTime, product.duration);
                     sku.createdAt = new Date();
                     taobaoSkuList.add(sku);
                 }
             }
+        }
+        for (KtvTaobaoSku sku : taobaoSkuList) {
+            System.out.println(sku.getProperties());
         }
         return skuListToMap(taobaoSkuList, goods, isPerfect);
     }
@@ -244,20 +284,20 @@ public class KtvTaobaoUtil {
      *                <p/>
      *                (发布到淘宝后台，是让淘宝后台以包厢-》时长-》日期 的形式显示的，不影响逻辑。以上面所说的三级形保存，是为了方便在我方页面显示相应信息)
      */
-    public static Map<String, Map<String, Map<String, KtvTaobaoSku>>> skuListToMap(List<KtvTaobaoSku> skuList, Goods goods, boolean perfect) {
-        Map<String, Map<String, Map<String, KtvTaobaoSku>>> result = new HashMap<>();
+    public static SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> skuListToMap(List<KtvTaobaoSku> skuList, Goods goods, boolean perfect) {
+        SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> result = new TreeMap<>();
         for (KtvTaobaoSku sku : skuList) {
-            Map<String, Map<String, KtvTaobaoSku>> skuMapByRoomType = result.get(sku.getRoomType());
+            SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>> skuMapByRoomType = result.get(sku.getRoomType());
             if (skuMapByRoomType == null) {
-                skuMapByRoomType = new HashMap<>();
+                skuMapByRoomType = new TreeMap<>();
                 result.put(sku.getRoomType(), skuMapByRoomType);
             }
-            Map<String, KtvTaobaoSku> skuMapByDate = skuMapByRoomType.get(sku.getDate());
+            SortedMap<Integer, KtvTaobaoSku> skuMapByDate = skuMapByRoomType.get(sku.getDay());
             if (skuMapByDate == null) {
-                skuMapByDate = new HashMap<>();
-                skuMapByRoomType.put(sku.getDate(), skuMapByDate);
+                skuMapByDate = new TreeMap<>();
+                skuMapByRoomType.put(sku.getDay(), skuMapByDate);
             }
-            skuMapByDate.put(sku.getTimeRange(), sku);
+            skuMapByDate.put(sku.getTimeRangeCode(), sku);
         }
         if (!perfect) {
             return result;
@@ -266,16 +306,16 @@ public class KtvTaobaoUtil {
         //构建 Perfect Tree
 
         Set<String> roomTypeSet = new HashSet<>();
-        Set<String> dateSet = new HashSet<>();
-        Set<String> timeRangeSet = new HashSet<>();
+        Set<Date> daySet = new HashSet<>();
+        Set<Integer> timeRangeCodeSet = new HashSet<>();
         BigDecimal price = null;//最低价
         for (KtvTaobaoSku sku : skuList) {
             if (sku.quantity == 0) {
                 continue;
             }
             roomTypeSet.add(sku.getRoomType());
-            dateSet.add(sku.getDate());
-            timeRangeSet.add(sku.getTimeRange());
+            daySet.add(sku.getDay());
+            timeRangeCodeSet.add(sku.getTimeRangeCode());
             if (price == null) {
                 price = sku.price;
             } else if (price.compareTo(sku.price) > 0) {
@@ -284,24 +324,24 @@ public class KtvTaobaoUtil {
 
         }
         for (String roomType : roomTypeSet) {
-            for (String date : dateSet) {
-                for (String timeRange : timeRangeSet) {
-                    Map<String, Map<String, KtvTaobaoSku>> skuMapByRoomType = result.get(roomType);
+            for (Date day : daySet) {
+                for (Integer timeRange : timeRangeCodeSet) {
+                    SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>> skuMapByRoomType = result.get(roomType);
                     if (skuMapByRoomType == null) {
-                        skuMapByRoomType = new HashMap<>();
+                        skuMapByRoomType = new TreeMap<>();
                         result.put(roomType, skuMapByRoomType);
                     }
-                    Map<String, KtvTaobaoSku> skuMapByDate = skuMapByRoomType.get(date);
+                    SortedMap<Integer, KtvTaobaoSku> skuMapByDate = skuMapByRoomType.get(day);
                     if (skuMapByDate == null) {
-                        skuMapByDate = new HashMap<>();
-                        skuMapByRoomType.put(date, skuMapByDate);
+                        skuMapByDate = new TreeMap<>();
+                        skuMapByRoomType.put(day, skuMapByDate);
                     }
                     if (skuMapByDate.get(timeRange) == null) {
                         //填充
                         KtvTaobaoSku sku = new KtvTaobaoSku();
                         sku.goods = goods;
                         sku.setRoomType(roomType);
-                        sku.setDate(date);
+                        sku.setDay(day);
                         sku.price = price;
                         sku.quantity = 0;
                     }
@@ -318,11 +358,11 @@ public class KtvTaobaoUtil {
      *               如果该选项为假，则完成输出map中的所有sku
      * @return sku 列表
      */
-    public static List<KtvTaobaoSku> skuMapToList(Map<String, Map<String, Map<String, KtvTaobaoSku>>> skuMap, boolean reduce) {
+    public static List<KtvTaobaoSku> skuMapToList(SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> skuMap, boolean reduce) {
         List<KtvTaobaoSku> skuList = new ArrayList<>();
-        for (Map.Entry<String, Map<String, Map<String, KtvTaobaoSku>>> entryA : skuMap.entrySet()) {
-            for (Map.Entry<String, Map<String, KtvTaobaoSku>> entryB : entryA.getValue().entrySet()) {
-                for (Map.Entry<String, KtvTaobaoSku> entryC : entryB.getValue().entrySet()) {
+        for (SortedMap.Entry<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> entryA : skuMap.entrySet()) {
+            for (SortedMap.Entry<Date, SortedMap<Integer, KtvTaobaoSku>> entryB : entryA.getValue().entrySet()) {
+                for (Map.Entry<Integer, KtvTaobaoSku> entryC : entryB.getValue().entrySet()) {
                     KtvTaobaoSku sku = entryC.getValue();
                     if (sku.quantity == 0 && reduce) {
                         continue;
@@ -414,13 +454,13 @@ public class KtvTaobaoUtil {
         Map<String, KtvTaobaoSku> tobeDeleted = new HashMap<>(oldSkuList.size());
 
         Set<String> roomTypeSet = new HashSet<>();
-        Set<String> dateSet = new HashSet<>();
-        Set<String> timeRangeSet = new HashSet<>();
+        Set<Date> dateSet = new HashSet<>();
+        Set<Integer> timeRangeSet = new HashSet<>();
         for (KtvTaobaoSku oldSaleProperty : oldSkuList) {
             tobeDeleted.put(oldSaleProperty.getProperties(), oldSaleProperty);
             roomTypeSet.add(oldSaleProperty.getRoomType());
-            dateSet.add(oldSaleProperty.getDate());
-            timeRangeSet.add(oldSaleProperty.getTimeRange());
+            dateSet.add(oldSaleProperty.getDay());
+            timeRangeSet.add(oldSaleProperty.getTimeRangeCode());
         }
 
         for (KtvTaobaoSku newProperty : newSkuList) {
@@ -454,20 +494,20 @@ public class KtvTaobaoUtil {
         }
 
         //将待删除的再重新筛选一遍，只有可以完整删除某一销售属性时，才删除那个销售属性下的所有SKU。剩余的回归到tobeUpdated列表中去（quantity已设为0）
-        Map<String, Map<String, Map<String, KtvTaobaoSku>>> tobeDeletedMap =
+        SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> tobeDeletedMap =
                 skuListToMap(new ArrayList<>(tobeDeleted.values()), null, false);
         Map<String, KtvTaobaoSku> realDeletedMap = new HashMap<>();
         Set<String> tobeDeletedProperties = new HashSet<>(tobeDeleted.keySet());
 
         //尝试删除同一日期下的所有欢唱时间
         for (String roomType : roomTypeSet) {
-            for (String date : dateSet) {
+            for (Date date : dateSet) {
                 Set<String> properties = new HashSet<>();
-                for (String timeRange : timeRangeSet) {
-                    properties.add(KtvTaobaoSku.buildProperties(roomType, timeRange, date));
+                for (Integer timeRange : timeRangeSet) {
+                    properties.add(KtvTaobaoSku.buidPropertiesWithCodeAndDate(roomType, timeRange, date));
                 }
                 if (tobeDeletedProperties.containsAll(properties)) {
-                    for (String timeRange : timeRangeSet) {
+                    for (Integer timeRange : timeRangeSet) {
                         KtvTaobaoSku sku = tobeDeletedMap.get(roomType).get(date).get(timeRange);
                         realDeletedMap.put(sku.getProperties(), sku);
                         tobeDeleted.remove(sku.getProperties());
@@ -477,13 +517,13 @@ public class KtvTaobaoUtil {
         }
         //尝试删除同一 欢唱时间下的 所有日期
         for (String roomType : roomTypeSet) {
-            for (String timeRange : timeRangeSet) {
+            for (Integer timeRange : timeRangeSet) {
                 Set<String> properties = new HashSet<>();
-                for (String date : dateSet) {
-                    properties.add(KtvTaobaoSku.buildProperties(roomType, timeRange, date));
+                for (Date date : dateSet) {
+                    properties.add(KtvTaobaoSku.buidPropertiesWithCodeAndDate(roomType, timeRange, date));
                 }
                 if (tobeDeletedProperties.containsAll(properties)) {
-                    for (String date : dateSet) {
+                    for (Date date : dateSet) {
                         KtvTaobaoSku sku = tobeDeletedMap.get(roomType).get(date).get(timeRange);
                         realDeletedMap.put(sku.getProperties(), sku);
                         tobeDeleted.remove(sku.getProperties());

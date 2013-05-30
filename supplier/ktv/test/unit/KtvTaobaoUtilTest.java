@@ -14,6 +14,8 @@ import org.junit.Test;
 import play.test.UnitTest;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -176,50 +178,58 @@ public class KtvTaobaoUtilTest extends UnitTest {
         });
     }
 
+    private void setDay(KtvTaobaoSku sku, String date) {
+        try {
+            sku.setDay(new SimpleDateFormat("yyyy-MM-dd").parse(date));
+        }catch (ParseException e) {
+            //ignore
+        }
+    }
+
     private KtvTaobaoSku setSkuA(KtvTaobaoSku target) {
         target.setRoomType(KtvRoomType.MIDDLE.getTaobaoId());
-        target.setDate("5月3日");
-        target.setTimeRange("9点至11点");
+        setDay(target, "2013-05-03");
+        target.setTimeRangeCode(9, 2);
         target.price = BigDecimal.TEN;
         target.quantity = 10;
         return target;
     }
     private KtvTaobaoSku setSkuB(KtvTaobaoSku target) {
         target.setRoomType(KtvRoomType.MIDDLE.getTaobaoId());
-        target.setDate("5月3日");
-        target.setTimeRange("13点至15点");
+        setDay(target, "2013-05-03");
+        target.setTimeRangeCode(13, 2);
         target.price = BigDecimal.TEN;
         target.quantity = 10;
         return target;
     }
     private KtvTaobaoSku setSkuC(KtvTaobaoSku target) {
         target.setRoomType(KtvRoomType.MIDDLE.getTaobaoId());
-        target.setDate("5月4日");
-        target.setTimeRange("9点至11点");
+        setDay(target, "2013-05-04");
+        target.setTimeRangeCode(9, 2);
         target.price = BigDecimal.TEN;
         target.quantity = 10;
         return target;
     }
     private KtvTaobaoSku setSkuD(KtvTaobaoSku target) {
         target.setRoomType(KtvRoomType.MIDDLE.getTaobaoId());
-        target.setDate("5月4日");
-        target.setTimeRange("13点至15点");
+        setDay(target, "2013-05-04");
+        target.setTimeRangeCode(13, 2);
         target.price = BigDecimal.TEN;
         target.quantity = 10;
         return target;
     }
     private KtvTaobaoSku setSkuE(KtvTaobaoSku target) {
         target.setRoomType(KtvRoomType.MIDDLE.getTaobaoId());
-        target.setDate("5月5日");
-        target.setTimeRange("9点至11点");
+        setDay(target, "2013-05-05");
+        target.setTimeRangeCode(9, 2);
         target.price = BigDecimal.TEN;
         target.quantity = 10;
         return target;
     }
     private KtvTaobaoSku setSkuF(KtvTaobaoSku target) {
         target.setRoomType(KtvRoomType.MIDDLE.getTaobaoId());
-        target.setDate("5月5日");
-        target.setTimeRange("13点至15点");
+        setDay(target, "2013-05-05");
+        target.setTimeRangeCode(13, 2);
         target.price = BigDecimal.TEN;
         target.quantity = 10;
         return target;

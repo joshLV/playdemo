@@ -79,9 +79,9 @@ public class KtvPriceSchedule extends GenericModel {
     }
 
     @Transient
-    public Set<Integer> getStartTimesAsSet() {
+    public SortedSet<Integer> getStartTimesAsSet() {
         String[] startTimeArray = startTimes.split(",");
-        Set<Integer> result = new HashSet<>();
+        SortedSet<Integer> result = new TreeSet<>();
         for (String startTime : startTimeArray) {
             result.add(Integer.parseInt(startTime));
         }

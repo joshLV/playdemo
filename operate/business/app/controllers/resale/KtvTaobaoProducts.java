@@ -62,7 +62,7 @@ public class KtvTaobaoProducts extends Controller {
             return;
         }
 
-        Map<String, Map<String, Map<String, KtvTaobaoSku>>> taobaoSkuMap = KtvTaobaoUtil.buildTaobaoSku(shop, product, false);
+        SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> taobaoSkuMap = KtvTaobaoUtil.buildTaobaoSku(shop, product, false);
 
         if (taobaoSkuMap.size() == 0) {
             render("resale/KtvTaobaoProducts/noSku.html", shop, product);

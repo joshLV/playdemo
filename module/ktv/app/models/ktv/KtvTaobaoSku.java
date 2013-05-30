@@ -6,6 +6,7 @@ import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -26,8 +27,13 @@ public class KtvTaobaoSku extends Model {
 
     private String date;
 
+    private Date day;
+
     @Column(name = "time_range")
     private String timeRange;
+
+    @Column(name = "time_range_code")
+    private Integer timeRangeCode;
 
     public BigDecimal price;
 
@@ -40,6 +46,33 @@ public class KtvTaobaoSku extends Model {
     @Transient
     private String properties;
 
+    public Integer getTimeRangeCode() {
+        return timeRangeCode;
+    }
+
+    public void setTimeRangeCode(Integer timeRangeCode) {
+        this.timeRangeCode = timeRangeCode;
+        this.timeRange = timeRangeCode/100 + "点至" + timeRangeCode%100 + "点";
+        buildProperties();
+    }
+
+    public void setTimeRangeCode(int startTime, int duration) {
+        this.timeRange = startTime+ "点至" + (startTime+duration) + "点";
+        this.timeRangeCode = startTime*100 + (startTime + duration);
+        buildProperties();
+    }
+
+    public Date getDay() {
+        return day;
+    }
+
+    public void setDay(Date day) {
+        this.day = day;
+        this.date = new SimpleDateFormat("M月d日").format(day);
+        buildProperties();
+    }
+
+
     private void buildProperties() {
         this.properties = buildProperties(roomType, timeRange, date);
     }
@@ -48,6 +81,11 @@ public class KtvTaobaoSku extends Model {
         return StringUtils.defaultString(roomType) +
                 ";$欢唱时间:" + StringUtils.defaultString(timeRange) +
                 ";$日期:" + StringUtils.defaultString(date);
+    }
+    public static String buidPropertiesWithCodeAndDate(String roomType, Integer timeRangeCode, Date day) {
+        return  StringUtils.defaultString(roomType) +
+                ";$欢唱时间:" + timeRangeCode/100 + "点至" + timeRangeCode%100 + "点" +
+                ";$日期:" + new SimpleDateFormat("M月d日").format(day);
     }
 
     public String getProperties() {
