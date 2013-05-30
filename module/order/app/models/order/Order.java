@@ -3,6 +3,7 @@ package models.order;
 import cache.CacheHelper;
 import com.google.gson.JsonObject;
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -885,7 +886,7 @@ public class Order extends Model {
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
                         eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + "," + getKtvScheduleTime(roomOrderInfo.scheduledTime, roomOrderInfo.duration);
                         eCoupon.effectiveAt = new Date();
-                        eCoupon.expireAt = roomOrderInfo.scheduledDay;
+                        eCoupon.expireAt = DateUtil.getEndOfDay(roomOrderInfo.scheduledDay);
                         eCoupon.save();
                     }
 
