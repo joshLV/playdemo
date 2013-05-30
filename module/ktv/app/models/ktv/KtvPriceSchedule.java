@@ -57,10 +57,10 @@ public class KtvPriceSchedule extends GenericModel {
     public Date createdAt;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
-    public List<KtvShopPriceSchedule> shopPriceSchedules;
+    public List<KtvShopPriceSchedule> shopSchedules;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
-    public List<KtvDateRangePriceSchedule>  dateRangePriceSchedules;
+    public List<KtvDateRangePriceSchedule>  dateRanges;
 
     public KtvPriceSchedule() {
         this.createdAt = new Date();

@@ -154,7 +154,7 @@ public class KtvTaobaoUtil {
         int maxDateCount = 10;
 
         //查出与该KTV商品有关联的、today(包含)之后的所有价格
-        Query query = JPA.em().createQuery("select s.schedule from KtvShopPriceSchedule s where s.shop = :shop "
+        Query query = JPA.em().createQuery("select s from KtvPriceSchedule s join s.dateRanges r where "
                 + "and s.schedule.product = :product and s.schedule.endDay >= :today and s.schedule.deleted = :deleted");
 
 

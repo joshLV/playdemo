@@ -66,6 +66,35 @@ public class KtvPriceSchedules extends Controller {
         render(shops, shop, roomType, product);
     }
 
+    public static void tableShow(Long shopId, KtvRoomType roomType, Long productId) {
+
+        StringBuilder sql = new StringBuilder("select s from KtvPriceSchedule s join s.shopSchedules ss where 1=1 ");
+        Map<String, Object> params = new HashMap<>();
+        if (shopId != null) {
+            sql.append(" and ss.shop.id = :shopId");
+            params.put("shopId", shopId);
+        }
+        if (roomType != null) {
+            sql.append(" and s.roomType = :roomType");
+            params.put("roomType", roomType);
+        }
+        if (productId != null) {
+            sql.append(" and s.product.id = :productId");
+            params.put("productId", productId);
+        }
+        Query query = JPA.em().createQuery(sql.toString());
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        List<KtvPriceSchedule> priceScheduleList = query.getResultList();
+
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        List<Shop> shops = Shop.findShopBySupplier(supplierId);
+        List<KtvProduct> products = KtvProduct.findProductBySupplier(supplierId);
+
+        render(priceScheduleList, shopId, roomType, productId, shops, products);
+    }
+
     public static void jsonSearch(Date startDay, Date endDay, Shop shop, KtvRoomType roomType, KtvProduct product) {
         if (startDay.after(endDay)) {
             error();
@@ -328,8 +357,8 @@ public class KtvPriceSchedules extends Controller {
         if (scheduleDays.size() == 0 || startTimesSet.size() ==0 || shops.size() ==0 || product == null || roomType == null) {
             throw new IllegalArgumentException("invalid param");
         }
-        StringBuilder sql = new StringBuilder("select k from KtvPriceSchedule k join k.shopPriceSchedules ks " +
-                "join k.dateRangePriceSchedules kd where k.product = :product " +
+        StringBuilder sql = new StringBuilder("select k from KtvPriceSchedule k join k.shopSchedules ks " +
+                "join k.dateRanges kd where k.product = :product " +
                 "and k.roomType = :roomType and ks.shop in :shops and k.id != :pid and ( ");
 
         //拼凑日期范围SQL

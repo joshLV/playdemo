@@ -17,7 +17,7 @@ POST    /ktv/taobao-product/publish                    KtvTaobaoProducts.publish
 POST    /ktv/taobao/img-upload/{resalerId}             KtvTaobaoImgUpload.upload
 
 #ktv 价格设置
-GET     /ktv/price-schedule                              KtvPriceSchedules.index
+GET     /ktv/price-schedule                              KtvPriceSchedules.tableShow
 GET     /ktv/price-schedule/new                          KtvPriceSchedules.showAdd
 POST    /ktv/price-schedule/collision-detect            KtvPriceSchedules.jsonCollisionDetection
 POST    /ktv/price-schedule/json-search                  KtvPriceSchedules.jsonSearch

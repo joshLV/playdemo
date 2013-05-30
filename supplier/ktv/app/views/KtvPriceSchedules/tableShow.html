@@ -1,0 +1,87 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'价格策略' /}
+#{set menu:"ktv_price" /}
+#{set 'moreStyles'}
+    <style>
+        .field-group {
+            padding-left: 0;
+        }
+    </style>
+#{/set}
+<div class="body">
+#{form @KtvPriceSchedules.tableShow() , id:'creationForm',class:"form-horizontal" }
+    <div class="bd">
+        <h2>${title}</h2>
+
+        <div class="field-group">
+            <table cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                    <td>
+                        适用门店:
+                        <select name="shopId" style="width: auto">
+                            <option value="">--请选择--</option>
+                            #{list items:shops,as:'shop'}
+                                <option value="${shop.id}" ${shop.id==shopId ?'selected':''}/>${shop.name}&nbsp;&nbsp;
+                            #{/list}
+                        </select>
+
+                        产品选择：
+                        <select name="productId" style="width: auto">
+                            <option value="">--请选择--</option>
+                            #{list items:products,as:'p'}
+                                <option value="${p.id}" ${productId == p.id ? 'selected':''}/>${p.name}
+                                &nbsp;&nbsp;
+                            #{/list}
+                        </select>
+                        包厢类型：
+                        <select name="roomType" style="width: auto">
+                            <option value="">--请选择--</option>
+                            #{list items:models.ktv.KtvRoomType.values(),as:'r'}
+                                <option value="${r}" ${roomType == r ? 'selected':''}/>${r.name}
+                                &nbsp;&nbsp;
+                            #{/list}
+                        </select>
+                    </td>
+                    <td wdith="50%">
+                        <button class="btn" id="search" type="submit">查询</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="field-group">
+            <table cellspacing="0" cellpadding="0" class="standard-table">
+                <th>门店/数量</th>
+                <th>产品</th>
+                <th>包厢</th>
+                <th>日期范围</th>
+                <th>时间段</th>
+                <th>价格</th>
+
+            #{list items:priceScheduleList, as:'priceSchedule'}
+                <tr>
+                    <td>
+                        #{list items:priceSchedule.shopSchedules, as:'ss'}
+                            ${ss.shop.name} / ${ss.roomCount}<br/>
+                        #{/list}
+                    </td>
+                    <td>${priceSchedule.product.name}</td>
+                    <td>${priceSchedule.roomType.getName()}</td>
+                    <td>
+                        #{list items:priceSchedule.dateRanges, as:'dateRange'}
+                            ${dateRange.startDay.format()} - ${dateRange.endDay.format()}<br/>
+                        #{/list}
+                    </td>
+                    <td>
+                        #{list priceSchedule.startTimes.split(","), as:'startTime'}
+                            ${startTime+":00"} - ${(java.lang.Integer.parseInt(startTime) + priceSchedule.product.duration) + ":00" }<br/>
+                        #{/list}
+                    </td>
+                    <td>${priceSchedule.price}</td>
+                </tr>
+            #{/list}
+            </table>
+        </div>
+    </div>
+#{/form}
+</div>
