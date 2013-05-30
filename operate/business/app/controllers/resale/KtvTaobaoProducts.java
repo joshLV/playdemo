@@ -87,7 +87,7 @@ public class KtvTaobaoProducts extends Controller {
 
     public static void publish(Shop shop, KtvProduct product, String title, String prodImg, String desc,
                                boolean onsale, String locationProvince, String locationCity, String ktvBrandPid,
-                               String ktvBrand, String ktvProvincePid, String[] ktvProvinces, long cid,
+                               String ktvBrand, String ktvProvincePid, String[] ktvProvinces,
                                String ktvCityPid, String[] ktvCities, String expiryDate, String faceValuePid) {
 
         List<KtvTaobaoSku> taobaoSkuList = KtvTaobaoUtil.skuMapToList(KtvTaobaoUtil.buildTaobaoSku(shop, product, true), false);
@@ -104,7 +104,7 @@ public class KtvTaobaoProducts extends Controller {
         request.setLocationCity(locationCity);//设置宝贝所在城市
         request.setLocalityLifeOnsaleAutoRefundRatio(100L);//自动退款比例为100%
         request.setLocalityLifeExpirydate(expiryDate);//30天内有效
-        request.setCid(cid);//设置类目为休闲娱乐-》KTV
+        request.setCid(KtvTaobaoUtil.defaultCid);//设置类目为休闲娱乐-》KTV
         request.setType("fixed");//一口价
         request.setStuffStatus("stuff_status");//全新
         if (onsale) {
