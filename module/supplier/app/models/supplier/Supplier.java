@@ -63,6 +63,7 @@ public class Supplier extends Model {
     public static final String SELL_ECOUPON = "sellECoupon"; //是否销售电子券
     public static final String KTV_SUPPLIER = "ktvSupplier"; //是否KTV商户
     public static final String KTV_SKU_OPTION = "ktvSkuOption";//KTV sku推送选项（天数）
+    public static final String KTV_SKU_PUSH_END_HOUR = "ktvSkuPushEndHour";
     public static final String KTV_SKU_START_TIME = "ktvSkuStartTime";//KTV sku推送选项，开始时间
     public static final String KTV_SKU_END_TIME = "ktvSkuEndTime";//KTV sku推送选项，结束时间
 
@@ -317,12 +318,17 @@ public class Supplier extends Model {
 
     @Transient
     public String getProperty(String propertyName) {
+        return getProperty(propertyName, "0");
+    }
+
+    @Transient
+    public String getProperty(String propertyName, String defaultStr) {
         if (this.id == null) {
-            return "0";
+            return defaultStr;
         }
         SupplierProperty supplierProperty = SupplierProperty.find("supplier=? and name=?", this, propertyName).first();
         if (supplierProperty == null) {
-            return "0";
+            return defaultStr;
         }
         return supplierProperty.value;
     }

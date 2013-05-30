@@ -148,8 +148,9 @@ public class KtvTaobaoUtil {
         Calendar calendar = Calendar.getInstance();
         Date startDay = DateUtils.truncate(new Date(), Calendar.DATE);
         //当天18点到24点之后sku不更新，并删除
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if (hour >= 18) {
+        int pushEndHour = Integer.parseInt( product.supplier.getProperty(Supplier.KTV_SKU_PUSH_END_HOUR, "18"));
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        if (currentHour >= pushEndHour) {
             startDay = DateUtils.addDays(startDay, 1);
         }
 
