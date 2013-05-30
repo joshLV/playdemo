@@ -130,7 +130,7 @@ function delDayClick() {
 $(function () {
     $("#durationPer").text($("#priceStrategy_product_id option:selected").attr("data-duration"));
     //选择门店
-    $("input[data-shop-id]").change(function () {
+    $("#shopGroup input[data-shop-id]").change(function () {
         var roomCountAll = $("#roomCountAll").val();
         var ele = $(this);
         if (ele.is(":checked")) {

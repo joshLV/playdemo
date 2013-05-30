@@ -242,11 +242,11 @@ public class KtvTaobaoUtil {
                     int roomCountLeft = shopPriceSchedule.roomCount;
                     //排除掉已预订的房间所占用的数量
                     for (KtvRoomOrderInfo orderInfo : roomOrderInfoList) {
-                        if (orderInfo.duration != product.duration) {
+                        if (!orderInfo.product.id.equals(product.id)) {
                             continue;
                         }
                         if (orderInfo.scheduledTime < (startTime + product.duration)
-                                && (orderInfo.scheduledTime + orderInfo.duration) > startTime) {
+                                && (orderInfo.scheduledTime + orderInfo.product.duration) > startTime) {
                             roomCountLeft -= 1;
                         }
                     }

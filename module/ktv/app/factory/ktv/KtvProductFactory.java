@@ -28,4 +28,22 @@ public class KtvProductFactory extends ModelFactory<KtvProduct> {
         product.name = "欢唱2小时候";
         return product;
     }
+    @Factory(name = "threeHours")
+    public KtvProduct threeHours(KtvProduct product) {
+        product.duration = 3;
+        product.name = "欢唱3小时候";
+        return product;
+    }
+    @Factory(name = "fourHours")
+    public KtvProduct fourHours(KtvProduct product) {
+        product.duration = 4;
+        product.name = "欢唱4小时候";
+        return product;
+    }
+    @Factory(name = "fiveHours")
+    public KtvProduct fiveHours(KtvProduct product) {
+        product.duration = 5;
+        product.name = "欢唱5小时候";
+        return product;
+    }
 }
