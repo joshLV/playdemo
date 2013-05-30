@@ -218,7 +218,7 @@
             //准备门店
             $.each(priceSchedule.shops, function(index, shop){
                 $("#shopGroup input[data-shop-id='" + shop.shopId + "']").click();
-                setInterval(function(){
+                setTimeout(function(){
                     $("#roomCountTable input[data-shop-id='" + shop.shopId + "']").val(shop.roomCount);
                 }, 0);
             });
