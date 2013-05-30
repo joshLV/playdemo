@@ -116,7 +116,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
             @Override
             public void build(KtvRoomOrderInfo target) {
                 target.status = KtvOrderStatus.DEAL;
-                target.product = FactoryBoy.lastOrCreate(KtvProduct.class, "threeHours");
+                target.product = FactoryBoy.create(KtvProduct.class, "threeHours");
                 target.shop = shop;
                 target.save();
             }
@@ -126,7 +126,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
     private void create1HourOrderInfo() {
         KtvRoomOrderInfo ktvRoomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class);
         ktvRoomOrderInfo.status = KtvOrderStatus.DEAL;
-        ktvRoomOrderInfo.product = FactoryBoy.lastOrCreate(KtvProduct.class, "threeHours");
+        ktvRoomOrderInfo.product = FactoryBoy.create(KtvProduct.class, "threeHours");
         ktvRoomOrderInfo.shop = shop;
         ktvRoomOrderInfo.save();
     }
@@ -135,7 +135,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         KtvRoomOrderInfo ktvRoomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class);
         ktvRoomOrderInfo.status = KtvOrderStatus.DEAL;
         ktvRoomOrderInfo.shop = shop;
-        ktvRoomOrderInfo.product = FactoryBoy.lastOrCreate(KtvProduct.class, "twoHours");
+        ktvRoomOrderInfo.product = FactoryBoy.create(KtvProduct.class, "twoHours");
         ktvRoomOrderInfo.save();
     }
 
@@ -149,7 +149,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         KtvRoomOrderInfo ktvRoomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class);
         ktvRoomOrderInfo.status = KtvOrderStatus.DEAL;
         ktvRoomOrderInfo.shop = shop1;
-        ktvRoomOrderInfo.product = FactoryBoy.lastOrCreate(KtvProduct.class, "fourHours");
+        ktvRoomOrderInfo.product = FactoryBoy.create(KtvProduct.class, "fourHours");
         ktvRoomOrderInfo.save();
     }
 
@@ -164,7 +164,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         KtvRoomOrderInfo ktvRoomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class);
         ktvRoomOrderInfo.status = KtvOrderStatus.DEAL;
         ktvRoomOrderInfo.shop = shop1;
-        ktvRoomOrderInfo.product = FactoryBoy.lastOrCreate(KtvProduct.class, "fiveHours");
+        ktvRoomOrderInfo.product = FactoryBoy.create(KtvProduct.class, "fiveHours");
         ktvRoomOrderInfo.save();
     }
 
