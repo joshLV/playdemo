@@ -11,16 +11,14 @@ import java.io.Serializable;
 public class KtvSkuMessage implements Serializable {
     private static final long serialVersionUID = -8973123251882104951L;
     public Long scheduledId;
-    public Long ktvProductGoodsId;
 
-    public KtvSkuMessage(Long scheduledId, Long ktvProductGoodsId) {
+    public KtvSkuMessage(Long scheduledId) {
         this.scheduledId = scheduledId;
-        this.ktvProductGoodsId = ktvProductGoodsId;
     }
 
 
     @Override
     public String toString() {
-        return "taobao sku message:scheduledId= " + scheduledId + ",ktvProductGoodsId=" + ktvProductGoodsId;
+        return "taobao sku message:scheduledId= " + scheduledId ;
     }
 }
