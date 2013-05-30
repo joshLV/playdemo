@@ -1,0 +1,291 @@
+var selectedHours = [];
+var selectedDays =[];
+
+var startDayEle = $("#startDay");
+var endDayEle = $("#endDay");
+var dayPreview = $("#dayPreview");
+//点击添加日期
+function addDateRange(startDayVal, endDayVal){
+    var startDay = new Date(startDayVal);
+    var endDay = new Date(endDayVal);
+    if(selectedDays.length == 0){
+        dayPreview.empty();
+    }
+    var text = dateToHan(startDay) + " - " + dateToHan(endDay);
+    dayPreview.append(
+        $("<div>", {style:"margin-bottom:4px;"})
+            .append( $("<span>",{text: text}))
+            .append($("<span>",{text:"x", class:"delDay", "data-start":startDayVal,"data-end":endDayVal, click:delDayClick}))
+    );
+    selectedDays.push([startDay, endDay]);
+    var newStartDay = new Date(endDay);
+    newStartDay.setDate(endDay.getDate() + 1);
+    startDayEle.val(newStartDay.getFullYear() + "-" + (newStartDay.getMonth()+1) + "-" + newStartDay.getDate());
+    endDayEle.val(startDayEle.val());
+    resetDayInput();
+}
+
+function toggleHour(ele) {
+    var hour = Number(ele.attr("data-hour").substring(0, 2));
+
+    var index = $.inArray(hour, selectedHours);
+    if (index >= 0) {
+        selectedHours.splice(index, 1);
+        ele.removeClass("hour-selected");
+        ele.text(ele.attr("data-hour"));
+        ele.animate({width: "40px"}, 100);
+    } else {
+        var eleSelectedDuration = $("#priceStrategy_product_id option:selected");
+        var duration = Number(eleSelectedDuration.attr("data-duration"));
+        if (hour + duration > 24) {
+            return;
+        }
+        for (var i = 1; i < duration; i++) {
+            var j = $.inArray(hour + i, selectedHours);
+            if (j >= 0) {
+                return;
+            }
+        }
+        selectedHours.push(hour);
+        ele.addClass("hour-selected");
+        start = hour < 10 ? "0" + hour : hour;
+        end = hour+duration;
+        end = end < 10 ? "0" + end : end;
+        ele.text(start + ":00 - " + end + ":00");
+        ele.animate({width: (duration * 44 - 4) + "px"}, 80);
+    }
+    resetHourInput();
+}
+
+//刷新显示 已选择的日期
+function resetDayInput(){
+    var days = [];
+    $.each(selectedDays, function(index, entry){
+        days.push(dateToHan(entry[0])+"-"+dateToHan(entry[1]));
+    });
+    $("#inputDays").val(days.join(";"));
+}
+function resetHourInput() {
+    selectedHours.sort(function(a,b){return a-b})
+    $("#inputStartTimes").val(selectedHours.join(","));
+    var hourPreview = $("#hourPreview");
+    var eleSelectedDuration = $("#priceStrategy_product_id option:selected");
+    var duration = Number(eleSelectedDuration.attr("data-duration"));
+    if(selectedHours.length == 0){
+        hourPreview.text("未选择时间段，请点击以上所列时间，【可多选】");
+    }else{
+        hourPreview.empty();
+        $.each(selectedHours, function(index, hour){
+            hourPreview.append(
+                $("<span>",{text: fill2(hour) + ":00 - " + fill2(hour+duration) + ":00 | "})
+            );
+            if(((index + 1)%4) == 0){
+                hourPreview.append($("<br>"));
+            }
+        });
+    }
+}
+//重设已选择的时间
+function resetSelectedHours() {
+    selectedHours = [];
+    $(".hour").each(function () {
+        var ele = $(this);
+        ele.removeClass("hour-selected");
+        ele.removeClass("hour-selected");
+        ele.text(ele.attr("data-hour"));
+        ele.animate({width: "40px"}, 100);
+    });
+    resetHourInput();
+}
+function fill2(n){
+    if (n < 10) return "0" + n;
+    return "" + n;
+}
+function dateToHan(date) {
+    return date.getFullYear()+"年" + fill2(date.getMonth()+1) + "月" + fill2(date.getDate()) + "日";
+}
+//点击删除已选日期
+function delDayClick() {
+    var ele = $(this);
+    var startTime = new Date(ele.attr("data-start")).getTime();
+    var endTime = new Date(ele.attr("data-end")).getTime();
+    var index = -1;
+    for(var i = 0 ; i < selectedDays.length; i ++){
+        var entry = selectedDays[i];
+        if(startTime == entry[0].getTime() && endTime == entry[1].getTime()){
+            index = i;
+            break;
+        }
+    }
+    if (index >=0 ) {
+        selectedDays.splice(index, 1);
+        ele.unbind("click");
+        ele.parent().remove();
+        if(selectedDays.length==0) {
+            $("#dayPreview").text("未添加，请选择日期范围，并点击添加。一次可【添加多个】日期范围");
+        }
+        resetDayInput();
+    }
+}
+$(function () {
+    $("#durationPer").text($("#priceStrategy_product_id option:selected").attr("data-duration"));
+    //选择门店
+    $("input[data-shop-id]").change(function () {
+        var roomCountAll = $("#roomCountAll").val();
+        var ele = $(this);
+        if (ele.is(":checked")) {
+            $("#roomCountTable").append(
+                $("<tr/>").attr("row-shop-id", ele.attr("data-shop-id")).append(
+                        $("<td/>").text(ele.attr("data-name"))
+                    ).append(
+                        $("<td/>").append(
+                            $("<input/>", {
+                                type: "text",
+                                name: "shop-" + ele.attr("data-shop-id"),
+                                size: "3",
+                                "data-shop-name": ele.attr("data-name"),
+                                "data-shop-id": ele.attr("data-shop-id"),
+                                value: roomCountAll})
+                        ).append($("<span/>").text("个"))
+                    )
+            )
+        } else {
+            $("#roomCountTable tr[row-shop-id='" + $(this).attr("data-shop-id") + "']").remove();
+        }
+    });
+    //左右移动时间范围
+    $(".switch_time_range").click(function(){
+        $("#timeRangeBox").animate({left: $(this).attr("data-offset")},100);
+    });
+    var startDayEle = $("#startDay");
+    var endDayEle = $("#endDay");
+    var dayPreview = $("#dayPreview");
+    //点击添加日期
+    $("#addDate").click(function(){
+        var startDayVal = startDayEle.val()
+        var endDayVal = endDayEle.val()
+        if(!startDayVal || !endDayVal){
+            alert("请选择日期");return;
+        }
+        var startDay = new Date(startDayVal);
+        var endDay = new Date(endDayVal);
+        if(startDay.getTime() > endDay.getTime()){
+            alert("结束日期不可小于开始日期");return;
+        }
+        var today = new Date();
+        today = new Date(today.getFullYear() + "-" + today.getMonth() + "-" + today.getDate());
+        if(endDay < today) {
+            alert("结束日期必须大于等于今天");return;
+        }
+        //检查冲突
+        var startDayTime = startDay.getTime();
+        var endDayTime = endDay.getTime();
+
+        var conflict = false;
+        $.each(selectedDays, function(index, entry){
+            if (startDayTime <= entry[1].getTime() && endDayTime >=entry[0].getTime()){
+                conflict = true;
+                alert("与 " + dateToHan(entry[0]) + " - " + dateToHan(entry[1]) + " 日期范围重合，请重新选择");
+                conflict = true;
+                return false;
+            }
+        } );
+        if(conflict) {
+            return;
+        }
+
+        addDateRange(startDayVal, endDayVal);
+    });
+    //设置统一的门店数量
+    $("#roomCountAll").keyup(function () {
+        $("#roomCountTable input[data-shop-id]").val($(this).val());
+    });
+    //切换时长radio
+    $("#priceStrategy_product_id").change(function () {
+        var ele = $("#priceStrategy_product_id option:selected");
+        $("#durationPer").text(ele.attr("data-duration"));
+        resetSelectedHours();
+    });
+    //点击时间点
+    $(".hour").click(function () {
+        var ele = $(this);
+        toggleHour(ele);
+    });
+    $("#createButton").click(function () {
+        var errorEle = $("#errorMsg");
+        errorEle.hide();
+        var inputDays = $("#inputDays").val();
+        if (!inputDays) {
+            errorEle.text("请选择预订日期范围，并点击添加").show();
+            return;
+        }
+        var roomType = $("input[name='priceStrategy.roomType']:checked").val();
+        if (!roomType) {
+            errorEle.text("请选择包厢类型").show();
+            return;
+        }
+        var price = $("#price").val();
+        if (!price) {
+            errorEle.text("请填写价格").show();
+            return;
+        }
+        var inputStartTimes = $("#inputStartTimes").val();
+        if (!inputStartTimes) {
+            errorEle.text("请选择预订时段").show();
+            return;
+        }
+        var shopInputs = $(".shops:checked");
+        if (shopInputs.length == 0) {
+            errorEle.text("请选择适用门店").show();
+            return;
+        }
+        var allRoomCountSet = true;
+        $("input[name^='shop-']").each(function () {
+            var ele = $(this);
+            if (!ele.val()) {
+                allRoomCountSet = false;
+                errorEle.text("请设置 [" + ele.attr("data-shop-name") + "] 的包厢数量").show();
+                return false;
+            }
+        });
+        if (!allRoomCountSet) {
+            return
+        }
+        var shopIds = [];
+        shopInputs.each(function () {
+            shopIds.push($(this).attr("data-shop-id"));
+        });
+
+        //检查是否有冲突
+        $.ajax({
+            type:'POST',
+            url:'/ktv/price-schedule/collision-detect',
+            data:{
+                "priceStrategy.product.id": $("#priceStrategy_product_id").val(),
+                "priceStrategy.roomType": roomType,
+                "days":inputDays,
+                "shopIds": shopIds.join(","),
+                "startTimes": inputStartTimes,
+                "excludeProductId":$("#excludeProductId").val()
+            },
+            success:function (data) {
+                if (!data.isOk) {
+                    if (data.error) {
+                        errorEle.text(data.error).show();
+                    } else if (data.scheduleId) {
+                        errorEle.empty()
+                            .append($("<span>", {text:"与已有的价格策略冲突，"}))
+                            .append($("<a>", {target:"_blank", text:"点击查看", href:"#"}))
+                            .append($("<span>", {text:"发生冲突的价格策略"})).show();
+                    }
+                }else{
+                    $("#creationForm").submit();
+                }
+            },
+            error:function(data) {
+                errorEle.text("服务器发生错误").show();
+            }
+        });
+    });
+});
+

@@ -20,12 +20,13 @@ POST    /ktv/taobao/img-upload/{resalerId}             KtvTaobaoImgUpload.upload
 GET     /ktv/price-schedule                              KtvPriceSchedules.index
 GET     /ktv/price-schedule/new                          KtvPriceSchedules.showAdd
 POST    /ktv/price-schedule/collision-detect            KtvPriceSchedules.jsonCollisionDetection
-
-POST    /ktv/price-schedule                              KtvPriceSchedules.create
 POST    /ktv/price-schedule/json-search                  KtvPriceSchedules.jsonSearch
-GET     /ktv/price-schedule/{id}/edit                    KtvPriceSchedules.showEdit
+
+POST    /ktv/price-schedule                              KtvPriceSchedules.createOrUpdate
+GET     /ktv/price-schedule/{id}                        KtvPriceSchedules.showUpdate
+POST    /ktv/price-schedule/{id}                         KtvPriceSchedules.createOrUpdate
+
 DELETE  /ktv/price-schedule/{id}                         KtvPriceSchedules.delete
-PUT     /ktv/price-schedule/{id}                         KtvPriceSchedules.update
 
 #ktv 每日价格
 GET     /ktv/daily-schedule                         KtvDailySchedule.index
