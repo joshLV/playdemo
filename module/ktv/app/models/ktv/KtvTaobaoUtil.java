@@ -18,6 +18,7 @@ import models.sales.Goods;
 import models.sales.ResalerProduct;
 import models.sales.Shop;
 import models.supplier.Supplier;
+import models.taobao.KtvSkuMessageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
@@ -107,17 +108,45 @@ public class KtvTaobaoUtil {
                 switch (key) {
                     case "add":
                         for (KtvTaobaoSku p : skuList) {
-                            addSaleSkuOnTaobao(taobaoClient, token, resalerProduct, p);
+                            KtvSkuTaobaoMessage sku = new KtvSkuTaobaoMessage();
+                            sku.action = KtvSkuMessageUtil.ACTION_ADD;
+                            sku.resalerProductId = resalerProduct.id;
+
+                            sku.goodsId = p.goods.id;
+                            sku.roomType = p.getRoomType();
+                            sku.date = p.getDate();
+                            sku.day = p.getDay();
+                            sku.timeRange = p.getTimeRange();
+                            sku.timeRangeCode = p.getTimeRangeCode();
+                            sku.price = p.price;
+                            sku.quantity = p.quantity;
+                            sku.createdAt = p.createdAt;
+
+                            KtvSkuMessageUtil.sendTaobaoAction(sku);
                         }
                         break;
                     case "update":
                         for (KtvTaobaoSku p : skuList) {
-                            updateSaleSkuOnTaobao(taobaoClient, token, resalerProduct, p);
+                            KtvSkuTaobaoMessage sku = new KtvSkuTaobaoMessage();
+                            sku.action = KtvSkuMessageUtil.ACTION_UPDATE;
+                            sku.resalerProductId = resalerProduct.id;
+
+                            sku.skuId = p.id;
+                            sku.price = p.price;
+                            sku.quantity = p.quantity;
+
+                            KtvSkuMessageUtil.sendTaobaoAction(sku);
                         }
                         break;
                     case "delete":
                         for (KtvTaobaoSku p : skuList) {
-                            deleteSaleSkuOnTaobao(taobaoClient, token, resalerProduct, p);
+                            KtvSkuTaobaoMessage sku = new KtvSkuTaobaoMessage();
+                            sku.action = KtvSkuMessageUtil.ACTION_DELETE;
+                            sku.resalerProductId = resalerProduct.id;
+
+                            sku.skuId = p.id;
+
+                            KtvSkuMessageUtil.sendTaobaoAction(sku);
                         }
                         break;
                     default:
@@ -378,7 +407,12 @@ public class KtvTaobaoUtil {
     /**
      * 在淘宝上删除一个SKU
      */
-    private static void deleteSaleSkuOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSku p) {
+    public static boolean deleteSaleSkuOnTaobao( KtvTaobaoSku p, ResalerProduct resalerProduct) {
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
+                resalerProduct.resaler.taobaoCouponAppSecretKey);
+        //找到淘宝的token
+        OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+
         ItemSkuDeleteRequest req = new ItemSkuDeleteRequest();
         req.setNumIid(Long.valueOf(resalerProduct.partnerProductId));
 
@@ -389,17 +423,23 @@ public class KtvTaobaoUtil {
         try {
             ItemSkuDeleteResponse response = taobaoClient.execute(req, token.accessToken);
             if (StringUtils.isBlank(response.getErrorCode())) {
-                p.delete();
+                return true;
             }
         } catch (ApiException e) {
             Logger.info(e, "delete sku to taobao failed");
         }
+        return false;
     }
 
     /**
      * 在淘宝上更新一个SKU
      */
-    private static void updateSaleSkuOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSku p) {
+    public static boolean updateSaleSkuOnTaobao(KtvTaobaoSku p, ResalerProduct resalerProduct) {
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
+                resalerProduct.resaler.taobaoCouponAppSecretKey);
+        //找到淘宝的token
+        OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+
         ItemSkuUpdateRequest req = new ItemSkuUpdateRequest();
         req.setNumIid(Long.valueOf(resalerProduct.partnerProductId));
 
@@ -410,19 +450,25 @@ public class KtvTaobaoUtil {
         try {
             ItemSkuUpdateResponse response = taobaoClient.execute(req, token.accessToken);
             if (StringUtils.isBlank(response.getErrorCode())) {
-                p.save();
+                return true;
             }
         } catch (ApiException e) {
             Logger.info(e, "update sku to taobao failed");
         }
+        return false;
     }
 
     /**
      * 在淘宝上添加一个SKU
      */
-    private static void addSaleSkuOnTaobao(TaobaoClient taobaoClient, OAuthToken token, ResalerProduct resalerProduct, KtvTaobaoSku p) {
+    public static boolean addSaleSkuOnTaobao(KtvTaobaoSku p, ResalerProduct resalerProduct) {
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
+                resalerProduct.resaler.taobaoCouponAppSecretKey);
+        //找到淘宝的token
+        OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+
         ItemSkuAddRequest req = new ItemSkuAddRequest();
-        req.setNumIid(Long.valueOf(resalerProduct.partnerProductId));
+        req.setNumIid(Long.parseLong(resalerProduct.partnerProductId));
         req.setProperties(p.getProperties());
         req.setQuantity((long) p.quantity);
         req.setPrice(p.price.toString());
@@ -430,11 +476,12 @@ public class KtvTaobaoUtil {
         try {
             ItemSkuAddResponse response = taobaoClient.execute(req, token.accessToken);
             if (StringUtils.isBlank(response.getErrorCode())) {
-                p.save();
+                return true;
             }
         } catch (ApiException e) {
             Logger.info(e, "add sku to taobao failed");
         }
+        return false;
     }
 
 
@@ -481,6 +528,7 @@ public class KtvTaobaoUtil {
                             tobeUpdated.add(oldProperty);
                         }//else ignore
                     } else {
+                        //tobe delete
                         entry.getValue().quantity = newProperty.quantity;
                     }
                     found = true;
