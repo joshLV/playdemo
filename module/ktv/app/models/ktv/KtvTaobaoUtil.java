@@ -353,7 +353,7 @@ public class KtvTaobaoUtil {
         }
         for (String roomType : roomTypeSet) {
             for (Date day : daySet) {
-                for (Integer timeRange : timeRangeCodeSet) {
+                for (Integer timeRangeCode : timeRangeCodeSet) {
                     SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>> skuMapByRoomType = result.get(roomType);
                     if (skuMapByRoomType == null) {
                         skuMapByRoomType = new TreeMap<>();
@@ -364,15 +364,17 @@ public class KtvTaobaoUtil {
                         skuMapByDate = new TreeMap<>();
                         skuMapByRoomType.put(day, skuMapByDate);
                     }
-                    if (skuMapByDate.get(timeRange) == null) {
+                    if (skuMapByDate.get(timeRangeCode) == null) {
                         //填充
                         KtvTaobaoSku sku = new KtvTaobaoSku();
                         sku.goods = goods;
                         sku.setRoomType(roomType);
                         sku.setDay(day);
+                        sku.setTimeRangeCode(timeRangeCode);
+                        sku.createdAt = new Date();
                         sku.price = price;
                         sku.quantity = 0;
-                        skuMapByDate.put(timeRange, sku);
+                        skuMapByDate.put(timeRangeCode, sku);
                     }
                 }
             }
