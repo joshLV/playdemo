@@ -39,25 +39,19 @@
                     #{list items:taobaoSkuMap.keySet(), as:'roomType'}
                         %{
                             skuMapOfRoomType = taobaoSkuMap.get(roomType)
-                            sortedDateKeys = new java.util.ArrayList(skuMapOfRoomType.keySet())
-                            java.util.Collections.sort(sortedDateKeys)
                         }%
-                        #{list items:sortedDateKeys, as:'date'}
+                        #{list items:skuMapOfRoomType.keySet(), as:'date'}
                             %{
                                 skuMapOfDate = skuMapOfRoomType.get(date)
-                                sortedTimeKeys = new java.util.ArrayList(skuMapOfDate.keySet())
-                                java.util.Collections.sort(sortedTimeKeys)
                             }%
-                            #{list items:sortedTimeKeys, as:'time'}
+                            #{list items:skuMapOfDate.keySet(), as:'time'}
                                 %{sku = skuMapOfDate.get(time)}%
                                 <tr>
                                     #{if date_index ==1  && time_index ==1 }
                                         %{
                                             size = 0
                                             skuMapOfRoomType.each { key, value ->
-                                                value.each{ k, v ->
-                                                    size +=1
-                                                }
+                                                size += value.size()
                                             }
                                         }%
                                         <td rowspan="${size}" >
@@ -65,7 +59,7 @@
                                         </td>
                                     #{/if}
                                     #{if time_index ==1}
-                                        <td rowspan="${sortedTimeKeys.size()}">${sku.date}</td>
+                                        <td rowspan="${skuMapOfDate.size()}">${sku.date}</td>
                                     #{/if}
                                     <td>${sku.timeRange}</td>
                                     <td>${sku.quantity}</td>

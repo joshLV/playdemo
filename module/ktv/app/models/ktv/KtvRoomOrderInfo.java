@@ -102,7 +102,7 @@ public class KtvRoomOrderInfo extends Model {
     public static List<KtvRoomOrderInfo> findScheduled(Date scheduledDay, KtvProductGoods productGoods) {
         scheduledDay = DateUtils.truncate(scheduledDay, Calendar.DATE);
         Date tenMinutesAgo = DateUtils.addMinutes(new Date(), -KtvRoomOrderInfo.LOCK_MINUTE);
-        return KtvRoomOrderInfo.find("goods=? and shop=? and scheduledDay = ? and  (status =? or (status=? and createdAt >=?))",
+        return KtvRoomOrderInfo.find("goods=? and shop=? and scheduledDay >= ? and  (status =? or (status=? and createdAt >=?))",
                 productGoods.goods, productGoods.shop, scheduledDay,  KtvOrderStatus.DEAL, KtvOrderStatus.LOCK, tenMinutesAgo).fetch();
     }
 

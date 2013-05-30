@@ -190,7 +190,7 @@ public class KtvPriceSchedules extends Controller {
                 }
             }
         }
-        Set<Integer> startTimes = priceStrategy.getStartTimesAsSet();
+        SortedSet<Integer> startTimes = priceStrategy.getStartTimesAsSet();
 
         Map<Date, Date> scheduleDays = scheduleDaysFromInput(days);
 
