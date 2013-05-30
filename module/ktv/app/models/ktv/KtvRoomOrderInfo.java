@@ -52,10 +52,14 @@ public class KtvRoomOrderInfo extends Model {
     @Column(name = "scheduled_time")
     public int scheduledTime;
 
+
     /**
-     * 时长
+     * KTV 产品
      */
-    public int duration;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id")
+    public KtvProduct product;
+
     /**
      * 锁定时间
      */

@@ -86,7 +86,7 @@ public class SendDailyScheduledMessage extends JobWithHistory {
         builder.append("(");
         builder.append(orderInfo.orderItem.buyNumber);
         builder.append("间)");
-        builder.append(getKtvScheduleTime(orderInfo.scheduledTime, orderInfo.duration));
+        builder.append(getKtvScheduleTime(orderInfo.scheduledTime, orderInfo.product.duration));
         builder.append("】");
         return builder.toString();
     }
@@ -100,7 +100,7 @@ public class SendDailyScheduledMessage extends JobWithHistory {
         builder.append("(");
         builder.append(orderInfo.orderItem.buyNumber);
         builder.append("间)");
-        builder.append(getKtvScheduleTime(orderInfo.scheduledTime, orderInfo.duration));
+        builder.append(getKtvScheduleTime(orderInfo.scheduledTime, orderInfo.product.duration));
         builder.append("】");
         return builder.toString();
     }

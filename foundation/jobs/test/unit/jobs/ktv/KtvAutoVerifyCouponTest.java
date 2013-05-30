@@ -6,6 +6,7 @@ import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import jobs.ktv.KtvAutoVerifyCoupon;
 import models.ktv.KtvOrderStatus;
+import models.ktv.KtvProduct;
 import models.ktv.KtvRoomOrderInfo;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -37,7 +38,7 @@ public class KtvAutoVerifyCouponTest extends UnitTest {
             @Override
             public void build(KtvRoomOrderInfo target) {
                 target.scheduledTime = 13;
-                target.duration = 2;
+                target.product = FactoryBoy.lastOrCreate(KtvProduct.class, "twoHours");
                 target.status = KtvOrderStatus.DEAL;
                 target.orderItem = orderItem;
             }

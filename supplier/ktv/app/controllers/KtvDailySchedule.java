@@ -65,7 +65,7 @@ public class KtvDailySchedule extends Controller {
             o.put("roomType", orderInfo.roomType);
             o.put("scheduledDay", orderInfo.scheduledDay);
             o.put("scheduledTime", orderInfo.scheduledTime);
-            o.put("duration", orderInfo.duration);
+            o.put("duration", orderInfo.product.duration);
             o.put("phone", orderInfo.orderItem.phone);
             orderInfoMaps.add(o);
         }

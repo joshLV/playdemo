@@ -4,6 +4,7 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import jobs.ktv.SendDailyScheduledMessage;
 import models.ktv.KtvOrderStatus;
+import models.ktv.KtvProduct;
 import models.ktv.KtvRoomOrderInfo;
 import models.order.Order;
 import models.sales.Shop;
@@ -115,7 +116,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
             @Override
             public void build(KtvRoomOrderInfo target) {
                 target.status = KtvOrderStatus.DEAL;
-                target.duration = 3;
+                target.product = FactoryBoy.lastOrCreate(KtvProduct.class, "threeHours");
                 target.shop = shop;
                 target.save();
             }
@@ -125,7 +126,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
     private void create1HourOrderInfo() {
         KtvRoomOrderInfo ktvRoomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class);
         ktvRoomOrderInfo.status = KtvOrderStatus.DEAL;
-        ktvRoomOrderInfo.duration = 3;
+        ktvRoomOrderInfo.product = FactoryBoy.lastOrCreate(KtvProduct.class, "threeHours");
         ktvRoomOrderInfo.shop = shop;
         ktvRoomOrderInfo.save();
     }
@@ -134,7 +135,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         KtvRoomOrderInfo ktvRoomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class);
         ktvRoomOrderInfo.status = KtvOrderStatus.DEAL;
         ktvRoomOrderInfo.shop = shop;
-        ktvRoomOrderInfo.duration = 2;
+        ktvRoomOrderInfo.product = FactoryBoy.lastOrCreate(KtvProduct.class, "twoHours");
         ktvRoomOrderInfo.save();
     }
 
@@ -148,7 +149,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         KtvRoomOrderInfo ktvRoomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class);
         ktvRoomOrderInfo.status = KtvOrderStatus.DEAL;
         ktvRoomOrderInfo.shop = shop1;
-        ktvRoomOrderInfo.duration = 4;
+        ktvRoomOrderInfo.product = FactoryBoy.lastOrCreate(KtvProduct.class, "fourHours");
         ktvRoomOrderInfo.save();
     }
 
@@ -163,7 +164,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         KtvRoomOrderInfo ktvRoomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class);
         ktvRoomOrderInfo.status = KtvOrderStatus.DEAL;
         ktvRoomOrderInfo.shop = shop1;
-        ktvRoomOrderInfo.duration = 5;
+        ktvRoomOrderInfo.product = FactoryBoy.lastOrCreate(KtvProduct.class, "fiveHours");
         ktvRoomOrderInfo.save();
     }
 
