@@ -143,9 +143,9 @@ public class KtvPriceSchedules extends Controller {
         }
 
         //时间碰撞检测
-        Map<String, Object> collisions = collisionDetection(
+        KtvPriceSchedule collisionSchedule = collisionDetection(
                 priceStrategy.product,  priceStrategy.roomType, shopCountMap.keySet(), scheduleDays, startTimes);
-        if (collisions != null) {
+        if (collisionSchedule != null) {
             error("价格策略有冲突，请重新选择");
         }
 
@@ -241,22 +241,19 @@ public class KtvPriceSchedules extends Controller {
         }
 
         //时间碰撞检测
-        Map<String, Object> collisions = collisionDetection( priceStrategy.product,  priceStrategy.roomType,
+        KtvPriceSchedule schedule = collisionDetection( priceStrategy.product,  priceStrategy.roomType,
                 shops, scheduleDays, startTimes);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
-        if (collisions != null) {
-            Date startDay = (Date) collisions.get("startDay");
-            Date endDay = (Date) collisions.get("endDay");
-            Integer startTime = (Integer) collisions.get("startTime");
-            renderJSON("{\"startDay\":\"" + dateFormat.format(startDay) + "\"," +
-                    "\"endDay\":\"" + dateFormat.format(endDay) + "\"," +
-                    "\"startTime\":\"" + startTime + "\"}");
+        if (schedule != null) {
+            renderJSON("{\"scheduleId\":" + schedule.id +  "}");
         }
         renderJSON("{\"isOk\":true}");
     }
 
     private static String validStrategy( KtvProduct product, KtvRoomType roomType,
             Set<Shop> shops, Map<Date, Date> scheduleDays, Set<Integer> startTimesSet) {
+        if (scheduleDays.size() == 0) {
+            return "请选择日期范围";
+        }
         for (Map.Entry<Date, Date> entry : scheduleDays.entrySet()) {
             if (entry.getKey().compareTo(entry.getValue()) > 0) {
                 return "起始时间不能大于结束时间";
@@ -296,35 +293,45 @@ public class KtvPriceSchedules extends Controller {
     }
 
     //检测新建的价格策略有无时间上的碰撞
-    private static Map<String, Object> collisionDetection( KtvProduct product,  KtvRoomType roomType,
+    private static KtvPriceSchedule collisionDetection( KtvProduct product,  KtvRoomType roomType,
             Set<Shop> shops, Map<Date, Date> scheduleDays, Set<Integer> startTimesSet) {
+        if (scheduleDays.size() == 0 || startTimesSet.size() ==0 || shops.size() ==0 || product == null || roomType == null) {
+            throw new IllegalArgumentException("invalid param");
+        }
+        StringBuilder sql = new StringBuilder("select k from KtvPriceSchedule k join k.shopPriceSchedules ks " +
+                "join k.dateRangePriceSchedules kd where k.product = :product " +
+                "and k.roomType = :roomType and ks.shop in :shops and ( ");
 
+        //拼凑日期范围SQL
+        int index =0;
+        List<String> dateRanges = new ArrayList<>();
+        Map<String, Date> dateParams = new HashMap<>();
         for (Map.Entry<Date, Date> entry : scheduleDays.entrySet()) {
             Date startDay = entry.getKey();
             Date endDay = entry.getValue();
+            dateRanges.add(String.format("(kd.startDay <=  :endDay%s and kd.endDay >= :startDay%s)", index, index));
+            dateParams.put("startDay" + index, startDay);
+            dateParams.put("endDay" + index, endDay);
+            index += 1;
+        }
+        sql.append(StringUtils.join(dateRanges, " or ")).append(")");
 
-            Query query = JPA.em().createQuery("select k from KtvPriceSchedule k join k.shopPriceSchedules ks " +
-                    "join k.dateRangePriceSchedules kd where k.product = :product " +
-                    "and k.roomType = :roomType and ks.shop in :shops and kd.startDay <= :endDay and kd.endDay >= :startDay");
+        Query query = JPA.em().createQuery(sql.toString());
 
-            query.setParameter("product", product);
-            query.setParameter("endDay", endDay);
-            query.setParameter("startDay", startDay);
-            query.setParameter("roomType", roomType);
-            query.setParameter("shops", shops);
-            List<KtvPriceSchedule> priceSchedules = query.getResultList();
+        query.setParameter("product", product);
+        query.setParameter("roomType", roomType);
+        query.setParameter("shops", shops);
+        for (Map.Entry<String, Date> entry : dateParams.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
 
-            for (KtvPriceSchedule priceSchedule : priceSchedules) {
-                for (Integer startTime : priceSchedule.getStartTimesAsSet()) {
-                    for (Integer i : startTimesSet) {
-                        if ((startTime - product.duration) < i && i < (startTime + product.duration)) {
-                            //冲突了
-                            Map<String, Object> result = new HashMap<>();
-                            result.put("startDay", startDay);
-                            result.put("endDay", endDay);
-                            result.put("startTime", startTime);
-                            return result;
-                        }
+        List<KtvPriceSchedule> priceSchedules = query.getResultList();
+
+        for (KtvPriceSchedule priceSchedule : priceSchedules) {
+            for (Integer startTime : priceSchedule.getStartTimesAsSet()) {
+                for (Integer i : startTimesSet) {
+                    if ((startTime - product.duration) < i && i < (startTime + product.duration)) {
+                        return priceSchedule;
                     }
                 }
             }
