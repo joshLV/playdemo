@@ -8,8 +8,8 @@ var dayPreview = $("#dayPreview");
 function addDateRange(startDayVal, endDayVal){
     var sa = startDayVal.split("-");
     var ea = endDayVal.split("-");
-    var startDay = new Date(sa[0], sa[1], sa[2]);
-    var endDay = new Date(ea[0], ea[1], ea[2]);
+    var startDay = new Date(sa[0], Number(sa[1])-1, sa[2]);
+    var endDay = new Date(ea[0], Number(ea[1])-1, ea[2]);
     if(selectedDays.length == 0){
         dayPreview.empty();
     }
@@ -111,8 +111,8 @@ function delDayClick() {
     var ele = $(this);
     var sa = ele.attr("data-start");
     var ea = ele.attr("data-end");
-    var startTime = new Date(sa[0], sa[1], sa[2]).getTime();
-    var endTime = new Date(ea[0], ea[1], ea[2]).getTime();
+    var startTime = new Date(sa[0], Number(sa[1])-1, sa[2]).getTime();
+    var endTime = new Date(ea[0], Number(ea[1])-1, ea[2]).getTime();
     var index = -1;
     for(var i = 0 ; i < selectedDays.length; i ++){
         var entry = selectedDays[i];
@@ -173,8 +173,8 @@ $(function () {
         }
         var sa = startDayVal.split("-");
         var ea = endDayVal.split("-");
-        var startDay = new Date(sa[0], sa[1], sa[2]);
-        var endDay = new Date(ea[0], ea[1], ea[2]);
+        var startDay = new Date(sa[0], Number(sa[1])-1, sa[2]);
+        var endDay = new Date(ea[0], Number(ea[1])-1, ea[2]);
         if(startDay.getTime() > endDay.getTime()){
             alert("结束日期不可小于开始日期");return;
         }
