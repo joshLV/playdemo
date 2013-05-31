@@ -1,22 +1,16 @@
-package models.taobao;
+package consumer.taobao;
 
-import models.RabbitMQConsumerWithTx;
 import models.ktv.KtvSkuTaobaoMessage;
 import models.ktv.KtvTaobaoSku;
 import models.ktv.KtvTaobaoUtil;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
+import models.taobao.KtvSkuMessageUtil;
 import play.Logger;
 
-/**
- * @author likang
- *         Date: 13-5-31
- */
+public class KtvSkuTaobaoAction {
 
-//@OnApplicationStart(async = true)
-public class KtvSkuTaobaoActionConsumer extends RabbitMQConsumerWithTx<KtvSkuTaobaoMessage>{
-    @Override
-    public void consumeWithTx(KtvSkuTaobaoMessage message) {
+    public void processMessage(KtvSkuTaobaoMessage message) {
         ResalerProduct resalerProduct = ResalerProduct.findById(message.resalerProductId);
         if (resalerProduct == null) {
             Logger.error("taobao add sku error: reslaer product not found %s", message.resalerProductId);
@@ -38,7 +32,7 @@ public class KtvSkuTaobaoActionConsumer extends RabbitMQConsumerWithTx<KtvSkuTao
             if (KtvTaobaoUtil.addSaleSkuOnTaobao(sku, resalerProduct)) {
                 sku.save();
             }
-        }else if (message.action == KtvSkuMessageUtil.ACTION_UPDATE) {
+        } else if (message.action == KtvSkuMessageUtil.ACTION_UPDATE) {
             KtvTaobaoSku sku = KtvTaobaoSku.findById(message.skuId);
             if (sku == null) {
                 Logger.error("taobao update sku error: sku not found %s", message.skuId);
@@ -51,7 +45,7 @@ public class KtvSkuTaobaoActionConsumer extends RabbitMQConsumerWithTx<KtvSkuTao
             if (KtvTaobaoUtil.updateSaleSkuOnTaobao(sku, resalerProduct)) {
                 sku.save();
             }
-        }else if (message.action == KtvSkuMessageUtil.ACTION_DELETE) {
+        } else if (message.action == KtvSkuMessageUtil.ACTION_DELETE) {
             KtvTaobaoSku sku = KtvTaobaoSku.findById(message.skuId);
             if (sku == null) {
                 Logger.error("taobao update sku error: sku not found %s", message.skuId);
@@ -61,15 +55,5 @@ public class KtvSkuTaobaoActionConsumer extends RabbitMQConsumerWithTx<KtvSkuTao
                 sku.delete();
             }
         }
-    }
-
-    @Override
-    protected Class getMessageType() {
-        return KtvSkuTaobaoMessage.class;
-    }
-
-    @Override
-    protected String queue() {
-        return KtvSkuMessageUtil.TAOBAO_SKU_QUEUE_NAME + "test";
     }
 }

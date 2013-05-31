@@ -185,7 +185,7 @@ public class KtvTaobaoUtil {
 
         //查出与该KTV商品有关联的、today(包含)之后的所有价格
         Query query = JPA.em().createQuery(
-                "select s from KtvPriceSchedule s join s.dateRanges r join s.shopSchedules ss where "
+                "select distinct(s) from KtvPriceSchedule s join s.dateRanges r join s.shopSchedules ss where "
                 + "s.product = :product and s.deleted = :deleted and r.endDay >= :startDay and ss.shop = :shop");
 
 
@@ -276,8 +276,9 @@ public class KtvTaobaoUtil {
                         if (!orderInfo.product.id.equals(product.id)) {
                             continue;
                         }
-                        if (orderInfo.scheduledTime < (startTime + product.duration)
-                                && (orderInfo.scheduledTime + orderInfo.product.duration) > startTime) {
+                        int st = startTime < 8 ? startTime + 24 : startTime;
+                        int ost = orderInfo.scheduledTime < 8 ? orderInfo.scheduledTime + 24 : orderInfo.scheduledTime;
+                        if (ost < (st + product.duration) && (ost + orderInfo.product.duration) > st) {
                             roomCountLeft -= 1;
                         }
                     }

@@ -1,0 +1,5 @@
+# You can specialize this file for each language.
+# For example, for French create a messages.fr file
+#
+coupon.JD=京东
+coupon.WB=58tuan

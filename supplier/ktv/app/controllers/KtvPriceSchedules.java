@@ -3,6 +3,7 @@ package controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
+import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvRoomType;
@@ -128,7 +129,7 @@ public class KtvPriceSchedules extends Controller {
     public static void showAdd() {
         Supplier supplier = SupplierRbac.currentUser().supplier;
         List<Shop> shops = Shop.findShopBySupplier(supplier.id);
-        List<KtvProduct> ktvProductList = KtvProduct.find("supplier=?", supplier).fetch();
+        List<KtvProduct> ktvProductList  = KtvProduct.findProductBySupplier(supplier.id);
         render(shops, ktvProductList);
     }
 
@@ -335,7 +336,7 @@ public class KtvPriceSchedules extends Controller {
             }
         }
 
-        if (product == null) {
+        if (product == null || product.deleted != DeletedStatus.UN_DELETED) {
             return "无效的KTV产品";
         }
 
@@ -359,7 +360,7 @@ public class KtvPriceSchedules extends Controller {
         if (scheduleDays.size() == 0 || startTimesSet.size() ==0 || shops.size() ==0 || product == null || roomType == null) {
             throw new IllegalArgumentException("invalid param");
         }
-        StringBuilder sql = new StringBuilder("select k from KtvPriceSchedule k join k.shopSchedules ks " +
+        StringBuilder sql = new StringBuilder("select distinct(k) from KtvPriceSchedule k join k.shopSchedules ks " +
                 "join k.dateRanges kd where k.product = :product " +
                 "and k.roomType = :roomType and ks.shop in :shops and k.id != :pid and ( ");
 
@@ -391,7 +392,9 @@ public class KtvPriceSchedules extends Controller {
 
         for (KtvPriceSchedule priceSchedule : priceSchedules) {
             for (Integer startTime : priceSchedule.getStartTimesAsSet()) {
+                startTime = startTime < 8 ? startTime + 24 : startTime;
                 for (Integer i : startTimesSet) {
+                    i = i < 8 ? i + 24 : i;
                     if ((startTime - product.duration) < i && i < (startTime + product.duration)) {
                         return priceSchedule;
                     }

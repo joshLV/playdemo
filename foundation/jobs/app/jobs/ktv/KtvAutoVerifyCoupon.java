@@ -24,20 +24,33 @@ import java.util.List;
  * Date: 13-5-29
  * Time: 下午3:37
  */
-@JobDefine(title = "自动验证KTV当天时间范围内未消费的过期券", description = "每天10分钟执行，把KTV当天时间范围内未消费的过期券自动验证掉")
+@JobDefine(title = "自动验证KTV因预订时间过期而导致无效的券", description = "每天10分钟执行，自动验证KTV因预订时间过期而导致无效的券")
 @Every("10mn")
 public class KtvAutoVerifyCoupon extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        Date today = DateUtils.truncate(new Date(), Calendar.DATE);
 
-        List<KtvRoomOrderInfo> roomOrderInfoList = KtvRoomOrderInfo.find("select k from KtvRoomOrderInfo k where " +
-                "k.scheduledDay = ? and k.status = ? and (k.scheduledTime + k.product.duration) <= ? order by k.id",
-                DateUtils.truncate(new Date(), Calendar.DATE), KtvOrderStatus.DEAL, hour).fetch();
+        //查找3天内，过期时间小于当前时间的券
+        Query query = JPA.em().createQuery("select k from KtvRoomOrderInfo k where k.status = :status and " +
+                "(" +
+                "   ( k.scheduleDay = :today and (k.scheduleTime + k.product.duration) <= :hour) " +
+                "   or " +
+                "   ( k.scheduleDay >= :threeDaysAgo and k.scheduleDay < :today and ( k.scheduledTime + k.product.duration - 24) <= :hour ) " +
+                ") order by k.id ");
+        query.setParameter("threeDaysAgo", DateUtils.addDays(today, -3));
+        query.setParameter("status", KtvOrderStatus.DEAL);
+        query.setParameter("today", today);
+        query.setParameter("hour", hour);
+
+
+        List<KtvRoomOrderInfo> roomOrderInfoList = query.getResultList();
+
         for (KtvRoomOrderInfo roomOrderInfo : roomOrderInfoList) {
-            List<ECoupon> couponList = ECoupon.find("orderItems = ? and status = ? and expireAt >= ?",
-                    roomOrderInfo.orderItem, ECouponStatus.UNCONSUMED, roomOrderInfo.scheduledDay).fetch();
+            List<ECoupon> couponList = ECoupon.find("orderItems = ? and status = ? ",
+                    roomOrderInfo.orderItem, ECouponStatus.UNCONSUMED).fetch();
 
             for (ECoupon coupon : couponList) {
                 coupon.verifyType = VerifyCouponType.AUTO_VERIFY;
