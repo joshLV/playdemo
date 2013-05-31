@@ -360,7 +360,7 @@ public class KtvPriceSchedules extends Controller {
         if (scheduleDays.size() == 0 || startTimesSet.size() ==0 || shops.size() ==0 || product == null || roomType == null) {
             throw new IllegalArgumentException("invalid param");
         }
-        StringBuilder sql = new StringBuilder("select k from KtvPriceSchedule k join k.shopSchedules ks " +
+        StringBuilder sql = new StringBuilder("select distinct(k) from KtvPriceSchedule k join k.shopSchedules ks " +
                 "join k.dateRanges kd where k.product = :product " +
                 "and k.roomType = :roomType and ks.shop in :shops and k.id != :pid and ( ");
 
@@ -392,7 +392,9 @@ public class KtvPriceSchedules extends Controller {
 
         for (KtvPriceSchedule priceSchedule : priceSchedules) {
             for (Integer startTime : priceSchedule.getStartTimesAsSet()) {
+                startTime = startTime < 8 ? startTime + 24 : startTime;
                 for (Integer i : startTimesSet) {
+                    i = i < 8 ? i + 24 : i;
                     if ((startTime - product.duration) < i && i < (startTime + product.duration)) {
                         return priceSchedule;
                     }
