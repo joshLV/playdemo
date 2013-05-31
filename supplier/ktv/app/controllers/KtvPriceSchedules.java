@@ -69,7 +69,7 @@ public class KtvPriceSchedules extends Controller {
     public static void tableShow(Long shopId, KtvRoomType roomType, Long productId) {
 
         Long supplierId = SupplierRbac.currentUser().supplier.id;
-        StringBuilder sql = new StringBuilder("select s from KtvPriceSchedule s join s.shopSchedules ss " +
+        StringBuilder sql = new StringBuilder("select distinct(s) from KtvPriceSchedule s join s.shopSchedules ss " +
                 "where s.product.supplier.id = :supplierId ");
         Map<String, Object> params = new HashMap<>();
         params.put("supplierId", supplierId);
