@@ -232,7 +232,7 @@ $(function () {
         $("#shopGroup input[name^='shop-']").each(function () {
             var ele = $(this);
             if (ele.val() && $.trim(ele.val()) && ele.val() != 0 ) {
-                shopIds.push($.trim(ele.val()));
+                shopIds.push(ele.attr("data-shop-id"));
             }
         });
         if (shopIds.length == 0) {
@@ -247,6 +247,7 @@ $(function () {
             data:{
                 "priceStrategy.product.id": $("#priceStrategy_product_id").val(),
                 "priceStrategy.roomType": roomType,
+                "priceStrategy.price": price,
                 "days":inputDays,
                 "shopIds": shopIds.join(","),
                 "startTimes": inputStartTimes,
