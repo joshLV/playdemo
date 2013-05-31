@@ -6,8 +6,10 @@ var endDayEle = $("#endDay");
 var dayPreview = $("#dayPreview");
 //点击添加日期
 function addDateRange(startDayVal, endDayVal){
-    var startDay = new Date(startDayVal);
-    var endDay = new Date(endDayVal);
+    var sa = startDayVal.split("-");
+    var ea = endDayVal.split("-");
+    var startDay = new Date(sa[0], sa[1], sa[2]);
+    var endDay = new Date(ea[0], ea[1], ea[2]);
     if(selectedDays.length == 0){
         dayPreview.empty();
     }
@@ -107,8 +109,10 @@ function dateToHan(date) {
 //点击删除已选日期
 function delDayClick() {
     var ele = $(this);
-    var startTime = new Date(ele.attr("data-start")).getTime();
-    var endTime = new Date(ele.attr("data-end")).getTime();
+    var sa = ele.attr("data-start");
+    var ea = ele.attr("data-end");
+    var startTime = new Date(sa[0], sa[1], sa[2]).getTime();
+    var endTime = new Date(ea[0], ea[1], ea[2]).getTime();
     var index = -1;
     for(var i = 0 ; i < selectedDays.length; i ++){
         var entry = selectedDays[i];
@@ -167,13 +171,15 @@ $(function () {
         if(!startDayVal || !endDayVal){
             alert("请选择日期");return;
         }
-        var startDay = new Date(startDayVal);
-        var endDay = new Date(endDayVal);
+        var sa = startDayVal.split("-");
+        var ea = endDayVal.split("-");
+        var startDay = new Date(sa[0], sa[1], sa[2]);
+        var endDay = new Date(ea[0], ea[1], ea[2]);
         if(startDay.getTime() > endDay.getTime()){
             alert("结束日期不可小于开始日期");return;
         }
         var today = new Date();
-        today = new Date(today.getFullYear() + "-" + today.getMonth() + "-" + today.getDate());
+        today = new Date(today.getFullYear() , today.getMonth() , today.getDate());
         if(endDay < today) {
             alert("结束日期必须大于等于今天");return;
         }
