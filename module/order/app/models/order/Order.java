@@ -865,7 +865,7 @@ public class Order extends Model {
                 KtvRoomOrderInfo roomOrderInfo = null;
                 if (goods.isKtvSupplier()) {
                     isKtvSupplier = true;
-                    roomOrderInfo = KtvRoomOrderInfo.find("orderItem", orderItem).first();
+                    roomOrderInfo = KtvRoomOrderInfo.find("orderItem=?", orderItem).first();
                 }
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     //创建电子券
@@ -1476,7 +1476,7 @@ public class Order extends Model {
             //ktv商户发送给店员短信
             if (item.goods.isKtvSupplier() ) {
                 KtvRoomOrderInfo roomOrderInfo = KtvRoomOrderInfo.find("orderItem", item).first();
-                if (roomOrderInfo.shop.managerMobiles.length() == 0) {
+                if (roomOrderInfo == null || roomOrderInfo.shop == null || StringUtils.isBlank(roomOrderInfo.shop.managerMobiles)) {
                     break;
                 }
                 if (roomOrderInfo.scheduledDay.compareTo(DateUtils.truncate(new Date(), Calendar.DATE)) >= 0) {
