@@ -33,9 +33,9 @@ public class KtvAutoVerifyCoupon extends JobWithHistory {
         //查找3天内，过期时间小于当前时间的券
         Query query = JPA.em().createQuery("select k from KtvRoomOrderInfo k where k.status = :status and " +
                 "(" +
-                "   ( k.scheduleDay = :today and (k.scheduleTime + k.product.duration) <= :hour) " +
+                "   ( k.scheduledDay = :today and (k.scheduledTime + k.product.duration) <= :hour) " +
                 "   or " +
-                "   ( k.scheduleDay >= :threeDaysAgo and k.scheduleDay < :today and ( k.scheduledTime + k.product.duration - 24) <= :hour ) " +
+                "   ( k.scheduledDay >= :threeDaysAgo and k.scheduledDay < :today and ( k.scheduledTime + k.product.duration - 24) <= :hour ) " +
                 ") order by k.id ");
         query.setParameter("threeDaysAgo", DateUtils.addDays(today, -3));
         query.setParameter("status", KtvOrderStatus.DEAL);
