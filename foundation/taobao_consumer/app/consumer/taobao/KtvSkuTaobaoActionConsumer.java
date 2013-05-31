@@ -1,4 +1,4 @@
-package models.taobao;
+package consumer.taobao;
 
 import models.RabbitMQConsumerWithTx;
 import models.ktv.KtvSkuTaobaoMessage;
@@ -6,14 +6,16 @@ import models.ktv.KtvTaobaoSku;
 import models.ktv.KtvTaobaoUtil;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
+import models.taobao.KtvSkuMessageUtil;
 import play.Logger;
+import play.jobs.OnApplicationStart;
 
 /**
  * @author likang
  *         Date: 13-5-31
  */
 
-//@OnApplicationStart(async = true)
+@OnApplicationStart(async = true)
 public class KtvSkuTaobaoActionConsumer extends RabbitMQConsumerWithTx<KtvSkuTaobaoMessage>{
     @Override
     public void consumeWithTx(KtvSkuTaobaoMessage message) {
@@ -70,6 +72,6 @@ public class KtvSkuTaobaoActionConsumer extends RabbitMQConsumerWithTx<KtvSkuTao
 
     @Override
     protected String queue() {
-        return KtvSkuMessageUtil.TAOBAO_SKU_QUEUE_NAME + "test";
+        return KtvSkuMessageUtil.TAOBAO_SKU_QUEUE_NAME;
     }
 }
