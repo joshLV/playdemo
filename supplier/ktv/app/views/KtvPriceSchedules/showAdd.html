@@ -136,9 +136,15 @@
                 <div class="switch_time_range" data-offset="0">&lt;</div>
                 <div style="width:600px; overflow:hidden; position:relative;border:6px solid #eee; padding:4px;float:left;margin-left:5px;">
                     <div style="position:relative; height:30px;left:0;" id="timeRangeBox">
-                        #{list items:0..23, as:'hour'}
+                        #{list items:8..23, as:'hour'}
                         %{ hourStr = hour < 10 ? "0" + hour : "" + hour; }%
-                        <div class="hour" style="z-index:${50-hour};left:${hour*44}px" data-hour="${hourStr}:00">${hourStr}:00</div>
+                        <div class="hour" style="z-index:${100-hour};left:${(hour-8)*44}px" data-hour="${hourStr}:00"
+                             data-index=${hour_index-1}>${hourStr}:00</div>
+                        #{/list}
+                        #{list items:0..7, as:'hour'}
+                        %{ hourStr = hour < 10 ? "0" + hour : "" + hour; }%
+                        <div class="hour" style="z-index:${50-hour};left:${(hour+16)*44}px" data-hour="${hourStr}:00"
+                                data-index="${hour+16}" >${hourStr}:00</div>
                         #{/list}
                     </div>
                 </div>
