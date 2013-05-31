@@ -3,6 +3,7 @@ package controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
+import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
 import models.ktv.KtvPriceSchedule;
 import models.ktv.KtvRoomType;
@@ -128,7 +129,7 @@ public class KtvPriceSchedules extends Controller {
     public static void showAdd() {
         Supplier supplier = SupplierRbac.currentUser().supplier;
         List<Shop> shops = Shop.findShopBySupplier(supplier.id);
-        List<KtvProduct> ktvProductList = KtvProduct.find("supplier=?", supplier).fetch();
+        List<KtvProduct> ktvProductList  = KtvProduct.findProductBySupplier(supplier.id);
         render(shops, ktvProductList);
     }
 
@@ -335,7 +336,7 @@ public class KtvPriceSchedules extends Controller {
             }
         }
 
-        if (product == null) {
+        if (product == null || product.deleted != DeletedStatus.UN_DELETED) {
             return "无效的KTV产品";
         }
 
