@@ -46,7 +46,7 @@ function toggleShop(ele) {
                 )
         )
     } else {
-        $("#roomCountTable tr[row-shop-id='" + $(this).attr("data-shop-id") + "']").remove();
+        $("#roomCountTable tr[row-shop-id='" + ele.attr("data-shop-id") + "']").remove();
     }
 }
 
