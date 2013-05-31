@@ -66,7 +66,7 @@ public class KtvTaobaoSku extends Model {
     public void setTimeRangeCode(int startTime, int duration) {
         int endTime = startTime + duration;
         this.timeRange = humanTimeRange(startTime, endTime);
-        this.timeRangeCode = startTime*100 + endTime;
+        this.timeRangeCode = startTime*100 + (endTime >= 24 ? endTime -24 : endTime);
         buildProperties();
     }
 
