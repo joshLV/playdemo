@@ -59,7 +59,7 @@
                                             size += value.size()
                                             }
                                             }%
-                                            <td rowspan="${size}" >
+                                            <td rowspan="${size}">
                                             ${models.ktv.KtvRoomType.getRoomTypeByTaobaoId(sku.roomType).getName()}
                                             </td>
                                         #{/if}
@@ -96,14 +96,18 @@
                 </div>
             </div>
 
-            <div class="control-group" id="brand_field">
+            <div class="control-group">
                 <label class="control-label">品牌</label>
+                <div class="controls" id="brand_fields"></div>
             </div>
-            <div class="control-group" id="ktv_provinces">
+            <div class="control-group">
                 <label class="control-label">适用省份</label>
+
+                <div class="controls" id="ktv_provinces"></div>
             </div>
-            <div class="control-group" id="ktv_cities">
+            <div class="control-group">
                 <label class="control-label">适用城市</label>
+                <div class="controls" id="ktv_cities"></div>
             </div>
             <div class="control-group">
                 <label class="control-label">主图</label>
@@ -131,7 +135,7 @@
                 <label class="control-label">发布选项</label>
 
                 <div class="controls">
-                    <input type="checkbox" name="onsale" value="false" >直接上架
+                    <input type="checkbox" name="onsale" value="false">直接上架
                 </div>
             </div>
 
