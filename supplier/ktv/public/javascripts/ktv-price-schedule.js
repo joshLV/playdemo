@@ -27,6 +27,29 @@ function addDateRange(startDayVal, endDayVal){
     resetDayInput();
 }
 
+function toggleShop(ele) {
+    var roomCountAll = $("#roomCountAll").val();
+    if (ele.is(":checked")) {
+        $("#roomCountTable").append(
+            $("<tr/>").attr("row-shop-id", ele.attr("data-shop-id")).append(
+                    $("<td/>").text(ele.attr("data-name"))
+                ).append(
+                    $("<td/>").append(
+                        $("<input/>", {
+                            type: "text",
+                            name: "shop-" + ele.attr("data-shop-id"),
+                            size: "3",
+                            "data-shop-name": ele.attr("data-name"),
+                            "data-shop-id": ele.attr("data-shop-id"),
+                            value: roomCountAll})
+                    ).append($("<span/>").text("个"))
+                )
+        )
+    } else {
+        $("#roomCountTable tr[row-shop-id='" + $(this).attr("data-shop-id") + "']").remove();
+    }
+}
+
 function toggleHour(ele) {
     var hour = Number(ele.attr("data-hour").substring(0, 2));
 
@@ -135,27 +158,7 @@ $(function () {
     $("#durationPer").text($("#priceStrategy_product_id option:selected").attr("data-duration"));
     //选择门店
     $("#shopGroup input[data-shop-id]").change(function () {
-        var roomCountAll = $("#roomCountAll").val();
-        var ele = $(this);
-        if (ele.is(":checked")) {
-            $("#roomCountTable").append(
-                $("<tr/>").attr("row-shop-id", ele.attr("data-shop-id")).append(
-                        $("<td/>").text(ele.attr("data-name"))
-                    ).append(
-                        $("<td/>").append(
-                            $("<input/>", {
-                                type: "text",
-                                name: "shop-" + ele.attr("data-shop-id"),
-                                size: "3",
-                                "data-shop-name": ele.attr("data-name"),
-                                "data-shop-id": ele.attr("data-shop-id"),
-                                value: roomCountAll})
-                        ).append($("<span/>").text("个"))
-                    )
-            )
-        } else {
-            $("#roomCountTable tr[row-shop-id='" + $(this).attr("data-shop-id") + "']").remove();
-        }
+        toggleShop($(this));
     });
     //左右移动时间范围
     $(".switch_time_range").click(function(){
