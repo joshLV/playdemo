@@ -41,7 +41,7 @@ public class KtvTaobaoProducts extends Controller {
     @ActiveNavigation("ktv_taobao_product")
     public static void index(Long supplierId) {
         List<Supplier> supplierList = Supplier.find("select p.supplier from SupplierProperty p where p.name=? and" +
-                " p.value = 1 and p.supplier.deleted=?", Supplier.KTV_SUPPLIER, DeletedStatus.UN_DELETED).fetch();
+                " p.value = 1 and p.supplier.deleted=? ", Supplier.KTV_SUPPLIER, DeletedStatus.UN_DELETED).fetch();
         if (supplierId != null) {
             List<Shop> shops = Shop.findShopBySupplier(supplierId);
             List<KtvProduct> products = KtvProduct.findProductBySupplier(supplierId);
@@ -98,7 +98,6 @@ public class KtvTaobaoProducts extends Controller {
         ItemAddRequest request = new ItemAddRequest();
 
         request.setTitle(title);//设置标题
-//        request.setPicPath(prodImg);//设置主图
         request.setDesc(desc);//设置商品描述
         request.setLocationState(locationProvince);//设置宝贝所在省份
         request.setLocationCity(locationCity);//设置宝贝所在城市

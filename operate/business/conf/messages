@@ -380,6 +380,7 @@ conpon.WEIXIN=微信验证
 coupon.TELEPHONE=电话验证
 coupon.OP_VERIFY=运营代理验证
 coupon.IMPORT_VERIFY=导入券自动验证
+coupon.AUTO_VERIFY=自动验证
 coupon.null=
 
 #品牌

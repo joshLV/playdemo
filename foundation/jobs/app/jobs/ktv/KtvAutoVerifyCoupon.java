@@ -1,11 +1,14 @@
 package jobs.ktv;
 
+import com.uhuila.common.constants.DeletedStatus;
 import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import models.ktv.KtvOrderStatus;
 import models.ktv.KtvRoomOrderInfo;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
+import models.order.VerifyCouponType;
 import org.apache.commons.lang.time.DateUtils;
 import play.db.jpa.JPA;
 import play.jobs.Every;
@@ -50,9 +53,12 @@ public class KtvAutoVerifyCoupon extends JobWithHistory {
                     roomOrderInfo.orderItem, ECouponStatus.UNCONSUMED).fetch();
 
             for (ECoupon coupon : couponList) {
+                coupon.verifyType = VerifyCouponType.AUTO_VERIFY;
                 coupon.status = ECouponStatus.CONSUMED;
                 coupon.consumedAt = new Date();
                 coupon.save();
+                ECouponHistoryMessage.with(coupon).remark("KTV未消费的过期券自动验证")
+                        .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
             }
         }
 

@@ -32,7 +32,7 @@ $(function(){
                 select.append(op);
             }
 //            select.append($("<option>", {"text":"自定义", "value":"-1"}));
-            $("#brand_field").append(select);
+            $("#brand_fields").append(select);
             $("#ktvBrandPid").val(prop.pid);
         }else if(prop.name == '优惠券适用省份') {
             var propValues = prop.propValues;

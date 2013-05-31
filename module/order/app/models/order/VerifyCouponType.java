@@ -13,5 +13,6 @@ public enum VerifyCouponType {
     TELEPHONE,          //电话验证
     WEIXIN,             //微信验证
     OP_VERIFY,          //运营代理验证
-    IMPORT_VERIFY       //导入券自动验证
+    IMPORT_VERIFY,      //导入券自动验证
+    AUTO_VERIFY       //券自动验证
 }
