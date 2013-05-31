@@ -132,8 +132,8 @@ function dateToHan(date) {
 //点击删除已选日期
 function delDayClick() {
     var ele = $(this);
-    var sa = ele.attr("data-start");
-    var ea = ele.attr("data-end");
+    var sa = ele.attr("data-start").split("-");
+    var ea = ele.attr("data-end").split("-");
     var startTime = new Date(sa[0], Number(sa[1])-1, sa[2]).getTime();
     var endTime = new Date(ea[0], Number(ea[1])-1, ea[2]).getTime();
     var index = -1;
