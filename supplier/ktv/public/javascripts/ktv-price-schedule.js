@@ -15,7 +15,7 @@ function addDateRange(startDayVal, endDayVal){
     dayPreview.append(
         $("<div>", {style:"margin-bottom:4px;"})
             .append( $("<span>",{text: text}))
-            .append($("<span>",{text:"x", class:"delDay", "data-start":startDayVal,"data-end":endDayVal, click:delDayClick}))
+            .append($("<span>",{text:"x", "class":"delDay", "data-start":startDayVal,"data-end":endDayVal, click:delDayClick}))
     );
     selectedDays.push([startDay, endDay]);
     var newStartDay = new Date(endDay);
