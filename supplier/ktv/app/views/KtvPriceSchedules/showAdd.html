@@ -205,6 +205,7 @@
                     return false;
                 }
             });
+            $("#durationPer").text($("#priceStrategy_product_id option:selected").attr("data-duration"));
             $("#priceStrategy_product_id").hide().parent().append($("<span>", {text: priceSchedule.product.name}));
             //准备时间段
             $("#timeRangeBox div[data-hour]").each(function(){
