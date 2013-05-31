@@ -44,9 +44,14 @@
     }
     .field-group {
         padding-left:180px;
+        margin-bottom:10px;
     }
     .field-group label {
         width:150px;
+    }
+    .field-group select {
+        border: 1px solid silver;
+        height:30px;
     }
     .switch_time_range{
         padding:10px;
@@ -94,6 +99,20 @@
 #{/else}
     <div class="bd">
         <h2>${title}</h2>
+        <div class="field-group" id="productGroup">
+            <label>套餐产品</label>
+            <select name="priceStrategy.product.id" id="priceStrategy_product_id" style="width: auto">
+                #{list ktvProductList,as :'product'}
+                <option value="${product.id}" data-duration="${product.duration}">${product.name}</option>
+                #{/list}
+            </select>
+        </div>
+
+        <div class="field-group">
+            <label>包厢价格</label>
+            <input type="text" class="time" id="price" name="priceStrategy.price" style="width:100px;"/> 元 / 每 <span id="durationPer"></span> 小时
+        </div>
+
 
         <div class="field-group">
             <label>可预订日期</label>
@@ -110,14 +129,6 @@
             <input type="hidden" name="days" id="inputDays">
         </div>
 
-        <div class="field-group" id="productGroup">
-            <label>套餐产品</label>
-            <select name="priceStrategy.product.id" id="priceStrategy_product_id" style="width: auto">
-                #{list ktvProductList,as :'product'}
-                    <option value="${product.id}" data-duration="${product.duration}">${product.name}</option>
-                #{/list}
-            </select>
-        </div>
 
         <div class="field-group">
             <label>可预订时段</label>
@@ -137,7 +148,7 @@
         </div>
         <div class="field-group">
             <div class="preview_box" id="hourPreview">
-                未选择时间段，请点击以上所列时间【可多选】
+                未选择时间段，请点击以上所列时间。【可多选】
             </div>
         </div>
         <input type="hidden" name="priceStrategy.startTimes" id="inputStartTimes">
@@ -145,35 +156,31 @@
         <div class="field-group" id="roomTypeGroup">
             <label>适用包厢</label>
             #{list items:models.ktv.KtvRoomType.values(), as:'roomType'}
-                <input type="radio" name="priceStrategy.roomType" value="${roomType}"/>${roomType.name} &nbsp;&nbsp;
+            <input type="radio" name="priceStrategy.roomType" value="${roomType}"/>${roomType.name} &nbsp;&nbsp;
             #{/list}
         </div>
 
-        <div class="field-group">
-            <label>包厢价格</label>
-            <input type="text" id="price" name="priceStrategy.price"/> 元 / 每 <span id="durationPer"></span> 小时
-        </div>
-
-
-        <div class="field-group" id="shopGroup">
-            <label>选择适用门店</label>
-            #{list items:shops,as:'shop'}
-                <input type="checkbox" class="shops" data-shop-id="${shop.id}" data-name="${shop.name}"/>${shop.name}
-                &nbsp;&nbsp;
-            #{/list}
-        </div>
 
         <div class="field-group">
-            <label>每时段包厢数量</label>
-            <table cellpadding="0" cellspacing="0" id="roomCountTable">
+            <label>门店包厢数量</label>
+            <table cellspacing="0" cellpadding="0" class="standard-table" style="width:50%" id="shopGroup">
                 <tr>
-                    <td>统一设置 &nbsp;&nbsp;</td>
-                    <td><input type="text" size="3" id="roomCountAll"/>个</td>
+                    <th>门店</th>
+                    <th>包厢数量（个）</th>
                 </tr>
-                <tr style="height:20px;">
-                    <td colspan="2"></td>
+                #{list items:shops,as:'shop'}
+                <tr>
+                    <td>${shop.name}</td>
+                    <td>
+                        <input type="text" name="shop-${shop.id}"  class="time" style="width:100px;"/>
+                    </td>
+                </tr>
+                #{/list}
+                <tr>
+                    <td colspan="2">统一设置 <input type="text" class="time" style="width:100px;" size="5" id="roomCountAll"/> 个</td>
                 </tr>
             </table>
+            <div style="color:#888; font-size:12px;">留空/数量为0 表示本策略不包含该门店</div>
         </div>
         <div class="field-group" >
             <div class="alert_error" id="errorMsg" style="display: none">
@@ -218,14 +225,7 @@
             });
             //准备门店
             $.each(priceSchedule.shops, function(index, shop){
-                var ele = $("#shopGroup input[data-shop-id='" + shop.shopId + "']");
-                ele.click()
-                if(!+[1,]){
-                    toggleShop(ele);
-                }
-                setTimeout(function(){
-                    $("#roomCountTable input[data-shop-id='" + shop.shopId + "']").val(shop.roomCount);
-                }, 0);
+                $("#shopGroup input[name='shop-" + shop.shopId + "']").val(shop.roomCount);
             });
             $("#roomTypeGroup input[value='" + priceSchedule.roomType + "']").attr("checked", true);
             $("#price").val(priceSchedule.price);
