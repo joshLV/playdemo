@@ -1483,7 +1483,7 @@ public class Order extends Model {
                 if (roomOrderInfo.scheduledDay.compareTo(DateUtils.truncate(new Date(), Calendar.DATE)) >= 0) {
                     String content = dateFormat.format(roomOrderInfo.scheduledDay) + "," + roomOrderInfo.shop.name +
                             "预订【" + item.phone + roomOrderInfo.roomType.getName() + "(" + item.buyNumber + "间)" +
-                            getKtvScheduleTime(roomOrderInfo.scheduledTime, roomOrderInfo.product.duration) + "】";
+                            KtvTaobaoSku.humanTimeRange(roomOrderInfo.scheduledTime, roomOrderInfo.scheduledTime + roomOrderInfo.product.duration) + "】";
                     String[] mobileArray = StringUtils.trimToEmpty(roomOrderInfo.shop.managerMobiles).split(",");
                     for (String mobile : mobileArray) {
                         new SMSMessage(content, mobile).send();

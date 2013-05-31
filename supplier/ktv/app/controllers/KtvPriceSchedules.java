@@ -198,8 +198,7 @@ public class KtvPriceSchedules extends Controller {
         Map<Date, Date> scheduleDays = scheduleDaysFromInput(days);
 
         //检测参数合法性
-        error = validStrategy(priceStrategy.product, priceStrategy.roomType,
-                shopCountMap.keySet(), scheduleDays, startTimes);
+        error = validStrategy(priceStrategy , shopCountMap.keySet(), scheduleDays, startTimes);
 
         if (error != null) {
             render("KtvPriceSchedules/result.html", error);
@@ -296,7 +295,7 @@ public class KtvPriceSchedules extends Controller {
         Map<Date, Date> scheduleDays = scheduleDaysFromInput(days);
 
         //检测参数合法性
-        String error = validStrategy(priceStrategy.product, priceStrategy.roomType, shops, scheduleDays, startTimes);
+        String error = validStrategy(priceStrategy, shops, scheduleDays, startTimes);
 
         if (error != null) {
             renderJSON("{\"error\":\"" + error + "\"}");
@@ -311,8 +310,21 @@ public class KtvPriceSchedules extends Controller {
         renderJSON("{\"isOk\":true}");
     }
 
-    private static String validStrategy( KtvProduct product, KtvRoomType roomType,
+    private static String validStrategy( KtvPriceSchedule priceSchedule ,
             Set<Shop> shops, Map<Date, Date> scheduleDays, Set<Integer> startTimesSet) {
+        if (priceSchedule == null) {
+            return "无效的价格策略";
+        }
+        if (priceSchedule.product == null || priceSchedule.product.deleted != DeletedStatus.UN_DELETED) {
+            return "无效的KTV产品";
+        }
+        if (priceSchedule.price == null || priceSchedule.price.compareTo(BigDecimal.ZERO) < 0) {
+            return "无效的价格设置";
+        }
+
+        if (priceSchedule.roomType == null) {
+            return "无效的房型";
+        }
         if (scheduleDays.size() == 0) {
             return "请选择日期范围";
         }
@@ -336,13 +348,6 @@ public class KtvPriceSchedules extends Controller {
             }
         }
 
-        if (product == null || product.deleted != DeletedStatus.UN_DELETED) {
-            return "无效的KTV产品";
-        }
-
-        if (roomType == null) {
-            return "无效的房型";
-        }
         if (shops.size() == 0) {
             return "无效的门店列表";
         }
