@@ -42,7 +42,6 @@ public class KtvTaobaoSku extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-
     @Transient
     private String properties;
 
@@ -50,15 +49,24 @@ public class KtvTaobaoSku extends Model {
         return timeRangeCode;
     }
 
+    public static String humanTimeRange(int start, int end) {
+        end = end >= 24 ? end - 24 : end;
+        String endStr = end < 8 ? "营业结束" : end + "点";
+        String startStr = start < 8 ? "凌晨" + start + "点" : start + "点";
+        return startStr + "至" + endStr;
+    }
+
     public void setTimeRangeCode(Integer timeRangeCode) {
         this.timeRangeCode = timeRangeCode;
-        this.timeRange = timeRangeCode/100 + "点至" + timeRangeCode%100 + "点";
+        this.timeRange = humanTimeRange(timeRangeCode/100, timeRangeCode%100);
+
         buildProperties();
     }
 
     public void setTimeRangeCode(int startTime, int duration) {
-        this.timeRange = startTime+ "点至" + (startTime+duration) + "点";
-        this.timeRangeCode = startTime*100 + (startTime + duration);
+        int endTime = startTime + duration;
+        this.timeRange = humanTimeRange(startTime, endTime);
+        this.timeRangeCode = startTime*100 + endTime;
         buildProperties();
     }
 
@@ -83,8 +91,9 @@ public class KtvTaobaoSku extends Model {
                 ";$日期:" + StringUtils.defaultString(date);
     }
     public static String buidPropertiesWithCodeAndDate(String roomType, Integer timeRangeCode, Date day) {
+        String timeRange = humanTimeRange(timeRangeCode/100, timeRangeCode%100);
         return  StringUtils.defaultString(roomType) +
-                ";$欢唱时间:" + timeRangeCode/100 + "点至" + timeRangeCode%100 + "点" +
+                ";$欢唱时间:" + timeRange +
                 ";$日期:" + new SimpleDateFormat("M月d日").format(day);
     }
 

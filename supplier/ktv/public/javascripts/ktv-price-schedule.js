@@ -4,6 +4,7 @@ var selectedDays =[];
 var startDayEle = $("#startDay");
 var endDayEle = $("#endDay");
 var dayPreview = $("#dayPreview");
+var hoursCount = 0;
 //点击添加日期
 function addDateRange(startDayVal, endDayVal){
     var sa = startDayVal.split("-");
@@ -29,22 +30,24 @@ function addDateRange(startDayVal, endDayVal){
 
 function toggleHour(ele) {
     var hour = Number(ele.attr("data-hour").substring(0, 2));
+    var index = Number(ele.attr("data-index"));
 
-    var index = $.inArray(hour, selectedHours);
-    if (index >= 0) {
-        selectedHours.splice(index, 1);
+    var i = $.inArray(hour, selectedHours);
+    if (i >= 0) {
+        selectedHours.splice(i, 1);
         ele.removeClass("hour-selected");
         ele.text(ele.attr("data-hour"));
         ele.animate({width: "40px"}, 100);
     } else {
         var eleSelectedDuration = $("#priceStrategy_product_id option:selected");
         var duration = Number(eleSelectedDuration.attr("data-duration"));
-        if (hour + duration > 24) {
+        if (hour < 8 && hour + duration > 8) {
             return;
         }
-        for (var i = 1; i < duration; i++) {
-            var j = $.inArray(hour + i, selectedHours);
-            if (j >= 0) {
+        for (var j = 1; j < duration; j++) {
+            var h = hour+j >= 24 ? hour+j - 24 : hour+j;
+            var k = $.inArray(h, selectedHours);
+            if (k >= 0) {
                 return;
             }
         }
@@ -52,6 +55,7 @@ function toggleHour(ele) {
         ele.addClass("hour-selected");
         start = hour < 10 ? "0" + hour : hour;
         end = hour+duration;
+        end = end >= 24 ? end - 24 : end;
         end = end < 10 ? "0" + end : end;
         ele.text(start + ":00 - " + end + ":00");
         ele.animate({width: (duration * 44 - 4) + "px"}, 80);
@@ -78,8 +82,10 @@ function resetHourInput() {
     }else{
         hourPreview.empty();
         $.each(selectedHours, function(index, hour){
+            var end = hour+duration;
+            end = end >= 24? end -24 : end;
             hourPreview.append(
-                $("<span>",{text: fill2(hour) + ":00 - " + fill2(hour+duration) + ":00", style:"padding-right:40px;"})
+                $("<span>",{text: fill2(hour) + ":00 - " + fill2(end) + ":00", style:"padding-right:40px;"})
             );
             if(((index + 1)%4) == 0){
                 hourPreview.append($("<br>"));
@@ -132,6 +138,7 @@ function delDayClick() {
     }
 }
 $(function () {
+    hoursCount = $("#timeRangeBox .hour").length;
     $("#durationPer").text($("#priceStrategy_product_id option:selected").attr("data-duration"));
     //左右移动时间范围
     $(".switch_time_range").click(function(){

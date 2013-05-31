@@ -884,7 +884,9 @@ public class Order extends Model {
                     //ktv商户的话，更新券的价格信息
                     if (isKtvSupplier && roomOrderInfo != null) {
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
-                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + eCoupon.salePrice + "元," + getKtvScheduleTime(roomOrderInfo.scheduledTime, roomOrderInfo.product.duration);
+                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + eCoupon.salePrice + "元,"
+                                + KtvTaobaoSku.humanTimeRange(roomOrderInfo.scheduledTime,
+                                roomOrderInfo.scheduledTime + roomOrderInfo.product.duration);
                         eCoupon.effectiveAt = new Date();
                         eCoupon.expireAt = DateUtil.getEndOfDay(roomOrderInfo.scheduledDay);
                         eCoupon.save();
@@ -900,8 +902,11 @@ public class Order extends Model {
                 if (isKtvSupplier && roomOrderInfo != null) {
                     roomOrderInfo.dealKtvRoom();
                     String roomDay = format.format(roomOrderInfo.scheduledDay);
-                    KtvTaobaoSku ktvSku = KtvTaobaoSku.find("goods=? and roomType=? and timeRange =? and date=?",
-                            goods, roomOrderInfo.roomType.getTaobaoId(), getKtvScheduleTime(roomOrderInfo.scheduledTime, roomOrderInfo.product.duration), roomDay).first();
+                    KtvTaobaoSku ktvSku = KtvTaobaoSku.find(
+                            "goods=? and roomType=? and timeRange =? and date=?",
+                            goods, roomOrderInfo.roomType.getTaobaoId(),
+                             KtvTaobaoSku.humanTimeRange(roomOrderInfo.scheduledTime, roomOrderInfo.scheduledTime + roomOrderInfo.product.duration),
+                            roomDay).first();
                     if (ktvSku != null) {
                         ktvSku.quantity -= orderItem.buyNumber.intValue();
                         ktvSku.save();
@@ -913,10 +918,6 @@ public class Order extends Model {
             sendPaidMail(goods, orderItem);
         }
 
-    }
-
-    private String getKtvScheduleTime(int scheduledTime, int duration) {
-        return scheduledTime + "点至" + (scheduledTime + duration) + "点";
     }
 
     /**
