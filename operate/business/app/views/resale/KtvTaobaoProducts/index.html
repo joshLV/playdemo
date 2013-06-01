@@ -30,10 +30,8 @@
                 ktvProductGoods = models.ktv.KtvProductGoods.find("byShopAndProduct", shop,product).first() ;
 
                 if (ktvProductGoods !=null){
-                System.out.println(ktvProductGoods.goods);
                 resalerProduct = models.sales.ResalerProduct.find("byGoodsAndResalerAndPartner",
                 ktvProductGoods.goods,resaler,models.order.OuterOrderPartner.TB).first();
-                System.out.println(resalerProduct);
                 }
                 }%
                 <tr>

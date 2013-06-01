@@ -60,13 +60,13 @@
                                             }
                                             }%
                                             <td rowspan="${size}">
-                                            ${models.ktv.KtvRoomType.getRoomTypeByTaobaoId(sku.roomType).getName()}
+                                            ${sku.roomType.getName()}
                                             </td>
                                         #{/if}
                                         #{if time_index ==1}
-                                            <td rowspan="${skuMapOfDate.size()}">${sku.date}</td>
+                                            <td rowspan="${skuMapOfDate.size()}">${sku.date.format('M月d日')}</td>
                                         #{/if}
-                                        <td>${sku.timeRange}</td>
+                                        <td>${models.ktv.KtvTaobaoSku.humanTimeRange(sku.startTime, sku.startTime + sku.duration)}</td>
                                         <td>${sku.quantity}</td>
                                         <td>${sku.price}</td>
                                     </tr>
