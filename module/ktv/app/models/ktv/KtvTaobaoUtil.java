@@ -17,6 +17,7 @@ import models.sales.ResalerProduct;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
@@ -494,7 +495,16 @@ public class KtvTaobaoUtil {
             for (Date date : sameDateSet) {
                 for (Integer timeRangeCode : sameTimeRangeCodeSet) {
                     KtvTaobaoSku localSku = localSkuMap.get(roomType).get(date).get(timeRangeCode);
-                    KtvTaobaoSku remoteSku = remoteSkuMap.get(roomType).get(date).get(timeRangeCode);
+
+                    KtvTaobaoSku remoteSku = null;
+                    SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>> remoteDt = remoteSkuMap.get(roomType);
+                    if (remoteDt != null) {
+                        SortedMap<Integer, KtvTaobaoSku> remoteTr = remoteDt.get(date);
+                        if ( remoteTr != null) {
+                            remoteSku = remoteTr.get(timeRangeCode);
+                        }
+                    }
+
                     if (localSku == null || remoteSku == null ) {
                         continue;
                     }
