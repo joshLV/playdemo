@@ -17,6 +17,7 @@ import models.sales.ResalerProduct;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
@@ -138,28 +139,36 @@ public class KtvTaobaoUtil {
         * */
         Map<String, List<KtvTaobaoSku>> diffResult =  diffSkuBetweenLocalAndRemote(localSkuMap, remoteSkuList);
 
-        for (Map.Entry<String, List<KtvTaobaoSku>> entry: diffResult.entrySet()) {
-            switch (entry.getKey()) {
+        String[] actions = new String[] {ACTION_DELETE, ACTION_ADD, ACTION_UPDATE_PRICE,ACTION_UPDATE_QUANTITY};
+        for (String action: actions) {
+            List<KtvTaobaoSku> skuList = diffResult.get(action);
+            switch (action) {
                 case ACTION_ADD:
-                    for (KtvTaobaoSku sku : entry.getValue()) {
+                    Collections.sort(skuList, new Comparator<KtvTaobaoSku>() {
+                        @Override
+                        public int compare(KtvTaobaoSku o1, KtvTaobaoSku o2) {
+                            return o1.getQuantity() - o2.getQuantity();
+                        }
+                    });
+                    for (KtvTaobaoSku sku : skuList) {
                         String error =  addSkuOnTaobao(sku, taobaoProductId, taobaoClient, token.accessToken);
                         if (error != null) { return error; }
                     }
                     break;
                 case ACTION_DELETE:
-                    for (KtvTaobaoSku sku : entry.getValue()) {
+                    for (KtvTaobaoSku sku : skuList) {
                         String error =  deleteSkuOnTaobao(sku, taobaoProductId, taobaoClient, token.accessToken);
                         if (error != null) { return error; }
                     }
                     break;
                 case ACTION_UPDATE_PRICE:
-                    for (KtvTaobaoSku sku : entry.getValue()) {
+                    for (KtvTaobaoSku sku : skuList) {
                         String error =  updateSkuPriceOnTaobao(sku, taobaoProductId, taobaoClient, token.accessToken);
                         if (error != null) { return error; }
                     }
                     break;
                 case ACTION_UPDATE_QUANTITY:
-                    String error =  updateSkuQuantityOnTaobao(entry.getValue(), taobaoProductId, taobaoClient, token.accessToken);
+                    String error =  updateSkuQuantityOnTaobao(skuList, taobaoProductId, taobaoClient, token.accessToken);
                     if (error != null) { return error; }
                     break;
                 default:
@@ -494,7 +503,16 @@ public class KtvTaobaoUtil {
             for (Date date : sameDateSet) {
                 for (Integer timeRangeCode : sameTimeRangeCodeSet) {
                     KtvTaobaoSku localSku = localSkuMap.get(roomType).get(date).get(timeRangeCode);
-                    KtvTaobaoSku remoteSku = remoteSkuMap.get(roomType).get(date).get(timeRangeCode);
+
+                    KtvTaobaoSku remoteSku = null;
+                    SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>> remoteDt = remoteSkuMap.get(roomType);
+                    if (remoteDt != null) {
+                        SortedMap<Integer, KtvTaobaoSku> remoteTr = remoteDt.get(date);
+                        if ( remoteTr != null) {
+                            remoteSku = remoteTr.get(timeRangeCode);
+                        }
+                    }
+
                     if (localSku == null || remoteSku == null ) {
                         continue;
                     }
