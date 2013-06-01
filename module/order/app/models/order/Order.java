@@ -901,16 +901,6 @@ public class Order extends Model {
                 //ktv商户的场合,发送券之后更新ktvRoomOrder订单的状态和时间
                 if (isKtvSupplier && roomOrderInfo != null) {
                     roomOrderInfo.dealKtvRoom();
-                    String roomDay = format.format(roomOrderInfo.scheduledDay);
-                    KtvTaobaoSku ktvSku = KtvTaobaoSku.find(
-                            "goods=? and roomType=? and timeRange =? and date=?",
-                            goods, roomOrderInfo.roomType.getTaobaoId(),
-                             KtvTaobaoSku.humanTimeRange(roomOrderInfo.scheduledTime, roomOrderInfo.scheduledTime + roomOrderInfo.product.duration),
-                            roomDay).first();
-                    if (ktvSku != null) {
-                        ktvSku.quantity -= orderItem.buyNumber.intValue();
-                        ktvSku.save();
-                    }
                 }
             }
 

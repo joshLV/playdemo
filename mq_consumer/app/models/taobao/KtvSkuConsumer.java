@@ -23,7 +23,7 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
         Logger.info("message.ktvProductGoodsId:%s,message.scheduledId:%s", message.scheduledId);
         //根据价格策略更新sku
         if (message.scheduledId != null) {
-            KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(message.scheduledId);
+//            KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(message.scheduledId);
         } else {
             Logger.info("KtvSkuConsumer process faild:message.scheduleId is null");
         }

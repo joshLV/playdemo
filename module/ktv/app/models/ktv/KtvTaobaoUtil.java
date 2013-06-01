@@ -3,22 +3,20 @@ package models.ktv;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
-import com.taobao.api.request.ItemSkuAddRequest;
-import com.taobao.api.request.ItemSkuDeleteRequest;
-import com.taobao.api.request.ItemSkuUpdateRequest;
-import com.taobao.api.response.ItemSkuAddResponse;
-import com.taobao.api.response.ItemSkuDeleteResponse;
-import com.taobao.api.response.ItemSkuUpdateResponse;
+import com.taobao.api.domain.Sku;
+import com.taobao.api.request.*;
+import com.taobao.api.response.*;
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
 import models.order.OuterOrderPartner;
+import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import models.sales.Shop;
 import models.supplier.Supplier;
-import models.taobao.KtvSkuMessageUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
@@ -29,7 +27,6 @@ import play.db.jpa.JPA;
 
 import javax.persistence.Query;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -42,6 +39,11 @@ public class KtvTaobaoUtil {
     public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
     public static final long defaultCid = 50644003L;
 
+    private static final String ACTION_ADD = "add";
+    private static final String ACTION_DELETE = "delete";
+    private static final String ACTION_UPDATE_PRICE = "updatePrice";
+    private static final String ACTION_UPDATE_QUANTITY = "updateQuantity";
+
 
     /**
      * 根据某一价格策略，更新相应门店的所有相应商品的淘宝SKU.
@@ -49,6 +51,7 @@ public class KtvTaobaoUtil {
      *
      * @param priceScheduleId 价格策略ID
      */
+    @Deprecated
     public static void updateTaobaoSkuByPriceSchedule(Long priceScheduleId) {
         Logger.info("KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule method start>>>priceScheduleId:" + priceScheduleId);
         KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(priceScheduleId);
@@ -81,11 +84,9 @@ public class KtvTaobaoUtil {
     public static void updateTaobaoSkuByProductGoods(KtvProductGoods productGoods) {
         Logger.info("KtvTaobaoUtil.updateTaobaoSkuByProductGoodse method start>>>priceSchedule:" + productGoods);
         //构建新的淘宝SKU列表
-        List<KtvTaobaoSku> newTaobaoSkuList = skuMapToList(buildTaobaoSku(productGoods.shop, productGoods.product, true), false);
-        //从数据库中查出目前的淘宝SKU列表
-        List<KtvTaobaoSku> oldTaobaoSkuList = KtvTaobaoSku.find("byGoods", productGoods.goods).fetch();
-        //比较两者，得出三个列表，分别是：1、应该添加到淘宝的SKU列表；2、应该更新的淘宝SKU列表；3、应该删除的淘宝SKU列表
-        Map<String, List<KtvTaobaoSku>> diffResult = diffTaobaoSku(newTaobaoSkuList, oldTaobaoSkuList);
+        SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> localSkuMap
+                = buildTaobaoSku(productGoods.shop, productGoods.product, true);
+
         //更新该ktv产品所对应的每一个分销渠道上的商品
         List<ResalerProduct> resalerProductList = ResalerProduct.find("byGoodsAndPartner", productGoods.goods, OuterOrderPartner.TB).fetch();
         for (ResalerProduct resalerProduct : resalerProductList) {
@@ -93,67 +94,78 @@ public class KtvTaobaoUtil {
                 Logger.info("ktv update sku时,resalerProduct.partnerProductId=%s的resaler.id is null,will not update this resalerProduct!", resalerProduct.partnerProductId);
                 continue;
             }
-            TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
-                    resalerProduct.resaler.taobaoCouponAppSecretKey);
-            //找到淘宝的token
-            OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
-
             if (StringUtils.isBlank(resalerProduct.partnerProductId)) {
                 continue;
             }
+            updateTaobaoSkuByResalerProductAndLocalSkus(resalerProduct, localSkuMap);
+        }
+    }
+    public static String updateTaobaoSkuByKtvProductGoods(KtvProductGoods ktvProductGoods) {
 
-            String[] keys = new String[]{"delete", "update", "add"};//先删，后更新，再添加
-            for (String key : keys) {
-                List<KtvTaobaoSku> skuList = diffResult.get(key);
-                switch (key) {
-                    case "add":
-                        for (KtvTaobaoSku p : skuList) {
-                            KtvSkuTaobaoMessage sku = new KtvSkuTaobaoMessage();
-                            sku.action = KtvSkuMessageUtil.ACTION_ADD;
-                            sku.resalerProductId = resalerProduct.id;
+        SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> localSkuMap
+                = buildTaobaoSku(ktvProductGoods.shop, ktvProductGoods.product, true);
+        Resaler resaler = Resaler.findById(ktvProductGoods.goods.getSupplier().defaultResalerId);
+        ResalerProduct resalerProduct = ResalerProduct.find("byResalerAndGoods", resaler, ktvProductGoods.goods).first();
 
-                            sku.goodsId = p.goods.id;
-                            sku.roomType = p.getRoomType();
-                            sku.date = p.getDate();
-                            sku.day = p.getDay();
-                            sku.timeRange = p.getTimeRange();
-                            sku.timeRangeCode = p.getTimeRangeCode();
-                            sku.price = p.price;
-                            sku.quantity = p.quantity;
-                            sku.createdAt = p.createdAt;
+        return updateTaobaoSkuByResalerProductAndLocalSkus(resalerProduct, localSkuMap);
+    }
 
-                            KtvSkuMessageUtil.sendTaobaoAction(sku);
-                        }
-                        break;
-                    case "update":
-                        for (KtvTaobaoSku p : skuList) {
-                            KtvSkuTaobaoMessage sku = new KtvSkuTaobaoMessage();
-                            sku.action = KtvSkuMessageUtil.ACTION_UPDATE;
-                            sku.resalerProductId = resalerProduct.id;
+    public static String updateTaobaoSkuByResalerProductAndLocalSkus(ResalerProduct resalerProduct,
+               SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> localSkuMap ) {
+        Long taobaoProductId = Long.parseLong(resalerProduct.partnerProductId);
+        if (localSkuMap.size() == 0) {
+            return "无可用SKU信息";
+        }
 
-                            sku.skuId = p.id;
-                            sku.price = p.price;
-                            sku.quantity = p.quantity;
+        SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> remoteSkuMap
+                = skuListToMap(getTaobaoSku(resalerProduct), null, false);//本来就是完美的，因此不要求再生成完美的了
+        if (remoteSkuMap.size() == 0) {
+            return "未获取到淘宝的SKU信息";
+        }
 
-                            KtvSkuMessageUtil.sendTaobaoAction(sku);
-                        }
-                        break;
-                    case "delete":
-                        for (KtvTaobaoSku p : skuList) {
-                            KtvSkuTaobaoMessage sku = new KtvSkuTaobaoMessage();
-                            sku.action = KtvSkuMessageUtil.ACTION_DELETE;
-                            sku.resalerProductId = resalerProduct.id;
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
+                resalerProduct.resaler.taobaoCouponAppSecretKey);
+        //找到淘宝的token
+        OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
 
-                            sku.skuId = p.id;
+        /*
+        * 比较两组SKU，得出四个列表，分别是：
+        * add: 应该添加到淘宝的SKU列表
+        * delete: 应该删除的淘宝SKU列表
+        * updatePrice: 应该更新价格的淘宝SKU列表
+        * updateQuantity: 应该更新数量的淘宝SKU列表（可批量更新）
+        * */
+        Map<String, List<KtvTaobaoSku>> diffResult =  diffSkuBetweenLocalAndRemote(localSkuMap, remoteSkuMap);
 
-                            KtvSkuMessageUtil.sendTaobaoAction(sku);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+        for (Map.Entry<String, List<KtvTaobaoSku>> entry: diffResult.entrySet()) {
+            switch (entry.getKey()) {
+                case ACTION_ADD:
+                    for (KtvTaobaoSku sku : entry.getValue()) {
+                        String error =  addSkuOnTaobao(sku, taobaoProductId, taobaoClient, token.accessToken);
+                        if (error != null) { return error; }
+                    }
+                    break;
+                case ACTION_DELETE:
+                    for (KtvTaobaoSku sku : entry.getValue()) {
+                        String error =  deleteSkuOnTaobao(sku, taobaoProductId, taobaoClient, token.accessToken);
+                        if (error != null) { return error; }
+                    }
+                    break;
+                case ACTION_UPDATE_PRICE:
+                    for (KtvTaobaoSku sku : entry.getValue()) {
+                        String error =  updateSkuPriceOnTaobao(sku, taobaoProductId, taobaoClient, token.accessToken);
+                        if (error != null) { return error; }
+                    }
+                    break;
+                case ACTION_UPDATE_QUANTITY:
+                    String error =  updateSkuQuantityOnTaobao(entry.getValue(), taobaoProductId, taobaoClient, token.accessToken);
+                    if (error != null) { return error; }
+                    break;
+                default:
+                    break;
             }
         }
+        return null;
     }
 
     /**
@@ -170,7 +182,7 @@ public class KtvTaobaoUtil {
      *                  如果该选项为假，则对于无价格/数量信息的叶子节点，将忽略之，不加入到Map中
      * @return 新的淘宝SKU列表（未 save 到数据库）
      */
-    public static SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> buildTaobaoSku(
+    public static SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> buildTaobaoSku(
             Shop shop, KtvProduct product, boolean isPerfect) {
         List<KtvTaobaoSku> taobaoSkuList = new ArrayList<>();//结果集
 
@@ -249,6 +261,7 @@ public class KtvTaobaoUtil {
                 continue;
             }
             Date day = entry.getKey();
+            uniqDates.add(day);
             //查出该门店的该产品这一天已经卖出、或者被锁定的房间信息
             if (goods != null){
                 roomOrderInfoList = KtvRoomOrderInfo.find(
@@ -260,7 +273,6 @@ public class KtvTaobaoUtil {
                 //查出门店数量
                 KtvShopPriceSchedule shopPriceSchedule = KtvShopPriceSchedule.find("byShopAndSchedule", shop, schedule).first();
                 uniqRoomTypes.add(schedule.roomType);
-                uniqDates.add(day);
 
                 //取出该房型下的时间安排
                 SortedSet<Integer> startTimeArray = schedule.getStartTimesAsSet();
@@ -288,13 +300,11 @@ public class KtvTaobaoUtil {
                     }
 
                     KtvTaobaoSku sku = new KtvTaobaoSku();
-                    sku.goods = goods;
-                    sku.setRoomType(schedule.roomType.getTaobaoId());
-                    sku.setDay(day);
-                    sku.price = schedule.price;
-                    sku.quantity = roomCountLeft;
-                    sku.setTimeRangeCode(startTime, product.duration);
-                    sku.createdAt = new Date();
+                    sku.setRoomType(schedule.roomType);
+                    sku.setDate(day);
+                    sku.setPrice(schedule.price);
+                    sku.setQuantity(roomCountLeft);
+                    sku.setStartTimeAndDuration(startTime, product.duration);
                     taobaoSkuList.add(sku);
                 }
             }
@@ -313,18 +323,18 @@ public class KtvTaobaoUtil {
      *                <p/>
      *                (发布到淘宝后台，是让淘宝后台以包厢-》时长-》日期 的形式显示的，不影响逻辑。以上面所说的三级形保存，是为了方便在我方页面显示相应信息)
      */
-    public static SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> skuListToMap(List<KtvTaobaoSku> skuList, Goods goods, boolean perfect) {
-        SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> result = new TreeMap<>();
+    public static SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> skuListToMap(List<KtvTaobaoSku> skuList, Goods goods, boolean perfect) {
+        SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> result = new TreeMap<>();
         for (KtvTaobaoSku sku : skuList) {
             SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>> skuMapByRoomType = result.get(sku.getRoomType());
             if (skuMapByRoomType == null) {
                 skuMapByRoomType = new TreeMap<>();
                 result.put(sku.getRoomType(), skuMapByRoomType);
             }
-            SortedMap<Integer, KtvTaobaoSku> skuMapByDate = skuMapByRoomType.get(sku.getDay());
+            SortedMap<Integer, KtvTaobaoSku> skuMapByDate = skuMapByRoomType.get(sku.getDate());
             if (skuMapByDate == null) {
                 skuMapByDate = new TreeMap<>();
-                skuMapByRoomType.put(sku.getDay(), skuMapByDate);
+                skuMapByRoomType.put(sku.getDate(), skuMapByDate);
             }
             skuMapByDate.put(sku.getTimeRangeCode(), sku);
         }
@@ -334,25 +344,25 @@ public class KtvTaobaoUtil {
 
         //构建 Perfect Tree
 
-        Set<String> roomTypeSet = new HashSet<>();
+        Set<KtvRoomType> roomTypeSet = new HashSet<>();
         Set<Date> daySet = new HashSet<>();
         Set<Integer> timeRangeCodeSet = new HashSet<>();
         BigDecimal price = null;//最低价
         for (KtvTaobaoSku sku : skuList) {
-            if (sku.quantity == 0) {
+            if (sku.getQuantity() == 0) {
                 continue;
             }
             roomTypeSet.add(sku.getRoomType());
-            daySet.add(sku.getDay());
+            daySet.add(sku.getDate());
             timeRangeCodeSet.add(sku.getTimeRangeCode());
             if (price == null) {
-                price = sku.price;
-            } else if (price.compareTo(sku.price) > 0) {
-                price = sku.price;
+                price = sku.getPrice();
+            } else if (price.compareTo(sku.getPrice()) > 0) {
+                price = sku.getPrice();
             }
 
         }
-        for (String roomType : roomTypeSet) {
+        for (KtvRoomType roomType : roomTypeSet) {
             for (Date day : daySet) {
                 for (Integer timeRangeCode : timeRangeCodeSet) {
                     SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>> skuMapByRoomType = result.get(roomType);
@@ -368,13 +378,16 @@ public class KtvTaobaoUtil {
                     if (skuMapByDate.get(timeRangeCode) == null) {
                         //填充
                         KtvTaobaoSku sku = new KtvTaobaoSku();
-                        sku.goods = goods;
                         sku.setRoomType(roomType);
-                        sku.setDay(day);
-                        sku.setTimeRangeCode(timeRangeCode);
-                        sku.createdAt = new Date();
-                        sku.price = price;
-                        sku.quantity = 0;
+                        sku.setDate(day);
+                        sku.setPrice(price);
+                        sku.setQuantity(0);
+                        int startTime = timeRangeCode/100;
+                        int endTime = timeRangeCode%100;
+                        if (endTime< startTime) {
+                            endTime = endTime + 24;
+                        }
+                        sku.setStartTimeAndDuration(startTime, endTime -startTime);
                         skuMapByDate.put(timeRangeCode, sku);
                     }
                 }
@@ -390,13 +403,13 @@ public class KtvTaobaoUtil {
      *               如果该选项为假，则完成输出map中的所有sku
      * @return sku 列表
      */
-    public static List<KtvTaobaoSku> skuMapToList(SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> skuMap, boolean reduce) {
+    public static List<KtvTaobaoSku> skuMapToList(SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> skuMap, boolean reduce) {
         List<KtvTaobaoSku> skuList = new ArrayList<>();
-        for (SortedMap.Entry<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> entryA : skuMap.entrySet()) {
+        for (SortedMap.Entry<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> entryA : skuMap.entrySet()) {
             for (SortedMap.Entry<Date, SortedMap<Integer, KtvTaobaoSku>> entryB : entryA.getValue().entrySet()) {
                 for (Map.Entry<Integer, KtvTaobaoSku> entryC : entryB.getValue().entrySet()) {
                     KtvTaobaoSku sku = entryC.getValue();
-                    if (sku.quantity == 0 && reduce) {
+                    if (sku.getQuantity() == 0 && reduce) {
                         continue;
                     }
                     skuList.add(sku);
@@ -408,188 +421,222 @@ public class KtvTaobaoUtil {
 
 
     /**
-     * 在淘宝上删除一个SKU
+     * 传过来两个完美树
+     *
+     * 比较两组SKU，得出四个列表，分别是：
+     * add: 应该添加到淘宝的SKU列表
+     * delete: 应该删除的淘宝SKU列表
+     * updatePrice: 应该更新价格的淘宝SKU列表
+     * updateQuantity: 应该更新数量的淘宝SKU列表（可批量更新）
+     *
+     * @param localSkuMap 本地新计算出来的SKU
+     * @param remoteSkuMap 淘宝的SKU
+     * @return
      */
-    public static boolean deleteSaleSkuOnTaobao( KtvTaobaoSku p, ResalerProduct resalerProduct) {
+    public static Map<String, List<KtvTaobaoSku>> diffSkuBetweenLocalAndRemote(
+            SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> localSkuMap,
+            SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> remoteSkuMap ) {
+
+        Set<KtvRoomType> localRoomTypeSet = localSkuMap.keySet();
+        KtvRoomType firstKtvRoomType = localRoomTypeSet.iterator().next();
+        Set<Date> localDateSet = localSkuMap.get(firstKtvRoomType).keySet();
+        Set<Integer> localTimeRangeSet = localSkuMap.get(firstKtvRoomType).get(localDateSet.iterator().next()).keySet();
+
+        Set<KtvRoomType> remoteRoomTypeSet = remoteSkuMap.keySet();
+        firstKtvRoomType = remoteRoomTypeSet.iterator().next();
+        Set<Date> remoteDateSet = remoteSkuMap.get(firstKtvRoomType).keySet();
+        Set<Integer> remoteTimeRangeSet = remoteSkuMap.get(firstKtvRoomType).get(remoteDateSet.iterator().next()).keySet();
+
+        Set<KtvRoomType> tobeAddedKtvRoomTypeSet = (Set<KtvRoomType>)CollectionUtils.subtract(localRoomTypeSet, remoteRoomTypeSet);
+        Set<KtvRoomType> tobeDeletedKtvRoomTypeSet = (Set<KtvRoomType>)CollectionUtils.subtract(remoteRoomTypeSet, localRoomTypeSet);
+        Set<KtvRoomType> sameKtvRoomTypeSet = (Set<KtvRoomType>)CollectionUtils.intersection(localRoomTypeSet, remoteRoomTypeSet);
+
+        Set<Date> tobeAddedDateSet = (Set<Date>)CollectionUtils.subtract(localDateSet, remoteDateSet);
+        Set<Date> tobeDeletedDateSet = (Set<Date>)CollectionUtils.subtract(remoteDateSet, localDateSet);
+        Set<Date> sameDateSet = (Set<Date>)CollectionUtils.intersection(localDateSet, remoteDateSet);
+
+        Set<Integer> tobeAddedTimeRangeSet = (Set<Integer>)CollectionUtils.subtract(localTimeRangeSet, remoteTimeRangeSet);
+        Set<Integer> tobeDeletedTimeRangeSet = (Set<Integer>)CollectionUtils.subtract(remoteTimeRangeSet, localTimeRangeSet);
+        Set<Integer> sameTimeRangeCodeSet = (Set<Integer>)CollectionUtils.intersection(localTimeRangeSet, remoteTimeRangeSet);
+
+
+        List<KtvTaobaoSku> localSkuList = skuMapToList(localSkuMap, false);
+        List<KtvTaobaoSku> remoteSkuList = skuMapToList(remoteSkuMap, false);
+
+        List<KtvTaobaoSku> tobeAddedSkuList = new ArrayList<>();
+        //处理添加的
+        for (KtvTaobaoSku localSku : localSkuList) {
+            if ( tobeAddedKtvRoomTypeSet.contains(localSku.getRoomType()) ||
+                    tobeAddedDateSet.contains(localSku.getDate()) ||
+                    tobeAddedTimeRangeSet.contains(localSku.getTimeRangeCode())) {
+                tobeAddedSkuList.add(localSku);
+            }
+        }
+        //处理删除的
+        List<KtvTaobaoSku> tobeDeletedSkuList = new ArrayList<>();
+        for (KtvTaobaoSku remoteSku : remoteSkuList) {
+            if ( tobeDeletedKtvRoomTypeSet.contains(remoteSku.getRoomType()) ||
+                    tobeDeletedDateSet.contains(remoteSku.getDate()) ||
+                    tobeDeletedTimeRangeSet.contains(remoteSku.getTimeRangeCode())) {
+                tobeDeletedSkuList.add(remoteSku);
+            }
+        }
+        List<KtvTaobaoSku> tobeUpdatedPriceSkuList = new ArrayList<>();
+        List<KtvTaobaoSku> tobeUpdatedOnlyQuantityList = new ArrayList<>();
+        for (KtvRoomType roomType : sameKtvRoomTypeSet) {
+            for (Date date : sameDateSet) {
+                for (Integer timeRangeCode : sameTimeRangeCodeSet) {
+                    KtvTaobaoSku localSku = localSkuMap.get(roomType).get(date).get(timeRangeCode);
+                    KtvTaobaoSku remoteSku = remoteSkuMap.get(roomType).get(date).get(timeRangeCode);
+                    if (localSku.getPrice().compareTo(remoteSku.getPrice()) != 0) {
+                        remoteSku.setPrice(localSku.getPrice());
+                        remoteSku.setQuantity(localSku.getQuantity());
+                        tobeUpdatedPriceSkuList.add(remoteSku);
+                        continue;
+                    }
+                    if (!localSku.getQuantity().equals(remoteSku.getQuantity())) {
+                        remoteSku.setQuantity(localSku.getQuantity());
+                        tobeUpdatedOnlyQuantityList.add(remoteSku);
+                    }
+                }
+            }
+        }
+        Map<String, List<KtvTaobaoSku>> result = new HashMap<>();
+        result.put(ACTION_ADD, tobeAddedSkuList);
+        result.put(ACTION_DELETE, tobeDeletedSkuList);
+        result.put(ACTION_UPDATE_PRICE, tobeUpdatedPriceSkuList);
+        result.put(ACTION_UPDATE_QUANTITY, tobeUpdatedOnlyQuantityList);
+        return result;
+    }
+
+
+    public static List<KtvTaobaoSku> getTaobaoSku(ResalerProduct resalerProduct) {
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
                 resalerProduct.resaler.taobaoCouponAppSecretKey);
         //找到淘宝的token
         OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
 
-        ItemSkuDeleteRequest req = new ItemSkuDeleteRequest();
-        req.setNumIid(Long.valueOf(resalerProduct.partnerProductId));
-
-        req.setProperties(p.getProperties());
-        Logger.info(req.getProperties());
-
-
+        ItemSkusGetRequest request = new ItemSkusGetRequest();
+        request.setNumIids(resalerProduct.partnerProductId);
+        request.setFields("sku_id,quantity,price,outer_id");
         try {
-            ItemSkuDeleteResponse response = taobaoClient.execute(req, token.accessToken);
-            if (StringUtils.isBlank(response.getErrorCode())) {
-                return true;
+            ItemSkusGetResponse response = taobaoClient.execute(request, token.accessToken);
+            if (response.isSuccess()) {
+                List<KtvTaobaoSku> skuList = new ArrayList<>();
+                for (Sku sku : response.getSkus()) {
+                    KtvTaobaoSku s = new KtvTaobaoSku();
+                    s.setTaobaoSkuId(sku.getSkuId());
+                    s.setQuantity(sku.getQuantity().intValue());
+                    s.setPrice(new BigDecimal(sku.getPrice()));
+                    s.parseTaobaoOuterId(sku.getOuterId());
+                    skuList.add(s);
+                }
+                return skuList;
+            }
+        }catch (ApiException e) {
+            Logger.error("get taobao sku failed " + resalerProduct.id);
+        }
+        return null;
+    }
+
+
+    /**
+     * 在淘宝上删除一个SKU
+     */
+    public static String deleteSkuOnTaobao(KtvTaobaoSku sku, long iid, TaobaoClient taobaoClient, String accessToken) {
+        ItemSkuDeleteRequest deleteRequest = new ItemSkuDeleteRequest();
+        deleteRequest.setNumIid(iid);
+        deleteRequest.setProperties(sku.getTaobaoProperties());
+
+        Logger.info("delete taobao sku %s : %s", iid, deleteRequest.getProperties());
+        try {
+            ItemSkuDeleteResponse response = taobaoClient.execute(deleteRequest, accessToken);
+            if (!response.isSuccess()) {
+                return "code: " + response.getErrorCode() + "; msg: " + response.getMsg() +
+                        "subCode: " + response.getSubCode() + "; subMsg: " + response.getSubMsg();
             }
         } catch (ApiException e) {
-            Logger.info(e, "delete sku to taobao failed");
+            return "删除淘宝SKU时发生异常 " + iid + " : " + deleteRequest.getProperties();
         }
-        return false;
+        return null;
     }
 
     /**
-     * 在淘宝上更新一个SKU
+     * 在淘宝上更新一个SKU(包含价格)
      */
-    public static boolean updateSaleSkuOnTaobao(KtvTaobaoSku p, ResalerProduct resalerProduct) {
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
-                resalerProduct.resaler.taobaoCouponAppSecretKey);
-        //找到淘宝的token
-        OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+    public static String updateSkuPriceOnTaobao(KtvTaobaoSku sku, long iid, TaobaoClient taobaoClient, String accessToken) {
+        ItemSkuUpdateRequest updateRequest = new ItemSkuUpdateRequest();
+        updateRequest.setNumIid(iid);
+        updateRequest.setProperties(sku.getTaobaoProperties());
+        updateRequest.setQuantity(sku.getQuantity().longValue());
+        updateRequest.setPrice(sku.getPrice().toString());
+        updateRequest.setItemPrice(sku.getPrice().toString());
 
-        ItemSkuUpdateRequest req = new ItemSkuUpdateRequest();
-        req.setNumIid(Long.valueOf(resalerProduct.partnerProductId));
-
-        req.setProperties(p.getProperties());
-        req.setQuantity((long) p.quantity);
-        req.setPrice(p.price.toString());
-        req.setItemPrice(p.price.toString());
+        Logger.info("update taobao sku price %s : %s", iid, updateRequest.getProperties());
 
         try {
-            ItemSkuUpdateResponse response = taobaoClient.execute(req, token.accessToken);
-            if (StringUtils.isBlank(response.getErrorCode())) {
-                return true;
+            ItemSkuUpdateResponse response = taobaoClient.execute(updateRequest, accessToken);
+            if (!response.isSuccess()) {
+                return "code: " + response.getErrorCode() + "; msg: " + response.getMsg() +
+                        "subCode: " + response.getSubCode() + "; subMsg: " + response.getSubMsg();
             }
         } catch (ApiException e) {
-            Logger.info(e, "update sku to taobao failed");
+            return "更新淘宝SKU时发生异常 " + iid + " : " + updateRequest.getProperties();
         }
-        return false;
+        return null;
+    }
+
+    /**
+     * 在淘宝上批量更新SKU数量
+     */
+    public static String updateSkuQuantityOnTaobao(List<KtvTaobaoSku> skuList, long iid, TaobaoClient taobaoClient, String accessToken) {
+        if (skuList.size() == 0) {
+            return null;
+        }
+        List<String> quantities = new ArrayList<>(skuList.size());
+        for (KtvTaobaoSku sku : skuList) {
+            quantities.add(sku.getTaobaoSkuId() + ":" + sku.getQuantity());
+        }
+
+        SkusQuantityUpdateRequest updateRequest = new SkusQuantityUpdateRequest();
+        updateRequest.setNumIid(iid);
+        updateRequest.setType(1L);//全量更新
+        updateRequest.setSkuidQuantities(StringUtils.join(quantities, ";"));
+
+        try {
+            SkusQuantityUpdateResponse response = taobaoClient.execute(updateRequest, accessToken);
+            if (!response.isSuccess()) {
+                return "code: " + response.getErrorCode() + "; msg: " + response.getMsg() +
+                        "subCode: " + response.getSubCode() + "; subMsg: " + response.getSubMsg();
+            }
+        } catch (ApiException e) {
+            return "更新淘宝SKU时发生异常 " + iid + " : " + updateRequest.getSkuidQuantities();
+        }
+        return null;
     }
 
     /**
      * 在淘宝上添加一个SKU
      */
-    public static boolean addSaleSkuOnTaobao(KtvTaobaoSku p, ResalerProduct resalerProduct) {
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
-                resalerProduct.resaler.taobaoCouponAppSecretKey);
-        //找到淘宝的token
-        OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+    public static String addSkuOnTaobao(KtvTaobaoSku sku, long iid, TaobaoClient taobaoClient, String accessToken) {
+        ItemSkuAddRequest addRequest = new ItemSkuAddRequest();
+        addRequest.setNumIid(iid);
+        addRequest.setProperties(sku.getTaobaoProperties());
+        addRequest.setQuantity(sku.getQuantity().longValue());
+        addRequest.setPrice(sku.getPrice().toString());
+        addRequest.setOuterId(sku.getTaobaoOuterIid());
 
-        ItemSkuAddRequest req = new ItemSkuAddRequest();
-        req.setNumIid(Long.parseLong(resalerProduct.partnerProductId));
-        req.setProperties(p.getProperties());
-        req.setQuantity((long) p.quantity);
-        req.setPrice(p.price.toString());
-
+        Logger.info("add taobao sku %s : %s", iid, addRequest.getProperties());
         try {
-            ItemSkuAddResponse response = taobaoClient.execute(req, token.accessToken);
-            if (StringUtils.isBlank(response.getErrorCode())) {
-                return true;
+            ItemSkuAddResponse response = taobaoClient.execute(addRequest, accessToken);
+            if (!response.isSuccess()) {
+                return "code: " + response.getErrorCode() + "; msg: " + response.getMsg() +
+                        "subCode: " + response.getSubCode() + "; subMsg: " + response.getSubMsg();
             }
         } catch (ApiException e) {
-            Logger.info(e, "add sku to taobao failed");
+            return "添加淘宝SKU时发生异常 " + iid + " : " + addRequest.getProperties();
         }
-        return false;
+        return null;
     }
 
-
-    /**
-     * 比较两组SKU，得出三个列表，分别是：1、应该添加到淘宝的SKU列表；2、应该更新的淘宝SKU列表；3、应该删除的淘宝SKU列表
-     * 以后者(oldSkuList)为基准【后者在此处一般指数据库中的数据】)
-     */
-    public static Map<String, List<KtvTaobaoSku>> diffTaobaoSku(
-            List<KtvTaobaoSku> newSkuList, List<KtvTaobaoSku> oldSkuList) {
-
-        Map<String, List<KtvTaobaoSku>> result = new HashMap<>();
-        //应该更新的列表
-        List<KtvTaobaoSku> tobeUpdated = new ArrayList<>();
-        //应该添加的列表
-        List<KtvTaobaoSku> tobeAdded = new ArrayList<>();
-        //应该删除的列表。为了不影响传入的列表，此处浅拷贝一份出来
-        Map<String, KtvTaobaoSku> tobeDeleted = new HashMap<>(oldSkuList.size());
-
-        Set<String> roomTypeSet = new HashSet<>();
-        Set<Date> dateSet = new HashSet<>();
-        Set<Integer> timeRangeSet = new HashSet<>();
-        for (KtvTaobaoSku oldSaleProperty : oldSkuList) {
-            tobeDeleted.put(oldSaleProperty.getProperties(), oldSaleProperty);
-            roomTypeSet.add(oldSaleProperty.getRoomType());
-            dateSet.add(oldSaleProperty.getDay());
-            timeRangeSet.add(oldSaleProperty.getTimeRangeCode());
-        }
-
-        for (KtvTaobaoSku newProperty : newSkuList) {
-            boolean found = false;
-            for (Map.Entry<String, KtvTaobaoSku> entry : tobeDeleted.entrySet()) {
-                //如果两者的销售属性相同（包厢、日期、时间段），则不是更新，就是忽略
-                if (newProperty.getProperties().equals(entry.getValue().getProperties())) {
-                    if (newProperty.quantity != 0) {
-                        //从待删除中去除
-                        KtvTaobaoSku oldProperty = tobeDeleted.remove(entry.getKey());
-                        //如果数量或者价格有所不同，则添加到待更新的列表里，否则即是忽略
-                        if (!oldProperty.quantity.equals(newProperty.quantity)
-                                || oldProperty.price.compareTo(newProperty.price) != 0) {
-                            oldProperty.quantity = newProperty.quantity;
-                            oldProperty.price = newProperty.price;
-
-                            //oldProperty摇身一变，成为了待更新的SKU
-                            tobeUpdated.add(oldProperty);
-                        }//else ignore
-                    } else {
-                        //tobe delete
-                        entry.getValue().quantity = newProperty.quantity;
-                    }
-                    found = true;
-                    break;
-                }
-            }
-            //没有相同的，就是新值，添加到tobeAdded
-            if (!found) {
-                tobeAdded.add(newProperty);
-            }
-        }
-
-        //将待删除的再重新筛选一遍，只有可以完整删除某一销售属性时，才删除那个销售属性下的所有SKU。剩余的回归到tobeUpdated列表中去（quantity已设为0）
-        SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> tobeDeletedMap =
-                skuListToMap(new ArrayList<>(tobeDeleted.values()), null, false);
-        Map<String, KtvTaobaoSku> realDeletedMap = new HashMap<>();
-        Set<String> tobeDeletedProperties = new HashSet<>(tobeDeleted.keySet());
-
-        //尝试删除同一日期下的所有欢唱时间
-        for (String roomType : roomTypeSet) {
-            for (Date date : dateSet) {
-                Set<String> properties = new HashSet<>();
-                for (Integer timeRange : timeRangeSet) {
-                    properties.add(KtvTaobaoSku.buidPropertiesWithCodeAndDate(roomType, timeRange, date));
-                }
-                if (tobeDeletedProperties.containsAll(properties)) {
-                    for (Integer timeRange : timeRangeSet) {
-                        KtvTaobaoSku sku = tobeDeletedMap.get(roomType).get(date).get(timeRange);
-                        realDeletedMap.put(sku.getProperties(), sku);
-                        tobeDeleted.remove(sku.getProperties());
-                    }
-                }
-            }
-        }
-        //尝试删除同一 欢唱时间下的 所有日期
-        for (String roomType : roomTypeSet) {
-            for (Integer timeRange : timeRangeSet) {
-                Set<String> properties = new HashSet<>();
-                for (Date date : dateSet) {
-                    properties.add(KtvTaobaoSku.buidPropertiesWithCodeAndDate(roomType, timeRange, date));
-                }
-                if (tobeDeletedProperties.containsAll(properties)) {
-                    for (Date date : dateSet) {
-                        KtvTaobaoSku sku = tobeDeletedMap.get(roomType).get(date).get(timeRange);
-                        realDeletedMap.put(sku.getProperties(), sku);
-                        tobeDeleted.remove(sku.getProperties());
-                    }
-                }
-            }
-        }
-
-        tobeUpdated.addAll(tobeDeleted.values());
-        tobeDeleted = realDeletedMap;
-
-        result.put("update", tobeUpdated);
-        result.put("add", tobeAdded);
-        result.put("delete", new ArrayList(tobeDeleted.values()));
-        return result;
-    }
 }

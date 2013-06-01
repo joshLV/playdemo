@@ -2,51 +2,77 @@ package models.ktv;
 
 import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * User: yan
  * Date: 13-5-7
  * Time: 下午3:21
  */
-@Table(name = "ktv_taobao_skus")
-@Entity
-public class KtvTaobaoSku extends Model {
+public class KtvTaobaoSku {
 
-    @ManyToOne
-    @JoinColumn(name = "goods_id")
-    public Goods goods;
+    private static Pattern taobaoOuterIdPattern = Pattern.compile("([A-Z]+)(\\d{8})(\\d+)");
 
-    @Column(name = "room_type")
-    private String roomType;
+    private KtvRoomType roomType;
+    private Date date;
+    private int startTime;
+    private int duration;
 
-    private String date;
+    private BigDecimal price;
+    private Integer quantity;
+    private Long taobaoSkuId;
 
-    private Date day;
+    public int getTimeRangeCode () {
+        int endTime = startTime + duration;
+        return startTime*100 + (endTime >= 24 ? endTime -24 : endTime);
+    }
 
-    @Column(name = "time_range")
-    private String timeRange;
+    public String getTaobaoOuterIid() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        return roomType + dateFormat.format(date) + getTimeRangeCode();
+    }
 
-    @Column(name = "time_range_code")
-    private Integer timeRangeCode;
+    public boolean parseTaobaoOuterId(String outerId) {
+        Matcher matcher = taobaoOuterIdPattern.matcher(outerId);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        if (matcher.matches()) {
+            roomType = KtvRoomType.valueOf(matcher.group(1)) ;
+            try {
+                date =  dateFormat.parse(matcher.group(2));
+            } catch (ParseException e) {
+                Logger.error("parse taobao outerIid to sku failed: %s", outerId);
+                return false;
+            }
+            int timRangeCode = Integer.parseInt(matcher.group(3));
+            startTime = timRangeCode/100;
+            int et = timRangeCode%100;
+            if (et < startTime) {
+                et = et + 24;
+            }
+            duration = et - startTime;
+        }
+        return false;
+    }
 
-    public BigDecimal price;
+    public String getTaobaoProperties() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
+        return roomType.getTaobaoId() +
+                ";$欢唱时间:" + humanTimeRange(startTime, startTime + duration) +
+                ";$日期:" + dateFormat.format(date);
 
-    public Integer quantity;
+    }
 
-    @Column(name = "created_at")
-    public Date createdAt;
-
-    @Transient
-    private String properties;
-
-    public Integer getTimeRangeCode() {
-        return timeRangeCode;
+    public KtvRoomType getRoomType() {
+        return roomType;
     }
 
     public static String humanTimeRange(int start, int end) {
@@ -56,35 +82,7 @@ public class KtvTaobaoSku extends Model {
         return startStr + "至" + endStr;
     }
 
-    public void setTimeRangeCode(Integer timeRangeCode) {
-        this.timeRangeCode = timeRangeCode;
-        this.timeRange = humanTimeRange(timeRangeCode/100, timeRangeCode%100);
-
-        buildProperties();
-    }
-
-    public void setTimeRangeCode(int startTime, int duration) {
-        int endTime = startTime + duration;
-        this.timeRange = humanTimeRange(startTime, endTime);
-        this.timeRangeCode = startTime*100 + (endTime >= 24 ? endTime -24 : endTime);
-        buildProperties();
-    }
-
-    public Date getDay() {
-        return day;
-    }
-
-    public void setDay(Date day) {
-        this.day = day;
-        this.date = new SimpleDateFormat("M月d日").format(day);
-        buildProperties();
-    }
-
-
-    private void buildProperties() {
-        this.properties = buildProperties(roomType, timeRange, date);
-    }
-
+    /*
     public static String buildProperties(String roomType, String timeRange, String date){
         return StringUtils.defaultString(roomType) +
                 ";$欢唱时间:" + StringUtils.defaultString(timeRange) +
@@ -96,38 +94,48 @@ public class KtvTaobaoSku extends Model {
                 ";$欢唱时间:" + timeRange +
                 ";$日期:" + new SimpleDateFormat("M月d日").format(day);
     }
+    */
 
-    public String getProperties() {
-        if (properties == null) {
-            buildProperties();
-        }
-        return properties;
-    }
-
-    public void setRoomType(String roomType) {
-        this.roomType = roomType;
-        buildProperties();
-    }
-
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
-        buildProperties();
     }
 
-    public void setTimeRange(String timeRange) {
-        this.timeRange = timeRange;
-        buildProperties();
+    public void setRoomType(KtvRoomType roomType) {
+        this.roomType = roomType;
     }
 
-    public String getRoomType() {
-        return roomType;
+    public void setStartTimeAndDuration(int startTime, int duration) {
+        this.startTime = startTime;
+        this.duration = duration;
+
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public String getTimeRange() {
-        return timeRange;
+    public BigDecimal getPrice() {
+        return price;
     }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Long getTaobaoSkuId() {
+        return taobaoSkuId;
+    }
+
+    public void setTaobaoSkuId(Long taobaoSkuId) {
+        this.taobaoSkuId = taobaoSkuId;
+    }
+
 }

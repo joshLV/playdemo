@@ -259,7 +259,7 @@ public class KtvPriceSchedules extends Controller {
 
     //
     public static void make(long priceScheduleId) {
-       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
+//       KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(priceScheduleId);
     }
 
     private static Map<Date, Date> scheduleDaysFromInput(Collection<String> days) {

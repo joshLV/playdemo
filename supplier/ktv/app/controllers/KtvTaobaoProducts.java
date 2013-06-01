@@ -61,7 +61,7 @@ public class KtvTaobaoProducts extends Controller {
             return;
         }
 
-        SortedMap<String, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> taobaoSkuMap = KtvTaobaoUtil.buildTaobaoSku(shop, product, false);
+        SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> taobaoSkuMap = KtvTaobaoUtil.buildTaobaoSku(shop, product, false);
 
         if (taobaoSkuMap.size() == 0) {
             render("KtvTaobaoProducts/noSku.html", shop, product);
@@ -93,6 +93,7 @@ public class KtvTaobaoProducts extends Controller {
         List<KtvTaobaoSku> taobaoSkuList =  KtvTaobaoUtil.skuMapToList(KtvTaobaoUtil.buildTaobaoSku(shop, product, true), false);
         if (taobaoSkuList.size() == 0) {
             render("KtvTaobaoProducts/noSku.html", shop, product);
+            return;
         }
 
         SupplierUser supplierUser = SupplierRbac.currentUser();
@@ -146,19 +147,19 @@ public class KtvTaobaoProducts extends Controller {
         BigDecimal maxPrice = BigDecimal.ZERO;//设置面值为所有的价格之中最大的那一个，还要再乘以1.5并取整
         Set<String> propSet = new HashSet<>();//房间类型因为是KTV类目的已有销售属性，因此要加入到props里（我们的日期和欢唱时间属于自定销售属性）
         for (KtvTaobaoSku taobaoSku : taobaoSkuList) {
-            skuProperties.add(taobaoSku.getProperties());//添加SKU 属性
-            skuQuantities.add(taobaoSku.quantity.toString());//添加SKU数量
-            skuPrices.add(taobaoSku.price.toString());//添加SKU价格
-            skuOuterIds.add("");//添加SKU外部商品ID(我们不为每个SKU设置单独的SKU，但是参数中还是要传入空值)
-            num += taobaoSku.quantity;
-            propSet.add(taobaoSku.getRoomType());
+            skuProperties.add(taobaoSku.getTaobaoProperties());//添加SKU 属性
+            skuQuantities.add(taobaoSku.getQuantity().toString());//添加SKU数量
+            skuPrices.add(taobaoSku.getPrice().toString());//添加SKU价格
+            skuOuterIds.add(taobaoSku.getTaobaoOuterIid());//添加SKU外部商品ID
+            num += taobaoSku.getQuantity();
+            propSet.add(taobaoSku.getRoomType().getTaobaoId());
             if (minPrice == null) {
-                minPrice = taobaoSku.price;
-            }else if (taobaoSku.price.compareTo(minPrice) < 0) {
-                minPrice = taobaoSku.price;
+                minPrice = taobaoSku.getPrice();
+            }else if (taobaoSku.getPrice().compareTo(minPrice) < 0) {
+                minPrice = taobaoSku.getPrice();
             }
-            if (taobaoSku.price.compareTo(maxPrice) > 0) {
-                maxPrice = taobaoSku.price;
+            if (taobaoSku.getPrice().compareTo(maxPrice) > 0) {
+                maxPrice = taobaoSku.getPrice();
             }
         }
         props.append(StringUtils.join(propSet, ";")).append(";");
@@ -212,11 +213,6 @@ public class KtvTaobaoProducts extends Controller {
         ktvProductGoods.product = product;
         ktvProductGoods.shop = shop;
         ktvProductGoods.save();
-
-        for (KtvTaobaoSku sku : taobaoSkuList) {
-            sku.goods = goods;
-            sku.save();//将SKU信息保存到数据库
-        }
 
         render("KtvTaobaoProducts/publishResult.html",taobaoProductId, shop, product);
     }
