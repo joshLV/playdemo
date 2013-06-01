@@ -43,7 +43,7 @@
                     <td>${product.name}</td>
                     <td id="id_${shop.id}_${product.id}">
                         #{if resalerProduct }
-                            <a href="${resalerProduct.url}">编辑</a> |
+                            <a href="http://upload.taobao.com/auction/publish/edit.htm?itemNumId=${resalerProduct?.partnerProductId}&auto=false" target="_blank">去淘宝编辑</a> |
                             <a href="${resalerProduct.url}">查看</a>
                         #{/if}
                         #{else}

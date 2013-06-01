@@ -243,6 +243,7 @@ $(function () {
         //检查是否有冲突
         $.ajax({
             type:'POST',
+            async:false,
             url:'/ktv/price-schedule/collision-detect',
             data:{
                 "priceStrategy.product.id": $("#priceStrategy_product_id").val(),
