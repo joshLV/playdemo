@@ -185,6 +185,10 @@ public class KtvPriceSchedules extends Controller {
                 String shopIdStr = key.substring(5);
                 String shopCount = param.getValue();
                 if (NumberUtils.isDigits(shopIdStr) && NumberUtils.isDigits(shopCount)) {
+                    int roomCount = Integer.parseInt(shopCount);
+                    if (roomCount <= 0) {
+                        continue;
+                    }
                     Long shopId = Long.parseLong(shopIdStr);
                     Shop shop = Shop.findById(shopId);
                     if (shop != null) {
@@ -214,6 +218,8 @@ public class KtvPriceSchedules extends Controller {
 
         KtvPriceSchedule currentSchedule;
 
+
+        Set<Long> affectedShopIds = new HashSet<>();
         if (oldPriceSchedule == null){
             //保存策略
             priceStrategy.save();
@@ -227,7 +233,11 @@ public class KtvPriceSchedules extends Controller {
 
             //删除老的关联关系
             KtvDateRangePriceSchedule.delete("schedule = ?", oldPriceSchedule);
-            KtvShopPriceSchedule.delete("schedule = ?", oldPriceSchedule);
+            List<KtvShopPriceSchedule> oldShopPriceScheduleList = KtvShopPriceSchedule.find("bySchedule", oldPriceSchedule).fetch();
+            for(KtvShopPriceSchedule schedule : oldShopPriceScheduleList) {
+                affectedShopIds.add(schedule.shop.id);
+                schedule.delete();
+            }
         }
 
         //保存策略的日期范围列表
@@ -246,6 +256,16 @@ public class KtvPriceSchedules extends Controller {
             strategy.roomCount = entry.getValue();
             strategy.schedule = currentSchedule;
             strategy.save();
+            affectedShopIds.add(strategy.shop.id);
+        }
+        Query query = JPA.em().createQuery("select pg from KtvProductGoods pg where pg.product = :product and pg.shop.id in :shopIds");
+        query.setParameter("product", currentSchedule.product);
+        query.setParameter("shopIds", affectedShopIds);
+
+        List<KtvProductGoods> productGoodsList = query.getResultList();
+        for (KtvProductGoods productGoods : productGoodsList) {
+            productGoods.needSync = DeletedStatus.DELETED;
+            productGoods.save();
         }
 
         JPA.em().flush();

@@ -9,6 +9,7 @@ GET     /test/{id}                                  Application.updateProduct
 GET     /ktv/taobao-products                           KtvTaobaoProducts.index
 GET     /ktv/taobao-product/publish                    KtvTaobaoProducts.showPublish
 POST    /ktv/taobao-product/publish                    KtvTaobaoProducts.publish
+POST    /ktv/taobao-product/sync-sku                   KtvTaobaoProducts.syncSku
 
 POST    /ktv/taobao/img-upload/{resalerId}             KtvTaobaoImgUpload.upload
 

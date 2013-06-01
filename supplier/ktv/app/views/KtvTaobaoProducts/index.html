@@ -2,20 +2,29 @@
 #{set title:'KTV淘宝产品管理' /}
 #{set menu:"ktv_taobao_products" /}
 #{set 'moreStyles'}
+<style>
+    .syncInfo {
+        padding-left: 10px;
+        color: red;
+    }
+</style>
 #{/set}
 
 <div class="body">
 
-#{form @KtvProductTaobaoBind.index() , id:'creationForm',class:"form-horizontal" }
+#{form @KtvTaobaoProducts.index() , id:'creationForm',class:"form-horizontal" }
     <div class="bd">
         <h2>${title}</h2>
 
+        <a class="btn" style="margin-bottom: 10px" id="batchSyncSku">批量更新</a>
+        <span id="batchSyncSkuInfo" class="syncInfo"></span>
         <table cellspacing="0" cellpadding="0" border="0" class="standard-table">
             <thead>
             <tr>
                 <th style="width: 150px">门店</th>
                 <th style="width: 200px;">产品名称</th>
                 <th>操 作</th>
+                <th>更 新</th>
             </tr>
             </thead>
             <tbody>
@@ -23,10 +32,12 @@
                     #{list items:products, as:'product' }
 
                     %{
-                        ktvProductGoods = models.ktv.KtvProductGoods.find("byShopAndProduct", shop,product).first() ;
-                        if (ktvProductGoods !=null){
-                            resalerProduct = models.sales.ResalerProduct.find("byGoodsAndResalerAndPartner", ktvProductGoods.goods,resaler,models.order.OuterOrderPartner.TB).first();
-                        }
+                    ktvProductGoods = models.ktv.KtvProductGoods.find("byShopAndProduct", shop,product).first() ;
+                    System.out.println(ktvProductGoods)
+                    if (ktvProductGoods !=null){
+                    resalerProduct = models.sales.ResalerProduct.find("byGoodsAndResalerAndPartner",
+                    ktvProductGoods.goods,resaler,models.order.OuterOrderPartner.TB).first();
+                    }
                     }%
                     <tr>
                         #{if product_index == 1}
@@ -36,17 +47,27 @@
                         <td>${product.name}</td>
                         <td id="id_${shop.id}_${product.id}">
                             #{if resalerProduct }
-                                <a href="http://upload.taobao.com/auction/publish/edit.htm?itemNumId=${resalerProduct?.partnerProductId}&auto=false" target="_blank">去淘宝编辑</a> |
+                                <a href="http://upload.taobao.com/auction/publish/edit.htm?itemNumId=${resalerProduct?.partnerProductId}&auto=false"
+                                   target="_blank">去淘宝编辑</a> |
                                 <a href="${resalerProduct.url}">查看</a>
                             #{/if}
                             #{else}
-                                <a href="/ktv/taobao-product/publish?shop.id=${shop.id}&product.id=${product.id}" target="_blank">发布</a>
+                                <a href="/ktv/taobao-product/publish?shop.id=${shop.id}&product.id=${product.id}"
+                                   target="_blank">发布</a>
                             #{/else}
+
+                        </td>
+                        <td id="syncTextInfo${shop.id}_${product.id}">
+                            #{if ktvProductGoods && ktvProductGoods.needSync==com.uhuila.common.constants.DeletedStatus.DELETED}
+                                <a href="#" data-update="${ktvProductGoods.id}" class="syncSku"
+                                   data-id="${shop.id}_${product.id}">更新</a>
+                                <span id="syncInfo${ktvProductGoods.id}" class="syncInfo"></span>
+                            #{/if}
                         </td>
                     </tr>
                     %{
-                        ktvProductGoods = null;
-                        resalerProduct = null;
+                    ktvProductGoods = null;
+                    resalerProduct = null;
                     }%
                     #{/list}
                 #{/list}
@@ -55,3 +76,56 @@
     </div>
 #{/form}
 </div>
+#{set 'moreScripts'}
+<script type="text/javascript">
+    $(function () {
+        $(".syncSku").click(function () {
+            var ele = $(this);
+            var productGoodsId = ele.attr("data-update");
+            var tdId = $(this).attr("data-id");
+
+            $("#syncdInfo" + productGoodsId).text("正在同步。。。");
+            $.post("/ktv/taobao-product/sync-sku", {"productGoodsIds": productGoodsId},
+                    function (data) {
+                        var syncTextInfo = "#syncTextInfo" + tdId;
+                        if (!data.isOk) {
+                            $(syncInfo).text(data.error);
+                        } else {
+                            $(syncInfo).text("同步成功！");
+                            $(syncTextInfo).text("");
+                            var syncInfo = $("#syncInfo" + productGoodsId).css('display', 'none');
+                            setTimeout(function () { syncInfo }, 1000);
+
+                        }
+                    });
+        })
+
+        $("#batchSyncSku").click(function () {
+            var productGoodsIds = [];
+            $("[data-update]").each(function () {
+                var productGoodsId = $(this).attr("data-update");
+                productGoodsIds.push(productGoodsId);
+
+            });
+            $("#batchSyncSkuInfo").text("正在同步。。。");
+            $.post("/ktv/taobao-product/sync-sku", {"productGoodsIds": productGoodsIds.join(",")},
+                    function (data) {
+                        if (!data.isOk) {
+                            $("#batchSyncSkuInfo").text(data.error);
+                        } else {
+                            $("#batchSyncSkuInfo").text("同步成功！");
+                            setTimeout("$('#batchSyncSkuInfo').css('display','none')", 1000);
+                        }
+                    });
+
+            $("[data-update]").each(function () {
+                var tdId = $(this).attr("data-id");
+                var syncTextInfo = "#syncTextInfo" + tdId;
+                $(syncTextInfo).text("");
+
+            });
+        });
+    });
+
+</script>
+#{/set}
