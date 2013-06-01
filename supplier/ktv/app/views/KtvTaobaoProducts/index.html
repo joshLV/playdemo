@@ -124,33 +124,6 @@
                 }
             });
         }
-
-
-        $("#batchSyncSku").click(function () {
-            var productGoodsIds = [];
-            $("[data-update]").each(function () {
-                var productGoodsId = $(this).attr("data-update");
-                productGoodsIds.push(productGoodsId);
-
-            });
-            $("#batchSyncSkuInfo").text("正在同步。。。");
-            $.post("/ktv/taobao-product/sync-sku", {"productGoodsIds": productGoodsIds.join(",")},
-                    function (data) {
-                        if (!data.isOk) {
-                            $("#batchSyncSkuInfo").text(data.error);
-                        } else {
-                            $("#batchSyncSkuInfo").text("同步成功！");
-                            setTimeout("$('#batchSyncSkuInfo').css('display','none')", 1000);
-                        }
-                    });
-
-            $("[data-update]").each(function () {
-                var tdId = $(this).attr("data-id");
-                var syncTextInfo = "#syncTextInfo" + tdId;
-                $(syncTextInfo).text("");
-
-            });
-        });
     });
 
 </script>
