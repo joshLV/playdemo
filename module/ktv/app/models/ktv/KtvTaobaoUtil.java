@@ -258,7 +258,7 @@ public class KtvTaobaoUtil {
         Set<String> uniqTimeRanges = new HashSet<>();//唯一时间范围
 
         int maxSkuCount = 600;
-        int dateCount = 14;//从startDay 开始，依次往后选择不超过14个不同的日期
+        int dateCount = 10;//从startDay 开始，依次往后选择不超过14个不同的日期
 
         List<KtvRoomOrderInfo> roomOrderInfoList = new ArrayList<>();
         Date tenMinutesAgo = DateUtils.addMinutes(new Date(), - KtvRoomOrderInfo.LOCK_MINUTE);
