@@ -22,7 +22,7 @@ public class KtvUpdateSkuJob extends JobWithHistory {
     public void doJobWithHistory() {
         List<KtvProductGoods> ktvProductGoodsList = KtvProductGoods.findAll();
         for (KtvProductGoods productGoods : ktvProductGoodsList) {
-            KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);
+            KtvSkuMessageUtil.send(productGoods.id);
         }
     }
 }
