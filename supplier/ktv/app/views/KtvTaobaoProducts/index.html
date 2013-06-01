@@ -7,6 +7,14 @@
         padding-left: 10px;
         color: red;
     }
+    .batchSync {
+        float: right;
+        border: 1px solid #eee;
+        background-color: #eee;
+        margin-bottom: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
 </style>
 #{/set}
 
@@ -15,16 +23,18 @@
 #{form @KtvTaobaoProducts.index() , id:'creationForm',class:"form-horizontal" }
     <div class="bd">
         <h2>${title}</h2>
+        <div class="batchSync" style="display: none">批量同步</div>
+        <div style="clear: both"></div>
+
 
         *{<a class="btn" style="margin-bottom: 10px" id="batchSyncSku">批量更新</a>}*
-        <span id="batchSyncSkuInfo" class="syncInfo"></span>
         <table cellspacing="0" cellpadding="0" border="0" class="standard-table">
             <thead>
             <tr>
                 <th style="width: 150px">门店</th>
                 <th style="width: 200px;">产品名称</th>
                 <th>操 作</th>
-                <th>更 新</th>
+                <th>同步淘宝SKU</th>
             </tr>
             </thead>
             <tbody>
@@ -56,11 +66,11 @@
                             #{/else}
 
                         </td>
-                        <td id="syncTextInfo${shop.id}_${product.id}">
+                        <td>
                             #{if resalerProduct && ktvProductGoods.needSync==com.uhuila.common.constants.DeletedStatus.DELETED}
-                                <a href="#" data-update="${ktvProductGoods.id}" class="syncSku"
-                                   data-id="${shop.id}_${product.id}">更新</a>
-                                <span id="syncInfo${ktvProductGoods.id}" class="syncInfo"></span>
+                                <a href="#" linkid="${ktvProductGoods.id}" class="syncSku">同步</a>
+                                 <img style="display: none" imgid="${ktvProductGoods.id}" src="/public/images/loading.gif" border="0"/>
+                                <span infoid="${ktvProductGoods.id}" style="display: none" class="syncInfo"></span>
                             #{/if}
                         </td>
                     </tr>
@@ -77,21 +87,44 @@
 </div>
 #{set 'moreScripts'}
 <script type="text/javascript">
-    $(function () {
-        $(".syncSku").click(function () {
-            var ele = $(this);
-            var productGoodsId = ele.attr("data-update");
-            ele.text("正在同步...");
-
-            $.post("/ktv/taobao-product/sync-sku",
-                {"productGoodsId": productGoodsId},
+    function startSync(ele) {
+        ele.hide();
+        var pgid = ele.attr("linkid");
+        var img =  $("img[imgid='" + pgid + "']").show();
+        $.post("/ktv/taobao-product/sync-sku",
+                {"productGoodsId": pgid},
                 function (data) {
                     if (!data.isOk) {
-                    } else {
-                        ele.remove();
+                        img.hide();
+                        $("span[infoid='" + pgid + "']").text(data.error).show();
+                    }else {
+                        img.attr("src", "/public/images/ok.png");
                     }
+                    findOneAndSync();
                 });
+    }
+
+    function findOneAndSync() {
+        var ele = $(".syncSku:visible").first();
+        if (ele.length > 0) {
+            startSync(ele);
+        }
+    }
+
+    $(function () {
+        var syncLinks = $(".syncSku");
+        syncLinks.click(function () {
+            startSync($(this));
         });
+        if(syncLinks.length > 0) {
+            $(".batchSync").show().click(function(){
+                $(this).hide();
+                for(var i = 0 ; i< 2 ;i ++) {
+                    findOneAndSync();
+                }
+            });
+        }
+
 
         $("#batchSyncSku").click(function () {
             var productGoodsIds = [];
