@@ -87,34 +87,46 @@
 </div>
 #{set 'moreScripts'}
 <script type="text/javascript">
-    function startSync(ele) {
+    function startSync(ele, autoNext) {
         ele.hide();
         var pgid = ele.attr("linkid");
         var img =  $("img[imgid='" + pgid + "']").show();
-        $.post("/ktv/taobao-product/sync-sku",
-                {"productGoodsId": pgid},
-                function (data) {
+        $.post({
+            url:"/ktv/taobao-product/sync-sku",
+            type:"post",
+            data: {"productGoodsId": pgid},
+            success: function (data) {
                     if (!data.isOk) {
                         img.hide();
                         $("span[infoid='" + pgid + "']").text(data.error).show();
                     }else {
                         img.attr("src", "/public/images/ok.png");
                     }
+                    if(autoNext){
+                        findOneAndSync();
+                    }
+                }
+            error: function(data) {
+                img.hide();
+                $("span[infoid='" + pgid + "']").text("服务器出错，请稍后重试").show();
+                if(autoNext){
                     findOneAndSync();
-                });
+                }
+            }
+        });
     }
 
     function findOneAndSync() {
         var ele = $(".syncSku:visible").first();
         if (ele.length > 0) {
-            startSync(ele);
+            startSync(ele, true);
         }
     }
 
     $(function () {
         var syncLinks = $(".syncSku");
         syncLinks.click(function () {
-            startSync($(this));
+            startSync($(this), false);
         });
         if(syncLinks.length > 0) {
             $(".batchSync").show().click(function(){

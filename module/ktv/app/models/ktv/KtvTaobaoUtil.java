@@ -17,7 +17,6 @@ import models.sales.ResalerProduct;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
@@ -147,7 +146,7 @@ public class KtvTaobaoUtil {
                     Collections.sort(skuList, new Comparator<KtvTaobaoSku>() {
                         @Override
                         public int compare(KtvTaobaoSku o1, KtvTaobaoSku o2) {
-                            return o1.getQuantity() - o2.getQuantity();
+                            return o2.getQuantity() - o1.getQuantity();
                         }
                     });
                     for (KtvTaobaoSku sku : skuList) {
@@ -555,6 +554,8 @@ public class KtvTaobaoUtil {
                     return skuList;
                 }
                 for (Sku sku : response.getSkus()) {
+                    Logger.info("sku on taobao %s: %s;%s;%s;%s", resalerProduct.partnerProductId,
+                            sku.getSkuId(), sku.getQuantity(), sku.getPrice() , sku.getOuterId());
                     KtvTaobaoSku s = new KtvTaobaoSku();
                     s.setTaobaoSkuId(sku.getSkuId());
                     s.setQuantity(sku.getQuantity().intValue());
