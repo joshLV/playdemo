@@ -19,6 +19,7 @@
                 <th style="width: 150px">门店</th>
                 <th style="width: 200px;">产品名称</th>
                 <th>操 作</th>
+                <th>更 新</th>
             </tr>
             </thead>
             <tbody>
@@ -51,6 +52,13 @@
                                target="_blank">发布</a>
                         #{/else}
                     </td>
+                    <td id="syncTextInfo${shop.id}_${product.id}">
+                        #{if resalerProduct && ktvProductGoods.needSync==com.uhuila.common.constants.DeletedStatus.DELETED}
+                            <a href="#" data-update="${ktvProductGoods.id}" class="syncSku"
+                               data-id="${shop.id}_${product.id}">更新</a>
+                            <span id="syncInfo${ktvProductGoods.id}" class="syncInfo"></span>
+                        #{/if}
+                    </td>
                 </tr>
                 %{
                 ktvProductGoods = null;
@@ -62,3 +70,24 @@
         </table>
     </div>
 </div>
+#{set 'moreScripts'}
+<script type="text/javascript">
+    $(function () {
+        $(".syncSku").click(function () {
+            var ele = $(this);
+            var productGoodsId = ele.attr("data-update");
+            ele.text("正在同步...");
+
+            $.post("/ktv/taobao-product/sync-sku",
+                    {"productGoodsId": productGoodsId},
+                    function (data) {
+                        if (!data.isOk) {
+                        } else {
+                            ele.remove();
+                        }
+                    });
+        });
+    });
+
+</script>
+#{/set}

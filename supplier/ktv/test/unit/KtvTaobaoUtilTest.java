@@ -24,6 +24,7 @@ import java.util.*;
  * Time: 下午2:31
  */
 
+@Ignore
 public class KtvTaobaoUtilTest extends UnitTest {
 
 }
