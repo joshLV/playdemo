@@ -113,7 +113,7 @@ POST    /resaler-products/tb/upload                     resale.TaobaoProducts.up
 GET     /ktv/taobao-products                           resale.KtvTaobaoProducts.index
 GET     /ktv/taobao-product/publish                    resale.KtvTaobaoProducts.showPublish
 POST    /ktv/taobao-product/publish                    resale.KtvTaobaoProducts.publish
-POST    /ktv/taobao-product/sync-sku                   KtvTaobaoProducts.syncSku
+POST    /ktv/taobao-product/sync-sku                   resale.KtvTaobaoProducts.syncSku
 
 POST    /ktv/taobao/img-upload/{resalerId}             resale.KtvTaobaoImgUpload.upload
 

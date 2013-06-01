@@ -91,7 +91,7 @@
         ele.hide();
         var pgid = ele.attr("linkid");
         var img =  $("img[imgid='" + pgid + "']").show();
-        $.post({
+        $.ajax({
             url:"/ktv/taobao-product/sync-sku",
             type:"post",
             data: {"productGoodsId": pgid},
@@ -105,7 +105,7 @@
                     if(autoNext){
                         findOneAndSync();
                     }
-                }
+                },
             error: function(data) {
                 img.hide();
                 $("span[infoid='" + pgid + "']").text("服务器出错，请稍后重试").show();

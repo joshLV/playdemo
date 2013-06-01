@@ -1,17 +1,28 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'KTV淘宝产品管理' /}
 #{include '/share/nav.html' /}
+#{set 'moreStyles'}
+<style>
+    .syncInfo {
+        padding-left: 10px;
+        color: red;
+    }
 
+    .batchSync {
+        float: right;
+    }
+</style>
+#{/set}
 <div class="body">
 
     <div class="body">
         <h2>${title}</h2>
 
-    #{form @resale.KtvTaobaoProducts.index() , id:'creationForm',class:"form-horizontal" }
         商户：#{vx.selectInputField name:"supplierName", id:"supplierId", list:supplierList,
     value:supplierId, array:"supplierArray",importJs:true/}
         <button class="btn btn-primary" type="submit"> 搜索</button>
-    #{/form}
+        <button class="btn btn-primary batchSync" id="batchSync" type="button" style="display: none">批量同步</button>
+        <div style="clear: both"></div>
 
         <table class="table table-bordered ">
             <thead>
@@ -19,7 +30,7 @@
                 <th style="width: 150px">门店</th>
                 <th style="width: 200px;">产品名称</th>
                 <th>操 作</th>
-                <th>更 新</th>
+                <th>同步淘宝SKU</th>
             </tr>
             </thead>
             <tbody>
@@ -42,19 +53,22 @@
                     <td>${product.name}</td>
                     <td id="id_${shop.id}_${product.id}">
                         #{if resalerProduct }
-                            <a href="http://upload.taobao.com/auction/publish/edit.htm?itemNumId=${resalerProduct?.partnerProductId}&auto=false" target="_blank">去淘宝编辑</a> |
+                            <a href="http://upload.taobao.com/auction/publish/edit.htm?itemNumId=${resalerProduct?.partnerProductId}&auto=false"
+                               target="_blank">去淘宝编辑</a> |
                             <a href="${resalerProduct.url}">查看</a>
                         #{/if}
                         #{else}
                             <a href="/ktv/taobao-product/publish?shop.id=${shop.id}&product.id=${product.id}"
                                target="_blank">发布</a>
                         #{/else}
+
                     </td>
-                    <td id="syncTextInfo${shop.id}_${product.id}">
+                    <td>
                         #{if resalerProduct && ktvProductGoods.needSync==com.uhuila.common.constants.DeletedStatus.DELETED}
-                            <a href="#" data-update="${ktvProductGoods.id}" class="syncSku"
-                               data-id="${shop.id}_${product.id}">更新</a>
-                            <span id="syncInfo${ktvProductGoods.id}" class="syncInfo"></span>
+                            <a href="#" linkid="${ktvProductGoods.id}" class="syncSku">同步</a>
+                            <img style="display: none" imgid="${ktvProductGoods.id}" src="/public/images/loading.gif"
+                                 border="0"/>
+                            <span infoid="${ktvProductGoods.id}" style="display: none" class="syncInfo"></span>
                         #{/if}
                     </td>
                 </tr>
@@ -70,21 +84,55 @@
 </div>
 #{set 'moreScripts'}
 <script type="text/javascript">
-    $(function () {
-        $(".syncSku").click(function () {
-            var ele = $(this);
-            var productGoodsId = ele.attr("data-update");
-            ele.text("正在同步...");
-
-            $.post("/ktv/taobao-product/sync-sku",
-                    {"productGoodsId": productGoodsId},
-                    function (data) {
-                        if (!data.isOk) {
-                        } else {
-                            ele.remove();
-                        }
-                    });
+    function startSync(ele, autoNext) {
+        ele.hide();
+        var pgid = ele.attr("linkid");
+        var img = $("img[imgid='" + pgid + "']").show();
+        $.ajax({
+            url: "/ktv/taobao-product/sync-sku",
+            type: "post",
+            data: {"productGoodsId": pgid},
+            success: function (data) {
+                if (!data.isOk) {
+                    img.hide();
+                    $("span[infoid='" + pgid + "']").text(data.error).show();
+                } else {
+                    img.attr("src", "/public/images/ok.png");
+                }
+                if (autoNext) {
+                    findOneAndSync();
+                }
+            },
+            error: function (data) {
+                img.hide();
+                $("span[infoid='" + pgid + "']").text("服务器出错，请稍后重试").show();
+                if (autoNext) {
+                    findOneAndSync();
+                }
+            }
         });
+    }
+
+    function findOneAndSync() {
+        var ele = $(".syncSku:visible").first();
+        if (ele.length > 0) {
+            startSync(ele, true);
+        }
+    }
+
+    $(function () {
+        var syncLinks = $(".syncSku");
+        syncLinks.click(function () {
+            startSync($(this), false);
+        });
+        if (syncLinks.length > 0) {
+            $(".batchSync").show().click(function () {
+                $(this).hide();
+                for (var i = 0; i < 2; i++) {
+                    findOneAndSync();
+                }
+            });
+        }
     });
 
 </script>
