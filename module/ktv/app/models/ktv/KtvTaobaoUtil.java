@@ -17,7 +17,6 @@ import models.sales.ResalerProduct;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
@@ -144,10 +143,13 @@ public class KtvTaobaoUtil {
             List<KtvTaobaoSku> skuList = diffResult.get(action);
             switch (action) {
                 case ACTION_ADD:
-                    for (KtvTaobaoSku sku : skuList) {
-                        if (sku.getQuantity() == 0) {
-                            continue;
+                    Collections.sort(skuList, new Comparator<KtvTaobaoSku>() {
+                        @Override
+                        public int compare(KtvTaobaoSku o1, KtvTaobaoSku o2) {
+                            return o2.getQuantity() - o1.getQuantity();
                         }
+                    });
+                    for (KtvTaobaoSku sku : skuList) {
                         String error =  addSkuOnTaobao(sku, taobaoProductId, taobaoClient, token.accessToken);
                         if (error != null) { return error; }
                     }
