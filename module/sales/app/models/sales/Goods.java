@@ -12,6 +12,7 @@ import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.HtmlUtil;
 import com.uhuila.common.util.PathUtil;
 import models.ktv.KtvProduct;
+import models.ktv.KtvProductGoods;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.operator.OperateUser;
@@ -625,6 +626,20 @@ public class Goods extends Model {
         }
         return "1".equals(getSupplier().getProperty(Supplier.KTV_SUPPLIER));
     }
+
+    /**
+     * 判断该产品是否ktv产品
+     */
+    @Transient
+    public boolean isKtvProduct() {
+        //是否是ktv商户 ktv商品
+        if (isKtvSupplier() &&
+                KtvProductGoods.find("goods = ?", this).first() != null) {
+            return true;
+        }
+        return false;
+    }
+
 
     @Column(name = "is_all_shop")
     public Boolean isAllShop = true;

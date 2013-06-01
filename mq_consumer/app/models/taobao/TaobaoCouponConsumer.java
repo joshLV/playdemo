@@ -109,7 +109,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                     Logger.error("taobao refund error !!!!!!!! coupon id: %s. %s", coupon.id, errInfo);
                 }
             }
-            outerOrder.status= OuterOrderStatus.REFUND_SYNCED;
+            outerOrder.status = OuterOrderStatus.REFUND_SYNCED;
             outerOrder.save();
         }
     }
@@ -178,7 +178,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     private Order createYbqOrder(Long outerGroupId, String userPhone, OuterOrder outerOrder, TradeGetResponse taobaoTrade) {
         Resaler resaler = outerOrder.resaler;
         if (resaler == null) {
-            Logger.info("when taobao coupon request create out order,resaler is null,outOrder.id is :%s",outerOrder.id);
+            Logger.info("when taobao coupon request create out order,resaler is null,outOrder.id is :%s", outerOrder.id);
             return null;
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
@@ -198,9 +198,8 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, order.getNum(),
                         userPhone, salePrice, salePrice);
                 uhuilaOrderItem.save();
-
-                //ktv商户才创建sku订单
-                if (goods.isKtvSupplier()) {
+                //ktv商品才创建sku订单
+                if (goods.isKtvProduct()) {
                     if (createSkuOrderInfo(uhuilaOrderItem, order, goods) == null) {
                         JPA.em().getTransaction().rollback();
                         return null;
