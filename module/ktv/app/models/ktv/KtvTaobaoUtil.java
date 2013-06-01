@@ -144,13 +144,10 @@ public class KtvTaobaoUtil {
             List<KtvTaobaoSku> skuList = diffResult.get(action);
             switch (action) {
                 case ACTION_ADD:
-                    Collections.sort(skuList, new Comparator<KtvTaobaoSku>() {
-                        @Override
-                        public int compare(KtvTaobaoSku o1, KtvTaobaoSku o2) {
-                            return o1.getQuantity() - o2.getQuantity();
-                        }
-                    });
                     for (KtvTaobaoSku sku : skuList) {
+                        if (sku.getQuantity() == 0) {
+                            continue;
+                        }
                         String error =  addSkuOnTaobao(sku, taobaoProductId, taobaoClient, token.accessToken);
                         if (error != null) { return error; }
                     }
@@ -555,6 +552,8 @@ public class KtvTaobaoUtil {
                     return skuList;
                 }
                 for (Sku sku : response.getSkus()) {
+                    Logger.info("sku on taobao %s: %s;%s;%s;%s", resalerProduct.partnerProductId,
+                            sku.getSkuId(), sku.getQuantity(), sku.getPrice() , sku.getOuterId());
                     KtvTaobaoSku s = new KtvTaobaoSku();
                     s.setTaobaoSkuId(sku.getSkuId());
                     s.setQuantity(sku.getQuantity().intValue());
