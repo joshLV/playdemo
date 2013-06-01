@@ -19,6 +19,7 @@ import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.*;
 import models.supplier.Supplier;
+import models.taobao.KtvSkuMessageUtil;
 import models.taobao.TaobaoCouponUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
@@ -247,20 +248,24 @@ public class KtvTaobaoProducts extends Controller {
     /**
      * 更新淘宝sku
      */
-    public static void syncSku(@As(",") List<Long> productGoodsIds) {
-        if (productGoodsIds.size() == 0) {
-            renderJSON("{\"error\":参数错误，请重试！}");
+    public static void syncSku(Long productGoodsId) {
+        if (productGoodsId == null) {
+            renderJSON("{\"error\":\"参数错误，请重试！\"}");
         }
-        for (Long productGoodsId : productGoodsIds) {
-            KtvProductGoods productGoods = KtvProductGoods.findById(productGoodsId);
-            if (productGoods == null) {
-                Logger.info("update ktv sku,not found this product");
-                continue;
-            }
-            KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);
-            productGoods.needSync = DeletedStatus.UN_DELETED;
-            productGoods.save();
+
+        KtvProductGoods productGoods = KtvProductGoods.findById(productGoodsId);
+        if (productGoods == null) {
+            Logger.info("update ktv sku,not found this product");
         }
+
+        String error = KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);
+        if (error != null) {
+            renderJSON("{\"error\":\"" + error + "\"}");
+        }
+
+        KtvSkuMessageUtil.send(productGoodsId);
+        productGoods.needSync = DeletedStatus.UN_DELETED;
+        productGoods.save();
 
         renderJSON("{\"isOk\":true}");
     }

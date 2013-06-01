@@ -268,11 +268,6 @@ public class KtvPriceSchedules extends Controller {
             productGoods.save();
         }
 
-        JPA.em().flush();
-
-        //把价格策略加到mq
-        KtvSkuMessageUtil.send(currentSchedule.id);
-
         Long shopId = shopCountMap.keySet().iterator().next().id;
         render("KtvPriceSchedules/result.html", currentSchedule, shopId);
     }

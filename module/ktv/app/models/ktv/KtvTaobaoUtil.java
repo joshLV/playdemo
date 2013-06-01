@@ -81,7 +81,7 @@ public class KtvTaobaoUtil {
      *
      * @param productGoods KTV商品.
      */
-    public static void updateTaobaoSkuByProductGoods(KtvProductGoods productGoods) {
+    public static String  updateTaobaoSkuByProductGoods(KtvProductGoods productGoods) {
         Logger.info("KtvTaobaoUtil.updateTaobaoSkuByProductGoodse method start>>>priceSchedule:" + productGoods);
         //构建新的淘宝SKU列表
         SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> localSkuMap
@@ -89,6 +89,7 @@ public class KtvTaobaoUtil {
 
         //更新该ktv产品所对应的每一个分销渠道上的商品
         List<ResalerProduct> resalerProductList = ResalerProduct.find("byGoodsAndPartner", productGoods.goods, OuterOrderPartner.TB).fetch();
+        String error = null;
         for (ResalerProduct resalerProduct : resalerProductList) {
             if (resalerProduct.resaler == null) {
                 Logger.info("ktv update sku时,resalerProduct.partnerProductId=%s的resaler.id is null,will not update this resalerProduct!", resalerProduct.partnerProductId);
@@ -97,8 +98,12 @@ public class KtvTaobaoUtil {
             if (StringUtils.isBlank(resalerProduct.partnerProductId)) {
                 continue;
             }
-            updateTaobaoSkuByResalerProductAndLocalSkus(resalerProduct, localSkuMap);
+            String e =  updateTaobaoSkuByResalerProductAndLocalSkus(resalerProduct, localSkuMap);
+            if (e != null) {
+                error = error == null ? e : error + " " + e;
+            }
         }
+        return error;
     }
     public static String updateTaobaoSkuByKtvProductGoods(KtvProductGoods ktvProductGoods) {
 
@@ -117,11 +122,7 @@ public class KtvTaobaoUtil {
             return "无可用SKU信息";
         }
 
-        SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> remoteSkuMap
-                = skuListToMap(getTaobaoSku(resalerProduct), null, false);//本来就是完美的，因此不要求再生成完美的了
-        if (remoteSkuMap.size() == 0) {
-            return "未获取到淘宝的SKU信息";
-        }
+        List<KtvTaobaoSku> remoteSkuList = getTaobaoSku(resalerProduct);
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
                 resalerProduct.resaler.taobaoCouponAppSecretKey);
@@ -135,7 +136,7 @@ public class KtvTaobaoUtil {
         * updatePrice: 应该更新价格的淘宝SKU列表
         * updateQuantity: 应该更新数量的淘宝SKU列表（可批量更新）
         * */
-        Map<String, List<KtvTaobaoSku>> diffResult =  diffSkuBetweenLocalAndRemote(localSkuMap, remoteSkuMap);
+        Map<String, List<KtvTaobaoSku>> diffResult =  diffSkuBetweenLocalAndRemote(localSkuMap, remoteSkuList);
 
         for (Map.Entry<String, List<KtvTaobaoSku>> entry: diffResult.entrySet()) {
             switch (entry.getKey()) {
@@ -429,39 +430,45 @@ public class KtvTaobaoUtil {
      * updatePrice: 应该更新价格的淘宝SKU列表
      * updateQuantity: 应该更新数量的淘宝SKU列表（可批量更新）
      *
-     * @param localSkuMap 本地新计算出来的SKU
-     * @param remoteSkuMap 淘宝的SKU
+     * @param localSkuMap 本地新计算出来的SKU 必须是完美树
+     * @param remoteSkuList 淘宝的SKU列表
      * @return
      */
     public static Map<String, List<KtvTaobaoSku>> diffSkuBetweenLocalAndRemote(
             SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> localSkuMap,
-            SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> remoteSkuMap ) {
+            List<KtvTaobaoSku> remoteSkuList ) {
 
         Set<KtvRoomType> localRoomTypeSet = localSkuMap.keySet();
         KtvRoomType firstKtvRoomType = localRoomTypeSet.iterator().next();
         Set<Date> localDateSet = localSkuMap.get(firstKtvRoomType).keySet();
         Set<Integer> localTimeRangeSet = localSkuMap.get(firstKtvRoomType).get(localDateSet.iterator().next()).keySet();
 
-        Set<KtvRoomType> remoteRoomTypeSet = remoteSkuMap.keySet();
-        firstKtvRoomType = remoteRoomTypeSet.iterator().next();
-        Set<Date> remoteDateSet = remoteSkuMap.get(firstKtvRoomType).keySet();
-        Set<Integer> remoteTimeRangeSet = remoteSkuMap.get(firstKtvRoomType).get(remoteDateSet.iterator().next()).keySet();
+        Set<KtvRoomType> remoteRoomTypeSet = new HashSet<>();
+        Set<Date> remoteDateSet = new HashSet<>();
+        Set<Integer> remoteTimeRangeSet = new HashSet<>();
+        for (KtvTaobaoSku sku : remoteSkuList) {
+            remoteRoomTypeSet.add(sku.getRoomType());
+            remoteDateSet.add(sku.getDate());
+            remoteTimeRangeSet.add(sku.getTimeRangeCode());
+        }
+        SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> remoteSkuMap  = skuListToMap(remoteSkuList, null, false);
 
-        Set<KtvRoomType> tobeAddedKtvRoomTypeSet = (Set<KtvRoomType>)CollectionUtils.subtract(localRoomTypeSet, remoteRoomTypeSet);
-        Set<KtvRoomType> tobeDeletedKtvRoomTypeSet = (Set<KtvRoomType>)CollectionUtils.subtract(remoteRoomTypeSet, localRoomTypeSet);
-        Set<KtvRoomType> sameKtvRoomTypeSet = (Set<KtvRoomType>)CollectionUtils.intersection(localRoomTypeSet, remoteRoomTypeSet);
 
-        Set<Date> tobeAddedDateSet = (Set<Date>)CollectionUtils.subtract(localDateSet, remoteDateSet);
-        Set<Date> tobeDeletedDateSet = (Set<Date>)CollectionUtils.subtract(remoteDateSet, localDateSet);
-        Set<Date> sameDateSet = (Set<Date>)CollectionUtils.intersection(localDateSet, remoteDateSet);
+        Set<KtvRoomType> tobeAddedKtvRoomTypeSet = new HashSet<KtvRoomType>(CollectionUtils.subtract(localRoomTypeSet, remoteRoomTypeSet));
+        Set<KtvRoomType> tobeDeletedKtvRoomTypeSet = new HashSet<KtvRoomType>(CollectionUtils.subtract(remoteRoomTypeSet, localRoomTypeSet));
+        Set<KtvRoomType> sameKtvRoomTypeSet = new HashSet<KtvRoomType>(CollectionUtils.intersection(localRoomTypeSet, remoteRoomTypeSet));
 
-        Set<Integer> tobeAddedTimeRangeSet = (Set<Integer>)CollectionUtils.subtract(localTimeRangeSet, remoteTimeRangeSet);
-        Set<Integer> tobeDeletedTimeRangeSet = (Set<Integer>)CollectionUtils.subtract(remoteTimeRangeSet, localTimeRangeSet);
-        Set<Integer> sameTimeRangeCodeSet = (Set<Integer>)CollectionUtils.intersection(localTimeRangeSet, remoteTimeRangeSet);
+        Set<Date> tobeAddedDateSet = new HashSet<Date>(CollectionUtils.subtract(localDateSet, remoteDateSet));
+        Set<Date> tobeDeletedDateSet = new HashSet<Date>(CollectionUtils.subtract(remoteDateSet, localDateSet));
+        Set<Date> sameDateSet = new HashSet<Date>(CollectionUtils.intersection(localDateSet, remoteDateSet));
+
+        Set<Integer> tobeAddedTimeRangeSet = new HashSet<Integer>(CollectionUtils.subtract(localTimeRangeSet, remoteTimeRangeSet));
+        Set<Integer> tobeDeletedTimeRangeSet = new HashSet<Integer>(CollectionUtils.subtract(remoteTimeRangeSet, localTimeRangeSet));
+        Set<Integer> sameTimeRangeCodeSet = new HashSet<Integer>(CollectionUtils.intersection(localTimeRangeSet, remoteTimeRangeSet));
+        System.out.println(StringUtils.join(tobeDeletedTimeRangeSet,","));
 
 
         List<KtvTaobaoSku> localSkuList = skuMapToList(localSkuMap, false);
-        List<KtvTaobaoSku> remoteSkuList = skuMapToList(remoteSkuMap, false);
 
         List<KtvTaobaoSku> tobeAddedSkuList = new ArrayList<>();
         //处理添加的
@@ -523,6 +530,9 @@ public class KtvTaobaoUtil {
             ItemSkusGetResponse response = taobaoClient.execute(request, token.accessToken);
             if (response.isSuccess()) {
                 List<KtvTaobaoSku> skuList = new ArrayList<>();
+                if (response.getSkus() == null) {
+                    return skuList;
+                }
                 for (Sku sku : response.getSkus()) {
                     KtvTaobaoSku s = new KtvTaobaoSku();
                     s.setTaobaoSkuId(sku.getSkuId());
@@ -603,6 +613,7 @@ public class KtvTaobaoUtil {
         updateRequest.setType(1L);//全量更新
         updateRequest.setSkuidQuantities(StringUtils.join(quantities, ";"));
 
+        Logger.info("batch update taobao sku price %s : %s", iid, updateRequest.getSkuidQuantities());
         try {
             SkusQuantityUpdateResponse response = taobaoClient.execute(updateRequest, accessToken);
             if (!response.isSuccess()) {
