@@ -495,6 +495,9 @@ public class KtvTaobaoUtil {
                 for (Integer timeRangeCode : sameTimeRangeCodeSet) {
                     KtvTaobaoSku localSku = localSkuMap.get(roomType).get(date).get(timeRangeCode);
                     KtvTaobaoSku remoteSku = remoteSkuMap.get(roomType).get(date).get(timeRangeCode);
+                    if (localSku == null || remoteSku == null ) {
+                        continue;
+                    }
                     if (localSku.getPrice().compareTo(remoteSku.getPrice()) != 0) {
                         remoteSku.setPrice(localSku.getPrice());
                         remoteSku.setQuantity(localSku.getQuantity());
