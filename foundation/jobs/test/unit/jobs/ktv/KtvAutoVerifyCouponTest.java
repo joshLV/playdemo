@@ -5,17 +5,23 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import jobs.ktv.KtvAutoVerifyCoupon;
+import models.accounts.Account;
+import models.accounts.AccountType;
+import models.accounts.util.AccountUtil;
+import models.admin.SupplierUser;
 import models.ktv.KtvOrderStatus;
 import models.ktv.KtvProduct;
 import models.ktv.KtvRoomOrderInfo;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.OrderItems;
+import models.supplier.Supplier;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.UnitTest;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +40,7 @@ public class KtvAutoVerifyCouponTest extends UnitTest {
     public void setUp() {
         FactoryBoy.deleteAll();
         orderItem = FactoryBoy.create(OrderItems.class);
+        FactoryBoy.lastOrCreate(SupplierUser.class);
         roomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class, new BuildCallback<KtvRoomOrderInfo>() {
             @Override
             public void build(KtvRoomOrderInfo target) {
@@ -43,7 +50,9 @@ public class KtvAutoVerifyCouponTest extends UnitTest {
                 target.orderItem = orderItem;
             }
         });
-
+        Account account = AccountUtil.getPlatformIncomingAccount(); //默认收款账户为平台收款账户
+        account.amount = new BigDecimal("999999");
+        account.save();
     }
 
     @Test
