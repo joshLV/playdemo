@@ -993,7 +993,7 @@ public class ECoupon extends Model {
                     orderInfo.save();
                 }
 
-                KtvTaobaoUtil.updateTaobaoSkuByProductGoods(ktvProductGoods);
+//                KtvTaobaoUtil.updateTaobaoSkuByProductGoods(ktvProductGoods);
                 Logger.info("after ecoupon refund,update taobao ktv sku:ktvProductGoods.id:" + ktvProductGoods.id + " success");
             }
         }

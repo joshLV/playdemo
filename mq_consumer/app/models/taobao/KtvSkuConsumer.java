@@ -16,14 +16,17 @@ public class KtvSkuConsumer extends RabbitMQConsumerWithTx<KtvSkuMessage> {
     @Override
     public void consumeWithTx(KtvSkuMessage message) {
         try {
-            Thread.sleep(5000l);
+            Thread.sleep(2000l);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Logger.info("message.ktvProductGoodsId:%s,message.scheduledId:%s", message.scheduledId);
+        Logger.info("message.ktvProductGoodsId:%s,message.productGoodsId:%s", message.productGoodsId);
         //根据价格策略更新sku
-        if (message.scheduledId != null) {
-            KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(message.scheduledId);
+        if (message.productGoodsId != null) {
+            KtvProductGoods productGoods = KtvProductGoods.findById(message.productGoodsId);
+            if (productGoods != null) {
+                KtvTaobaoUtil.updateTaobaoSkuByProductGoods(productGoods);
+            }
         } else {
             Logger.info("KtvSkuConsumer process faild:message.scheduleId is null");
         }

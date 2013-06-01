@@ -17,6 +17,7 @@ import play.Logger;
 public class KtvSkuTaobaoActionConsumer extends RabbitMQConsumerWithTx<KtvSkuTaobaoMessage>{
     @Override
     public void consumeWithTx(KtvSkuTaobaoMessage message) {
+        /*
         ResalerProduct resalerProduct = ResalerProduct.findById(message.resalerProductId);
         if (resalerProduct == null) {
             Logger.error("taobao add sku error: reslaer product not found %s", message.resalerProductId);
@@ -61,6 +62,7 @@ public class KtvSkuTaobaoActionConsumer extends RabbitMQConsumerWithTx<KtvSkuTao
                 sku.delete();
             }
         }
+        */
     }
 
     @Override

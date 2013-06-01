@@ -14,8 +14,4 @@ public class Application extends Controller {
         render();
     }
 
-    public static void updateProduct(Long id) {
-        KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule(id);
-    }
-
 }
