@@ -40,7 +40,7 @@ public class KtvTaobaoProducts extends Controller {
     @ActiveNavigation("ktv_taobao_product")
     public static void index(Long supplierId) {
         List<Supplier> supplierList = Supplier.find("select p.supplier from SupplierProperty p where p.name=? and" +
-                " p.value = 1 and p.supplier.deleted=? ", Supplier.KTV_SUPPLIER, DeletedStatus.UN_DELETED).fetch();
+                " p.value = 1 and p.supplier.deleted=? and p.supplier.defaultResalerId is null", Supplier.KTV_SUPPLIER, DeletedStatus.UN_DELETED).fetch();
         if (supplierId != null) {
             List<Shop> shops = Shop.findShopBySupplier(supplierId);
             List<KtvProduct> products = KtvProduct.findProductBySupplier(supplierId);
@@ -50,7 +50,7 @@ public class KtvTaobaoProducts extends Controller {
             renderArgs.put("products", products);
         }
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
-        render(supplierList,resaler);
+        render(supplierList, resaler);
     }
 
 
@@ -150,7 +150,7 @@ public class KtvTaobaoProducts extends Controller {
             propSet.add(taobaoSku.getRoomType().getTaobaoId());
             if (minPrice == null) {
                 minPrice = taobaoSku.getPrice();
-            }else if (taobaoSku.getPrice().compareTo(minPrice) < 0) {
+            } else if (taobaoSku.getPrice().compareTo(minPrice) < 0) {
                 minPrice = taobaoSku.getPrice();
             }
             if (taobaoSku.getPrice().compareTo(maxPrice) > 0) {
