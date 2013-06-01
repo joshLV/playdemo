@@ -57,7 +57,7 @@ public class KtvAutoVerifyCoupon extends JobWithHistory {
 
             for (ECoupon coupon : couponList) {
                 Shop shop = roomOrderInfo.shop;
-                SupplierUser supplierUser = SupplierUser.find("byShop").first();
+                SupplierUser supplierUser = SupplierUser.find("byShop", shop).first();
                 coupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);
                 coupon.save();
                 ECouponHistoryMessage.with(coupon).remark("KTV未消费的过期券自动验证")
