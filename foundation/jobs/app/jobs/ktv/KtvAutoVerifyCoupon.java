@@ -1,6 +1,7 @@
 package jobs.ktv;
 
 import com.uhuila.common.constants.DeletedStatus;
+import models.admin.SupplierUser;
 import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import models.ktv.KtvOrderStatus;
@@ -9,6 +10,8 @@ import models.order.ECoupon;
 import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
+import models.sales.Shop;
+import models.supplier.Supplier;
 import org.apache.commons.lang.time.DateUtils;
 import play.db.jpa.JPA;
 import play.jobs.Every;
@@ -40,7 +43,7 @@ public class KtvAutoVerifyCoupon extends JobWithHistory {
                 "   or " +
                 "   ( k.scheduledDay >= :threeDaysAgo and k.scheduledDay < :today and ( k.scheduledTime + k.product.duration - 24) <= :hour ) " +
                 ") order by k.id ");
-        query.setParameter("threeDaysAgo", DateUtils.addDays(today, -3));
+        query.setParameter("threeDaysAgo", DateUtils.addDays(today, -13));
         query.setParameter("status", KtvOrderStatus.DEAL);
         query.setParameter("today", today);
         query.setParameter("hour", hour);
@@ -53,9 +56,9 @@ public class KtvAutoVerifyCoupon extends JobWithHistory {
                     roomOrderInfo.orderItem, ECouponStatus.UNCONSUMED).fetch();
 
             for (ECoupon coupon : couponList) {
-                coupon.verifyType = VerifyCouponType.AUTO_VERIFY;
-                coupon.status = ECouponStatus.CONSUMED;
-                coupon.consumedAt = new Date();
+                Shop shop = roomOrderInfo.shop;
+                SupplierUser supplierUser = SupplierUser.find("byShop", shop).first();
+                coupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);
                 coupon.save();
                 ECouponHistoryMessage.with(coupon).remark("KTV未消费的过期券自动验证")
                         .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
