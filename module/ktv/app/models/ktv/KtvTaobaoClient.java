@@ -16,6 +16,7 @@ import com.taobao.api.internal.util.TaobaoHashMap;
 import com.taobao.api.internal.util.TaobaoLogger;
 import com.taobao.api.internal.util.TaobaoUtils;
 import com.taobao.api.internal.util.WebUtils;
+import play.Play;
 
 /**
  * 基于REST的TOP客户端。
@@ -41,7 +42,7 @@ public class KtvTaobaoClient implements TaobaoClient {
     private String format = Constants.FORMAT_JSON;
     private String signMethod = Constants.SIGN_METHOD_HMAC;
 
-    private int connectTimeout = 10000;//3秒
+    private int connectTimeout = Integer.parseInt(Play.configuration.getProperty("taobao.connect.timeout", "15000"));//15秒
     private int readTimeout = 15000;//15秒
     private boolean needCheckRequest = true;
     private boolean needEnableParser = true;
