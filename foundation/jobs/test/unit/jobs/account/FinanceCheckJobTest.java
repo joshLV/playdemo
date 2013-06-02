@@ -40,7 +40,7 @@ public class FinanceCheckJobTest extends UnitTest {
         platformIncomingAccount.amount = new BigDecimal(1000);
         platformIncomingAccount.save();
         supplierAccount = AccountUtil.getSupplierAccount(supplier.id);
-        resalerAccount = AccountUtil.getResalerAccount(resaler.id);
+        resalerAccount = AccountUtil.getResalerAccount(resaler);
         resalerAccount.creditable = AccountCreditable.YES;
         resalerAccount.amount = BigDecimal.ZERO;
         resalerAccount.save();

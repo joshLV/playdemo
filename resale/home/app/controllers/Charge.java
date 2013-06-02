@@ -1,23 +1,20 @@
 package controllers;
 
-import java.math.BigDecimal;
-import java.util.List;
-
+import controllers.modules.resale.cas.SecureCAS;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.accounts.util.AccountUtil;
 import models.order.Order;
+import models.payment.PaymentFlow;
 import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
-import models.payment.PaymentFlow;
 import models.resale.Resaler;
-
-import controllers.modules.resale.cas.SecureCAS;
-
-import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 分销商账户充值.
@@ -28,7 +25,7 @@ public class Charge extends Controller {
     public static void index() {
         //加载用户账户信息
         Resaler user = SecureCAS.getResaler();
-        Account account = AccountUtil.getResalerAccount(user.getId());
+        Account account = AccountUtil.getResalerAccount(user);
 
         List<PaymentSource> paymentSources = PaymentSource.findAll();
         render(user, account, paymentSources);

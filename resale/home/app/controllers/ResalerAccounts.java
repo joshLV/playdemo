@@ -27,7 +27,7 @@ public class ResalerAccounts extends Controller {
     public static void index(AccountSequenceCondition condition) {
 
         Resaler resaler = SecureCAS.getResaler();
-        Account account = AccountUtil.getResalerAccount(resaler.getId());
+        Account account = AccountUtil.getResalerAccount(resaler);
 
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);

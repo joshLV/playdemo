@@ -28,7 +28,7 @@ public class ResalePaymentInfo extends Controller {
     public static void index(String orderNumber) {
         //加载用户账户信息
         Resaler user = SecureCAS.getResaler();
-        Account account = AccountUtil.getResalerAccount(user.getId());
+        Account account = AccountUtil.getResalerAccount(user);
 
         //加载订单信息
         Order order = Order.findOneByResaler(orderNumber, user);
@@ -56,7 +56,7 @@ public class ResalePaymentInfo extends Controller {
         if (order.status != OrderStatus.UNPAID) {
             error("wrong order status");
         }
-        Account account = AccountUtil.getResalerAccount(resaler.getId());
+        Account account = AccountUtil.getResalerAccount(resaler);
 
         if (Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode)) {
             PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);

@@ -814,7 +814,6 @@ public class Order extends Model {
                 //忽略，此时订单没有支付，但余额已经保存
             }
         }
-        System.out.println("after paid()《=========:");
         this.status = OrderStatus.PAID;
         this.paidAt = new Date();
         this.save();

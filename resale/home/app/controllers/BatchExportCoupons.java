@@ -78,7 +78,7 @@ public class BatchExportCoupons extends Controller {
     public static void generator(String err, int count, String name, Long goodsId, BigDecimal consumed) {
         //加载用户账户信息
         Resaler user = SecureCAS.getResaler();
-        Account account = AccountUtil.getResalerAccount(user.getId());
+        Account account = AccountUtil.getResalerAccount(user);
         if (consumed == null) {
             consumed = BigDecimal.ZERO;
         }
@@ -114,7 +114,7 @@ public class BatchExportCoupons extends Controller {
     public static void generate(int count, String name, Long goodsId, BigDecimal consumed) throws NotEnoughInventoryException {
         Pattern pattern = Pattern.compile("^[0-9]*[1-9][0-9]*$");
         Resaler resaler = SecureCAS.getResaler();
-        Account account = AccountUtil.getResalerAccount(resaler.getId());
+        Account account = AccountUtil.getResalerAccount(resaler);
 
         if (name == null || name.trim().equals("")) {
 

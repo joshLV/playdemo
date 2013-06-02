@@ -3,12 +3,9 @@ package models.resale;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.util.AccountUtil;
-import models.operator.OperateUser;
 import models.operator.Operator;
-import models.order.OuterOrderPartner;
 import models.supplier.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.hibernate.annotations.Index;
 import play.data.validation.Email;
 import play.data.validation.Max;
 import play.data.validation.MaxSize;
@@ -21,7 +18,18 @@ import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -307,7 +315,7 @@ public class Resaler extends Model {
         //修改现金账户是否可欠款
         if (resaler.creditable != null) {
             updResaler.creditable = resaler.creditable;
-            Account account = AccountUtil.getResalerAccount(id);
+            Account account = AccountUtil.getResalerAccount(updResaler);
             if (resaler.isCreditable()) {
                 account.creditable = AccountCreditable.YES;
             } else {

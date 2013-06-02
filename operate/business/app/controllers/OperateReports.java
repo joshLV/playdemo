@@ -105,7 +105,7 @@ public class OperateReports extends Controller {
         if (condition.accountName != null && !condition.accountName.trim().equals("")) {
             Resaler user = Resaler.findOneByLoginName(condition.accountName);
             if (user != null) {
-                condition.account = AccountUtil.getResalerAccount(user.id);
+                condition.account = AccountUtil.getResalerAccount(user);
             } else {
                 condition.account = new Account();
                 condition.account.id = -1L;

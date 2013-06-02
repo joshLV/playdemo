@@ -47,7 +47,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
                 target.creditable = ResalerCreditable.YES;
             }
         });
-        Account account= AccountUtil.getResalerAccount(resaler.getId());
+        Account account= AccountUtil.getResalerAccount(resaler);
         account.creditable = AccountCreditable.YES;
         account.save();
         ResalerFactory.getYibaiquanResaler(); //必须存在一百券

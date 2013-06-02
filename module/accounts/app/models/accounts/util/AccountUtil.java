@@ -12,6 +12,7 @@ import models.accounts.BalanceNotEnoughException;
 import models.accounts.SettlementStatus;
 import models.accounts.TradeType;
 import models.operator.Operator;
+import models.resale.Resaler;
 import play.Logger;
 
 import java.math.BigDecimal;
@@ -106,8 +107,17 @@ public class AccountUtil {
         return getAccount(uid, AccountType.CONSUMER, false);
     }
 
+
+    public static Account getResalerAccount(Resaler resaler) {
+        return getAccount(resaler.id, AccountType.RESALER, false, resaler.operator);
+    }
+
     public static Account getResalerAccount(long uid) {
-        return getAccount(uid, AccountType.RESALER, false);
+        Resaler resaler = Resaler.findById(uid);
+        if (resaler == null) {
+            return null;
+        }
+        return getResalerAccount(resaler);
     }
 
     public static Account getSupplierAccount(long uid) {

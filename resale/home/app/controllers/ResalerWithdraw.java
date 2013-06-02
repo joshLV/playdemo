@@ -17,42 +17,42 @@ import play.mvc.With;
 import java.util.List;
 
 /**
- * @author  likang
- * Date: 12-5-7
+ * @author likang
+ *         Date: 12-5-7
  */
 @With(SecureCAS.class)
-public class ResalerWithdraw extends Controller{
+public class ResalerWithdraw extends Controller {
 
     private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("withdraw_notification.email.receiver", "tangliqun@uhuila.com").split(",");
     private static String[] NOTIFICATION_MOBILES = Play.configuration.getProperty("withdraw_notification.mobile", "").trim().split(",");
 
-    public static void index(){
+    public static void index() {
         Resaler resaler = SecureCAS.getResaler();
-        Account account = AccountUtil.getResalerAccount(resaler.getId());
-        List<WithdrawBill> withdrawBills = WithdrawBill.find("account =? order by appliedAt desc",account).fetch();
+        Account account = AccountUtil.getResalerAccount(resaler);
+        List<WithdrawBill> withdrawBills = WithdrawBill.find("account =? order by appliedAt desc", account).fetch();
         render(withdrawBills);
     }
 
-    public static void apply(){
+    public static void apply() {
         Resaler resaler = SecureCAS.getResaler();
-        Account account = AccountUtil.getResalerAccount(resaler.getId());
+        Account account = AccountUtil.getResalerAccount(resaler);
         render(account);
     }
 
-    public static void create(@Valid WithdrawBill withdraw){
+    public static void create(@Valid WithdrawBill withdraw) {
         Resaler resaler = SecureCAS.getResaler();
-        Account account = AccountUtil.getResalerAccount(resaler.getId());
+        Account account = AccountUtil.getResalerAccount(resaler);
 
-        if(Validation.hasErrors()){
+        if (Validation.hasErrors()) {
             render("ResalerWithdraw/apply.html", withdraw, account);
         }
-        if(withdraw.amount.compareTo(account.amount)>0){
+        if (withdraw.amount.compareTo(account.amount) > 0) {
             Validation.addError("withdraw.amount", "提现金额不能大于余额！！");
             render("ResalerWithdraw/apply.html", withdraw, account);
         }
-        if(withdraw.apply(resaler.loginName, account, resaler.userName)){
+        if (withdraw.apply(resaler.loginName, account, resaler.userName)) {
             index();
-        }else {
+        } else {
             error("申请失败");
         }
     }
@@ -70,7 +70,7 @@ public class ResalerWithdraw extends Controller{
         message.setTemplate("withdraw");
         MailUtil.sendCommonMail(message);
 
-        if(NOTIFICATION_MOBILES.length > 0 && !"".equals(NOTIFICATION_MOBILES[0])){
+        if (NOTIFICATION_MOBILES.length > 0 && !"".equals(NOTIFICATION_MOBILES[0])) {
             new SMSMessage("一百券用户" + withdrawBill.applier + "申请提现" + withdrawBill.amount + "元",
                     NOTIFICATION_MOBILES).send();
         }
