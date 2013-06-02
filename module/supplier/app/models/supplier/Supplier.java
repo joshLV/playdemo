@@ -688,6 +688,9 @@ public class Supplier extends Model {
     public Operator defaultOperator() {
         Operator operator = Operator.defaultOperator();
         // 是否有默认分销商，有则默认使用对应的Operator账户
+        if (this.defaultResalerId == null) {
+            return operator;
+        }
         Resaler defaultResaler = Resaler.findById(this.defaultResalerId);
         if (defaultResaler != null) {
             operator = defaultResaler.operator;
