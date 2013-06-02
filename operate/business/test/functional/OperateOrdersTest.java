@@ -3,10 +3,11 @@ package functional;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.operator.OperateUser;
 import models.consumer.User;
+import models.operator.OperateUser;
 import models.order.Order;
 import models.order.OrderItems;
+import models.resale.Resaler;
 import models.sales.Goods;
 import operate.rbac.RbacLoader;
 import org.junit.After;
@@ -35,7 +36,8 @@ public class OperateOrdersTest extends FunctionalTest {
         order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
             @Override
             public void build(Order o) {
-                o.userId = user.id;
+                o.userId = Resaler.getYibaiquan().id;
+                o.consumerId = user.id;
                 o.description = "testorder";
                 o.paidAt = new Date();
             }

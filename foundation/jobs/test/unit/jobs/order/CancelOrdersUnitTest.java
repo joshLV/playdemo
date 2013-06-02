@@ -2,11 +2,12 @@ package unit.jobs.order;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.consumer.User;
 import jobs.order.CancelUnPaidOrderJob;
+import models.consumer.User;
 import models.order.CancelUnpaidOrders;
 import models.order.Order;
 import models.order.OrderItems;
+import models.resale.Resaler;
 import models.sales.Goods;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,8 @@ public class CancelOrdersUnitTest extends UnitTest {
 			@Override
 			public void build(Order o) {
 				o.createdAt = DateHelper.beforeDays(12); //12天以前的订单
-				o.userId = user.id;
+                o.userId = Resaler.getYibaiquan().id;
+				o.consumerId = user.id;
 			}
 		});
         OrderItems orderItems = FactoryBoy.create(OrderItems.class);
