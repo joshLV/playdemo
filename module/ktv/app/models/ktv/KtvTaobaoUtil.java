@@ -27,7 +27,6 @@ import play.db.jpa.JPA;
 
 import javax.persistence.Query;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -44,38 +43,6 @@ public class KtvTaobaoUtil {
     private static final String ACTION_DELETE = "delete";
     private static final String ACTION_UPDATE_PRICE = "updatePrice";
     private static final String ACTION_UPDATE_QUANTITY = "updateQuantity";
-
-
-    /**
-     * 根据某一价格策略，更新相应门店的所有相应商品的淘宝SKU.
-     * 当新建/修改/删除价格策略时，应该调用此方法.
-     *
-     * @param priceScheduleId 价格策略ID
-     */
-    @Deprecated
-    public static void updateTaobaoSkuByPriceSchedule(Long priceScheduleId) {
-        Logger.info("KtvTaobaoUtil.updateTaobaoSkuByPriceSchedule method start>>>priceScheduleId:" + priceScheduleId);
-        KtvPriceSchedule priceSchedule = KtvPriceSchedule.findById(priceScheduleId);
-        Logger.info("priceSchedule:" + priceSchedule);
-        //找出该价格策略影响的所有门店
-        List<KtvShopPriceSchedule> shopPriceSchedules = KtvShopPriceSchedule.find("bySchedule", priceSchedule).fetch();
-        List<Shop> affectedShops = new ArrayList<>();
-        for (KtvShopPriceSchedule schedule : shopPriceSchedules) {
-            affectedShops.add(schedule.shop);
-        }
-
-        //找出该价格策略所影响的所有商品
-        Query query = JPA.em().createQuery("select p from KtvProductGoods p where p.product = :product and p.shop in :shops");
-        query.setParameter("product", priceSchedule.product);
-        query.setParameter("shops", affectedShops);
-
-        List<KtvProductGoods> affectedGoodsList = query.getResultList();
-        for (KtvProductGoods productGoods : affectedGoodsList) {
-            //更新商品在淘宝上的SKU信息
-            updateTaobaoSkuByProductGoods(productGoods);
-        }
-
-    }
 
     /**
      * 根据某一商品，更新其在淘宝上的SKU信息.
@@ -267,16 +234,13 @@ public class KtvTaobaoUtil {
         for (Map.Entry<Date, Set<KtvPriceSchedule>> entry : orderedScheduleMap.entrySet()) {
             dateCount -= 1;
             if (dateCount < 0) {
-                System.out.println("skip dateCount: " + new SimpleDateFormat("yyyy-MM-dd").format(entry.getKey()));
                 continue;
             }
             Date day = entry.getKey();
             uniqDates.add(day);
             if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
-                System.out.println("skip date: " + new SimpleDateFormat("yyyy-MM-dd").format(entry.getKey()));
                 continue;
             }
-            System.out.println("day: " + new SimpleDateFormat("yyyy-MM-dd").format(entry.getKey()));
             //查出该门店的该产品这一天已经卖出、或者被锁定的房间信息
             if (goods != null){
                 roomOrderInfoList = KtvRoomOrderInfo.find(
@@ -288,11 +252,8 @@ public class KtvTaobaoUtil {
                 uniqRoomTypes.add(schedule.roomType);
                 if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
                     uniqRoomTypes.remove(schedule.roomType);
-                    System.out.println("skip roomType: " + schedule.roomType);
                     continue;
                 }
-                System.out.println("schedule: " + schedule.id);
-                System.out.println("roomType: " + schedule.roomType);
 
                 //查出门店数量
                 KtvShopPriceSchedule shopPriceSchedule = KtvShopPriceSchedule.find("byShopAndSchedule", shop, schedule).first();
@@ -304,10 +265,8 @@ public class KtvTaobaoUtil {
                     uniqTimeRanges.add(t);
                     if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
                         uniqTimeRanges.remove(t);
-                        System.out.println("skip timerange: " + t);
                         continue;
                     }
-                    System.out.println("time: " + t);
                     int roomCountLeft = shopPriceSchedule.roomCount;
                     //排除掉已预订的房间所占用的数量
                     for (KtvRoomOrderInfo orderInfo : roomOrderInfoList) {
@@ -323,7 +282,6 @@ public class KtvTaobaoUtil {
                             roomCountLeft -= 1;
                         }
                     }
-                    System.out.println("roomCount: " + t);
                     //如果预订满了，就不再有此SKU
                     if (roomCountLeft <= 0) {
                         continue;
@@ -452,7 +410,7 @@ public class KtvTaobaoUtil {
 
 
     /**
-     * 传过来两个完美树
+     * 传过来本地的完美树和远端的SKU列表
      *
      * 比较两组SKU，得出四个列表，分别是：
      * add: 应该添加到淘宝的SKU列表
@@ -462,7 +420,7 @@ public class KtvTaobaoUtil {
      *
      * @param localSkuMap 本地新计算出来的SKU 必须是完美树
      * @param remoteSkuList 淘宝的SKU列表
-     * @return
+     * @return 比较结果
      */
     public static Map<String, List<KtvTaobaoSku>> diffSkuBetweenLocalAndRemote(
             SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> localSkuMap,
@@ -499,6 +457,8 @@ public class KtvTaobaoUtil {
             KtvTaobaoSku sku = remoteSkuMap.get(tmp.getRoomType()).get(tmp.getDate()).get(tmp.getTimeRangeCode());
             tobeDeletedSkuList.add(sku);
         }
+
+        //处理更新的。分两种情况，一个列表是更新包含价格的，一个列表是只更新数量的
         List<KtvTaobaoSku> tobeUpdatedPriceSkuList = new ArrayList<>();
         List<KtvTaobaoSku> tobeUpdatedOnlyQuantityList = new ArrayList<>();
 
@@ -507,12 +467,14 @@ public class KtvTaobaoUtil {
             KtvTaobaoSku localSku = localSkuMap.get(tmp.getRoomType()).get(tmp.getDate()).get(tmp.getTimeRangeCode());
             KtvTaobaoSku remoteSku = remoteSkuMap.get(tmp.getRoomType()).get(tmp.getDate()).get(tmp.getTimeRangeCode());
 
+            //更新包含价格
             if (localSku.getPrice().compareTo(remoteSku.getPrice()) != 0) {
                 remoteSku.setPrice(localSku.getPrice());
                 remoteSku.setQuantity(localSku.getQuantity());
                 tobeUpdatedPriceSkuList.add(remoteSku);
                 continue;
             }
+            //只更新数量
             if (!localSku.getQuantity().equals(remoteSku.getQuantity())) {
                 remoteSku.setQuantity(localSku.getQuantity());
                 tobeUpdatedOnlyQuantityList.add(remoteSku);
