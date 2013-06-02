@@ -73,7 +73,7 @@ public class KtvTaobaoSku {
 
     public static String humanTimeRange(int start, int end) {
         end = end >= 24 ? end - 24 : end;
-        String endStr = end < 6 ? "凌晨" + start + "点" : end + "点";
+        String endStr = end < 6 ? "凌晨" + end + "点" : end + "点";
         String startStr = start < 6 ? "凌晨" + start + "点" : start + "点";
         return startStr + "至" + endStr;
     }
