@@ -318,7 +318,7 @@ public class KtvTaobaoUtil {
                 }
             }
         }
-        return skuListToMap(taobaoSkuList, goods, isPerfect);
+        return skuListToMap(taobaoSkuList, isPerfect);
     }
 
     /**
@@ -332,7 +332,8 @@ public class KtvTaobaoUtil {
      *                <p/>
      *                (发布到淘宝后台，是让淘宝后台以包厢-》时长-》日期 的形式显示的，不影响逻辑。以上面所说的三级形保存，是为了方便在我方页面显示相应信息)
      */
-    public static SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> skuListToMap(List<KtvTaobaoSku> skuList, Goods goods, boolean perfect) {
+    public static SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> skuListToMap(
+            List<KtvTaobaoSku> skuList, boolean perfect) {
         SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> result = new TreeMap<>();
         for (KtvTaobaoSku sku : skuList) {
             SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>> skuMapByRoomType = result.get(sku.getRoomType());
@@ -459,7 +460,7 @@ public class KtvTaobaoUtil {
             remoteDateSet.add(sku.getDate());
             remoteTimeRangeSet.add(sku.getTimeRangeCode());
         }
-        SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> remoteSkuMap  = skuListToMap(remoteSkuList, null, false);
+        SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> remoteSkuMap  = skuListToMap(remoteSkuList, false);
 
 
         Set<KtvRoomType> tobeAddedKtvRoomTypeSet = new HashSet<KtvRoomType>(CollectionUtils.subtract(localRoomTypeSet, remoteRoomTypeSet));
