@@ -4,7 +4,6 @@ import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
-import controllers.SupplierRbac;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.admin.SupplierUser;
@@ -689,7 +688,7 @@ public class Supplier extends Model {
     public Operator defaultOperator() {
         Operator operator = Operator.defaultOperator();
         // 是否有默认分销商，有则默认使用对应的Operator账户
-        Resaler defaultResaler = Resaler.findById(SupplierRbac.currentUser().supplier.defaultResalerId);
+        Resaler defaultResaler = Resaler.findById(this.defaultResalerId);
         if (defaultResaler != null) {
             operator = defaultResaler.operator;
         }
