@@ -122,8 +122,6 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
 
     /**
      * 测试正常验证过程中不再验证时间范围内
-     *
-     * @param sendMessage
      */
     public void testNotInVerifyTime(MessageSender messageSender) {
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
@@ -131,17 +129,13 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         ca.setTime(new Date());
 
         Goods goods = Goods.findById(kfcGoods.id);
-        String week = "";
-        String day = "";
         ca.add(Calendar.DAY_OF_MONTH, -1);
-        week = String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
+        String week = String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
         ca.add(Calendar.DAY_OF_MONTH, +1);
         week += "," + String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
         goods.useWeekDay = week;
-        ca.set(Calendar.HOUR_OF_DAY, 1);
-        goods.useBeginTime = df.format(ca.getTime());
-        ca.set(Calendar.HOUR_OF_DAY, 2);
-        goods.useEndTime = df.format(ca.getTime());
+        goods.useBeginTime = df.format(DateHelper.beforeMinuts(10));
+        goods.useEndTime = df.format(DateHelper.beforeMinuts(5));
         goods.save();
 
         Http.Response response = messageSender.doMessageSend(kfcECoupon, kfcClerk.jobNumber, null);
@@ -149,7 +143,8 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         ECoupon ecoupon = ECoupon.findById(kfcECoupon.id);
         ecoupon.refresh();
         assertEquals(ECouponStatus.UNCONSUMED, ecoupon.status);
-        day = ecoupon.getWeek();
+
+        String day = ecoupon.getWeek();
 
         // 消费者短信
         SMSMessage msg = getLastClerkSMSMessage();
@@ -159,10 +154,8 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         ca = Calendar.getInstance();
         ca.add(Calendar.DAY_OF_MONTH, -3);
         goods.useWeekDay = String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
-        ca.set(Calendar.HOUR_OF_DAY, 23);
-        goods.useBeginTime = df.format(ca.getTime());
-        ca.set(Calendar.HOUR_OF_DAY, 2);
-        goods.useEndTime = df.format(ca.getTime());
+        goods.useBeginTime = df.format(DateHelper.beforeMinuts(DateUtil.getEndOfDay(), 1));
+        goods.useEndTime = df.format(DateHelper.afterMinuts(DateUtil.getEndOfDay(), 1));
         goods.save();
         goods.refresh();
 
@@ -179,9 +172,9 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         goods = Goods.findById(kfcGoods.id);
         goods.useWeekDay = "1,2,3,4,5,6,7";
         ca.set(Calendar.HOUR_OF_DAY, 8);
-        goods.useBeginTime = df.format(ca.getTime());
+        goods.useBeginTime = df.format(DateHelper.beforeMinuts(15));
         ca.set(Calendar.HOUR_OF_DAY, 9);
-        goods.useEndTime = df.format(ca.getTime());
+        goods.useEndTime = df.format(DateHelper.beforeMinuts(10));
         goods.save();
         goods.refresh();
         response = messageSender.doMessageSend(kfcECoupon, kfcClerk.jobNumber, null);

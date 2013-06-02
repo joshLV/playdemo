@@ -164,24 +164,22 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         Calendar ca = Calendar.getInstance();
         ca.setTime(new Date());
 
-        String week = "";
-        String day = "";
         ca.add(Calendar.DAY_OF_MONTH, -1);
-        week = String.valueOf(getWeek(ca.get(Calendar.DAY_OF_WEEK)));
+        String week = String.valueOf(getWeek(ca.get(Calendar.DAY_OF_WEEK)));
         ca.add(Calendar.DAY_OF_MONTH, +1);
         week += "," + String.valueOf(getWeek(ca.get(Calendar.DAY_OF_WEEK)));
         kfcGoods.useWeekDay = week;
         ca.set(Calendar.HOUR_OF_DAY, 1);
-        kfcGoods.useBeginTime = df.format(ca.getTime());
+        kfcGoods.useBeginTime = df.format(DateHelper.afterMinuts(10));
         ca.set(Calendar.HOUR_OF_DAY, 2);
-        kfcGoods.useEndTime = df.format(ca.getTime());
+        kfcGoods.useEndTime = df.format(DateHelper.afterMinuts(20));
         kfcGoods.save();
         kfcGoods.refresh();
 
         Http.Response response = messageSender.doMessageSend(kfcClerk.mobile, kfcECoupon);
 
         assertStatus(200, response);
-        day = kfcECoupon.getWeek();
+        String day = kfcECoupon.getWeek();
         // 消费者短信
         SMSMessage msg = getLastClerkSMSMessage();
         assertSMSContentMatch("对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + kfcGoods.useBeginTime + "~" + kfcGoods.useEndTime + "时间内使用！如有疑问请致电：4006865151", msg.getContent());
