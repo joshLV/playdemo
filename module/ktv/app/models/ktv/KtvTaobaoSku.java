@@ -37,7 +37,7 @@ public class KtvTaobaoSku {
         return roomType + dateFormat.format(date) + getTimeRangeCode();
     }
 
-    public boolean parseTaobaoOuterId(String outerId) {
+    public KtvTaobaoSku parseTaobaoOuterId(String outerId) {
         Matcher matcher = taobaoOuterIdPattern.matcher(outerId);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         if (matcher.matches()) {
@@ -46,7 +46,7 @@ public class KtvTaobaoSku {
                 date =  dateFormat.parse(matcher.group(2));
             } catch (ParseException e) {
                 Logger.error("parse taobao outerIid to sku failed: %s", outerId);
-                return false;
+                return null;
             }
             int timRangeCode = Integer.parseInt(matcher.group(3));
             startTime = timRangeCode/100;
@@ -55,8 +55,10 @@ public class KtvTaobaoSku {
                 et = et + 24;
             }
             duration = et - startTime;
+
+            return this;
         }
-        return false;
+        return null;
     }
 
     public String getTaobaoProperties() {

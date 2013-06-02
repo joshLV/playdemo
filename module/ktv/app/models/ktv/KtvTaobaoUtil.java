@@ -468,88 +468,57 @@ public class KtvTaobaoUtil {
             SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> localSkuMap,
             List<KtvTaobaoSku> remoteSkuList ) {
 
-        Set<KtvRoomType> localRoomTypeSet = localSkuMap.keySet();
-        KtvRoomType firstKtvRoomType = localRoomTypeSet.iterator().next();
-        Set<Date> localDateSet = localSkuMap.get(firstKtvRoomType).keySet();
-        Set<Integer> localTimeRangeSet = localSkuMap.get(firstKtvRoomType).get(localDateSet.iterator().next()).keySet();
-
-        Set<KtvRoomType> remoteRoomTypeSet = new HashSet<>();
-        Set<Date> remoteDateSet = new HashSet<>();
-        Set<Integer> remoteTimeRangeSet = new HashSet<>();
-        for (KtvTaobaoSku sku : remoteSkuList) {
-            remoteRoomTypeSet.add(sku.getRoomType());
-            remoteDateSet.add(sku.getDate());
-            remoteTimeRangeSet.add(sku.getTimeRangeCode());
-        }
+        List<KtvTaobaoSku> localSkuList = skuMapToList(localSkuMap, false);
         SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> remoteSkuMap  = skuListToMap(remoteSkuList, false);
 
+        Set<String> localSkuIdentities = new HashSet<>();
+        Set<String> remoteSkuIdentities = new HashSet<>();
 
-        Set<KtvRoomType> tobeAddedKtvRoomTypeSet = new HashSet<KtvRoomType>(CollectionUtils.subtract(localRoomTypeSet, remoteRoomTypeSet));
-        Set<KtvRoomType> tobeDeletedKtvRoomTypeSet = new HashSet<KtvRoomType>(CollectionUtils.subtract(remoteRoomTypeSet, localRoomTypeSet));
-        Set<KtvRoomType> sameKtvRoomTypeSet = new HashSet<KtvRoomType>(CollectionUtils.intersection(localRoomTypeSet, remoteRoomTypeSet));
+        for (KtvTaobaoSku sku : localSkuList) {
+            localSkuIdentities.add(sku.getTaobaoOuterIid());
+        }
+        for (KtvTaobaoSku sku : remoteSkuList) {
+            remoteSkuIdentities.add(sku.getTaobaoOuterIid());
+        }
 
-        Set<Date> tobeAddedDateSet = new HashSet<Date>(CollectionUtils.subtract(localDateSet, remoteDateSet));
-        Set<Date> tobeDeletedDateSet = new HashSet<Date>(CollectionUtils.subtract(remoteDateSet, localDateSet));
-        Set<Date> sameDateSet = new HashSet<Date>(CollectionUtils.intersection(localDateSet, remoteDateSet));
-
-        Set<Integer> tobeAddedTimeRangeSet = new HashSet<Integer>(CollectionUtils.subtract(localTimeRangeSet, remoteTimeRangeSet));
-        Set<Integer> tobeDeletedTimeRangeSet = new HashSet<Integer>(CollectionUtils.subtract(remoteTimeRangeSet, localTimeRangeSet));
-        Set<Integer> sameTimeRangeCodeSet = new HashSet<Integer>(CollectionUtils.intersection(localTimeRangeSet, remoteTimeRangeSet));
-        System.out.println(StringUtils.join(tobeDeletedTimeRangeSet,","));
-
-
-        List<KtvTaobaoSku> localSkuList = skuMapToList(localSkuMap, false);
+        Set<String> tobeAddedIdentities = new HashSet<String>(CollectionUtils.subtract(localSkuIdentities, remoteSkuIdentities));
+        Set<String> tobeDeletedIdentities = new HashSet<String>(CollectionUtils.subtract(remoteSkuIdentities, localSkuIdentities));
+        Set<String> tobeUpdatedIdentities = new HashSet<String>(CollectionUtils.intersection(localSkuIdentities, remoteSkuIdentities));
 
         List<KtvTaobaoSku> tobeAddedSkuList = new ArrayList<>();
         //处理添加的
-        for (KtvTaobaoSku localSku : localSkuList) {
-            if ( tobeAddedKtvRoomTypeSet.contains(localSku.getRoomType()) ||
-                    tobeAddedDateSet.contains(localSku.getDate()) ||
-                    tobeAddedTimeRangeSet.contains(localSku.getTimeRangeCode())) {
-                tobeAddedSkuList.add(localSku);
-            }
+        for (String identity : tobeAddedIdentities) {
+            KtvTaobaoSku tmp = new KtvTaobaoSku().parseTaobaoOuterId(identity);
+            KtvTaobaoSku sku = localSkuMap.get(tmp.getRoomType()).get(tmp.getDate()).get(tmp.getTimeRangeCode());
+            tobeAddedSkuList.add(sku);
         }
         //处理删除的
         List<KtvTaobaoSku> tobeDeletedSkuList = new ArrayList<>();
-        for (KtvTaobaoSku remoteSku : remoteSkuList) {
-            if ( tobeDeletedKtvRoomTypeSet.contains(remoteSku.getRoomType()) ||
-                    tobeDeletedDateSet.contains(remoteSku.getDate()) ||
-                    tobeDeletedTimeRangeSet.contains(remoteSku.getTimeRangeCode())) {
-                tobeDeletedSkuList.add(remoteSku);
-            }
+        for (String identity : tobeDeletedIdentities) {
+            KtvTaobaoSku tmp = new KtvTaobaoSku().parseTaobaoOuterId(identity);
+            KtvTaobaoSku sku = remoteSkuMap.get(tmp.getRoomType()).get(tmp.getDate()).get(tmp.getTimeRangeCode());
+            tobeDeletedSkuList.add(sku);
         }
         List<KtvTaobaoSku> tobeUpdatedPriceSkuList = new ArrayList<>();
         List<KtvTaobaoSku> tobeUpdatedOnlyQuantityList = new ArrayList<>();
-        for (KtvRoomType roomType : sameKtvRoomTypeSet) {
-            for (Date date : sameDateSet) {
-                for (Integer timeRangeCode : sameTimeRangeCodeSet) {
-                    KtvTaobaoSku localSku = localSkuMap.get(roomType).get(date).get(timeRangeCode);
 
-                    KtvTaobaoSku remoteSku = null;
-                    SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>> remoteDt = remoteSkuMap.get(roomType);
-                    if (remoteDt != null) {
-                        SortedMap<Integer, KtvTaobaoSku> remoteTr = remoteDt.get(date);
-                        if ( remoteTr != null) {
-                            remoteSku = remoteTr.get(timeRangeCode);
-                        }
-                    }
+        for (String identity : tobeUpdatedIdentities) {
+            KtvTaobaoSku tmp = new KtvTaobaoSku().parseTaobaoOuterId(identity);
+            KtvTaobaoSku localSku = localSkuMap.get(tmp.getRoomType()).get(tmp.getDate()).get(tmp.getTimeRangeCode());
+            KtvTaobaoSku remoteSku = remoteSkuMap.get(tmp.getRoomType()).get(tmp.getDate()).get(tmp.getTimeRangeCode());
 
-                    if (localSku == null || remoteSku == null ) {
-                        continue;
-                    }
-                    if (localSku.getPrice().compareTo(remoteSku.getPrice()) != 0) {
-                        remoteSku.setPrice(localSku.getPrice());
-                        remoteSku.setQuantity(localSku.getQuantity());
-                        tobeUpdatedPriceSkuList.add(remoteSku);
-                        continue;
-                    }
-                    if (!localSku.getQuantity().equals(remoteSku.getQuantity())) {
-                        remoteSku.setQuantity(localSku.getQuantity());
-                        tobeUpdatedOnlyQuantityList.add(remoteSku);
-                    }
-                }
+            if (localSku.getPrice().compareTo(remoteSku.getPrice()) != 0) {
+                remoteSku.setPrice(localSku.getPrice());
+                remoteSku.setQuantity(localSku.getQuantity());
+                tobeUpdatedPriceSkuList.add(remoteSku);
+                continue;
+            }
+            if (!localSku.getQuantity().equals(remoteSku.getQuantity())) {
+                remoteSku.setQuantity(localSku.getQuantity());
+                tobeUpdatedOnlyQuantityList.add(remoteSku);
             }
         }
+
         Map<String, List<KtvTaobaoSku>> result = new HashMap<>();
         result.put(ACTION_ADD, tobeAddedSkuList);
         result.put(ACTION_DELETE, tobeDeletedSkuList);
