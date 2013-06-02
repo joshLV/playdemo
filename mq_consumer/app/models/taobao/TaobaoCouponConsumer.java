@@ -2,7 +2,6 @@ package models.taobao;
 
 import com.google.gson.JsonObject;
 import com.taobao.api.response.TradeGetResponse;
-import com.uhuila.common.util.DateUtil;
 import models.RabbitMQConsumerWithTx;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -22,10 +21,8 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.ResalerProduct;
-import models.supplier.Supplier;
 import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
-import play.Play;
 import play.db.jpa.JPA;
 import play.jobs.OnApplicationStart;
 
@@ -50,7 +47,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
 //    public static Pattern skuPattern = Pattern.compile("(\\d+:\\d+);欢唱时间:(\\d+)点至(\\d+)点;日期:(\\d+)月(\\d+)日;?");
 
     public static Pattern skuDatePattern = Pattern.compile("(\\d+)月(\\d+)日");
-    public static Pattern skuTimePattern = Pattern.compile("(\\d+)点至(\\d+)点");
+    public static Pattern skuTimePattern = Pattern.compile("凌?晨?(\\d+)点至凌?晨?(\\d+)点");
 
     @Override
     protected int retries() {
@@ -280,7 +277,6 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 case "欢唱时间":
                     matcher = skuTimePattern.matcher(map[1]);
                     if (matcher.matches()) {
-
                         int startTime = Integer.parseInt(matcher.group(1));
                         int endTime = Integer.parseInt(matcher.group(2));
 

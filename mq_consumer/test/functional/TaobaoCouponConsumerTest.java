@@ -24,6 +24,7 @@ import util.mq.MockMQ;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 /**
  * @author likang
@@ -148,4 +149,22 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
         assertEquals(OuterOrderStatus.ORDER_SYNCED, outerOrder.status);
     }
 
+    @Test
+    public void testSkuTimePattern() throws Exception {
+        checkSkuTime("凌晨3点至凌晨6点", 3, 6);
+        checkSkuTime("凌晨3点至6点", 3, 6);
+        checkSkuTime("3点至凌晨6点", 3, 6);
+        checkSkuTime("3点至6点", 3, 6);
+        checkSkuTime("凌晨13点至凌晨61点", 13, 16);
+        checkSkuTime("凌晨13点至16点", 13, 16);
+        checkSkuTime("13点至凌晨16点", 13, 16);
+        checkSkuTime("13点至16点", 13, 16);
+    }
+
+    private void checkSkuTime(String skuTimes, int time1, int time2) {
+        Matcher matcher = TaobaoCouponConsumer.skuTimePattern.matcher(skuTimes);
+        assertTrue(matcher.matches());
+        assertEquals(time1, Integer.parseInt(matcher.group(1)));
+        assertEquals(time2, Integer.parseInt(matcher.group(2)));
+    }
 }
