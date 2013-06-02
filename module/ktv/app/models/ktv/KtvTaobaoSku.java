@@ -1,11 +1,7 @@
 package models.ktv;
 
-import models.sales.Goods;
-import org.apache.commons.lang.StringUtils;
 import play.Logger;
-import play.db.jpa.Model;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -77,8 +73,8 @@ public class KtvTaobaoSku {
 
     public static String humanTimeRange(int start, int end) {
         end = end >= 24 ? end - 24 : end;
-        String endStr = end < 8 ? "营业结束" : end + "点";
-        String startStr = start < 8 ? "凌晨" + start + "点" : start + "点";
+        String endStr = end < 6 ? "凌晨" + start + "点" : end + "点";
+        String startStr = start < 6 ? "凌晨" + start + "点" : start + "点";
         return startStr + "至" + endStr;
     }
 
