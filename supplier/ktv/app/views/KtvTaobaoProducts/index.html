@@ -4,13 +4,15 @@
 #{set 'moreStyles'}
 <style>
     .syncInfo {
-        padding-left: 10px;
         color: red;
     }
     .batchSync {
-        float: right;
+        position: absolute;
+        top:25px;
+        right:20px;
         border: 1px solid #eee;
-        background-color: #eee;
+        background-color: #5bb75b;
+        color:white;
         margin-bottom: 5px;
         padding: 5px 10px;
         cursor: pointer;
@@ -21,13 +23,9 @@
 <div class="body">
 
 #{form @KtvTaobaoProducts.index() , id:'creationForm',class:"form-horizontal" }
-    <div class="bd">
+    <div class="bd" style="position:relative">
         <h2>${title}</h2>
         <div class="batchSync" style="display: none">批量同步</div>
-        <div style="clear: both"></div>
-
-
-        *{<a class="btn" style="margin-bottom: 10px" id="batchSyncSku">批量更新</a>}*
         <table cellspacing="0" cellpadding="0" border="0" class="standard-table">
             <thead>
             <tr>
@@ -68,8 +66,9 @@
                         </td>
                         <td>
                             #{if resalerProduct && ktvProductGoods.needSync==com.uhuila.common.constants.DeletedStatus.DELETED}
-                                <a href="#" linkid="${ktvProductGoods.id}" class="syncSku">同步</a>
-                                 <img style="display: none" imgid="${ktvProductGoods.id}" src="/public/images/loading.gif" border="0"/>
+                                <a href="#" pgid="${ktvProductGoods.id}" class="syncLink">同步</a>
+                                <img style="display: none" pgid="${ktvProductGoods.id}" class="syncLoading" src="/public/images/loading.gif" border="0"/>
+                                <img style="display: none" pgid="${ktvProductGoods.id}" class="syncWait" src="/public/images/wait.png" border="0"/>
                                 <span infoid="${ktvProductGoods.id}" style="display: none" class="syncInfo"></span>
                             #{/if}
                         </td>
@@ -89,26 +88,25 @@
 <script type="text/javascript">
     function startSync(ele, autoNext) {
         ele.hide();
-        var pgid = ele.attr("linkid");
-        var img =  $("img[imgid='" + pgid + "']").show();
+        var pgid = ele.attr("pgid");
+        var loadingImg =  $(".syncLoading[pgid='" + pgid + "']").show();
         $.ajax({
             url:"/ktv/taobao-product/sync-sku",
             type:"post",
             data: {"productGoodsId": pgid},
             success: function (data) {
                     if (!data.isOk) {
-                        img.hide();
+                        loadingImg.hide();
                         $("span[infoid='" + pgid + "']").text(data.error).show();
                     }else {
-                        img.attr("src", "/public/images/ok.png");
-                    }
-                    if(autoNext){
-                        findOneAndSync();
+                        loadingImg.attr("src", "/public/images/ok.png");
                     }
                 },
             error: function(data) {
-                img.hide();
+                loadingImg.hide();
                 $("span[infoid='" + pgid + "']").text("服务器出错，请稍后重试").show();
+            },
+            complete: function() {
                 if(autoNext){
                     findOneAndSync();
                 }
@@ -117,20 +115,32 @@
     }
 
     function findOneAndSync() {
-        var ele = $(".syncSku:visible").first();
+        var ele = $(".syncWait:visible").first();
         if (ele.length > 0) {
             startSync(ele, true);
         }
     }
 
     $(function () {
-        var syncLinks = $(".syncSku");
+    //预加载图片
+    var limg = new Image();
+    limg.src = '/public/images/loading.gif';
+    var wimg = new Image();
+    wimg.src = '/public/images/wait.png';
+
+
+    var syncLinks = $(".syncLink");
         syncLinks.click(function () {
             startSync($(this), false);
         });
         if(syncLinks.length > 0) {
             $(".batchSync").show().click(function(){
                 $(this).hide();
+                $(".syncLink:visible").each(function(){
+                    var link = $(this);
+                    link.hide();
+                    $(".syncWait[pgid='" + link.attr("pgid") + "']").show();
+                });
                 for(var i = 0 ; i< 2 ;i ++) {
                     findOneAndSync();
                 }
