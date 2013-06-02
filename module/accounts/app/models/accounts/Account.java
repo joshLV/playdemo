@@ -94,7 +94,7 @@ public class Account extends Model {
         this.status = AccountStatus.NORMAL;
         this.createdAt = new Date();
         this.creditable = AccountCreditable.NO;
-        this.operator = Operator.defaultOperator();
+        this.operator = operator;
     }
 
     /**
