@@ -1,5 +1,7 @@
 package controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import models.ktv.*;
 import models.order.OuterOrderPartner;
 import models.sales.ResalerProduct;
@@ -35,6 +37,7 @@ public class Application extends Controller {
         List<KtvTaobaoSku> remoteSkuList = KtvTaobaoUtil.getTaobaoSku(resalerProduct);
 
         Map<String, List<KtvTaobaoSku>> diffResult =  KtvTaobaoUtil.diffSkuBetweenLocalAndRemote(localSkuMap, remoteSkuList);
-        renderJSON(diffResult);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        renderJSON(gson.toJson(diffResult));
     }
 }
