@@ -1,7 +1,6 @@
 package models.ktv;
 
 import com.taobao.api.ApiException;
-import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.domain.Sku;
 import com.taobao.api.request.*;
@@ -92,7 +91,7 @@ public class KtvTaobaoUtil {
 
         List<KtvTaobaoSku> remoteSkuList = getTaobaoSku(resalerProduct);
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
+        TaobaoClient taobaoClient = new KtvTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
                 resalerProduct.resaler.taobaoCouponAppSecretKey);
         //找到淘宝的token
         OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
@@ -491,7 +490,7 @@ public class KtvTaobaoUtil {
 
 
     public static List<KtvTaobaoSku> getTaobaoSku(ResalerProduct resalerProduct) {
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
+        TaobaoClient taobaoClient = new KtvTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
                 resalerProduct.resaler.taobaoCouponAppSecretKey);
         //找到淘宝的token
         OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
