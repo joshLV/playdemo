@@ -271,7 +271,7 @@ public class KtvTaobaoUtil {
             Date day = entry.getKey();
             uniqDates.add(day);
             if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
-                break ;
+                continue;
             }
             //查出该门店的该产品这一天已经卖出、或者被锁定的房间信息
             if (goods != null){
@@ -284,7 +284,7 @@ public class KtvTaobaoUtil {
                 uniqRoomTypes.add(schedule.roomType);
                 if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
                     uniqRoomTypes.remove(schedule.roomType);
-                    break;
+                    continue;
                 }
 
                 //查出门店数量
@@ -297,7 +297,7 @@ public class KtvTaobaoUtil {
                     uniqTimeRanges.add(t);
                     if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
                         uniqTimeRanges.remove(t);
-                        break;
+                        continue;
                     }
                     int roomCountLeft = shopPriceSchedule.roomCount;
                     //排除掉已预订的房间所占用的数量
