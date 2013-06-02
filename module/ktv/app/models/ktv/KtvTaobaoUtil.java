@@ -232,7 +232,7 @@ public class KtvTaobaoUtil {
          *
          * 最终我们只选取 从startDay 开始往后数，不超过14天的 日期
          */
-        TreeMap<Date, List<KtvPriceSchedule>> orderedScheduleMap = new TreeMap<>();
+        TreeMap<Date, Set<KtvPriceSchedule>> orderedScheduleMap = new TreeMap<>();
         for (KtvPriceSchedule schedule : priceScheduleList) {
             for (KtvDateRangePriceSchedule dateRange : schedule.dateRanges) {
                 DateTime sd = new DateTime(dateRange.startDay);
@@ -243,9 +243,9 @@ public class KtvTaobaoUtil {
                     if (d.before(startDay)) {
                         continue;
                     }
-                    List<KtvPriceSchedule> schedules = orderedScheduleMap.get(d);
+                    Set<KtvPriceSchedule> schedules = orderedScheduleMap.get(d);
                     if (schedules == null) {
-                        schedules = new ArrayList<>();
+                        schedules = new HashSet<>();
                         orderedScheduleMap.put(d, schedules);
                     }
                     schedules.add(schedule);
@@ -263,7 +263,7 @@ public class KtvTaobaoUtil {
         List<KtvRoomOrderInfo> roomOrderInfoList = new ArrayList<>();
         Date tenMinutesAgo = DateUtils.addMinutes(new Date(), - KtvRoomOrderInfo.LOCK_MINUTE);
 
-        for (Map.Entry<Date, List<KtvPriceSchedule>> entry : orderedScheduleMap.entrySet()) {
+        for (Map.Entry<Date, Set<KtvPriceSchedule>> entry : orderedScheduleMap.entrySet()) {
             dateCount -= 1;
             if (dateCount < 0) {
                 continue;
