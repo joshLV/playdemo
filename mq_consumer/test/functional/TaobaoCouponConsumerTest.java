@@ -155,7 +155,7 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
         checkSkuTime("凌晨3点至6点", 3, 6);
         checkSkuTime("3点至凌晨6点", 3, 6);
         checkSkuTime("3点至6点", 3, 6);
-        checkSkuTime("凌晨13点至凌晨61点", 13, 16);
+        checkSkuTime("凌晨13点至凌晨16点", 13, 16);
         checkSkuTime("凌晨13点至16点", 13, 16);
         checkSkuTime("13点至凌晨16点", 13, 16);
         checkSkuTime("13点至16点", 13, 16);
