@@ -4,10 +4,10 @@ import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
+import controllers.SupplierRbac;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.admin.SupplierUser;
-import models.operator.OperateRole;
 import models.operator.OperateUser;
 import models.operator.Operator;
 import models.order.Prepayment;
@@ -27,7 +27,17 @@ import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 import play.modules.view_ext.annotation.Mobile;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 import java.beans.Transient;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -670,4 +680,19 @@ public class Supplier extends Model {
         return SHIHUI;
     }
 
+
+    /**
+     * 默认运营商。
+     * @return
+     */
+    @Transient
+    public Operator defaultOperator() {
+        Operator operator = Operator.defaultOperator();
+        // 是否有默认分销商，有则默认使用对应的Operator账户
+        Resaler defaultResaler = Resaler.findById(SupplierRbac.currentUser().supplier.defaultResalerId);
+        if (defaultResaler != null) {
+            operator = defaultResaler.operator;
+        }
+        return operator;
+    }
 }

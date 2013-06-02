@@ -435,10 +435,10 @@ public class SupplierUser extends Model {
         System.out.println(shop + "《=========shop:");
         if (shop != null && shop.independentClearing) {
             System.out.println(  "《=========:");
-            return AccountUtil.getShopAccount(shop.id);
+            return AccountUtil.getShopAccount(shop.id, shop.defaultOperator());
         }
         if (supplier != null) {
-            return AccountUtil.getSupplierAccount(supplier.id);
+            return AccountUtil.getSupplierAccount(supplier.id, supplier.defaultOperator());
         }
         return null;
     }

@@ -39,7 +39,7 @@ public class FinanceCheckJobTest extends UnitTest {
         platformIncomingAccount = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         platformIncomingAccount.amount = new BigDecimal(1000);
         platformIncomingAccount.save();
-        supplierAccount = AccountUtil.getSupplierAccount(supplier.id);
+        supplierAccount = AccountUtil.getSupplierAccount(supplier.id, Operator.defaultOperator());
         resalerAccount = AccountUtil.getResalerAccount(resaler);
         resalerAccount.creditable = AccountCreditable.YES;
         resalerAccount.amount = BigDecimal.ZERO;

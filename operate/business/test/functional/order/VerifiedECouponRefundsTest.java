@@ -66,7 +66,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
         Security.setLoginUserForTest(operateUser.loginName);
 
         Supplier supplier = FactoryBoy.create(Supplier.class);
-        supplierAccount = AccountUtil.getSupplierAccount(supplier.id);
+        supplierAccount = AccountUtil.getSupplierAccount(supplier.id, supplier.defaultOperator());
         supplierAccount.amount = baseAmount;
         supplierAccount.save();
 

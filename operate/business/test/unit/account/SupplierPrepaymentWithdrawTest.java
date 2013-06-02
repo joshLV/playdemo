@@ -290,14 +290,14 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
 
 
     private BigDecimal 账户余额() {
-        BigDecimal amount = AccountUtil.getSupplierAccount(supplier.id).amount;
+        BigDecimal amount = AccountUtil.getSupplierAccount(supplier.id, supplier.defaultOperator()).amount;
         Logger.info("账户余额=" + amount);
         return amount;
     }
 
     private BigDecimal 可提现金额(Date date) {
         Prepayment lastPrepayment = Prepayment.getLastUnclearedPrepayments(supplier.id);
-        BigDecimal result = Supplier.getWithdrawAmount(AccountUtil.getSupplierAccount(supplier.id), lastPrepayment,
+        BigDecimal result = Supplier.getWithdrawAmount(AccountUtil.getSupplierAccount(supplier.id, Operator.defaultOperator()), lastPrepayment,
                 可结算余额(date), date);
         Logger.info("可提现金额(" + date + ")=" + result + ", lastPrepayment=" + lastPrepayment);
         return result;

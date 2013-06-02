@@ -12,6 +12,7 @@ import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.operator.Operator;
 import models.order.Prepayment;
 import models.resale.Resaler;
 import models.sales.Shop;
@@ -76,7 +77,8 @@ public class WithdrawApproval extends Controller {
         Account account = null;
         switch (bill.account.accountType) {
             case SUPPLIER:
-                account = AccountUtil.getSupplierAccount(uid);
+                //只能处理视惠的申请
+                account = AccountUtil.getSupplierAccount(uid, Operator.defaultOperator());
                 SupplierContract contract = SupplierContract.find("supplierId=? order by createdAt desc ", uid).first();
                 renderArgs.put("contract", contract);
                 renderArgs.put("supplierId", account.uid);
@@ -88,9 +90,9 @@ public class WithdrawApproval extends Controller {
                 account = AccountUtil.getConsumerAccount(uid);
                 break;
             case SHOP:
-                account = AccountUtil.getShopAccount(uid);
                 Shop shop = Shop.findById(uid);
                 Supplier supplier = Supplier.findById(shop.supplierId);
+                account = AccountUtil.getShopAccount(uid, supplier.defaultOperator());
 
                 renderArgs.put("supplierId", shop.supplierId);
                 renderArgs.put("supplierName", supplier.getName());
@@ -411,7 +413,7 @@ public class WithdrawApproval extends Controller {
         List<Supplier> supplierResult = new ArrayList<>();
 
         for (Supplier supplier : supplierList) {
-            Account supplierAccount = AccountUtil.getSupplierAccount(supplier.id);
+            Account supplierAccount = AccountUtil.getSupplierAccount(supplier.id, supplier.defaultOperator());
             BigDecimal amount = supplierAccount.getWithdrawAmount(withdrawDate);
             List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplier.id, SUPPLIER);
 
@@ -430,7 +432,8 @@ public class WithdrawApproval extends Controller {
 
         final Date endOfDay = DateUtil.getEndOfDay(withdrawDate);
         List<Supplier> supplierList = getWithdrawSupplierList(endOfDay);
-        Account supplierAccount = AccountUtil.getSupplierAccount(supplierId);
+        //只能处理视惠的结算.
+        Account supplierAccount = AccountUtil.getSupplierAccount(supplierId, Operator.defaultOperator());
         Supplier supplier = Supplier.findUnDeletedById(supplierId);
         BigDecimal amount = BigDecimal.ZERO;
         Prepayment lastPrepayment = null;

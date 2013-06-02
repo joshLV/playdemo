@@ -35,7 +35,7 @@ public class AccountSequences extends Controller {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
-        Account account = AccountUtil.getSupplierAccount(accountId);
+        Account account = AccountUtil.getSupplierAccount(accountId, SupplierRbac.currentUser().supplier.defaultOperator());
         if (condition == null) {
             condition = new AccountSequenceCondition();
         }

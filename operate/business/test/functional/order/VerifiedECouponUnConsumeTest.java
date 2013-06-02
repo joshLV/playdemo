@@ -65,7 +65,7 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
         yibaiquanResaler = ResalerFactory.getYibaiquanResaler();
 
         Supplier supplier = FactoryBoy.create(Supplier.class);
-        supplierAccount = AccountUtil.getSupplierAccount(supplier.id);
+        supplierAccount = AccountUtil.getSupplierAccount(supplier.id, supplier.defaultOperator());
         supplierAccount.amount = baseAmount;
         supplierAccount.save();
 

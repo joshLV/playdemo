@@ -1011,9 +1011,9 @@ public class ECoupon extends Model {
     @Transient
     public Account getSupplierAccount() {
         if (status == ECouponStatus.CONSUMED && shop != null && shop.independentClearing) {
-            return AccountUtil.getShopAccount(shop.id);
+            return AccountUtil.getShopAccount(shop.id, this.order.operator);
         }
-        return AccountUtil.getSupplierAccount(goods.supplierId);
+        return AccountUtil.getSupplierAccount(goods.supplierId, this.order.operator);
     }
 
     /**

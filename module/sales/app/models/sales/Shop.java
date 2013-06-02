@@ -5,6 +5,8 @@ import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
+import models.operator.Operator;
+import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -227,11 +229,11 @@ public class Shop extends Model {
      */
     public void createAccountsIfNeeded() {
         if (!AccountUtil.accountExist(id, AccountType.SHOP)) {
-            Account account = new Account(id, AccountType.SHOP);
+            Account account = new Account(id, AccountType.SHOP, this.defaultOperator());
             account.supplierId = supplierId;
             account.save();
         } else {
-            Account account = AccountUtil.getShopAccount(id);
+            Account account = AccountUtil.getShopAccount(id, this.defaultOperator());
             //sujie: 之前由于程序问题存在门店创建出的帐号中的supplier为空的情况，所以才加了下面这段代码，以便修复历史数据
             if (account.supplierId == null) {
                 account.supplierId = supplierId;
@@ -321,5 +323,16 @@ public class Shop extends Model {
         return find("supplierId=? and independentClearing=?", supplierId, true).fetch();
     }
 
-
+    /**
+     * 默认运营商，是当前商户的默认运营商.
+     * @return
+     */
+    @Transient
+    public Operator defaultOperator() {
+        Supplier supplier = Supplier.findById(this.supplierId);
+        if (supplier == null) {
+            return Operator.defaultOperator();
+        }
+        return supplier.defaultOperator();
+    }
 }

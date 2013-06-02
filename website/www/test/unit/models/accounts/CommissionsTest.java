@@ -69,7 +69,7 @@ public class CommissionsTest extends UnitTest {
 
     @Test
     public void testRealGoodsCommission() {
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getSupplierAccount(supplier.id).amount));//供应商余额为0
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getSupplierAccount(supplier.id, Operator.defaultOperator()).amount));//供应商余额为0
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getUhuilaAccount(Operator.defaultOperator()).amount));//一百券余额为0
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformCommissionAccount(Operator.defaultOperator()).amount)); //券平台佣金账户为0
         assertEquals(0, BALANCE.compareTo(AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator()).amount));//平台收款账户
@@ -84,7 +84,7 @@ public class CommissionsTest extends UnitTest {
         assertEquals(0,
                 realOrderItem.originalPrice
                         .multiply(new BigDecimal(realOrderItem.buyNumber))
-                        .compareTo(AccountUtil.getSupplierAccount(supplier.id).amount));//供应商余额
+                        .compareTo(AccountUtil.getSupplierAccount(supplier.id, Operator.defaultOperator()).amount));//供应商余额
 
         assertEquals(0,
                 realOrderItem.resalerPrice
@@ -110,7 +110,7 @@ public class CommissionsTest extends UnitTest {
     @Test
     public void testECouponCommission() {
 
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getSupplierAccount(supplier.id).amount));//供应商余额为0
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getSupplierAccount(supplier.id, Operator.defaultOperator()).amount));//供应商余额为0
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getUhuilaAccount(Operator.defaultOperator()).amount));//一百券余额为0
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformCommissionAccount(Operator.defaultOperator()).amount)); //券平台佣金账户为0
         assertEquals(0, BALANCE.compareTo(AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator()).amount));//平台收款账户
@@ -123,7 +123,7 @@ public class CommissionsTest extends UnitTest {
 
         assertEquals(0,
                 eCoupon.originalPrice
-                        .compareTo(AccountUtil.getSupplierAccount(supplier.id).amount));//供应商余额
+                        .compareTo(AccountUtil.getSupplierAccount(supplier.id, Operator.defaultOperator()).amount));//供应商余额
 
         assertEquals(0,
                 eCoupon.resalerPrice

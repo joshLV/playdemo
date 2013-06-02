@@ -1193,7 +1193,7 @@ public class Order extends Model {
             if (MaterialType.REAL.equals(orderItem.goods.materialType)) {
 
                 //给商户打钱
-                Account supplierAccount = AccountUtil.getSupplierAccount(orderItem.goods.supplierId);
+                Account supplierAccount = AccountUtil.getSupplierAccount(orderItem.goods.supplierId, Operator.defaultOperator());
                 TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
                         .toAccount(supplierAccount)
                         .balancePaymentAmount(orderItem.originalPrice.multiply(new BigDecimal(orderItem.buyNumber)))

@@ -148,10 +148,11 @@ public class OperateReports extends Controller {
 
         if (shopId != null && !shopId.equals(0L)) {
             condition.accountType = AccountType.SHOP;
-            condition.account = AccountUtil.getShopAccount(shopId);
+            //只能处理视惠的报表
+            condition.account = AccountUtil.getShopAccount(shopId, Operator.defaultOperator());
         } else if (supplierId != null && !supplierId.equals(0L)) {
             condition.accountType = AccountType.SUPPLIER;
-            condition.account = AccountUtil.getSupplierAccount(supplierId);
+            condition.account = AccountUtil.getSupplierAccount(supplierId, Operator.defaultOperator());
 //        } else {
 //            condition.account = new Account();
 //            condition.account.id = -1L;
@@ -201,11 +202,11 @@ public class OperateReports extends Controller {
         }
         if (shopId != null && !shopId.equals(0L)) {
             condition.accountType = AccountType.SHOP;
-            condition.account = AccountUtil.getShopAccount(shopId);
+            condition.account = AccountUtil.getShopAccount(shopId, Operator.defaultOperator());
 
         } else if (supplierId != null && !supplierId.equals(0L)) {
             condition.accountType = AccountType.SUPPLIER;
-            condition.account = AccountUtil.getSupplierAccount(supplierId);
+            condition.account = AccountUtil.getSupplierAccount(supplierId, Operator.defaultOperator());
         } else {
             condition.accountType = AccountType.SUPPLIER;
         }
@@ -406,10 +407,10 @@ public class OperateReports extends Controller {
 
         if (shopId != null && !shopId.equals(0L)) {
             condition.accountType = AccountType.SHOP;
-            condition.account = AccountUtil.getShopAccount(shopId);
+            condition.account = AccountUtil.getShopAccount(shopId, Operator.defaultOperator());
         } else if (supplierId != null && !supplierId.equals(0L)) {
             condition.accountType = AccountType.SUPPLIER;
-            condition.account = AccountUtil.getSupplierAccount(supplierId);
+            condition.account = AccountUtil.getSupplierAccount(supplierId, Operator.defaultOperator());
 //        } else {
 //            condition.account = new Account();
 //            condition.account.id = -1L;

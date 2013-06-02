@@ -120,12 +120,12 @@ public class AccountUtil {
         return getResalerAccount(resaler);
     }
 
-    public static Account getSupplierAccount(long uid) {
-        return getAccount(uid, AccountType.SUPPLIER, false);
+    public static Account getSupplierAccount(long supplierId, Operator operator) {
+        return getAccount(supplierId, AccountType.SUPPLIER, false, operator);
     }
 
-    public static Account getShopAccount(long uid) {
-        return getAccount(uid, AccountType.SHOP, false);
+    public static Account getShopAccount(Long shopId, Operator operator) {
+        return getAccount(shopId, AccountType.SHOP, false, operator);
     }
 
     /**

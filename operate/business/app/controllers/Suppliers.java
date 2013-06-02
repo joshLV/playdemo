@@ -7,7 +7,6 @@ import models.accounts.util.AccountUtil;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
-import models.operator.OperateRole;
 import models.operator.OperateUser;
 import models.operator.Operator;
 import models.resale.Resaler;
@@ -29,7 +28,9 @@ import play.mvc.With;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 商户管理的控制器.
@@ -117,7 +118,7 @@ public class Suppliers extends Controller {
         setSupplierProperty(supplier.id);
 
         // 确保创建商户Account，以避免并发时产生2个accounts
-        AccountUtil.getSupplierAccount(supplier.id);
+        AccountUtil.getSupplierAccount(supplier.id, supplier.defaultOperator());
 
         //发送密码给商户管理员手机
 //        String comment = Play.configuration.getProperty("message.comment", "【券市场】 恭喜您已开通券市场账号，用户名：username，密码：password。（请及时修改密码）客服热线：4006865151");
