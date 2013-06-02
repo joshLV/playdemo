@@ -27,6 +27,7 @@ import play.db.jpa.JPA;
 
 import javax.persistence.Query;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -266,13 +267,16 @@ public class KtvTaobaoUtil {
         for (Map.Entry<Date, Set<KtvPriceSchedule>> entry : orderedScheduleMap.entrySet()) {
             dateCount -= 1;
             if (dateCount < 0) {
+                System.out.println("skip dateCount: " + new SimpleDateFormat("yyyy-MM-dd").format(entry.getKey()));
                 continue;
             }
             Date day = entry.getKey();
             uniqDates.add(day);
             if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
+                System.out.println("skip date: " + new SimpleDateFormat("yyyy-MM-dd").format(entry.getKey()));
                 continue;
             }
+            System.out.println("day: " + new SimpleDateFormat("yyyy-MM-dd").format(entry.getKey()));
             //查出该门店的该产品这一天已经卖出、或者被锁定的房间信息
             if (goods != null){
                 roomOrderInfoList = KtvRoomOrderInfo.find(
@@ -284,8 +288,11 @@ public class KtvTaobaoUtil {
                 uniqRoomTypes.add(schedule.roomType);
                 if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
                     uniqRoomTypes.remove(schedule.roomType);
+                    System.out.println("skip roomType: " + schedule.roomType);
                     continue;
                 }
+                System.out.println("schedule: " + schedule.id);
+                System.out.println("roomType: " + schedule.roomType);
 
                 //查出门店数量
                 KtvShopPriceSchedule shopPriceSchedule = KtvShopPriceSchedule.find("byShopAndSchedule", shop, schedule).first();
@@ -297,8 +304,10 @@ public class KtvTaobaoUtil {
                     uniqTimeRanges.add(t);
                     if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
                         uniqTimeRanges.remove(t);
+                        System.out.println("skip timerange: " + t);
                         continue;
                     }
+                    System.out.println("time: " + t);
                     int roomCountLeft = shopPriceSchedule.roomCount;
                     //排除掉已预订的房间所占用的数量
                     for (KtvRoomOrderInfo orderInfo : roomOrderInfoList) {
@@ -314,6 +323,7 @@ public class KtvTaobaoUtil {
                             roomCountLeft -= 1;
                         }
                     }
+                    System.out.println("roomCount: " + t);
                     //如果预订满了，就不再有此SKU
                     if (roomCountLeft <= 0) {
                         continue;
