@@ -263,7 +263,6 @@ public class KtvTaobaoUtil {
         List<KtvRoomOrderInfo> roomOrderInfoList = new ArrayList<>();
         Date tenMinutesAgo = DateUtils.addMinutes(new Date(), - KtvRoomOrderInfo.LOCK_MINUTE);
 
-        mainLoop:
         for (Map.Entry<Date, List<KtvPriceSchedule>> entry : orderedScheduleMap.entrySet()) {
             dateCount -= 1;
             if (dateCount < 0) {
@@ -271,6 +270,9 @@ public class KtvTaobaoUtil {
             }
             Date day = entry.getKey();
             uniqDates.add(day);
+            if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
+                break ;
+            }
             //查出该门店的该产品这一天已经卖出、或者被锁定的房间信息
             if (goods != null){
                 roomOrderInfoList = KtvRoomOrderInfo.find(
@@ -279,22 +281,31 @@ public class KtvTaobaoUtil {
             }
 
             for (KtvPriceSchedule schedule : entry.getValue()) {
+                uniqRoomTypes.add(schedule.roomType);
+                if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
+                    uniqRoomTypes.remove(schedule.roomType);
+                    break;
+                }
+
                 //查出门店数量
                 KtvShopPriceSchedule shopPriceSchedule = KtvShopPriceSchedule.find("byShopAndSchedule", shop, schedule).first();
-                uniqRoomTypes.add(schedule.roomType);
-
                 //取出该房型下的时间安排
                 SortedSet<Integer> startTimeArray = schedule.getStartTimesAsSet();
                 for (Integer startTime : startTimeArray) {
                     //房型数 x 日期数 x 时间段数 不能超过600
-                    uniqTimeRanges.add(startTime + "-" + (startTime + product.duration));
+                    String t = startTime + "-" + (startTime + product.duration);
+                    uniqTimeRanges.add(t);
                     if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
-                        break mainLoop;
+                        uniqTimeRanges.remove(t);
+                        break;
                     }
                     int roomCountLeft = shopPriceSchedule.roomCount;
                     //排除掉已预订的房间所占用的数量
                     for (KtvRoomOrderInfo orderInfo : roomOrderInfoList) {
                         if (!orderInfo.product.id.equals(product.id)) {
+                            continue;
+                        }
+                        if (orderInfo.roomType != schedule.roomType) {
                             continue;
                         }
                         int st = startTime < 8 ? startTime + 24 : startTime;
