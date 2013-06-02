@@ -1,6 +1,8 @@
 package models.ktv;
 
 import com.taobao.api.ApiException;
+import com.taobao.api.Constants;
+import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.domain.Sku;
 import com.taobao.api.request.*;
@@ -91,8 +93,6 @@ public class KtvTaobaoUtil {
 
         List<KtvTaobaoSku> remoteSkuList = getTaobaoSku(resalerProduct);
 
-        TaobaoClient taobaoClient = new KtvTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
-                resalerProduct.resaler.taobaoCouponAppSecretKey);
         //找到淘宝的token
         OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
 
@@ -117,23 +117,31 @@ public class KtvTaobaoUtil {
                         }
                     });
                     for (KtvTaobaoSku sku : skuList) {
+                        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
+                                resalerProduct.resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
                         String error =  addSkuOnTaobao(sku, taobaoProductId, taobaoClient, token.accessToken);
                         if (error != null) { return error; }
                     }
                     break;
                 case ACTION_DELETE:
                     for (KtvTaobaoSku sku : skuList) {
+                        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
+                                resalerProduct.resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
                         String error =  deleteSkuOnTaobao(sku, taobaoProductId, taobaoClient, token.accessToken);
                         if (error != null) { return error; }
                     }
                     break;
                 case ACTION_UPDATE_PRICE:
                     for (KtvTaobaoSku sku : skuList) {
+                        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
+                                resalerProduct.resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
                         String error =  updateSkuPriceOnTaobao(sku, taobaoProductId, taobaoClient, token.accessToken);
                         if (error != null) { return error; }
                     }
                     break;
                 case ACTION_UPDATE_QUANTITY:
+                    TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
+                            resalerProduct.resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
                     String error =  updateSkuQuantityOnTaobao(skuList, taobaoProductId, taobaoClient, token.accessToken);
                     if (error != null) { return error; }
                     break;
@@ -490,8 +498,8 @@ public class KtvTaobaoUtil {
 
 
     public static List<KtvTaobaoSku> getTaobaoSku(ResalerProduct resalerProduct) {
-        TaobaoClient taobaoClient = new KtvTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
-                resalerProduct.resaler.taobaoCouponAppSecretKey);
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
+                resalerProduct.resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
         //找到淘宝的token
         OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
 
