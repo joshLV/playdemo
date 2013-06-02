@@ -161,7 +161,7 @@ public class VerifiedECouponRefunds extends Controller {
 
         TradeBill tradeBill = new TradeBill();
         tradeBill.fromAccount = eCoupon.getSupplierAccount(); //付款方为商户账户
-        tradeBill.toAccount = AccountUtil.getPlatformCommissionAccount();                                  //收款方为指定账户
+        tradeBill.toAccount = AccountUtil.getPlatformCommissionAccount(eCoupon.order.operator);                                  //收款方为指定账户
         tradeBill.balancePaymentAmount = eCoupon.originalPrice;                                   //使用可提现余额来支付退款的金额
         tradeBill.ebankPaymentAmount = BigDecimal.ZERO;                          //不使用网银支付
         tradeBill.uncashPaymentAmount = BigDecimal.ZERO;                          //不使用不可提现余额支付
@@ -182,7 +182,7 @@ public class VerifiedECouponRefunds extends Controller {
         }
 
         TradeBill rebateTrade = TradeUtil.transferTrade()
-                .fromAccount(AccountUtil.getPlatformCommissionAccount())
+                .fromAccount(AccountUtil.getPlatformCommissionAccount(eCoupon.order.operator))
                 .toAccount(userAccount)
                 .balancePaymentAmount(refundCashAmount)
                 .make();
@@ -234,7 +234,7 @@ public class VerifiedECouponRefunds extends Controller {
         boolean reverse = true;
 
         // 给商户打钱
-        TradeBill consumeTrade = TradeUtil.consumeTrade()
+        TradeBill consumeTrade = TradeUtil.consumeTrade(eCoupon.order.operator)
                 .toAccount(eCoupon.getSupplierAccount())
                 .balancePaymentAmount(eCoupon.originalPrice)
                 .orderId(eCoupon.order.getId())
@@ -256,8 +256,8 @@ public class VerifiedECouponRefunds extends Controller {
             platformCommission = eCoupon.resalerPrice.subtract(eCoupon.originalPrice);
             // 如果是在一百券网站下的单，还要给一百券佣金
             if (eCoupon.order.isWebsiteOrder()) {
-                TradeBill uhuilaCommissionTrade = TradeUtil.commissionTrade()
-                        .toAccount(AccountUtil.getUhuilaAccount())
+                TradeBill uhuilaCommissionTrade = TradeUtil.commissionTrade(eCoupon.order.operator)
+                        .toAccount(AccountUtil.getUhuilaAccount(eCoupon.order.operator))
                         .balancePaymentAmount(eCoupon.salePrice.subtract(eCoupon.resalerPrice))
                         .coupon(eCoupon.eCouponSn)
                         .orderId(eCoupon.order.getId())
@@ -270,8 +270,8 @@ public class VerifiedECouponRefunds extends Controller {
 
         if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
             // 给优惠券平台佣金
-            TradeBill platformCommissionTrade = TradeUtil.commissionTrade()
-                    .toAccount(AccountUtil.getPlatformCommissionAccount())
+            TradeBill platformCommissionTrade = TradeUtil.commissionTrade(eCoupon.order.operator)
+                    .toAccount(AccountUtil.getPlatformCommissionAccount(eCoupon.order.operator))
                     .balancePaymentAmount(platformCommission)
                     .coupon(eCoupon.eCouponSn)
                     .orderId(eCoupon.order.getId())
@@ -282,8 +282,8 @@ public class VerifiedECouponRefunds extends Controller {
 
         if (eCoupon.rebateValue != null && eCoupon.rebateValue.compareTo(BigDecimal.ZERO) > 0) {
             TradeBill rebateTrade = TradeUtil.transferTrade()
-                    .fromAccount(AccountUtil.getPlatformIncomingAccount())
-                    .toAccount(AccountUtil.getUhuilaAccount())
+                    .fromAccount(AccountUtil.getPlatformIncomingAccount(eCoupon.order.operator))
+                    .toAccount(AccountUtil.getUhuilaAccount(eCoupon.order.operator))
                     .balancePaymentAmount(eCoupon.rebateValue)
                     .orderId(eCoupon.order.id)
                     .make();
@@ -292,8 +292,8 @@ public class VerifiedECouponRefunds extends Controller {
             BigDecimal detaPrice = eCoupon.originalPrice.subtract(eCoupon.salePrice);
             // 如果售价低于进价，从活动金账户出
             TradeBill rebateTrade = TradeUtil.transferTrade()
-                    .fromAccount(AccountUtil.getPlatformIncomingAccount())
-                    .toAccount(AccountUtil.getPromotionAccount())
+                    .fromAccount(AccountUtil.getPlatformIncomingAccount(eCoupon.order.operator))
+                    .toAccount(AccountUtil.getPromotionAccount(eCoupon.order.operator))
                     .balancePaymentAmount(detaPrice)
                     .orderId(eCoupon.order.id)
                     .make();

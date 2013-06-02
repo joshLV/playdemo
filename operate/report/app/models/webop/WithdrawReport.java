@@ -5,6 +5,7 @@ import models.accounts.Account;
 import models.accounts.AccountSequenceCondition;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
+import models.operator.Operator;
 import play.db.jpa.JPA;
 import utils.CrossTableConverter;
 
@@ -49,7 +50,7 @@ public class WithdrawReport {
     }
 
     public static String processFilter(AccountSequenceCondition condition){
-        Account platformWithdrawAccount = AccountUtil.getPlatformWithdrawAccount();
+        Account platformWithdrawAccount = AccountUtil.getPlatformWithdrawAccount(Operator.defaultOperator());
         StringBuilder filter = new StringBuilder("s.account != :pAccount ");
         condition.params.put("pAccount", platformWithdrawAccount);
 

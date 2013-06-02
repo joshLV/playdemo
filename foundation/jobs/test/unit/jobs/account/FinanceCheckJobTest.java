@@ -8,6 +8,7 @@ import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import jobs.account.FinanceCheckJob;
+import models.operator.Operator;
 import models.resale.Resaler;
 import models.supplier.Supplier;
 import org.junit.Before;
@@ -35,7 +36,7 @@ public class FinanceCheckJobTest extends UnitTest {
 
         supplier = FactoryBoy.create(Supplier.class);
         resaler = FactoryBoy.create(Resaler.class);
-        platformIncomingAccount = AccountUtil.getPlatformIncomingAccount();
+        platformIncomingAccount = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         platformIncomingAccount.amount = new BigDecimal(1000);
         platformIncomingAccount.save();
         supplierAccount = AccountUtil.getSupplierAccount(supplier.id);

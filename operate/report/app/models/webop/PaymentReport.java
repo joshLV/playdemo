@@ -4,6 +4,7 @@ import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.AccountSequenceCondition;
 import models.accounts.util.AccountUtil;
+import models.operator.Operator;
 import play.db.jpa.JPA;
 import utils.CrossTableConverter;
 
@@ -20,9 +21,9 @@ import java.util.Map;
  */
 public class PaymentReport {
 
-    public static Account alipayAccount = AccountUtil.getPaymentPartnerAccount(AccountUtil.PARTNER_ALIPAY);
-    public static Account tenpayAccount = AccountUtil.getPaymentPartnerAccount(AccountUtil.PARTNER_TENPAY);
-    public static Account kuaiqianAccount = AccountUtil.getPaymentPartnerAccount(AccountUtil.PARTNER_99BILL);
+    public static Account alipayAccount = AccountUtil.getPaymentPartnerAccount(AccountUtil.PARTNER_ALIPAY, Operator.defaultOperator());
+    public static Account tenpayAccount = AccountUtil.getPaymentPartnerAccount(AccountUtil.PARTNER_TENPAY, Operator.defaultOperator());
+    public static Account kuaiqianAccount = AccountUtil.getPaymentPartnerAccount(AccountUtil.PARTNER_99BILL, Operator.defaultOperator());
 
     public Date reportDate;
     public Account account;

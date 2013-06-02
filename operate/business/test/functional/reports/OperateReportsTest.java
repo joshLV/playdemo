@@ -8,6 +8,7 @@ import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.operator.OperateUser;
 import models.admin.SupplierUser;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
@@ -64,15 +65,15 @@ public class OperateReportsTest extends FunctionalTest {
         supplierAccount.amount = new BigDecimal(100);
         supplierAccount.save();
 
-        uhuilaAccount = AccountUtil.getUhuilaAccount();
+        uhuilaAccount = AccountUtil.getUhuilaAccount(Operator.defaultOperator());
         uhuilaAccount.amount = new BigDecimal(100);
         uhuilaAccount.save();
 
-        promenceAccount = AccountUtil.getPromotionAccount();
+        promenceAccount = AccountUtil.getPromotionAccount(Operator.defaultOperator());
         promenceAccount.amount = new BigDecimal(100);
         promenceAccount.save();
 
-        platformIncomingAccount = AccountUtil.getPlatformIncomingAccount();
+        platformIncomingAccount = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         platformIncomingAccount.amount = new BigDecimal(100);
         platformIncomingAccount.save();
 

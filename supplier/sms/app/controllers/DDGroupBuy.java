@@ -2,7 +2,6 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.dangdang.groupbuy.DDErrorCode;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
@@ -88,11 +87,8 @@ public class DDGroupBuy extends Controller {
         }
         //定位请求者
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.DD_LOGIN_NAME);
-        Long resalerId = null;
         if (resaler == null) {
             renderError(DDErrorCode.USER_NOT_EXITED, "当当分销商用户不存在！");
-        } else {
-            resalerId = resaler.id;
         }
 
         Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
@@ -129,7 +125,7 @@ public class DDGroupBuy extends Controller {
         }
 
 
-        order = Order.createConsumeOrder(resalerId, AccountType.RESALER);
+        order = Order.createResaleOrder(resaler);
         //分解有几个商品，每个商品购买的数量
         String[] arrGoods = options.split(",");
 

@@ -2,7 +2,6 @@ package unit;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.accounts.AccountType;
 import models.admin.SupplierUser;
 import models.consumer.User;
 import models.order.ECoupon;
@@ -107,7 +106,7 @@ public class ECouponSmsMergeTest extends UnitTest {
     @Ignore
     @Test
     public void 购买同组不同商品生成的ECoupon会有相同的ReplyCode() throws Exception {
-        Order order = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
+        Order order = Order.createConsumeOrder(user);
         order.save();
 
         generateECoupon(order, groupedGoods1, user, 1);
@@ -126,12 +125,12 @@ public class ECouponSmsMergeTest extends UnitTest {
     @Ignore
     @Test
     public void 不同订单购买同组不同商品生成的ECoupon会有相同的ReplyCode() throws Exception {
-        Order order1 = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
+        Order order1 = Order.createConsumeOrder(user);
         order1.save();
 
         generateECoupon(order1, groupedGoods1, user, 1);
 
-        Order order2 = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
+        Order order2 = Order.createConsumeOrder(user);
         order2.save();
         generateECoupon(order2, groupedGoods2, user, 1);
 
@@ -151,7 +150,7 @@ public class ECouponSmsMergeTest extends UnitTest {
 
     @Test
     public void 购买不同组不同商品生成的ECoupon的ReplyCode各不相同() throws Exception {
-        Order order = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
+        Order order = Order.createConsumeOrder(user);
         order.save();
 
         generateECoupon(order, groupedGoods1, user, 1);
@@ -171,7 +170,7 @@ public class ECouponSmsMergeTest extends UnitTest {
 
     @Test
     public void 购买有组与无组的两个商品生成的ECoupon的ReplyCode各不相同() throws Exception {
-        Order order = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
+        Order order = Order.createConsumeOrder(user);
         order.save();
 
         generateECoupon(order, groupedGoods1, user, 1);
@@ -192,7 +191,7 @@ public class ECouponSmsMergeTest extends UnitTest {
     @Ignore
     @Test
     public void 购买未设置组代码的同一商品生成的ECoupon会产生相同的ReplyCode() throws Exception {
-        Order order = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
+        Order order = Order.createConsumeOrder(user);
         order.save();
 
         // 生成2个同一商品的ECoupon
@@ -212,14 +211,14 @@ public class ECouponSmsMergeTest extends UnitTest {
     @Ignore
     @Test
     public void 不同订单购买未设置组代码的同一商品生成的ECoupon会产生相同的ReplyCode() throws Exception {
-        Order order1 = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
+        Order order1 = Order.createConsumeOrder(user);
         order1.save();
         generateECoupon(order1, singleGoods, user, 1);
         List<ECoupon> ecoupons1 = ECoupon.findByOrder(order1);
         assertNotNull(ecoupons1);
         assertEquals(1, ecoupons1.size());
 
-        Order order2 = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
+        Order order2 = Order.createConsumeOrder(user);
         order2.save();
         generateECoupon(order2, singleGoods, user, 1);
         List<ECoupon> ecoupons2 = ECoupon.findByOrder(order2);

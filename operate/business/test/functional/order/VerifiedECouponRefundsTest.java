@@ -11,6 +11,7 @@ import models.accounts.util.AccountUtil;
 import models.operator.OperateRole;
 import models.operator.OperateUser;
 import models.consumer.User;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -80,7 +81,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
             }
         });
 
-        platformCommissionAccount = AccountUtil.getPlatformCommissionAccount();
+        platformCommissionAccount = AccountUtil.getPlatformCommissionAccount(Operator.defaultOperator());
         platformCommissionAccount.amount = new BigDecimal(1000);
         platformCommissionAccount.save();
     }

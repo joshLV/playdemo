@@ -12,9 +12,9 @@ import models.accounts.BalanceNotEnoughException;
 import models.accounts.SettlementStatus;
 import models.accounts.TradeType;
 import models.operator.Operator;
+import play.Logger;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * 账户资金变动流水工具.
@@ -34,9 +34,6 @@ public class AccountUtil {
      * 一百券收款账户.
      * @return
      */
-    public static Account getUhuilaAccount() {
-        return getUhuilaAccount(Operator.defaultOperator());
-    }
     public static Account getUhuilaAccount(Operator operator) {
         return getCreditableAccount(Account.UHUILA_COMMISSION, AccountType.PLATFORM, operator);
     }
@@ -45,30 +42,31 @@ public class AccountUtil {
      * 平台收款账户.
      * @return
      */
-    public static Account getPlatformIncomingAccount() {
-        return getPlatformIncomingAccount(Operator.defaultOperator());
-    }
     public static Account getPlatformIncomingAccount(Operator operator) {
-        return getAccount(Account.PLATFORM_INCOMING, AccountType.PLATFORM);
+        return getCreditableAccount(Account.PLATFORM_INCOMING, AccountType.PLATFORM, operator);
     }
 
-    public static Account getPlatformCommissionAccount() {
-        return getAccount(Account.PLATFORM_COMMISSION, AccountType.PLATFORM);
+    public static Account getPlatformCommissionAccount(Operator operator) {
+        return getCreditableAccount(Account.PLATFORM_COMMISSION, AccountType.PLATFORM, operator);
     }
 
-    public static Account getPlatformWithdrawAccount() {
-        return getAccount(Account.PLATFORM_WITHDRAW, AccountType.PLATFORM);
+
+    public static Account getPlatformWithdrawAccount(Operator operator) {
+        return getAccount(Account.PLATFORM_WITHDRAW, AccountType.PLATFORM, operator);
     }
 
-    public static Account getFinancingIncomingAccount() {
-        return getCreditableAccount(Account.FINANCING_INCOMING, AccountType.PLATFORM);
+
+    public static Account getFinancingIncomingAccount(Operator operator) {
+        return getCreditableAccount(Account.FINANCING_INCOMING, AccountType.PLATFORM, operator);
     }
 
-    public static Account getPromotionAccount() {
-        return getCreditableAccount(Account.PROMOTION, AccountType.PLATFORM);
+
+    public static Account getPromotionAccount(Operator operator) {
+        return getCreditableAccount(Account.PROMOTION, AccountType.PLATFORM, operator);
     }
 
-    public static Account getPaymentPartnerAccount(String partner) {
+
+    public static Account getPaymentPartnerAccount(String partner, Operator operator) {
         switch (partner) {
             case PARTNER_ALIPAY:
                 return getCreditableAccount(Account.PARTNER_ALIPAY, AccountType.PLATFORM);
@@ -121,16 +119,6 @@ public class AccountUtil {
     }
 
     /**
-     * 获取商户的所有独立结算的门店账户.
-     *
-     * @param supplierId
-     * @return
-     */
-    public static List<Account> getSupplierShopAccounts(long supplierId) {
-        return Account.find("byAccountTypeAndSupplierIdAndStatus", AccountType.SHOP, supplierId, AccountStatus.CANCEL).fetch();
-    }
-
-    /**
      * 获取不可欠款账户,若不存在则新建
      * 当账户余额小于0时,将抛出BalanceNotEnoughException
      *
@@ -167,6 +155,10 @@ public class AccountUtil {
     }
 
     public static Account getAccount(long uid, AccountType type, boolean creditable, Operator operator) {
+        if (operator == null) {
+            Logger.error("Operator is Null!! Please check it ! uid:" + uid + " accountType:" + type + " creditable:" + creditable);
+            operator = Operator.defaultOperator();
+        }
         Account account = Account.find("uid=? and accountType=? and operator=? order by id", uid, type,
                 operator).first();
 

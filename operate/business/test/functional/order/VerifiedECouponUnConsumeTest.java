@@ -11,6 +11,7 @@ import models.accounts.util.AccountUtil;
 import models.operator.OperateRole;
 import models.operator.OperateUser;
 import models.consumer.User;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -79,7 +80,7 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
             }
         });
 
-        platformCommissionAccount = AccountUtil.getPlatformCommissionAccount();
+        platformCommissionAccount = AccountUtil.getPlatformCommissionAccount(Operator.defaultOperator());
         platformCommissionAccount.amount = new BigDecimal(1000);
         platformCommissionAccount.save();
     }
@@ -139,7 +140,7 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
         order.consumerId = user.id;
         order.save();
 
-        Account platformIncoming = AccountUtil.getPlatformCommissionAccount();
+        Account platformIncoming = AccountUtil.getPlatformCommissionAccount(Operator.defaultOperator());
         BigDecimal originPlatformIncoming = platformIncoming.amount;
 
         Response response = POST("/verified-ecoupon-do-refund", getECouponSnParams(ecoupon.eCouponSn));

@@ -1,6 +1,5 @@
 package controllers;
 
-import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JingdongMessage;
@@ -338,7 +337,7 @@ public class JDGroupBuy extends Controller {
         if (resaler == null) {
             finish(207, "can not find the jingdong resaler");
         }
-        Order ybqOrder = Order.createConsumeOrder(resaler.id, AccountType.RESALER);
+        Order ybqOrder = Order.createResaleOrder(resaler);
         ybqOrder.save();
         try {
             Goods goods = ResalerProduct.getGoods(resaler, venderTeamId, OuterOrderPartner.JD);

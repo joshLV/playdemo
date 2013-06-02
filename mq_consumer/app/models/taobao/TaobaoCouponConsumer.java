@@ -3,7 +3,6 @@ package models.taobao;
 import com.google.gson.JsonObject;
 import com.taobao.api.response.TradeGetResponse;
 import models.RabbitMQConsumerWithTx;
-import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.ktv.KtvProductGoods;
 import models.ktv.KtvRoomOrderInfo;
@@ -178,7 +177,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             Logger.info("when taobao coupon request create out order,resaler is null,outOrder.id is :%s", outerOrder.id);
             return null;
         }
-        Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
+        Order ybqOrder = Order.createResaleOrder(resaler);
         ybqOrder.save();
         Goods goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.TB);
 

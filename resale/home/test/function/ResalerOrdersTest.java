@@ -7,6 +7,7 @@ import factory.callback.SequenceCallback;
 import factory.resale.ResalerFactory;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -120,7 +121,7 @@ public class ResalerOrdersTest extends FunctionalTest {
      */
     @Test
     public void testRefund() {
-        Account account = AccountUtil.getPlatformIncomingAccount();
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         account.amount = new BigDecimal("10000");
         account.save();
 

@@ -2,7 +2,6 @@ package controllers;
 
 import controllers.modules.resale.cas.SecureCAS;
 import models.accounts.Account;
-import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.accounts.util.AccountUtil;
 import models.order.BatchCoupons;
@@ -137,7 +136,7 @@ public class BatchExportCoupons extends Controller {
         batchCoupons.coupons = new LinkedList<>();
         batchCoupons.save();
         for (int i = 0; i < count; i++) {
-            Order order = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
+            Order order = Order.createResaleOrder(resaler);
             Long number = 1l;
             String phone = null;
             BigDecimal resalerPrice = goods.getResalePrice();

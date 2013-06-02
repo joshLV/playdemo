@@ -1,17 +1,16 @@
 package unit.models.accounts;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.WithdrawBill;
 import models.accounts.util.AccountUtil;
-
+import models.operator.Operator;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
-import factory.FactoryBoy;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author likang
@@ -35,7 +34,7 @@ public class WithdrawTest extends UnitTest {
     @Test
     public void testRefund() {
 
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformWithdrawAccount().amount));
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformWithdrawAccount(Operator.defaultOperator()).amount));
         assertEquals(0, balance.compareTo(getConsumerAccount().amount));
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().uncashAmount));
 
@@ -44,13 +43,13 @@ public class WithdrawTest extends UnitTest {
         bill.save();
         bill.apply("测试提现者", getConsumerAccount(), "consumerLoginName");
 
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformWithdrawAccount().amount));
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformWithdrawAccount(Operator.defaultOperator()).amount));
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().amount));
         assertEquals(0, balance.compareTo(getConsumerAccount().uncashAmount));
 
         bill.reject("测试拒绝");
 
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformWithdrawAccount().amount));
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformWithdrawAccount(Operator.defaultOperator()).amount));
         assertEquals(0, balance.compareTo(getConsumerAccount().amount));
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().uncashAmount));
 
@@ -58,7 +57,7 @@ public class WithdrawTest extends UnitTest {
         bill.apply("测试提现者", getConsumerAccount(), "consumerLoginName");
         bill.agree(BigDecimal.ZERO, "测试提现成功", new Date());
 
-        assertEquals(0, balance.compareTo(AccountUtil.getPlatformWithdrawAccount().uncashAmount));
+        assertEquals(0, balance.compareTo(AccountUtil.getPlatformWithdrawAccount(Operator.defaultOperator()).uncashAmount));
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().amount));
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().uncashAmount));
     }

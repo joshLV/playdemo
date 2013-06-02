@@ -8,6 +8,7 @@ import models.accounts.AccountSequenceFlag;
 import models.accounts.BalanceNotEnoughException;
 import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
+import models.operator.Operator;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.FunctionalTest;
@@ -30,7 +31,7 @@ public class AccountUtilTest extends FunctionalTest {
 
     @Test
     public void testGetUhuilaAccount() {
-        Account account = AccountUtil.getUhuilaAccount();
+        Account account = AccountUtil.getUhuilaAccount(Operator.defaultOperator());
         assertNotNull(account);
     }
 

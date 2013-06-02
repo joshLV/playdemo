@@ -1,17 +1,16 @@
 package functional.models.accounts.util;
 
-import java.math.BigDecimal;
-
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.PaymentSource;
 import models.accounts.TradeBill;
 import models.accounts.util.TradeUtil;
-
+import models.operator.Operator;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.FunctionalTest;
-import factory.FactoryBoy;
+
+import java.math.BigDecimal;
 
 /**
  * @author likang
@@ -34,7 +33,7 @@ public class TradeUtilTest extends FunctionalTest {
 
         assertNotNull(aliPayment);
 
-        TradeBill tradeBill = TradeUtil.orderTrade()
+        TradeBill tradeBill = TradeUtil.orderTrade(Operator.defaultOperator())
                 .fromAccount(account)
                 .balancePaymentAmount(BigDecimal.ONE)
                 .ebankPaymentAmount(BigDecimal.ONE)
@@ -52,7 +51,7 @@ public class TradeUtilTest extends FunctionalTest {
 
         assertNotNull(aliPayment);
 
-        TradeBill tradeBill = TradeUtil.chargeTrade(aliPayment)
+        TradeBill tradeBill = TradeUtil.chargeTrade(aliPayment, Operator.defaultOperator())
                 .ebankPaymentAmount(BigDecimal.ONE)
                 .toAccount(account)
                 .make();
@@ -65,7 +64,7 @@ public class TradeUtilTest extends FunctionalTest {
     public void testCreateConsumeTrade() {
         assertNotNull(account);
 
-        TradeBill tradeBill = TradeUtil.consumeTrade()
+        TradeBill tradeBill = TradeUtil.consumeTrade(Operator.defaultOperator())
                 .toAccount(account)
                 .balancePaymentAmount(BigDecimal.ONE)
                 .coupon("01234")

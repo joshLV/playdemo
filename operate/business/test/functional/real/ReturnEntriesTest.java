@@ -6,6 +6,7 @@ import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.operator.OperateUser;
+import models.operator.Operator;
 import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.order.OrderType;
@@ -97,7 +98,7 @@ public class ReturnEntriesTest extends FunctionalTest {
 
         entry = FactoryBoy.create(RealGoodsReturnEntry.class);
 
-        platformIncomingAccount = AccountUtil.getPlatformIncomingAccount();
+        platformIncomingAccount = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         platformIncomingAccount.amount = new BigDecimal(1000l);
         platformIncomingAccount.save();
 

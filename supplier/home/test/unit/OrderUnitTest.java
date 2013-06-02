@@ -127,7 +127,7 @@ public class OrderUnitTest extends UnitTest {
         long baseSale = oldGoods.getRealStocks();
         System.out.println("baseSale=" + baseSale);
         long saleCount = oldGoods.getRealSaleCount();
-        Order order = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
+        Order order = Order.createConsumeOrder(user);
 
         order.addOrderItem(oldGoods, 20L, mobile, oldGoods.salePrice, resalePrice);
         

@@ -11,6 +11,7 @@ import models.accounts.TradeBill;
 import models.accounts.*;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
+import models.operator.Operator;
 import models.order.Order;
 import models.resale.Resaler;
 import models.sales.Shop;
@@ -256,7 +257,7 @@ public class OperateReports extends Controller {
         if (condition == null) {
             condition = getDefaultAccountSequenceCondition();
         }
-        condition.account = AccountUtil.getPromotionAccount();
+        condition.account = AccountUtil.getPromotionAccount(Operator.defaultOperator());
 
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
@@ -279,7 +280,7 @@ public class OperateReports extends Controller {
             condition = getDefaultAccountSequenceCondition();
         }
 
-        condition.account = AccountUtil.getUhuilaAccount();
+        condition.account = AccountUtil.getUhuilaAccount(Operator.defaultOperator());
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
@@ -319,7 +320,7 @@ public class OperateReports extends Controller {
             condition = getDefaultAccountSequenceCondition();
         }
 
-        condition.account = AccountUtil.getPlatformCommissionAccount();
+        condition.account = AccountUtil.getPlatformCommissionAccount(Operator.defaultOperator());
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
@@ -342,7 +343,7 @@ public class OperateReports extends Controller {
             condition = getDefaultAccountSequenceCondition();
         }
 
-        condition.account = AccountUtil.getPlatformIncomingAccount();
+        condition.account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
@@ -362,7 +363,7 @@ public class OperateReports extends Controller {
             condition = getDefaultAccountSequenceCondition();
         }
 
-        condition.account = AccountUtil.getPlatformWithdrawAccount();
+        condition.account = AccountUtil.getPlatformWithdrawAccount(Operator.defaultOperator());
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
@@ -381,7 +382,7 @@ public class OperateReports extends Controller {
             condition = getDefaultAccountSequenceCondition();
         }
 
-        condition.account = AccountUtil.getFinancingIncomingAccount();
+        condition.account = AccountUtil.getFinancingIncomingAccount(Operator.defaultOperator());
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {

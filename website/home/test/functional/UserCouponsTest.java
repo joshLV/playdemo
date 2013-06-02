@@ -6,6 +6,7 @@ import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -108,7 +109,7 @@ public class UserCouponsTest extends FunctionalTest {
     public void testApplyRefund() {
         // 设置总账户中的余额
         BigDecimal amount = new BigDecimal("10000");
-        Account account = AccountUtil.getPlatformIncomingAccount();
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         account.amount = amount;
         account.save();
 

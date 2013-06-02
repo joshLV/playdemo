@@ -41,13 +41,13 @@ public class FinancingIncomingNote extends Controller{
             Validation.keep();
             add(amount, id);
         }
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             Validation.addError("financing_incoming.amount", "无效金额");
             Validation.keep();
             add(amount, id);
         }
         TradeBill bill = TradeUtil.transferTrade()
-                .fromAccount(AccountUtil.getFinancingIncomingAccount())
+                .fromAccount(AccountUtil.getFinancingIncomingAccount(account.operator))
                 .toAccount(account)
                 .balancePaymentAmount(amount)
                 .make();

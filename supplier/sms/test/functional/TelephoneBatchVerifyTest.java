@@ -5,6 +5,7 @@ import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.OrderItems;
 import models.supplier.Supplier;
@@ -32,7 +33,7 @@ public class TelephoneBatchVerifyTest extends FunctionalTest{
         FactoryBoy.create(ECoupon.class);
         FactoryBoy.create(SupplierUser.class);
 
-        Account account = AccountUtil.getPlatformIncomingAccount();
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         account.amount = new BigDecimal("99999");
         account.save();
 

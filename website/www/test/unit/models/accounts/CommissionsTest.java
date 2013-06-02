@@ -6,6 +6,7 @@ import models.accounts.AccountSequence;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.accounts.util.AccountUtil;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
@@ -60,7 +61,7 @@ public class CommissionsTest extends UnitTest {
 
 
         //重置平台收款余额
-        Account platformIncomingAccount = AccountUtil.getPlatformIncomingAccount();
+        Account platformIncomingAccount = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         platformIncomingAccount.amount = BALANCE;
         platformIncomingAccount.save();
     }
@@ -69,9 +70,9 @@ public class CommissionsTest extends UnitTest {
     @Test
     public void testRealGoodsCommission() {
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getSupplierAccount(supplier.id).amount));//供应商余额为0
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getUhuilaAccount().amount));//一百券余额为0
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformCommissionAccount().amount)); //券平台佣金账户为0
-        assertEquals(0, BALANCE.compareTo(AccountUtil.getPlatformIncomingAccount().amount));//平台收款账户
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getUhuilaAccount(Operator.defaultOperator()).amount));//一百券余额为0
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformCommissionAccount(Operator.defaultOperator()).amount)); //券平台佣金账户为0
+        assertEquals(0, BALANCE.compareTo(AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator()).amount));//平台收款账户
 
         assertNotNull(orderItemReal.id);
         OrderItems realOrderItem = OrderItems.findById(orderItemReal.id);
@@ -90,13 +91,13 @@ public class CommissionsTest extends UnitTest {
                         .subtract(realOrderItem.originalPrice)
                         .multiply(new BigDecimal(realOrderItem.buyNumber))//佣金
                         .add(getOrder().freight)//加运费
-                        .compareTo(AccountUtil.getPlatformCommissionAccount().amount));//平台佣金余额
+                        .compareTo(AccountUtil.getPlatformCommissionAccount(Operator.defaultOperator()).amount));//平台佣金余额
 
         assertEquals(0,
                 realOrderItem.salePrice
                         .subtract(realOrderItem.resalerPrice)
                         .multiply(new BigDecimal(realOrderItem.buyNumber))
-                        .compareTo(AccountUtil.getUhuilaAccount().amount));//一百券佣金
+                        .compareTo(AccountUtil.getUhuilaAccount(Operator.defaultOperator()).amount));//一百券佣金
 
         //8条账户变动记录:
         //商户收到成本价
@@ -110,9 +111,9 @@ public class CommissionsTest extends UnitTest {
     public void testECouponCommission() {
 
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getSupplierAccount(supplier.id).amount));//供应商余额为0
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getUhuilaAccount().amount));//一百券余额为0
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformCommissionAccount().amount)); //券平台佣金账户为0
-        assertEquals(0, BALANCE.compareTo(AccountUtil.getPlatformIncomingAccount().amount));//平台收款账户
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getUhuilaAccount(Operator.defaultOperator()).amount));//一百券余额为0
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformCommissionAccount(Operator.defaultOperator()).amount)); //券平台佣金账户为0
+        assertEquals(0, BALANCE.compareTo(AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator()).amount));//平台收款账户
 
         assertNotNull(coupon.id);
         ECoupon eCoupon = ECoupon.findById(coupon.id);
@@ -127,12 +128,12 @@ public class CommissionsTest extends UnitTest {
         assertEquals(0,
                 eCoupon.resalerPrice
                         .subtract(eCoupon.originalPrice)
-                        .compareTo(AccountUtil.getPlatformCommissionAccount().amount));//平台佣金余额
+                        .compareTo(AccountUtil.getPlatformCommissionAccount(Operator.defaultOperator()).amount));//平台佣金余额
 
         assertEquals(0,
                 eCoupon.salePrice
                         .subtract(eCoupon.resalerPrice)
-                        .compareTo(AccountUtil.getUhuilaAccount().amount));//一百券佣金
+                        .compareTo(AccountUtil.getUhuilaAccount(Operator.defaultOperator()).amount));//一百券佣金
 
         //6条账户变动记录:
         //商户收到成本价

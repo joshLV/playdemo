@@ -7,6 +7,7 @@ import factory.callback.SequenceCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -113,7 +114,7 @@ public class UserOrdersFuncTest extends FunctionalTest {
      */
     @Test
     public void testRefund() {
-        Account account = AccountUtil.getPlatformIncomingAccount();
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         account.amount = new BigDecimal("10000");
         account.save();
 
@@ -142,7 +143,7 @@ public class UserOrdersFuncTest extends FunctionalTest {
         args.put("orderNumber", order.orderNumber);
         args.put("couponIds", ecoupon.id.toString());
 
-        Account account = AccountUtil.getPlatformIncomingAccount();
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         BigDecimal originAmount = new BigDecimal("10000");
         account.amount = originAmount;
         account.save();

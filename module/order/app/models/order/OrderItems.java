@@ -684,7 +684,7 @@ public class OrderItems extends Model {
         Account account = orderItems.order.getBuyerAccount();
         Logger.info("account=" + account.id + ", refundCashAmount=" + consumedAmount + ", " +
                 "refundPromotionAmount=" + refundPromotionAmount);
-        TradeBill tradeBill = TradeUtil.refundTrade()
+        TradeBill tradeBill = TradeUtil.refundTrade(order.operator)
                 .toAccount(account)
                 .balancePaymentAmount(consumedAmount)
                 .promotionPaymentAmount(refundPromotionAmount)

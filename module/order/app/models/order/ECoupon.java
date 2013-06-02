@@ -18,7 +18,6 @@ import models.kangou.KangouUtil;
 import models.ktv.KtvOrderStatus;
 import models.ktv.KtvProductGoods;
 import models.ktv.KtvRoomOrderInfo;
-import models.ktv.KtvTaobaoUtil;
 import models.operator.OperateUser;
 import models.resale.Resaler;
 import models.sales.Goods;
@@ -646,7 +645,7 @@ public class ECoupon extends Model {
 
     public void payCommission() {
         // 给商户打钱
-        TradeBill consumeTrade = TradeUtil.consumeTrade()
+        TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
                 .toAccount(getSupplierAccount())
                 .balancePaymentAmount(originalPrice)
                 .orderId(order.getId())
@@ -665,8 +664,8 @@ public class ECoupon extends Model {
             platformCommission = resalerPrice.subtract(originalPrice);
             // 如果是在一百券网站下的单，还要给一百券佣金
             if (order.isWebsiteOrder()) {
-                TradeBill uhuilaCommissionTrade = TradeUtil.commissionTrade()
-                        .toAccount(AccountUtil.getUhuilaAccount())
+                TradeBill uhuilaCommissionTrade = TradeUtil.commissionTrade(order.operator)
+                        .toAccount(AccountUtil.getUhuilaAccount(order.operator))
                         .balancePaymentAmount(salePrice.subtract(resalerPrice))
                         .coupon(eCouponSn)
                         .orderId(order.getId())
@@ -678,8 +677,8 @@ public class ECoupon extends Model {
 
         if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
             // 给优惠券平台佣金
-            TradeBill platformCommissionTrade = TradeUtil.commissionTrade()
-                    .toAccount(AccountUtil.getPlatformCommissionAccount())
+            TradeBill platformCommissionTrade = TradeUtil.commissionTrade(order.operator)
+                    .toAccount(AccountUtil.getPlatformCommissionAccount(order.operator))
                     .balancePaymentAmount(platformCommission)
                     .coupon(eCouponSn)
                     .orderId(order.getId())
@@ -689,8 +688,8 @@ public class ECoupon extends Model {
 
         if (rebateValue != null && rebateValue.compareTo(BigDecimal.ZERO) > 0) {
             TradeBill rebateTrade = TradeUtil.transferTrade()
-                    .fromAccount(AccountUtil.getUhuilaAccount())
-                    .toAccount(AccountUtil.getPlatformIncomingAccount())
+                    .fromAccount(AccountUtil.getUhuilaAccount(order.operator))
+                    .toAccount(AccountUtil.getPlatformIncomingAccount(order.operator))
                     .balancePaymentAmount(rebateValue)
                     .orderId(this.order.id)
                     .make();
@@ -699,8 +698,8 @@ public class ECoupon extends Model {
             BigDecimal detaPrice = originalPrice.subtract(salePrice);
             // 如果售价低于进价，从活动金账户出
             TradeBill rebateTrade = TradeUtil.transferTrade()
-                    .fromAccount(AccountUtil.getPromotionAccount())
-                    .toAccount(AccountUtil.getPlatformIncomingAccount())
+                    .fromAccount(AccountUtil.getPromotionAccount(order.operator))
+                    .toAccount(AccountUtil.getPlatformIncomingAccount(order.operator))
                     .balancePaymentAmount(detaPrice)
                     .orderId(this.order.id)
                     .make();
@@ -719,7 +718,7 @@ public class ECoupon extends Model {
             if (promoteRebate != null) {
                 Account account = AccountUtil.getConsumerAccount(promoteUser.getId());
                 TradeBill rebateTrade = TradeUtil.transferTrade()
-                        .fromAccount(AccountUtil.getUhuilaAccount())
+                        .fromAccount(AccountUtil.getUhuilaAccount(this.order.operator))
                         .toAccount(account)
                         .balancePaymentAmount(promoterRebateValue)
                         .orderId(this.order.id)
@@ -932,7 +931,7 @@ public class ECoupon extends Model {
 
 
         // 创建退款交易
-        TradeBill tradeBill = TradeUtil.refundTrade()
+        TradeBill tradeBill = TradeUtil.refundTrade(eCoupon.order.operator)
                 .toAccount(account)
                 .balancePaymentAmount(refundCashAmount)
                 .promotionPaymentAmount(refundPromotionAmount)

@@ -3,7 +3,6 @@ package models.order;
 import cache.CacheHelper;
 import com.google.gson.JsonObject;
 import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -60,7 +59,11 @@ import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 
 @Entity
@@ -353,14 +356,20 @@ public class Order extends Model {
     /**
      * 创建普通消费订单.
      *
-     * @param userId      付款用户ID
-     * @param accountType 付款用户账户类型
+     * @param user      付款用户
      * @return 消费订单
      */
-    public static Order createConsumeOrder(Long userId, AccountType accountType) {
-        Order order = new Order(userId, accountType);
+    public static Order createConsumeOrder(User user) {
+        Order order = new Order(user.id, AccountType.CONSUMER, Operator.defaultOperator());
         order.orderType = OrderType.CONSUME;
-        order.consumerId = userId;
+        order.consumerId = user.id;
+        return order;
+    }
+
+    public static Order createResaleOrder(Resaler resaler) {
+        Order order = new Order(resaler.id, AccountType.RESALER, resaler.operator);
+        order.orderType = OrderType.CONSUME;
+        order.consumerId = resaler.id;
         return order;
     }
 
@@ -372,7 +381,7 @@ public class Order extends Model {
      * @return 消费订单
      */
     public static Order createConsumeOrder(User user, Resaler resaler) {
-        Order order = new Order(resaler.id, AccountType.RESALER);
+        Order order = new Order(resaler.id, AccountType.RESALER, resaler.operator);
         order.orderType = OrderType.CONSUME;
         order.consumerId = user.id;
         return order;
@@ -739,7 +748,7 @@ public class Order extends Model {
 
         //先将用户银行支付的钱充值到自己账户上
         if (this.discountPay.compareTo(BigDecimal.ZERO) > 0) {
-            TradeBill chargeTradeBill = TradeUtil.chargeTrade(paymentSource)
+            TradeBill chargeTradeBill = TradeUtil.chargeTrade(paymentSource, account.operator)
                     .ebankPaymentAmount(this.discountPay)
                     .toAccount(account)
                     .orderId(this.getId())
@@ -787,7 +796,7 @@ public class Order extends Model {
         //如果订单类型不是充值,那接着再支付此次订单
         if (this.orderType != OrderType.CHARGE) {
             try {
-                TradeBill tradeBill = TradeUtil.orderTrade()
+                TradeBill tradeBill = TradeUtil.orderTrade(this.operator)
                         .fromAccount(account)
                         .balancePaymentAmount(this.accountPay)
                         .ebankPaymentAmount(this.discountPay)
@@ -1186,7 +1195,7 @@ public class Order extends Model {
 
                 //给商户打钱
                 Account supplierAccount = AccountUtil.getSupplierAccount(orderItem.goods.supplierId);
-                TradeBill consumeTrade = TradeUtil.consumeTrade()
+                TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
                         .toAccount(supplierAccount)
                         .balancePaymentAmount(orderItem.originalPrice.multiply(new BigDecimal(orderItem.buyNumber)))
                         .coupon(orderItem.goods.name)
@@ -1204,8 +1213,8 @@ public class Order extends Model {
                     platformCommission = orderItem.resalerPrice.subtract(orderItem.originalPrice);
                     //如果是在一百券网站下的单，还要给一百券佣金
                     if (order.isWebsiteOrder()) {
-                        TradeBill uhuilaCommissionTrade = TradeUtil.commissionTrade()
-                                .toAccount(AccountUtil.getUhuilaAccount())
+                        TradeBill uhuilaCommissionTrade = TradeUtil.commissionTrade(order.operator)
+                                .toAccount(AccountUtil.getUhuilaAccount(order.operator))
                                 .balancePaymentAmount(orderItem.salePrice.subtract(orderItem.resalerPrice).multiply(new BigDecimal(orderItem.buyNumber)))
                                 .orderId(order.getId())
                                 .make();
@@ -1216,8 +1225,8 @@ public class Order extends Model {
 
                 if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
                     //给优惠券平台佣金
-                    TradeBill platformCommissionTrade = TradeUtil.commissionTrade()
-                            .toAccount(AccountUtil.getPlatformCommissionAccount())
+                    TradeBill platformCommissionTrade = TradeUtil.commissionTrade(order.operator)
+                            .toAccount(AccountUtil.getPlatformCommissionAccount(order.operator))
                             .balancePaymentAmount(platformCommission.multiply(new BigDecimal(orderItem.buyNumber)))
                             .orderId(order.getId())
                             .make();
@@ -1228,8 +1237,8 @@ public class Order extends Model {
 
         if (order.freight != null && order.freight.compareTo(BigDecimal.ZERO) >= 0) {
             //给优惠券平台佣金
-            TradeBill freightTrade = TradeUtil.freightTrade()
-                    .toAccount(AccountUtil.getPlatformCommissionAccount())
+            TradeBill freightTrade = TradeUtil.freightTrade(order.operator)
+                    .toAccount(AccountUtil.getPlatformCommissionAccount(order.operator))
                     .balancePaymentAmount(order.freight)
                     .orderId(order.getId())
                     .make();

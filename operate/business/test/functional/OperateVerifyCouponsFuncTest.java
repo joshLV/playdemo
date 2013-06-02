@@ -9,6 +9,7 @@ import models.accounts.util.AccountUtil;
 import models.operator.OperateUser;
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.operator.Operator;
 import models.order.*;
 import models.sales.Goods;
 import models.sales.MaterialType;
@@ -119,7 +120,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         });
 
         // 设置 平台付款账户 金额，已完成向商户付款
-        Account account = AccountUtil.getPlatformIncomingAccount();
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         account.amount = new BigDecimal(1000);
         account.save();
         goods.shops.add(shop);
@@ -167,7 +168,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         });
 
         // 设置 平台付款账户 金额，已完成向商户付款
-        Account account = AccountUtil.getPlatformIncomingAccount();
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         account.amount = new BigDecimal(1000);
         account.save();
         goods.shops.add(shop);
@@ -217,7 +218,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         MockWebServiceClient.addMockHttpRequest(200, data);
 
         // 设置 平台付款账户 金额，已完成向商户付款
-        Account account = AccountUtil.getPlatformIncomingAccount();
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         account.amount = new BigDecimal(1000);
         account.save();
         goods.shops.add(shop);
@@ -291,7 +292,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         });
 
         // 设置 平台付款账户 金额，已完成向商户付款
-        Account account = AccountUtil.getPlatformIncomingAccount();
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         account.amount = new BigDecimal(1000);
         account.save();
 

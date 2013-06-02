@@ -1,17 +1,16 @@
 package unit.models.accounts;
 
-import java.math.BigDecimal;
-
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
-
+import models.operator.Operator;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
-import factory.FactoryBoy;
+
+import java.math.BigDecimal;
 
 /**
  * @author likang
@@ -32,14 +31,14 @@ public class RefundTest extends UnitTest {
         BigDecimal balance = new BigDecimal("1000");
         BigDecimal refundAmount = new BigDecimal("10");
 
-        Account platformIncomingAccount = AccountUtil.getPlatformIncomingAccount();
+        Account platformIncomingAccount = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         platformIncomingAccount.amount = balance;
         platformIncomingAccount.save();
 
-        assertEquals(0, balance.compareTo(AccountUtil.getPlatformIncomingAccount().amount));
+        assertEquals(0, balance.compareTo(AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator()).amount));
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().amount));
 
-        TradeBill tradeBill = TradeUtil.refundTrade()
+        TradeBill tradeBill = TradeUtil.refundTrade(Operator.defaultOperator())
                 .toAccount(getConsumerAccount())
                 .balancePaymentAmount(refundAmount)
                 .orderId(1L)
@@ -48,6 +47,6 @@ public class RefundTest extends UnitTest {
         TradeUtil.success(tradeBill, "退款");
 
         assertEquals(0, refundAmount.compareTo(getConsumerAccount().amount));
-        assertEquals(0, AccountUtil.getPlatformIncomingAccount().amount.compareTo(balance.subtract(refundAmount)));
+        assertEquals(0, AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator()).amount.compareTo(balance.subtract(refundAmount)));
     }
 }

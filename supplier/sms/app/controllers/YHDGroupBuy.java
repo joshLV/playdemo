@@ -2,12 +2,18 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import models.accounts.AccountType;
 import models.accounts.PaymentSource;
-import models.order.*;
+import models.order.DeliveryType;
+import models.order.ECoupon;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderItems;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 import models.resale.Resaler;
-import models.sales.MaterialType;
 import models.sales.Goods;
+import models.sales.MaterialType;
 import models.yihaodian.YHDErrorInfo;
 import models.yihaodian.YHDUtil;
 import play.Logger;
@@ -21,7 +27,11 @@ import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -244,7 +254,7 @@ public class YHDGroupBuy extends Controller {
             errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "合作伙伴：一号店 不存在", null));
             return null;
         }
-        Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
+        Order ybqOrder = Order.createResaleOrder(resaler);
         ybqOrder.save();
         try {
             Long goodsId = null;

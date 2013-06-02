@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.order.DeliveryType;
 import models.order.ECoupon;
@@ -308,7 +307,7 @@ public class WubaGroupBuy extends Controller {
             putStatusAndMsg(result, "10100", "未找到58账户");
             return null;
         }
-        Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
+        Order ybqOrder = Order.createResaleOrder(resaler);
         ybqOrder.save();
         try {
             Goods goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.WB);

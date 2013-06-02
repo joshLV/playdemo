@@ -2,7 +2,6 @@ package models.order;
 
 import com.google.gson.Gson;
 import models.accounts.Account;
-import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.resale.Resaler;
 import models.sales.Goods;
@@ -380,7 +379,7 @@ public class LogisticImportData implements Cloneable {
             Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
             return null;
         }
-        return Order.createConsumeOrder(resaler.id, AccountType.RESALER).save();
+        return Order.createResaleOrder(resaler).save();
 
     }
 
@@ -418,7 +417,7 @@ public class LogisticImportData implements Cloneable {
             Logger.info("goods not found: %s,", outerGoodsNo);
             return null;
         }
-        Order ybqOrder = Order.createConsumeOrder(resaler.id, AccountType.RESALER).save();
+        Order ybqOrder = Order.createResaleOrder(resaler).save();
 
         // 生成OrderShippingInfo
         OrderShippingInfo orderShippingInfo = this.createOrderShipInfo();

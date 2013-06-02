@@ -1,18 +1,17 @@
 package unit.models.accounts;
 
-import java.math.BigDecimal;
-
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
-
+import models.operator.Operator;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
-import factory.FactoryBoy;
+
+import java.math.BigDecimal;
 
 /**
  * @author likang
@@ -33,10 +32,10 @@ public class TransferTest extends UnitTest {
         BigDecimal uncashAmount = new BigDecimal("20");
 
         assertEquals(0, BigDecimal.ZERO.compareTo(getAccount().amount));
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getFinancingIncomingAccount().amount));
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getFinancingIncomingAccount(Operator.defaultOperator()).amount));
 
         TradeBill tradeBill = TradeUtil.transferTrade()
-                .fromAccount(AccountUtil.getFinancingIncomingAccount())
+                .fromAccount(AccountUtil.getFinancingIncomingAccount(Operator.defaultOperator()))
                 .toAccount(getAccount())
                 .balancePaymentAmount(amount)
                 .uncashPaymentAmount(uncashAmount)
@@ -46,7 +45,7 @@ public class TransferTest extends UnitTest {
         assertEquals(0, amount.compareTo(getAccount().amount));
         assertEquals(0, uncashAmount.compareTo(getAccount().uncashAmount));
 
-        assertEquals(0, amount.negate().compareTo(AccountUtil.getFinancingIncomingAccount().amount));
-        assertEquals(0, uncashAmount.negate().compareTo(AccountUtil.getFinancingIncomingAccount().uncashAmount));
+        assertEquals(0, amount.negate().compareTo(AccountUtil.getFinancingIncomingAccount(Operator.defaultOperator()).amount));
+        assertEquals(0, uncashAmount.negate().compareTo(AccountUtil.getFinancingIncomingAccount(Operator.defaultOperator()).uncashAmount));
     }
 }

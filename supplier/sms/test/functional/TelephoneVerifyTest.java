@@ -8,6 +8,7 @@ import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.sales.Shop;
@@ -45,7 +46,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
             }
         });
 
-        Account account = AccountUtil.getPlatformIncomingAccount();
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         account.amount = new BigDecimal("99999");
         account.save();
     }

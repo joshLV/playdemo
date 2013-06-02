@@ -9,6 +9,7 @@ import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
 import models.consumer.User;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -108,7 +109,7 @@ public class ConsumerSmsMultiVerifyBaseTest extends FunctionalTest {
     	kfcECoupon = FactoryBoy.create(ECoupon.class);
     	
     	// 测试验证涉及金额转账，所以要有初始资金.
-        Account account = AccountUtil.getPlatformIncomingAccount();
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         account.amount = new BigDecimal("10000");
         account.save();
         MockMQ.clear();

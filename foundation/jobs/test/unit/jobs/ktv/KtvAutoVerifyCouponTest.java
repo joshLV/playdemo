@@ -12,6 +12,7 @@ import models.admin.SupplierUser;
 import models.ktv.KtvOrderStatus;
 import models.ktv.KtvProduct;
 import models.ktv.KtvRoomOrderInfo;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.OrderItems;
@@ -50,7 +51,7 @@ public class KtvAutoVerifyCouponTest extends UnitTest {
                 target.orderItem = orderItem;
             }
         });
-        Account account = AccountUtil.getPlatformIncomingAccount(); //默认收款账户为平台收款账户
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator()); //默认收款账户为平台收款账户
         account.amount = new BigDecimal("999999");
         account.save();
     }

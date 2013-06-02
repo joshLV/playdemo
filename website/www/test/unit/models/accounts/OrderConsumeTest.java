@@ -1,22 +1,21 @@
 package unit.models.accounts;
 
-import java.math.BigDecimal;
-
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.accounts.util.AccountUtil;
+import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
-import factory.FactoryBoy;
+
+import java.math.BigDecimal;
 
 /**
  * @author : likang
@@ -64,8 +63,8 @@ public class OrderConsumeTest extends UnitTest {
         Account account = order.chargeAccount();
         order.paid(account);
         assertEquals(0, BALANCE.subtract(order.accountPay).compareTo(getAccount().amount));//余额减少
-        assertEquals(0, order.discountPay.negate().compareTo(AccountUtil.getPaymentPartnerAccount("alipay").amount));//支付宝虚拟账户
-        assertEquals(0, order.accountPay.add(order.discountPay).compareTo(AccountUtil.getPlatformIncomingAccount().amount));
+        assertEquals(0, order.discountPay.negate().compareTo(AccountUtil.getPaymentPartnerAccount("alipay", Operator.defaultOperator()).amount));//支付宝虚拟账户
+        assertEquals(0, order.accountPay.add(order.discountPay).compareTo(AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator()).amount));
 
         //4个支付记录:
         //账户充值:账户余额增加
@@ -86,8 +85,8 @@ public class OrderConsumeTest extends UnitTest {
         Account account = order.chargeAccount();
         order.paid(account);
         assertEquals(0, BALANCE.subtract(order.accountPay).compareTo(getAccount().amount));//余额减少
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPaymentPartnerAccount("alipay").amount));//支付宝虚拟账户无变化
-        assertEquals(0, order.accountPay.add(order.discountPay).compareTo(AccountUtil.getPlatformIncomingAccount().amount));
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPaymentPartnerAccount("alipay", Operator.defaultOperator()).amount));//支付宝虚拟账户无变化
+        assertEquals(0, order.accountPay.add(order.discountPay).compareTo(AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator()).amount));
 
         //2个支付记录:
         //订单支付:账户余额减少

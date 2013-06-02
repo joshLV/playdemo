@@ -62,7 +62,7 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
         });
         supplierAccount = AccountUtil.getAccount(supplier.id, AccountType.SUPPLIER);
         withdrawAccount = FactoryBoy.create(WithdrawAccount.class);
-        Account incomingAccount = AccountUtil.getPlatformIncomingAccount();
+        Account incomingAccount = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         incomingAccount.amount = new BigDecimal(10000);
         incomingAccount.save();
         operateUser = FactoryBoy.create(OperateUser.class);
@@ -387,7 +387,7 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
             });
 
             // 给商户打钱
-            TradeBill consumeTrade = TradeUtil.consumeTrade()
+            TradeBill consumeTrade = TradeUtil.consumeTrade(Operator.defaultOperator())
                     .toAccount(supplierAccount)
                     .balancePaymentAmount(ecoupon.originalPrice)
                     .orderId(ecoupon.order.getId())

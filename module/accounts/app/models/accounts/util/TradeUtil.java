@@ -10,6 +10,7 @@ import models.accounts.TradeBill;
 import models.accounts.TradeStatus;
 import models.accounts.TradeType;
 import models.accounts.WithdrawBill;
+import models.operator.Operator;
 import play.Logger;
 
 import java.math.BigDecimal;
@@ -25,9 +26,9 @@ public class TradeUtil {
     /**
      * 创建订单交易
      */
-    public static TradeBill orderTrade() {
+    public static TradeBill orderTrade(Operator operator) {
         TradeBill bill = new TradeBill();
-        bill.toAccount = AccountUtil.getPlatformIncomingAccount(); //默认收款账户为平台收款账户
+        bill.toAccount = AccountUtil.getPlatformIncomingAccount(operator); //默认收款账户为平台收款账户
         bill.tradeType = TradeType.PAY;
         return bill;
     }
@@ -36,9 +37,9 @@ public class TradeUtil {
     /**
      * 创建充值交易
      */
-    public static TradeBill chargeTrade(PaymentSource source) {
+    public static TradeBill chargeTrade(PaymentSource source, Operator operator) {
         TradeBill bill = new TradeBill();
-        bill.fromAccount = AccountUtil.getPaymentPartnerAccount(source.paymentCode);
+        bill.fromAccount = AccountUtil.getPaymentPartnerAccount(source.paymentCode, operator);
         bill.tradeType = TradeType.CHARGE;
         return bill;
     }
@@ -49,7 +50,7 @@ public class TradeUtil {
      */
     public static TradeBill promotionChargeTrade(Account toAccount, BigDecimal amount) {
         TradeBill bill = new TradeBill();
-        bill.fromAccount = AccountUtil.getPromotionAccount();
+        bill.fromAccount = AccountUtil.getPromotionAccount(Operator.defaultOperator()); //只有视惠有
         bill.toAccount = toAccount;
         bill.tradeType = TradeType.CHARGE;
         return bill.promotionPaymentAmount(amount);
@@ -58,9 +59,9 @@ public class TradeUtil {
     /**
      * 创建消费交易
      */
-    public static TradeBill consumeTrade() {
+    public static TradeBill consumeTrade(Operator operator) {
         TradeBill bill = new TradeBill();
-        bill.fromAccount = AccountUtil.getPlatformIncomingAccount(); //默认收款账户为平台收款账户
+        bill.fromAccount = AccountUtil.getPlatformIncomingAccount(operator); //默认收款账户为平台收款账户
         bill.tradeType = TradeType.PURCHASE_COSTING;
         return bill;
     }
@@ -69,9 +70,9 @@ public class TradeUtil {
      * 创建佣金交易，消费者消费成功后，将佣金付给平台和一百券
      *
      */
-    public static TradeBill commissionTrade() {
+    public static TradeBill commissionTrade(Operator operator) {
         TradeBill bill = new TradeBill();
-        bill.fromAccount = AccountUtil.getPlatformIncomingAccount();  //付款方账户为平台收款账户
+        bill.fromAccount = AccountUtil.getPlatformIncomingAccount(operator);  //付款方账户为平台收款账户
         bill.tradeType = TradeType.COMMISSION;
         return bill;
     }
@@ -79,9 +80,9 @@ public class TradeUtil {
     /**
      * 创建运费交易，发货后,平台佣金账户将收取运费
      */
-    public static TradeBill freightTrade() {
+    public static TradeBill freightTrade(Operator operator) {
         TradeBill bill = new TradeBill();
-        bill.fromAccount = AccountUtil.getPlatformIncomingAccount();
+        bill.fromAccount = AccountUtil.getPlatformIncomingAccount(operator);
         bill.tradeType = TradeType.FREIGHT;
         return bill;
     }
@@ -91,9 +92,12 @@ public class TradeUtil {
      * 注意,只有在提现审批通过时才有必要创建此trade,申请和拒绝时不必创建
      */
     public static TradeBill withdrawTrade(Account fromAccount, BigDecimal amount, Long withdrawBillId) {
+        return withdrawTrade(fromAccount, amount, withdrawBillId, Operator.defaultOperator());
+    }
+    public static TradeBill withdrawTrade(Account fromAccount, BigDecimal amount, Long withdrawBillId, Operator operator) {
         TradeBill bill = new TradeBill();
         bill.fromAccount  = fromAccount;
-        bill.toAccount = AccountUtil.getPlatformWithdrawAccount();
+        bill.toAccount = AccountUtil.getPlatformWithdrawAccount(operator);
         bill.uncashPaymentAmount(amount);
         bill.withdrawBill = WithdrawBill.findById(withdrawBillId);
         bill.tradeType = TradeType.WITHDRAW;
@@ -103,9 +107,9 @@ public class TradeUtil {
     /**
      * 创建退款交易记录.
      */
-    public static TradeBill refundTrade() {
+    public static TradeBill refundTrade(Operator operator) {
         TradeBill bill = new TradeBill();
-        bill.fromAccount = AccountUtil.getPlatformIncomingAccount(); //付款方为平台收款账户
+        bill.fromAccount = AccountUtil.getPlatformIncomingAccount(operator); //付款方为平台收款账户
         bill.tradeType = TradeType.REFUND;
         return bill;
     }

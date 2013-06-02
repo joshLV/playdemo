@@ -1,7 +1,6 @@
 package controllers;
 
 import controllers.modules.resale.cas.SecureCAS;
-import models.accounts.AccountType;
 import models.order.DeliveryType;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
@@ -65,7 +64,7 @@ public class ResalerCarts extends Controller {
             return;
         }
 
-        Order order = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
+        Order order = Order.createResaleOrder(resaler);
         boolean containsElectronic = false;
         boolean containsReal = false;
         for(Object[] fav : favs){

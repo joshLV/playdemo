@@ -1,11 +1,16 @@
 package models.yihaodian;
 
 import models.RabbitMQConsumerWithTx;
-import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.ECouponPartner;
+import models.order.NotEnoughInventoryException;
+import models.order.OrderItems;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
@@ -174,7 +179,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
             Logger.error("can not find the resaler by login name: %s", YHD_LOGIN_NAME);
             return null;
         }
-        models.order.Order uhuilaOrder = models.order.Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
+        models.order.Order uhuilaOrder = models.order.Order.createResaleOrder(resaler);
         uhuilaOrder.save();
         try {
             for (Node orderItem : couponItems){

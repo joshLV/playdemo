@@ -7,6 +7,7 @@ import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
+import models.operator.Operator;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponHistoryMessage;
@@ -51,7 +52,7 @@ public class ECouponUnitTest extends UnitTest {
         eCoupon = FactoryBoy.create(ECoupon.class);
         resaler = FactoryBoy.create(Resaler.class);
         yibaiquanResaler = ResalerFactory.getYibaiquanResaler();
-        Account platformAccount = AccountUtil.getPlatformIncomingAccount();
+        Account platformAccount = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         platformAccount.amount = new BigDecimal(1000);
         platformAccount.save();
     }
@@ -130,7 +131,7 @@ public class ECouponUnitTest extends UnitTest {
         eCoupon.order.userId = yibaiquanResaler.id;
         eCoupon.order.save();
         eCoupon.save();
-        Account account = AccountUtil.getPlatformIncomingAccount();
+        Account account = AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator());
         account.amount = new BigDecimal("1000000");
         account.save();
 
