@@ -201,7 +201,6 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
                 .append("," + couponList.get(0).appointmentRemark)
                 .append("一百券客服4006865151");
-        System.out.println(sb.toString() + ">>>>>>>>>>>" + smsMessages[0].getSmsContent());
         assertEquals(sb.toString(), smsMessages[0].getSmsContent());
     }
 

@@ -158,7 +158,7 @@ public class KtvTaobaoProducts extends Controller {
             propSet.add(taobaoSku.getRoomType().getTaobaoId());
             if (minPrice == null) {
                 minPrice = taobaoSku.getPrice();
-            }else if (taobaoSku.getPrice().compareTo(minPrice) < 0) {
+            } else if (taobaoSku.getPrice().compareTo(minPrice) < 0) {
                 minPrice = taobaoSku.getPrice();
             }
             if (taobaoSku.getPrice().compareTo(maxPrice) > 0) {
@@ -217,18 +217,19 @@ public class KtvTaobaoProducts extends Controller {
         ktvProductGoods.shop = shop;
         ktvProductGoods.save();
 
-        render("KtvTaobaoProducts/publishResult.html",taobaoProductId, shop, product);
+        render("KtvTaobaoProducts/publishResult.html", taobaoProductId, shop, product);
     }
 
     public static Goods autoCreateGoods(Shop shop, KtvProduct product, Supplier supplier) {
         Goods goods = new Goods();
         goods.shops = new HashSet<>();
         goods.shops.add(shop);
+        goods.isHideOnsale = true;
         goods.materialType = MaterialType.ELECTRONIC;
         goods.status = GoodsStatus.ONSALE;
         goods.name = shop.name + product.name;
         goods.shortName = goods.name;
-        goods.expireAt=new Date();
+        goods.expireAt = new Date();
         goods.title = goods.name;
         goods.setDetails(goods.name);
         goods.setPrompt(goods.name);
