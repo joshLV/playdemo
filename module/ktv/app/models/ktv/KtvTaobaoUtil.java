@@ -110,12 +110,13 @@ public class KtvTaobaoUtil {
             List<KtvTaobaoSku> skuList = diffResult.get(action);
             switch (action) {
                 case ACTION_ADD:
-                    Collections.sort(skuList, new Comparator<KtvTaobaoSku>() {
-                        @Override
-                        public int compare(KtvTaobaoSku o1, KtvTaobaoSku o2) {
-                            return o2.getQuantity() - o1.getQuantity();
+                    for (KtvTaobaoSku sku : skuList) {
+                        if (sku.getQuantity() > 0) {
+                            skuList.remove(sku);
+                            skuList.add(0, sku);
+                            break;
                         }
-                    });
+                    }
                     for (KtvTaobaoSku sku : skuList) {
                         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, resalerProduct.resaler.taobaoCouponAppKey,
                                 resalerProduct.resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
