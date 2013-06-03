@@ -216,6 +216,7 @@ public class KtvTaobaoProducts extends Controller {
         Goods goods = new Goods();
         goods.shops = new HashSet<>();
         goods.shops.add(shop);
+        goods.isHideOnsale = true;
         goods.materialType = MaterialType.ELECTRONIC;
         goods.status = GoodsStatus.ONSALE;
         goods.name = shop.name + product.name;
