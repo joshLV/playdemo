@@ -51,7 +51,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
 
         });
 
-              ECoupon coupon1 = FactoryBoy.create(ECoupon.class);
+        ECoupon coupon1 = FactoryBoy.create(ECoupon.class);
         coupon1.partner = ECouponPartner.WB;
         coupon1.expireAt = DateHelper.afterDays(3);
         coupon1.goods = goods;
@@ -80,7 +80,6 @@ public class ExpiredCouponUnitTest extends UnitTest {
     }
 
     @Test
-    @Ignore
     public void testNoRefundCouponJob() throws Exception {
         Goods goods0 = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
@@ -120,8 +119,46 @@ public class ExpiredCouponUnitTest extends UnitTest {
         MailMessage msg = (MailMessage) MockMQ.getLastMessage(MailUtil.COMMON_QUEUE);
         assertTrue(msg.getSubject().contains("虚拟验证券到期提醒"));
         List<Map<String, String>> couponList = (ArrayList) msg.getParam("couponList");
-        assertEquals(3, couponList.size());
-        assertEquals(coupon.eCouponSn, couponList.get(2).get("p_couponSn"));
+        assertEquals(2, couponList.size());
+        assertEquals(coupon0.eCouponSn + "," + coupon.eCouponSn, couponList.get(0).get("p_couponSn"));
+        assertEquals(coupon1.eCouponSn, couponList.get(1).get("p_couponSn"));
+    }
+
+    @Test
+    public void testDiffGoodsJob() throws Exception {
+        Goods goods0 = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods g) {
+                g.noRefund = true;
+                g.isLottery = false;
+            }
+
+        });
+        Goods goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods g) {
+                g.noRefund = true;
+                g.isLottery = false;
+            }
+
+        });
+        ECoupon coupon0 = FactoryBoy.create(ECoupon.class);
+        coupon0.partner = ECouponPartner.JD;
+        coupon0.expireAt = DateHelper.afterDays(3);
+        coupon0.goods = goods;
+        coupon0.save();
+        ECoupon coupon1 = FactoryBoy.create(ECoupon.class);
+        coupon1.partner = ECouponPartner.WB;
+        coupon1.expireAt = DateHelper.afterDays(3);
+        coupon1.goods = goods0;
+        coupon1.save();
+
+        ExpiredNoRefundCouponNotice job = new ExpiredNoRefundCouponNotice();
+        job.doJob();
+        MailMessage msg = (MailMessage) MockMQ.getLastMessage(MailUtil.COMMON_QUEUE);
+        assertTrue(msg.getSubject().contains("虚拟验证券到期提醒"));
+        List<Map<String, String>> couponList = (ArrayList) msg.getParam("couponList");
+        assertEquals(2, couponList.size());
         assertEquals(coupon0.eCouponSn, couponList.get(0).get("p_couponSn"));
         assertEquals(coupon1.eCouponSn, couponList.get(1).get("p_couponSn"));
     }

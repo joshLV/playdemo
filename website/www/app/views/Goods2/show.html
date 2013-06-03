@@ -117,7 +117,7 @@
             <input type="hidden" id="goodsId" name="gid" value="${goods.id}">
 
             <div id="btnBox">
-                #{if goods.onSale() && goods?.getRealStocks() != 0 && !goods?.isExpired()}
+                #{if goods.status==models.sales.GoodsStatus.ONSALE && goods?.getRealStocks() != 0 && !goods?.isExpired()}
                     #{if !bought}
                         <a href="#" id="link_buy_now" class="nowBuy">立即购买<b></b></a>
                         #{if !goods?.isLottery}

@@ -39,34 +39,41 @@ public class ExpiredNoRefundCouponNotice extends JobWithHistory {
         String subject = "虚拟验证券到期提醒";
         List<Map<String, String>> couponList = new ArrayList<>();
         Map<String, String> couponMap;
-        String p_coupon = "";
-        Long goodsId = null;
-        int i = 0;
+
+
+        List<Long> goodsIds = new ArrayList<>();
         for (ECoupon coupon : resultList) {
-            couponMap = new HashMap<>();
-            if (coupon.partner == ECouponPartner.JD || coupon.partner == ECouponPartner.WB) {
-                if (goodsId != null && goodsId.equals(coupon.goods.id)) {
-                    p_coupon += "," + coupon.eCouponSn;
-                    if (i > 0) {
-                        couponList.get(i - 1).put("p_couponSn", p_coupon);
-                    }
-                } else {
-                    p_coupon = coupon.eCouponSn;
-                    if (goodsId != null || i == 0) {
-                        //分销商
-                        couponMap.put("p_couponSn", p_coupon);
-                        couponMap.put("couponSn", coupon.eCouponSn);
-                        couponMap.put("userId", String.valueOf(coupon.order.userId));
-                        couponMap.put("partner", ECouponPartner.JD.toString());
-                        //商品名称
-                        couponMap.put("goodsName", coupon.goods.shortName);
-                        couponMap.put("goodsId", coupon.goods.id.toString());
-                        couponList.add(couponMap);
-                    }
-                    goodsId = coupon.goods.id;
-                }
-                i++;
+            if (!goodsIds.contains(coupon.goods.id) &&
+                    (coupon.partner == ECouponPartner.JD || coupon.partner == ECouponPartner.WB)) {
+                goodsIds.add(coupon.goods.id);
             }
+        }
+        int goodsCount = 0;
+        for (Long goodsId : goodsIds) {
+            couponMap = new HashMap<>();
+            List<String> couponSnList = new ArrayList<>();
+            for (ECoupon coupon : resultList) {
+                if (coupon.partner != ECouponPartner.JD && coupon.partner != ECouponPartner.WB) {
+                    continue;
+                }
+
+                if (!goodsId.equals(coupon.goods.id)) {
+                    continue;
+                }
+                if (goodsCount == 0) {
+                    couponMap.put("userId", String.valueOf(coupon.order.userId));
+                    couponMap.put("partner", coupon.partner.toString());
+                    //商品名称
+                    couponMap.put("goodsName", coupon.goods.shortName);
+                    couponMap.put("goodsId", goodsId.toString());
+                }
+                couponSnList.add(coupon.eCouponSn);
+                goodsCount++;
+
+            }
+            couponMap.put("p_couponSn", StringUtils.join(couponSnList, ","));
+            couponList.add(couponMap);
+            goodsCount = 0;
         }
         if (couponList.size() > 0) {
             MailMessage mailMessage = new MailMessage();

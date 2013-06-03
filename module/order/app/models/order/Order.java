@@ -356,7 +356,7 @@ public class Order extends Model {
     /**
      * 创建普通消费订单.
      *
-     * @param user      付款用户
+     * @param user 付款用户
      * @return 消费订单
      */
     public static Order createConsumeOrder(User user) {
@@ -860,7 +860,6 @@ public class Order extends Model {
 
         Resaler sinaResaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
 
-        SimpleDateFormat format = new SimpleDateFormat("M月d日");
         for (OrderItems orderItem : this.orderItems) {
             Goods goods = orderItem.goods;
             if (goods == null) {
@@ -871,7 +870,7 @@ public class Order extends Model {
                 boolean isKtvSupplier = false;
                 //ktv商户的场合
                 KtvRoomOrderInfo roomOrderInfo = null;
-                if (goods.isKtvSupplier()) {
+                if (goods.isKtvSupplier() && goods.isKtvProduct()) {
                     isKtvSupplier = true;
                     roomOrderInfo = KtvRoomOrderInfo.find("orderItem=?", orderItem).first();
                 }
@@ -892,9 +891,10 @@ public class Order extends Model {
                     //ktv商户的话，更新券的价格信息
                     if (isKtvSupplier && roomOrderInfo != null) {
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
-                        eCoupon.appointmentRemark = roomOrderInfo.roomType.getName() + eCoupon.salePrice + "元,"
-                                + KtvTaobaoSku.humanTimeRange(roomOrderInfo.scheduledTime,
-                                roomOrderInfo.scheduledTime + roomOrderInfo.product.duration);
+                        eCoupon.appointmentRemark =
+                                roomOrderInfo.roomType.getName() + eCoupon.salePrice + "元," +
+                                KtvTaobaoSku.humanTimeRange(roomOrderInfo.scheduledTime,
+                                        roomOrderInfo.scheduledTime + roomOrderInfo.product.duration);
                         eCoupon.effectiveAt = new Date();
                         eCoupon.expireAt = DateUtils.ceiling(roomOrderInfo.scheduledDay, Calendar.DATE);
                         eCoupon.save();
@@ -1473,7 +1473,7 @@ public class Order extends Model {
         for (OrderItems item : this.orderItems) {
             OrderECouponMessage.with(item).remark(remark).sendToMQ();
             //ktv商户发送给店员短信
-            if (item.goods.isKtvSupplier() ) {
+            if (item.goods.isKtvSupplier()) {
                 KtvRoomOrderInfo roomOrderInfo = KtvRoomOrderInfo.find("orderItem", item).first();
                 if (roomOrderInfo == null || roomOrderInfo.shop == null || StringUtils.isBlank(roomOrderInfo.shop.managerMobiles)) {
                     break;
