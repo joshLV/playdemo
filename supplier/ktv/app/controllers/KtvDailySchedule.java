@@ -4,15 +4,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
-import models.ktv.KtvPriceSchedule;
-import models.ktv.KtvProductGoods;
-import models.ktv.KtvRoomOrderInfo;
-import models.ktv.KtvShopPriceSchedule;
+import models.ktv.*;
 import models.sales.Shop;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
+import utils.CrossTableConverter;
+import utils.CrossTableUtil;
 
+import javax.persistence.Query;
 import java.util.*;
 
 /**
@@ -27,9 +29,65 @@ public class KtvDailySchedule extends Controller {
         if (shopId == null && shops.size() > 0) {
             shopId = shops.get(0).id;
         }
-
         render(shops, shopId);
     }
+
+    public static void showDailySchedule(Shop shop, Date scheduledDay) {
+        List<Shop> shops = SupplierRbac.currentUser().supplier.getShops();
+        if (scheduledDay == null) {
+            scheduledDay = DateUtils.truncate(new Date(), Calendar.DATE);
+        }
+        StringBuilder sql = new StringBuilder("select o from KtvRoomOrderInfo o where o.scheduledDay =:scheduledDay ")
+                .append("and  (o.status =:dealStatus or (o.status=:lockStatus and o.createdAt >=:createdAt)) ");
+        Date tenMinutesAgo = DateUtils.addMinutes(new Date(), -KtvRoomOrderInfo.LOCK_MINUTE);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        if (shop.id != null) {
+            sql.append(" and o.shop=:shop");
+            params.put("shop", shop);
+        }
+        sql.append("order by scheduledTime");
+
+        params.put("scheduledDay", scheduledDay);
+        params.put("dealStatus", KtvOrderStatus.DEAL);
+        params.put("lockStatus", KtvOrderStatus.LOCK);
+        params.put("createdAt", tenMinutesAgo);
+
+        Query query = JPA.em().createQuery(sql.toString());
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+
+        List<KtvRoomOrderInfo> resultList = query.getResultList();
+        List<Map<String, Object>> roomOrderInfoList = CrossTableUtil.generateCrossTable(resultList, converter);
+
+        render(shops, shop, scheduledDay, roomOrderInfoList);
+    }
+
+    private static CrossTableConverter<KtvRoomOrderInfo, List<String>> converter =
+            new CrossTableConverter<KtvRoomOrderInfo, List<String>>() {
+                @Override
+                public String getRowKey(KtvRoomOrderInfo target) {
+                    return KtvTaobaoSku.humanTimeRange(target.scheduledTime, target.scheduledTime + target.product.duration);
+                }
+
+                @Override
+                public String getColumnKey(KtvRoomOrderInfo target) {
+                    return target.roomType.toString();
+                }
+
+                @Override
+                public List<String> addValue(KtvRoomOrderInfo target, List<String> oldValue) {
+                    if (target == null) {
+                        return oldValue;
+                    }
+                    if (oldValue == null) {
+                        oldValue = new ArrayList<>();
+                    }
+                    oldValue.add(target.orderItem.phone);
+                    return oldValue;
+                }
+            };
 
     public static void jsonRoom(Shop shop, Date day) {
         day = DateUtils.truncate(day, Calendar.DATE);
