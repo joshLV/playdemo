@@ -228,6 +228,7 @@ public class KtvTaobaoProducts extends Controller {
         goods.status = GoodsStatus.ONSALE;
         goods.name = shop.name + product.name;
         goods.shortName = goods.name;
+        goods.expireAt=new Date();
         goods.title = goods.name;
         goods.setDetails(goods.name);
         goods.setPrompt(goods.name);

@@ -219,6 +219,7 @@ public class KtvTaobaoProducts extends Controller {
         goods.materialType = MaterialType.ELECTRONIC;
         goods.status = GoodsStatus.ONSALE;
         goods.name = shop.name + product.name;
+        goods.expireAt=new Date();
         goods.shortName = goods.name;
         goods.title = goods.name;
         goods.setDetails(goods.name);

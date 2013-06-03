@@ -2,11 +2,11 @@
 #{set title:'价格策略' /}
 #{set menu:"ktv_price" /}
 #{set 'moreStyles'}
-    <style>
-        .field-group {
-            padding-left: 0;
-        }
-    </style>
+<style>
+    .field-group {
+        padding-left: 0;
+    }
+</style>
 #{/set}
 <div class="body">
 #{form @KtvPriceSchedules.tableShow() , id:'creationForm',class:"form-horizontal" }
@@ -44,7 +44,8 @@
                     </td>
                     <td wdith="50%">
                         <button class="btn" id="search" type="submit">查询</button>
-                        <a href="@{KtvPriceSchedules.showAdd()}" class="btn" style="width: auto;background-color: #5bb75b;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);">新建</a>
+                        <a href="@{KtvPriceSchedules.showAdd()}" class="btn"
+                           style="width: auto;background-color: #5bb75b;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);">新建</a>
                     </td>
                 </tr>
             </table>
@@ -60,29 +61,30 @@
                 <th>价格</th>
                 <th>操作</th>
 
-            #{list items:priceScheduleList, as:'priceSchedule'}
-                <tr>
-                    <td>
-                        #{list items:priceSchedule.shopSchedules, as:'ss'}
+                #{list items:priceScheduleList, as:'priceSchedule'}
+                    <tr>
+                        <td>
+                            #{list items:priceSchedule.shopSchedules, as:'ss'}
                             ${ss.shop.name} / ${ss.roomCount}<br/>
-                        #{/list}
-                    </td>
-                    <td>${priceSchedule.product.name}</td>
-                    <td>${priceSchedule.roomType.getName()}</td>
-                    <td>
-                        #{list items:priceSchedule.dateRanges, as:'dateRange'}
+                            #{/list}
+                        </td>
+                        <td>${priceSchedule.product.name}</td>
+                        <td>${priceSchedule.roomType.getName()}</td>
+                        <td>
+                            #{list items:priceSchedule.dateRanges, as:'dateRange'}
                             ${dateRange.startDay.format()} - ${dateRange.endDay.format()}<br/>
-                        #{/list}
-                    </td>
-                    <td>
-                        #{list priceSchedule.startTimes.split(","), as:'startTime'}
-                            ${startTime+":00"} - ${(java.lang.Integer.parseInt(startTime) + priceSchedule.product.duration) + ":00" }<br/>
-                        #{/list}
-                    </td>
-                    <td>${priceSchedule.price}</td>
-                    <td><a href="@{KtvPriceSchedules.showUpdate(priceSchedule.id)}">编辑</a> </td>
-                </tr>
-            #{/list}
+                            #{/list}
+                        </td>
+                        <td>
+                            #{list priceSchedule.startTimes.split(","), as:'startTime'}
+                            ${models.ktv.KtvTaobaoSku.humanTimeRange(java.lang.Integer.parseInt(startTime),(java.lang.Integer.parseInt(startTime) + priceSchedule.product.duration) )}
+                                <br/>
+                            #{/list}
+                        </td>
+                        <td>${priceSchedule.price}</td>
+                        <td><a href="@{KtvPriceSchedules.showUpdate(priceSchedule.id)}">编辑</a></td>
+                    </tr>
+                #{/list}
             </table>
         </div>
     </div>
