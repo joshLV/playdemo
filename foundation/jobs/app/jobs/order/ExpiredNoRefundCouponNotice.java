@@ -3,18 +3,21 @@ package jobs.order;
 import com.uhuila.common.util.DateUtil;
 import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
+import models.ktv.KtvRoomOrderInfo;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
+import models.order.OuterOrderPartner;
+import models.sales.Goods;
+import models.sales.Shop;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import play.Play;
 import play.jobs.On;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p/>
@@ -22,7 +25,7 @@ import java.util.Map;
  * Date: 13-1-25
  * Time: 下午1:32
  */
-@JobDefine(title="虚拟验证券到期提醒", description="查询三天后京东，WB未消费并且是不可退款的券，做虚拟虚证用")
+@JobDefine(title = "虚拟验证券到期提醒", description = "查询三天后京东，WB未消费并且是不可退款的券，做虚拟虚证用")
 @On("0 0 1 * * ?")
 public class ExpiredNoRefundCouponNotice extends JobWithHistory {
     public static String MAIL_RECEIVER = Play.configuration.getProperty("mail.receiver", "dev@uhuila.com");
@@ -30,21 +33,23 @@ public class ExpiredNoRefundCouponNotice extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
         CouponsCondition condition = new CouponsCondition();
-        condition.expiredAtBegin = DateUtil.getBeginExpiredDate(3);
-        condition.expiredAtEnd = DateUtil.getEndExpiredDate(3);
+        condition.expiredAtBegin = DateUtils.addDays(new Date(), -3);
+        condition.expiredAtEnd = DateUtils.addDays(new Date(), 3);
         List<ECoupon> resultList = ECoupon.findVirtualCoupons(condition);
         String subject = "虚拟验证券到期提醒";
         List<Map<String, String>> couponList = new ArrayList<>();
         Map<String, String> couponMap;
-        Long goodsId = null;
         String p_coupon = "";
+        Long goodsId = null;
         int i = 0;
         for (ECoupon coupon : resultList) {
             couponMap = new HashMap<>();
             if (coupon.partner == ECouponPartner.JD || coupon.partner == ECouponPartner.WB) {
                 if (goodsId != null && goodsId.equals(coupon.goods.id)) {
                     p_coupon += "," + coupon.eCouponSn;
-                    couponList.get(i - 1).put("p_couponSn", p_coupon);
+                    if (i > 0) {
+                        couponList.get(i - 1).put("p_couponSn", p_coupon);
+                    }
                 } else {
                     p_coupon = coupon.eCouponSn;
                     if (goodsId != null || i == 0) {
