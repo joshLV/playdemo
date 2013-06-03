@@ -18,12 +18,13 @@
     <div class="body">
         <h2>${title}</h2>
 
+    #{form @resale.KtvTaobaoProducts.index() , id:'creationForm',class:"form-horizontal" }
         商户：#{vx.selectInputField name:"supplierName", id:"supplierId", list:supplierList,
     value:supplierId, array:"supplierArray",importJs:true/}
         <button class="btn btn-primary" type="submit"> 搜索</button>
         <button class="btn btn-primary batchSync" id="batchSync" type="button" style="display: none">批量同步</button>
         <div style="clear: both"></div>
-
+    #{/form}
         <table class="table table-bordered ">
             <thead>
             <tr>
