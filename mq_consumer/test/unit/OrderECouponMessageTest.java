@@ -5,6 +5,8 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import models.consumer.User;
+import models.ktv.KtvProduct;
+import models.ktv.KtvProductGoods;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -76,9 +78,14 @@ public class OrderECouponMessageTest extends UnitTest {
                 target.status = OrderStatus.PAID;
             }
         });
+
         SupplierProperty supplierProperty = FactoryBoy.lastOrCreate(SupplierProperty.class, "ktv");
         supplierProperty.supplier = goods.getSupplier();
         supplierProperty.save();
+
+
+
+
     }
 
 
@@ -187,14 +194,15 @@ public class OrderECouponMessageTest extends UnitTest {
     @Test
     public void ktv单张券预约短信() {
         createKtvOneCoupons(1);
+        OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
         StringBuilder sb = new StringBuilder();
-        sb.append(couponList.get(0).goods.title)
+        sb.append("【"+couponList.get(0).goods.getSupplier().otherName+"】")
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
                 .append("," + couponList.get(0).appointmentRemark)
-                .append(",截止").append(dateFormat.format(couponList.get(0).expireAt))
                 .append("一百券客服4006865151");
-        assertEquals(sb.toString(), OrderECouponMessage.getOrderSMSMessage(couponList.get(0)).getSmsContent());
+        System.out.println(sb.toString() + ">>>>>>>>>>>" + smsMessages[0].getSmsContent());
+        assertEquals(sb.toString(), smsMessages[0].getSmsContent());
     }
 
     @Test
@@ -202,7 +210,7 @@ public class OrderECouponMessageTest extends UnitTest {
         createKtvMoreCoupons(2);
         StringBuilder sb = new StringBuilder();
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
-        sb.append(couponList.get(0).goods.title)
+        sb.append("【"+couponList.get(0).goods.getSupplier().otherName+"】")
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
                 .append("," + couponList.get(0).appointmentRemark)
@@ -210,7 +218,6 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append(",预约日期:").append(dateFormat.format(couponList.get(1).appointmentDate))
                 .append("," + couponList.get(1).appointmentRemark)
                 .append("[共2张]")
-                .append(",截止").append(dateFormat.format(couponList.get(0).expireAt))
                 .append("一百券客服4006865151");
         assertEquals(sb.toString(), smsMessages[0].getSmsContent());
 
@@ -247,6 +254,11 @@ public class OrderECouponMessageTest extends UnitTest {
     }
 
     private void createKtvOneCoupons(int size) {
+        KtvProductGoods ktvProductGoods = FactoryBoy.create(KtvProductGoods.class);
+        ktvProductGoods.goods = goods;
+        ktvProductGoods.shop = shop;
+        ktvProductGoods.product = FactoryBoy.create(KtvProduct.class);
+        ktvProductGoods.save();
         couponList = FactoryBoy.batchCreate(size, ECoupon.class, "Id",
                 new SequenceCallback<ECoupon>() {
                     @Override
@@ -264,6 +276,11 @@ public class OrderECouponMessageTest extends UnitTest {
     }
 
     private void createKtvMoreCoupons(int size) {
+        KtvProductGoods ktvProductGoods = FactoryBoy.create(KtvProductGoods.class);
+        ktvProductGoods.goods = goods;
+        ktvProductGoods.shop = shop;
+        ktvProductGoods.product = FactoryBoy.create(KtvProduct.class);
+        ktvProductGoods.save();
         couponList = FactoryBoy.batchCreate(size, ECoupon.class, "Id",
                 new SequenceCallback<ECoupon>() {
                     @Override

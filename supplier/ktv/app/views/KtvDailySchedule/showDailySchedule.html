@@ -1,0 +1,59 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'每日预订' /}
+#{set menu:"ktv_daily_schedule" /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<div class="body">
+#{form @KtvDailySchedule.showDailySchedule() , method:'GET'}
+<div class="bd">
+    <div class="field-group" style="padding-left: 0px">
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td>预订日期：</td>
+                <td>
+                    <input class="time" type="text" id="scheduledDay" name="scheduledDay"
+                           value="${scheduledDay?.format('yyyy-MM-dd')}"
+                           onfocus="WdatePicker({readOnly:true})"/>
+                </td>
+                <td>请选择门店：</td>
+                <td>
+                    <select name="shop.id" style="width: auto">
+                        <option value="">--请选择--</option>
+                        #{list items:shops,as:'s'}
+                            <option value="${s.id}" ${shop?.id==s.id?'selected':''}/>${s.name}
+                            &nbsp;&nbsp;
+                        #{/list}
+                    </select>
+                </td>
+                <td>
+                    <button class="btn" type="submit">查询</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+#{/form}
+    <table cellspacing="0" cellpadding="0" class="standard-table">
+        <tr>
+            <th>预订时间</th>
+        #{list items:models.ktv.KtvRoomType.values(), as:'roomType'}
+            <th>${roomType.getName()}</th>
+        #{/list}
+        </tr>
+
+    #{list items:roomOrderInfoList, as:'roomOrderInfo'}
+
+        <tr>
+            <td>${roomOrderInfo.get("RowKey")}</td>
+            #{list items:models.ktv.KtvRoomType.values(), as:'roomType'}
+                <td>
+                    #{list items:roomOrderInfo.get(roomType.toString()),as:'phone'}
+                    ${phone}<br>
+                    #{/list}
+                </td>
+            #{/list}
+        </tr>
+    #{/list}
+    </table>
+</div>
+</div>
