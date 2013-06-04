@@ -28,7 +28,7 @@ import java.util.*;
 @JobDefine(title = "虚拟验证券到期提醒", description = "查询三天后京东，WB未消费并且是不可退款的券，做虚拟虚证用")
 @On("0 0 1 * * ?")
 public class ExpiredNoRefundCouponNotice extends JobWithHistory {
-    public static String MAIL_RECEIVER = Play.configuration.getProperty("mail.receiver", "dev@uhuila.com");
+    public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.norefund.email.receiver", "dev@uhuila.com");
 
     @Override
     public void doJobWithHistory() {
