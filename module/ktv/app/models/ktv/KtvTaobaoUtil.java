@@ -172,7 +172,8 @@ public class KtvTaobaoUtil {
         List<KtvTaobaoSku> taobaoSkuList = new ArrayList<>();//结果集
 
         Calendar calendar = Calendar.getInstance();
-        Date startDay = DateUtils.truncate(new Date(), Calendar.DATE);
+        Date today = DateUtils.truncate(new Date(), Calendar.DATE);
+        Date startDay = today;
         //当天18点到24点之后sku不更新，并删除
         int pushEndHour = Integer.parseInt( product.supplier.getProperty(Supplier.KTV_SKU_PUSH_END_HOUR, "18"));
         int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -268,6 +269,10 @@ public class KtvTaobaoUtil {
                 //取出该房型下的时间安排
                 SortedSet<Integer> startTimeArray = schedule.getStartTimesAsSet();
                 for (Integer startTime : startTimeArray) {
+                    //今天两小时之内的不能预订
+                    if (day.compareTo(today) == 0 && startTime < (currentHour + 2)) {
+                        continue;
+                    }
                     //房型数 x 日期数 x 时间段数 不能超过600
                     String t = startTime + "-" + (startTime + product.duration);
                     uniqTimeRanges.add(t);
