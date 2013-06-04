@@ -46,7 +46,7 @@ public class KtvDailySchedule extends Controller {
             sql.append(" and o.shop=:shop");
             params.put("shop", shop);
         }
-        sql.append("order by scheduledTime");
+        sql.append(" order by scheduledTime");
 
         params.put("scheduledDay", scheduledDay);
         params.put("dealStatus", KtvOrderStatus.DEAL);
