@@ -307,20 +307,25 @@ public class WubaGroupBuy extends Controller {
             putStatusAndMsg(result, "10100", "未找到58账户");
             return null;
         }
+        Goods goods = null;
         Order ybqOrder = Order.createResaleOrder(resaler);
+
         ybqOrder.save();
         try {
-            Goods goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.WB);
+            goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.WB);
             if (goods == null) {
                 putStatusAndMsg(result, "10100", "未找到商品");
                 Logger.info("goods not found: %s", outerGroupId);
                 return null;
             }
-            if (goods.originalPrice.compareTo(productPrize) > 0) {
-                Logger.info("invalid yhd productPrice: %s", productPrize);
-                putStatusAndMsg(result, "10100", "价格非法");
-                return null;
-            }
+//            if (goods.originalPrice.compareTo(productPrize) > 0) {
+//                Logger.info("invalid wuba productPrice: %s", productPrize);
+//                putStatusAndMsg(result, "10100", "价格非法");
+//                return null;
+//            }
+
+            Logger.info("params【goodsId:%s,goods.getRealStocks()=%s,productNum:%s,productPrize:%s】",
+                    goods.id, goods.getRealStocks(), productNum, productPrize);
 
             OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(
                     goods, productNum, userPhone, productPrize, productPrize);
@@ -332,7 +337,7 @@ public class WubaGroupBuy extends Controller {
             }
         } catch (NotEnoughInventoryException e) {
             Logger.info("enventory not enough");
-            putStatusAndMsg(result, "10100", "价格非法");
+            putStatusAndMsg(result, "10100", "库存不足");
             JPA.em().getTransaction().rollback();
             return null;
         }
