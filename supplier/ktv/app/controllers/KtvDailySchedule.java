@@ -38,7 +38,8 @@ public class KtvDailySchedule extends Controller {
             scheduledDay = DateUtils.truncate(new Date(), Calendar.DATE);
         }
         StringBuilder sql = new StringBuilder("select o from KtvRoomOrderInfo o where o.scheduledDay =:scheduledDay ")
-                .append("and  (o.status =:dealStatus or (o.status=:lockStatus and o.createdAt >=:createdAt)) ");
+                .append("and  (o.status =:dealStatus or (o.status=:lockStatus and o.createdAt >=:createdAt))")
+                .append(" and o.goods.supplierId=:supplierId");
         Date tenMinutesAgo = DateUtils.addMinutes(new Date(), -KtvRoomOrderInfo.LOCK_MINUTE);
 
         Map<String, Object> params = new HashMap<String, Object>();
@@ -46,12 +47,13 @@ public class KtvDailySchedule extends Controller {
             sql.append(" and o.shop=:shop");
             params.put("shop", shop);
         }
-        sql.append("order by scheduledTime");
+        sql.append(" order by scheduledTime");
 
         params.put("scheduledDay", scheduledDay);
         params.put("dealStatus", KtvOrderStatus.DEAL);
         params.put("lockStatus", KtvOrderStatus.LOCK);
         params.put("createdAt", tenMinutesAgo);
+        params.put("supplierId", SupplierRbac.currentUser().supplier.id);
 
         Query query = JPA.em().createQuery(sql.toString());
         for (Map.Entry<String, Object> entry : params.entrySet()) {
