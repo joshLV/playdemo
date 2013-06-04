@@ -12,9 +12,7 @@ import java.util.Random;
  * Time: 下午3:12
  */
 public class KtvSkuMessageUtil {
-    public static final String QUEUE_NAME = Play.mode.isProd() ? "taobao_ktv_sku" : "taobao_ktv_sku_dev";
-
-    public static final String TAOBAO_SKU_QUEUE_NAME = Play.mode.isProd() ? "ktv_taobao_sku_action" : "ktv_taobao_sku_action_dev";
+    public static final String TAOBAO_SKU_QUEUE_NAME = Play.mode.isProd() ? "ktv_taobao_sku_action_v2" : "ktv_taobao_sku_action_v2_dev";
     public static final String TAOBAO_SKU_QUEUE_NAME0 = TAOBAO_SKU_QUEUE_NAME + "0";
     public static final String TAOBAO_SKU_QUEUE_NAME1 = TAOBAO_SKU_QUEUE_NAME + "1";
     public static final String TAOBAO_SKU_QUEUE_NAME2 = TAOBAO_SKU_QUEUE_NAME + "2";
@@ -30,20 +28,12 @@ public class KtvSkuMessageUtil {
     private KtvSkuMessageUtil() {
     }
 
-    /**
-     * 淘宝商品ID
-     */
-    public static void send(Long productGoodsId) {
-        KtvSkuMessage message = new KtvSkuMessage(productGoodsId);
-        MQPublisher.publish(QUEUE_NAME, message);
-    }
-
-    public static void sendTaobaoAction(KtvSkuTaobaoMessage message) {
-        if (message.resalerProductId == null) {
-            throw  new IllegalArgumentException("resalerProductId is null");
+    public static void sendSyncTaobaoSku(Long ktvProductGoodsId) {
+        if (ktvProductGoodsId == null) {
+            throw  new IllegalArgumentException("ktvProductGoodsId is null");
         }
         Random random = new Random(System.currentTimeMillis());
 
-        MQPublisher.publish(TAOBAO_SKU_QUEUE_NAME + random.nextInt(6), message);
+        MQPublisher.publish(TAOBAO_SKU_QUEUE_NAME + random.nextInt(6), ktvProductGoodsId);
     }
 }

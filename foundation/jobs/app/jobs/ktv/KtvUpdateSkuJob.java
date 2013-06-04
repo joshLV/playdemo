@@ -3,9 +3,7 @@ package jobs.ktv;
 import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import models.ktv.KtvProductGoods;
-import models.ktv.KtvTaobaoUtil;
 import models.taobao.KtvSkuMessageUtil;
-import play.jobs.Job;
 import play.jobs.On;
 
 import java.util.List;
@@ -22,7 +20,7 @@ public class KtvUpdateSkuJob extends JobWithHistory {
     public void doJobWithHistory() {
         List<KtvProductGoods> ktvProductGoodsList = KtvProductGoods.findAll();
         for (KtvProductGoods productGoods : ktvProductGoodsList) {
-            KtvSkuMessageUtil.send(productGoods.id);
+            KtvSkuMessageUtil.sendSyncTaobaoSku(productGoods.id);
         }
     }
 }
