@@ -307,19 +307,23 @@ public class WubaGroupBuy extends Controller {
             putStatusAndMsg(result, "10100", "未找到58账户");
             return null;
         }
+        Goods goods = null;
         Order ybqOrder = Order.createResaleOrder(resaler);
+
         ybqOrder.save();
         try {
-            Goods goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.WB);
+            goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.WB);
             if (goods == null) {
                 putStatusAndMsg(result, "10100", "未找到商品");
                 Logger.info("goods not found: %s", outerGroupId);
                 return null;
             }
+
             if (goods.originalPrice.compareTo(productPrize) > 0) {
-                Logger.info("invalid yhd productPrice: %s", productPrize);
-                putStatusAndMsg(result, "10100", "价格非法");
-                return null;
+                Logger.error("invalid wuba productPrice: %s,goods.originPrice:%s," +
+                        "可能为了促进销售，商务降低价格销售。请确认此商品的价格信息！", productPrize, goods.originalPrice);
+//                putStatusAndMsg(result, "10100", "价格非法");
+//                return null;
             }
 
             OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(
@@ -332,7 +336,7 @@ public class WubaGroupBuy extends Controller {
             }
         } catch (NotEnoughInventoryException e) {
             Logger.info("enventory not enough");
-            putStatusAndMsg(result, "10100", "价格非法");
+            putStatusAndMsg(result, "10100", "库存不足");
             JPA.em().getTransaction().rollback();
             return null;
         }
