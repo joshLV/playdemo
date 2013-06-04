@@ -65,7 +65,7 @@ public class WubaGroupBuyTest extends FunctionalTest {
         params.put("orderId", System.currentTimeMillis());
         params.put("groupbuyIdThirdpart", product.goodsLinkId);
         params.put("mobile", "13472581853");
-        params.put("prodCount", 11);
+        params.put("prodCount", 1);
         params.put("prodPrice", 25.8);
 
         Map<String, String> requestParam = new HashMap<>();
