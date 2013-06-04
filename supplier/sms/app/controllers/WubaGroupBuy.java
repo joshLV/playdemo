@@ -318,11 +318,13 @@ public class WubaGroupBuy extends Controller {
                 Logger.info("goods not found: %s", outerGroupId);
                 return null;
             }
-//            if (goods.originalPrice.compareTo(productPrize) > 0) {
-//                Logger.info("invalid wuba productPrice: %s", productPrize);
+
+            if (goods.originalPrice.compareTo(productPrize) > 0) {
+                Logger.error("invalid wuba productPrice: %s,goods.originPrice:%s," +
+                        "请让编辑修改商品的原价！", productPrize, goods.originalPrice);
 //                putStatusAndMsg(result, "10100", "价格非法");
-//                return null;
-//            }
+                return null;
+            }
 
             Logger.info("params【goodsId:%s,goods.getRealStocks()=%s,productNum:%s,productPrize:%s】",
                     goods.id, goods.getRealStocks(), productNum, productPrize);
