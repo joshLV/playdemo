@@ -321,13 +321,10 @@ public class WubaGroupBuy extends Controller {
 
             if (goods.originalPrice.compareTo(productPrize) > 0) {
                 Logger.error("invalid wuba productPrice: %s,goods.originPrice:%s," +
-                        "请让编辑修改商品的原价！", productPrize, goods.originalPrice);
+                        "可能为了促进销售，商务降低价格销售。请确认此商品的价格信息！", productPrize, goods.originalPrice);
 //                putStatusAndMsg(result, "10100", "价格非法");
-                return null;
+//                return null;
             }
-
-            Logger.info("params【goodsId:%s,goods.getRealStocks()=%s,productNum:%s,productPrize:%s】",
-                    goods.id, goods.getRealStocks(), productNum, productPrize);
 
             OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(
                     goods, productNum, userPhone, productPrize, productPrize);
