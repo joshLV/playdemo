@@ -23,7 +23,6 @@ import models.taobao.KtvSkuMessageUtil;
 import models.taobao.TaobaoCouponUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
-import play.data.binding.As;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -265,7 +264,7 @@ public class KtvTaobaoProducts extends Controller {
             renderJSON("{\"error\":\"" + error + "\"}");
         }
 
-        KtvSkuMessageUtil.send(productGoodsId);
+        KtvSkuMessageUtil.sendSyncTaobaoSku(productGoodsId);
         productGoods.needSync = DeletedStatus.UN_DELETED;
         productGoods.save();
 

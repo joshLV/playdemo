@@ -11,7 +11,6 @@ import com.taobao.api.response.ItempropsGetResponse;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.OperateRbac;
 import models.accounts.AccountType;
-import models.admin.SupplierUser;
 import models.ktv.*;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
@@ -257,7 +256,7 @@ public class KtvTaobaoProducts extends Controller {
             renderJSON("{\"error\":\"" + error + "\"}");
         }
 
-        KtvSkuMessageUtil.send(productGoodsId);
+        KtvSkuMessageUtil.sendSyncTaobaoSku(productGoodsId);
         productGoods.needSync = DeletedStatus.UN_DELETED;
         productGoods.save();
 

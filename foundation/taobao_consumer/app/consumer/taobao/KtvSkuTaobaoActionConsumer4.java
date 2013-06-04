@@ -11,17 +11,17 @@ import play.jobs.OnApplicationStart;
  */
 
 @OnApplicationStart(async = true)
-public class KtvSkuTaobaoActionConsumer4 extends TaobaoRabbitMQConsumerWithTx<KtvSkuTaobaoMessage> {
+public class KtvSkuTaobaoActionConsumer4 extends TaobaoRabbitMQConsumerWithTx<Long> {
     private final KtvSkuTaobaoAction ktvSkuTaobaoAction = new KtvSkuTaobaoAction();
 
     @Override
-    public void consumeWithTx(KtvSkuTaobaoMessage message) {
-        ktvSkuTaobaoAction.processMessage(message);
+    public void consumeWithTx(Long ktvProductGoodsId) {
+        ktvSkuTaobaoAction.processMessage(ktvProductGoodsId);
     }
 
     @Override
     protected Class getMessageType() {
-        return KtvSkuTaobaoMessage.class;
+        return Long.class;
     }
 
     @Override
@@ -29,3 +29,4 @@ public class KtvSkuTaobaoActionConsumer4 extends TaobaoRabbitMQConsumerWithTx<Kt
         return KtvSkuMessageUtil.TAOBAO_SKU_QUEUE_NAME4;
     }
 }
+
