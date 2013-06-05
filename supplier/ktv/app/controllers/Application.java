@@ -10,6 +10,7 @@ import models.order.OuterOrderPartner;
 import models.sales.ResalerProduct;
 import org.apache.commons.lang.StringUtils;
 import play.*;
+import play.libs.Crypto;
 import play.mvc.*;
 
 import java.util.*;
@@ -17,6 +18,7 @@ import java.util.*;
 import models.*;
 
 public class Application extends Controller {
+    private static final String AES_KEY =  "U9(sDUqXjG2sD&mV";
 
     public static void index() {
         render();
@@ -24,6 +26,7 @@ public class Application extends Controller {
     public static void diff(String partnerProductId) {
         ResalerProduct resalerProduct = ResalerProduct.find("byPartnerAndPartnerProductId", OuterOrderPartner.TB, partnerProductId).first();
         KtvProductGoods productGoods =  KtvProductGoods.find("byGoods", resalerProduct.goods).first();
+
 
         //构建新的淘宝SKU列表
         SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> localSkuMap
@@ -64,9 +67,14 @@ public class Application extends Controller {
             }
             result.put(entry.getKey(), skuList);
         }
-        result.put("token", token.accessToken);
-        result.put("appkey", resalerProduct.resaler.taobaoCouponAppKey);
+        result.put("id", Crypto.encryptAES(
+                resalerProduct.resaler.taobaoCouponAppKey + ";" +
+                        resalerProduct.resaler.taobaoCouponAppSecretKey + ";" +
+                        token.accessToken,
+                AES_KEY
+        ));
         result.put("numIid", partnerProductId);
+
 
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         renderJSON(gson.toJson(result));
