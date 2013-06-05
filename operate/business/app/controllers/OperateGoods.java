@@ -274,7 +274,7 @@ public class OperateGoods extends Controller {
         goods.createHistory(createdFrom);
 
         //KTV商品处理
-        if (goods.getSupplier().isKtvSupplier()) {
+        if (goods.isKtvProduct()) {
             Shop shop = Shop.findById(Long.valueOf(request.params.getAll("goods.shops.id")[0]));
             goods.shops = new HashSet<>();
             goods.isAllShop = false;
@@ -424,7 +424,7 @@ public class OperateGoods extends Controller {
     }
 
     private static void setGoodsProduct(Goods goods) {
-        if (goods.isKtvSupplier() && !goods.isAllShop) {
+        if (goods.isKtvProduct() && !goods.isAllShop) {
             KtvProductGoods productGoods = KtvProductGoods.find("goods=? and shop=?", goods, goods.shops.iterator().next()).first();
             if (productGoods != null) {
                 goods.product = productGoods.product;
@@ -614,7 +614,7 @@ public class OperateGoods extends Controller {
         goodsItem.refresh();
         String createdFrom = "Op";
         goodsItem.createHistory(createdFrom);
-        if (goodsItem.getSupplier().isKtvSupplier()) {
+        if (goodsItem.isKtvProduct()) {
             KtvProductGoods productGoods = KtvProductGoods.find("goods=?", goodsItem).first();
             if (productGoods != null) {
                 productGoods.shop = goodsItem.shops.iterator().next();
