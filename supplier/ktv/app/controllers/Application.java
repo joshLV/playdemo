@@ -65,6 +65,7 @@ public class Application extends Controller {
             result.put(entry.getKey(), skuList);
         }
         result.put("token", token.accessToken);
+        result.put("appkey", resalerProduct.resaler.taobaoCouponAppKey);
         result.put("numIid", partnerProductId);
 
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
