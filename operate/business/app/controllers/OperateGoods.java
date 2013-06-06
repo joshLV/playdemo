@@ -61,6 +61,7 @@ public class OperateGoods extends Controller {
     public static int PAGE_SIZE = 15;
     public static String WWW_URL = Play.configuration.getProperty("www.url", "");
     public static String BASE_URL = Play.configuration.getProperty("application.baseUrl", "");
+    private static Goods goodsProperties;
 
     /**
      * 展示商品一览页面
@@ -193,6 +194,8 @@ public class OperateGoods extends Controller {
             warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
         }
 
+        renderArgs.put("secondaryVerification", goods.getProperties(Goods.SECONDARY_VERIFICATION, "0"));
+
         renderArgs.put("supplierList", supplierList);
         renderArgs.put("categoryList", categoryList);
         renderArgs.put("subCategoryList", subCategoryList);
@@ -242,9 +245,8 @@ public class OperateGoods extends Controller {
             boolean selectAll = false;
             List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
             renderInit(goods);
-
             boolean ktvSupplier = goods.getSupplier().isKtvSupplier();
-            render("OperateGoods/add.html", productList, ktvSupplier, selectAll, hasApproveGoodsPermission,ktvProduct);
+            render("OperateGoods/add.html", productList, ktvSupplier, selectAll, hasApproveGoodsPermission, ktvProduct);
         }
         //预览
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
@@ -270,6 +272,9 @@ public class OperateGoods extends Controller {
         }
 
         goods.save();
+        //设置或更新商品属性
+        setGoodsProperties(goods);
+
         String createdFrom = "Op";
         goods.createHistory(createdFrom);
 
@@ -321,6 +326,11 @@ public class OperateGoods extends Controller {
         if (goods.promoterPrice != null && goods.invitedUserPrice != null &&
                 goods.promoterPrice.compareTo(goods.invitedUserPrice) < 0) {
             Validation.addError("goods.invitedUserPrice", "validation.moreThanPromoterPrice");
+        }
+        if ("1".equals(StringUtils.trimToEmpty(request.params.get("secondaryVerification")))) {
+            if (goods.advancedDeposit == null || goods.advancedDeposit.compareTo(BigDecimal.ZERO) <= 0) {
+                Validation.addError("goods.advancedDeposit", "validation.required");
+            }
         }
     }
 
@@ -418,7 +428,7 @@ public class OperateGoods extends Controller {
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
         setGoodsProduct(goods);
         renderInit(goods);
-        System.out.println("ktvProduct = " + ktvProduct);
+
         render(id, hasApproveGoodsPermission, ktvSupplier, productList, ktvProduct);
 
     }
@@ -450,7 +460,7 @@ public class OperateGoods extends Controller {
             ktvProduct = false;
         }
         renderArgs.put("imageLargePath", goods.getImageLargePath());
-        render(id, ktvSupplier, productList,ktvProduct);
+        render(id, ktvSupplier, productList, ktvProduct);
 
     }
 
@@ -509,10 +519,10 @@ public class OperateGoods extends Controller {
         }
         checkImageFile(imagePath);
         checkExpireAt(goods);
-        checkSalePrice(goods);
+        checkSaleAt(goods);
         checkSalePrice(goods);
         checkShops(goods.supplierId);
-        checkUseWeekDay(goods);
+//        checkUseWeekDay(goods);
         if (Validation.hasErrors()) {
             renderArgs.put("imageLargePath", imageLargePath);
             renderInit(goods);
@@ -575,7 +585,6 @@ public class OperateGoods extends Controller {
             renderArgs.put("imageLargePath", imageLargePath);
             renderInit(goods);
             boolean ktvSupplier = goods.isKtvSupplier();
-
             List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
             render("OperateGoods/edit2.html", productList, ktvSupplier, goods, id, page, queryString, hasApproveGoodsPermission);
         }
@@ -612,6 +621,9 @@ public class OperateGoods extends Controller {
         Goods goodsItem = models.sales.Goods.findById(id);
 
         goodsItem.refresh();
+
+        //设置或更新商品属性
+        setGoodsProperties(goodsItem);
         String createdFrom = "Op";
         goodsItem.createHistory(createdFrom);
         if (goodsItem.isKtvProduct()) {
@@ -793,5 +805,13 @@ public class OperateGoods extends Controller {
             image.save();
         }
         renderJSON("");
+    }
+
+    private static void setGoodsProperties(Goods goods) {
+        if (StringUtils.isBlank(request.params.get("secondaryVerification"))) {
+            goods.setProperties(Goods.SECONDARY_VERIFICATION, "0");
+        } else {
+            goods.setProperties(Goods.SECONDARY_VERIFICATION, request.params.get("secondaryVerification"));
+        }
     }
 }

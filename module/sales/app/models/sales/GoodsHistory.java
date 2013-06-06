@@ -18,22 +18,7 @@ import play.db.jpa.Model;
 import play.modules.solr.SolrField;
 import play.modules.view_ext.annotation.Money;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Collection;
@@ -225,9 +210,18 @@ public class GoodsHistory extends Model {
     @Max(5)
     @Money
     public BigDecimal invitedUserPrice;
+    /**
+     * 预付订金
+     */
+    @Column(name = "advanced_deposit")
+    @Money
+    public BigDecimal advancedDeposit;
 
     //  ======  价格列表结束 ==========
-
+    @Basic(fetch = FetchType.LAZY)
+    @Lob
+    @Column(name = "message")
+    public String goodsPropertyMsg;
     /**
      * 开始上架时间
      */

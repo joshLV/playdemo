@@ -58,10 +58,21 @@
                value="${goods?.freeShipping}" ${goods?.freeShipping?'checked':''}/><span id="err-freeShipping"></span>
         免运费&nbsp;&nbsp;
         </span>
+
+        <input type="checkbox" name="secondaryVerification" id="goods_secondary_verification"
+               value="${secondaryVerification}"${"1".equals(secondaryVerification)?'checked':''}/>二次验证商品
     </div>
     <span id="err-isLottery"></span>
 </div>
+<div class="control-group" id="advancedDeposit" style="display: none">
+    <label class="control-label"><span style="color: red; ">*</span>&{'goods.advancedDeposit'}</label>
 
+    <div class="controls">
+        <input type="text" name="goods.advancedDeposit" id="goods_advancedDeposit"
+               value="${goods?.advancedDeposit}">元
+        <span class="error">#{error 'goods.advancedDeposit'/}</span>
+    </div>
+</div>
 <div class="control-group">
     <label class="control-label"><span style="color: red; ">*</span>商品分类</label>
 
@@ -252,7 +263,9 @@
     }
     #{/if}
 
-
+if ($("#goods_secondary_verification").attr("checked")) {
+    $("#advancedDeposit").show();
+}
 
 if ($("#coupon_type_import").attr("checked")) {
     $("#goods_coupon_type").hide();
@@ -275,17 +288,6 @@ $(function () {
 });
 $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
 
-
-if ($("#selectWeekDayAll").attr("checked")) {
-    $("[name='useWeekDay[]']").attr("checked", 'true');//全选
-    var week = [];
-    if ($("[name='useWeekDay[]']").attr("checked")) {
-        $("input[name='useWeekDay[]']:checked").each(function () {
-            week.push($(this).val())
-        })
-    }
-    $("#goods_useWeekDay").val(week.join(","));
-}
 
 if ($("#goods_materialType_2").attr("checked")) {
     $("#hi").show();
@@ -387,8 +389,6 @@ $(function () {
 
 
     $("#supplierName").blur(function () {
-
-
         var found = false;
         var m = list.length;
         var id = null;
@@ -477,5 +477,19 @@ $("#goods_materialType_1").click(function () {
     $("#sku").hide();
     $("input[id=freeShipping]").attr("checked", false);
 });
+
+$("#goods_secondary_verification").click(function () {
+    if (this.checked) {
+        $("#advancedDeposit").show();
+        $("#goods_advancedDeposit").val(${goods.advancedDeposit});
+        $("#goods_secondary_verification").val("1")
+    } else {
+        $("#goods_advancedDeposit").val("");
+        $("#advancedDeposit").hide();
+        $("#goods_secondary_verification").val("0")
+    }
+});
+
+
 </script>
 #{/else}

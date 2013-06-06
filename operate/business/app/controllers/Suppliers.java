@@ -97,7 +97,6 @@ public class Suppliers extends Controller {
         Validation.match("validation.jobNumber", admin.jobNumber, "^[0-9]*");
 
         if (Validation.hasErrors()) {
-            System.out.println(Validation.errors().get(0).message());
             List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
             renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
             List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
@@ -136,9 +135,7 @@ public class Suppliers extends Controller {
         supplier.setProperty(Supplier.CAN_SALE_REAL, request.params.get(Supplier.CAN_SALE_REAL));
         supplier.setProperty(Supplier.SELL_ECOUPON, request.params.get(Supplier.SELL_ECOUPON));
         supplier.setProperty(Supplier.KTV_SUPPLIER, request.params.get(Supplier.KTV_SUPPLIER));
-        supplier.setProperty(Supplier.KTV_SKU_OPTION, request.params.get(Supplier.KTV_SKU_OPTION));
-        supplier.setProperty(Supplier.KTV_SKU_START_TIME, request.params.get(Supplier.KTV_SKU_START_TIME));
-        supplier.setProperty(Supplier.KTV_SKU_END_TIME, request.params.get(Supplier.KTV_SKU_END_TIME));
+        supplier.setProperty(Supplier.KTV_SKU_PUSH_END_HOUR, request.params.get(Supplier.KTV_SKU_PUSH_END_HOUR));
 
     }
 
@@ -312,15 +309,11 @@ public class Suppliers extends Controller {
         String sellECoupon = request.params.get(Supplier.SELL_ECOUPON);
         String canSaleReal = request.params.get(Supplier.CAN_SALE_REAL);
         String ktvSupplier = request.params.get(Supplier.KTV_SUPPLIER);
-        String ktvSkuOption = request.params.get(Supplier.KTV_SKU_OPTION);
-        String ktvSkuStartTime = request.params.get(Supplier.KTV_SKU_START_TIME);
-        String ktvSkuEndTime = request.params.get(Supplier.KTV_SKU_END_TIME);
+        String ktvSkuPushEndHour = request.params.get(Supplier.KTV_SKU_PUSH_END_HOUR);
         renderArgs.put("sellECoupon", sellECoupon);
         renderArgs.put("canSaleReal", canSaleReal);
         renderArgs.put("ktvSupplier", ktvSupplier);
-        renderArgs.put("ktvSkuOption", ktvSkuOption);
-        renderArgs.put("ktvSkuStartTime", ktvSkuStartTime);
-        renderArgs.put("ktvSkuEndTime", ktvSkuEndTime);
+        renderArgs.put("ktvSkuPushEndHour", ktvSkuPushEndHour);
     }
 
     public static void updateCode(Long id, Long supplierCategoryId) {
