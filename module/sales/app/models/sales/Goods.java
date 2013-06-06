@@ -6,6 +6,7 @@ package models.sales;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
+import com.google.gson.Gson;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
@@ -18,12 +19,11 @@ import models.mail.MailUtil;
 import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
-import models.order.OrderItems;
 import models.order.OrderStatus;
-import models.order.OrderType;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.supplier.Supplier;
+import models.supplier.SupplierProperty;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -59,6 +59,8 @@ import play.modules.solr.SolrSearchable;
 import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.*;
+import javax.persistence.Transient;
+import java.beans.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,8 +102,12 @@ public class Goods extends Model {
     public static final String IMAGE_ORIGINAL = "nw";
     public static final String IMAGE_DEFAULT = "";
 
-
     public static final String[] value = {"99", "999", "9999", "99999", "999999"};
+
+    /**
+     * 二次验证商品属性
+     */
+    public static final String SECONDARY_VERIFICATION = "secondaryVerification";
 
     //  ========= 不同的价格列表 =======
     /**
@@ -174,6 +180,13 @@ public class Goods extends Model {
     @Money
     @SolrField
     public BigDecimal invitedUserPrice;
+
+    /**
+     * 预付订金
+     */
+    @Column(name = "advanced_deposit")
+    @Money
+    public BigDecimal advancedDeposit;
 
     //  ======  价格列表结束 ==========
 
@@ -1152,6 +1165,7 @@ public class Goods extends Model {
             updateGoods.skuCount = goods.skuCount;
             updateGoods.cumulativeStocks = goods.cumulativeStocks + goods.skuCount;
         }
+        updateGoods.advancedDeposit = goods.advancedDeposit;
 
         updateGoods.save();
 
@@ -1926,7 +1940,12 @@ public class Goods extends Model {
             goodsHistory.skuCount = this.skuCount;
             goodsHistory.cumulativeStocks = this.cumulativeStocks + this.skuCount;
         }
+        GoodsProperty property = GoodsProperty.find("goodsId=? and name=?", this.id, Goods.SECONDARY_VERIFICATION).first();
+        if (property != null) {
+            goodsHistory.goodsPropertyMsg = new Gson().toJson(property);
+        }
 
+        goodsHistory.advancedDeposit = this.advancedDeposit;
         goodsHistory.save();
     }
 
@@ -2366,5 +2385,42 @@ public class Goods extends Model {
         }
         final Goods other = (Goods) obj;
         return new EqualsBuilder().appendSuper(super.equals(obj)).append(this.id, other.id).append(this.name, other.name).append(this.title, other.title).append(this.code, other.code).append(this.status, other.status).isEquals();
+    }
+
+    /**
+     * 取得商品属性
+     */
+    @Transient
+    public String getProperties(String propertyName, String defaultValue) {
+        if (this.id == null) {
+            return defaultValue;
+        }
+        GoodsProperty goodsProperty = GoodsProperty.find("goodsId=? and name=?", this.id, propertyName).first();
+        if (goodsProperty == null) {
+            return defaultValue;
+        }
+        return goodsProperty.value;
+    }
+
+    /**
+     * 设置商品属性
+     */
+    @Transient
+    public void setProperties(String propertyName, String value) {
+        GoodsProperty property = GoodsProperty.find("goodsId=? and name=?", this.id, propertyName).first();
+        if (property == null) {
+            new GoodsProperty(this, propertyName, value).save();
+        } else {
+            property.value = value;
+            property.save();
+        }
+
+    }
+
+    /**
+     * 是否二次验证商品
+     */
+    public boolean isSecondaryVerificationGoods(String propertyName) {
+        return "1".equals(this.getProperties(propertyName, "0"));
     }
 }

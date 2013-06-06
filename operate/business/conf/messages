@@ -210,6 +210,7 @@ goods.isOrder=是否预约商品
 goods.exhibition=商品详情
 goods.sku.id=货品
 goods.skuCount=货品数量
+goods.advancedDeposit=预付订金
 remainInventory=剩余货品库存
 stock.sku.id=货品
 stock.remark=备注

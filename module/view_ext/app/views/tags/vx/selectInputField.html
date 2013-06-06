@@ -58,10 +58,8 @@
 
         $("#${inputId}").blur(function () {
             var found = false;
-            var m = ${selectArray}.
-            length;
+            var m = ${selectArray}.length;
             for (i = 0; i < m; i++) {
-                console.log(${selectArray}[i].name + "==?" + $("#${field.id}").val());
                 if (${selectArray}[i].name == $("#${inputId}").val()) {
                     found = true;
                 }
@@ -90,7 +88,6 @@
             if (${selectArray}[i].id == $("#${hiddenId}").val()) {
 
                 $("#${inputId}").val(${selectArray}[i].name);
-                console.log("inputId(" + i + "):" + ${selectArray}[i].name);
             }
         }
     });

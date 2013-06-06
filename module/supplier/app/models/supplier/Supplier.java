@@ -71,10 +71,7 @@ public class Supplier extends Model {
     public static final String CAN_SALE_REAL = "canSaleReal"; //是否销售实物
     public static final String SELL_ECOUPON = "sellECoupon"; //是否销售电子券
     public static final String KTV_SUPPLIER = "ktvSupplier"; //是否KTV商户
-    public static final String KTV_SKU_OPTION = "ktvSkuOption";//KTV sku推送选项（天数）
-    public static final String KTV_SKU_PUSH_END_HOUR = "ktvSkuPushEndHour";
-    public static final String KTV_SKU_START_TIME = "ktvSkuStartTime";//KTV sku推送选项，开始时间
-    public static final String KTV_SKU_END_TIME = "ktvSkuEndTime";//KTV sku推送选项，结束时间
+    public static final String KTV_SKU_PUSH_END_HOUR = "ktvSkuPushEndHour";//ktv sku推送时间
 
     private static Supplier SHIHUI = null;
     /**
