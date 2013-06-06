@@ -106,7 +106,7 @@ public class SendDailyScheduledMessage extends JobWithHistory {
     }
 
     private void sendSmsMQ(String content, Shop shop, String code) {
-        if (shop.managerMobiles.length() == 0) {
+        if (shop == null || StringUtils.isBlank(shop.managerMobiles)) {
             return;
         }
         String[] mobileArray = StringUtils.trimToEmpty(shop.managerMobiles).split(",");
