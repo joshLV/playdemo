@@ -42,6 +42,7 @@ import play.db.jpa.Model;
 import play.exceptions.UnexpectedException;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.solr.Solr;
+import util.common.InfoUtil;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -870,7 +871,7 @@ public class Order extends Model {
                 boolean isKtvSupplier = false;
                 //ktv商户的场合
                 KtvRoomOrderInfo roomOrderInfo = null;
-                if (goods.isKtvSupplier() && goods.isKtvProduct()) {
+                if (goods.isKtvProduct()) {
                     isKtvSupplier = true;
                     roomOrderInfo = KtvRoomOrderInfo.find("orderItem=?", orderItem).first();
                 }
@@ -893,16 +894,23 @@ public class Order extends Model {
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
                         eCoupon.appointmentRemark =
                                 roomOrderInfo.roomType.getName() + eCoupon.salePrice + "元," +
-                                KtvTaobaoSku.humanTimeRange(roomOrderInfo.scheduledTime,
-                                        roomOrderInfo.scheduledTime + roomOrderInfo.product.duration);
+                                        KtvTaobaoSku.humanTimeRange(roomOrderInfo.scheduledTime,
+                                                roomOrderInfo.scheduledTime + roomOrderInfo.product.duration);
                         eCoupon.effectiveAt = new Date();
                         eCoupon.expireAt = DateUtils.ceiling(roomOrderInfo.scheduledDay, Calendar.DATE);
                         eCoupon.save();
                     }
 
+                    String remark = "产生券号";
+                    //二次验证商品记录预付订金
+                    if (goods.isSecondaryVerificationGoods()) {
+                        remark = "产生预约券号:" + InfoUtil.getMaskedEcouponSn(eCoupon.eCouponSn);
+                        eCoupon.advancedDeposit = goods.advancedDeposit;
+                        eCoupon.save();
+                    }
                     //记录券历史信息
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
-                            .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
+                            .remark(remark).fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
                 }
 
@@ -1473,7 +1481,7 @@ public class Order extends Model {
         for (OrderItems item : this.orderItems) {
             OrderECouponMessage.with(item).remark(remark).sendToMQ();
             //ktv商户发送给店员短信
-            if (item.goods.isKtvSupplier()) {
+            if (item.goods.isKtvProduct()) {
                 KtvRoomOrderInfo roomOrderInfo = KtvRoomOrderInfo.find("orderItem", item).first();
                 if (roomOrderInfo == null || roomOrderInfo.shop == null || StringUtils.isBlank(roomOrderInfo.shop.managerMobiles)) {
                     break;

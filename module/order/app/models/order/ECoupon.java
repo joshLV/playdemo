@@ -188,6 +188,11 @@ public class ECoupon extends Model {
     /** 1：冻结 0：解冻*/
     public Integer isFreeze;
 
+    /**
+     * 预付订金
+     */
+    @Column(name = "advanced_deposit")
+    public BigDecimal advancedDeposit;
 
     /**
      * 发送过短信的次数.
@@ -351,7 +356,11 @@ public class ECoupon extends Model {
         this.refundPrice = BigDecimal.ZERO;
         this.status = ECouponStatus.UNCONSUMED;
         if (couponSn == null) {
-            this.eCouponSn = generateAvailableEcouponSn();
+            if (goods.isSecondaryVerificationGoods()) {
+                this.eCouponSn = generateAvailableEcouponSn(9);
+            } else {
+                this.eCouponSn = generateAvailableEcouponSn(10);
+            }
             this.createType = ECouponCreateType.GENERATE;
         } else {
             if (StringUtils.isNotBlank(password)) {
@@ -424,7 +433,7 @@ public class ECoupon extends Model {
     /**
      * 生成消费者唯一的券号.
      */
-    private String generateAvailableEcouponSn() {
+    private String generateAvailableEcouponSn(int length) {
         String randomNumber;
         do {
             try {
@@ -432,7 +441,7 @@ public class ECoupon extends Model {
             } catch (InterruptedException e) {
                 // do nothing.
             }
-            randomNumber = RandomNumberUtil.generateSerialNumber(10);
+            randomNumber = RandomNumberUtil.generateSerialNumber(length);
         } while (isNotUniqueEcouponSn(randomNumber));
         return randomNumber;
     }

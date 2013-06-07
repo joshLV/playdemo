@@ -208,8 +208,9 @@ public class OrderECouponMessage implements Serializable {
             couponInfo += "[共" + ecouponSNs.size() + "张]";
         }
 
+        //预约商品或二次验证商品
         String note = ",";
-        if (orderItems.goods.isOrder) {
+        if (orderItems.goods.isOrder || orderItems.goods.isSecondaryVerificationGoods()) {
             // 需要预约的产品
             note += "此产品需预约,预约电话见商品详情,";
         }
