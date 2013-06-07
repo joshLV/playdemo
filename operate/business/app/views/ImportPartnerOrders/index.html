@@ -35,7 +35,7 @@
 
 <div class="control-group">
     <div class="controls">
-        <button class="btn btn-primary" type="submit">上传</button>
+        <buttoln class="btn btn-primary" type="submit">上传</button>
     </div>
 </div>
 #{/form}
@@ -43,6 +43,11 @@
 #{list items:models.order.OuterOrderPartner.values(), as:'partner'}
 <a href="@{ImportPartnerOrders.download(partner)}">${partner.partnerName()}</a>
 #{/list}
+
+
+<legend>自动导入</legend>
+<a class="btn btn-primary" href="/import-partner-orders/taobao-auto">自动导入淘宝订单</a>
+
 <script type="text/javascript">
     $("#partner").blur(function () {
         $("#err-info").html("");
