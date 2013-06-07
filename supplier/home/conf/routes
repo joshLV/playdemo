@@ -52,6 +52,9 @@ GET     /verify/refresh                         SupplierVerifyECoupons.refresh
 POST    /verify/{shopId}/{eCouponSn}            SupplierVerifyECoupons.singleQuery
 POST    /verify/verify                          SupplierVerifyECoupons.verify
 GET     /verify/verified-coupons                SupplierVerifyECoupons.showVerifiedCoupons
+GET     /appointment                            SupplierAppointments.index
+GET     /appointment-info                            SupplierAppointments.showAppointmentCoupon
+
 
 # [v2] 商户帮助页面
 GET     /how-to-verify                          SupplierHelps.verify
