@@ -4,7 +4,6 @@
 
 # Home page
 GET     /                                           KtvPriceSchedules.tableShow
-GET     /test/{id}                                  Application.updateProduct
 
 GET     /ktv/taobao-products                           KtvTaobaoProducts.index
 GET     /ktv/taobao-product/publish                    KtvTaobaoProducts.showPublish

@@ -63,6 +63,9 @@ GET     /launch-qt                              QingtuanLauncher.index
 # 虚拟短信通道
 *      /vxsms                                   VxSmses.send
 
+GET     /ktv/taobao/sku-diff                    TaobaoSkuInfo.diff
+GET     /ktv/taobao/sku-stats                   TaobaoSkuInfo.stats
+
 GET   /mock-api                                 MockApiMain.index
 GET   /mock/jingdong/send-order                 mock.JingDongGroupByRequest.sendOrder
 POST  /mock/jingdong/send-order                 mock.JingDongGroupByRequest.doSendOrder

@@ -38,6 +38,9 @@ public class KtvTaobaoSku {
     }
 
     public KtvTaobaoSku parseTaobaoOuterId(String outerId) {
+        if (outerId == null) {
+            return null;
+        }
         Matcher matcher = taobaoOuterIdPattern.matcher(outerId);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         if (matcher.matches()) {

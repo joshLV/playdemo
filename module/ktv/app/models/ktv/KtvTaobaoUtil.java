@@ -57,7 +57,8 @@ public class KtvTaobaoUtil {
                 = buildTaobaoSku(productGoods.shop, productGoods.product, true);
 
         //更新该ktv产品所对应的每一个分销渠道上的商品
-        List<ResalerProduct> resalerProductList = ResalerProduct.find("byGoodsAndPartner", productGoods.goods, OuterOrderPartner.TB).fetch();
+        List<ResalerProduct> resalerProductList = ResalerProduct.find("byGoodsAndPartnerAndDeleted",
+                productGoods.goods, OuterOrderPartner.TB, DeletedStatus.UN_DELETED).fetch();
         String error = null;
         for (ResalerProduct resalerProduct : resalerProductList) {
             if (resalerProduct.resaler == null) {
@@ -73,15 +74,6 @@ public class KtvTaobaoUtil {
             }
         }
         return error;
-    }
-    public static String updateTaobaoSkuByKtvProductGoods(KtvProductGoods ktvProductGoods) {
-
-        SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> localSkuMap
-                = buildTaobaoSku(ktvProductGoods.shop, ktvProductGoods.product, true);
-        Resaler resaler = Resaler.findById(ktvProductGoods.goods.getSupplier().defaultResalerId);
-        ResalerProduct resalerProduct = ResalerProduct.find("byResalerAndGoods", resaler, ktvProductGoods.goods).first();
-
-        return updateTaobaoSkuByResalerProductAndLocalSkus(resalerProduct, localSkuMap);
     }
 
     public static String updateTaobaoSkuByResalerProductAndLocalSkus(ResalerProduct resalerProduct,
@@ -526,13 +518,16 @@ public class KtvTaobaoUtil {
                     s.setTaobaoSkuId(sku.getSkuId());
                     s.setQuantity(sku.getQuantity().intValue());
                     s.setPrice(new BigDecimal(sku.getPrice()));
-                    s.parseTaobaoOuterId(sku.getOuterId());
+                    if ( s.parseTaobaoOuterId(sku.getOuterId()) == null){
+                        Logger.error("parse taobao sku error: %s : %s", request.getNumIids(), sku.getOuterId());
+                        continue;
+                    }
                     skuList.add(s);
                 }
                 return skuList;
             }
         }catch (ApiException e) {
-            Logger.error("get taobao sku failed " + resalerProduct.id);
+            Logger.error("get taobao sku failed " + resalerProduct.partnerProductId);
         }
         return null;
     }
