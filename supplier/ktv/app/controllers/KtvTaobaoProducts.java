@@ -12,14 +12,22 @@ import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
 import models.accounts.AccountType;
 import models.admin.SupplierUser;
-import models.ktv.*;
+import models.ktv.KtvProduct;
+import models.ktv.KtvProductGoods;
+import models.ktv.KtvRoomType;
+import models.ktv.KtvTaobaoSku;
+import models.ktv.KtvTaobaoUtil;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
-import models.sales.*;
+import models.sales.Goods;
+import models.sales.GoodsStatus;
+import models.sales.MaterialType;
+import models.sales.ResalerProduct;
+import models.sales.ResalerProductStatus;
+import models.sales.Shop;
 import models.supplier.Supplier;
-import models.taobao.KtvSkuMessageUtil;
 import models.taobao.TaobaoCouponUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
@@ -27,7 +35,12 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
 
 /**
  * @author likang
@@ -264,7 +277,6 @@ public class KtvTaobaoProducts extends Controller {
             renderJSON("{\"error\":\"" + error + "\"}");
         }
 
-        KtvSkuMessageUtil.sendSyncTaobaoSku(productGoodsId);
         productGoods.needSync = DeletedStatus.UN_DELETED;
         productGoods.save();
 

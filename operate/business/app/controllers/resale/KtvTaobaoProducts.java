@@ -256,7 +256,6 @@ public class KtvTaobaoProducts extends Controller {
             renderJSON("{\"error\":\"" + error + "\"}");
         }
 
-        KtvSkuMessageUtil.sendSyncTaobaoSku(productGoodsId);
         productGoods.needSync = DeletedStatus.UN_DELETED;
         productGoods.save();
 
