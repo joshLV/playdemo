@@ -41,7 +41,9 @@
 #{/form}
 <span>查看模板：</span>
 #{list items:models.order.OuterOrderPartner.values(), as:'partner'}
-<a href="@{ImportPartnerOrders.download(partner)}">${partner.partnerName()}</a>
+    #{if partner != models.order.OuterOrderPartner.DD}
+        <a href="@{ImportPartnerOrders.download(partner)}">${partner.partnerName()}</a>
+    #{/if}
 #{/list}
 
 
