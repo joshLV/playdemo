@@ -64,10 +64,13 @@
         </span>
     #{/if}
 
-    #{if uploadSuccessOrders}<span class="help-block"
-                                   style="color: green;">订单：${uploadSuccessOrders?.join(",")}
-        导入更新成功！</span>
-    #{/if}<br>
+    #{if uploadSuccessOrders}
+        <span class="help-block" style="color: green;">订单：${uploadSuccessOrders?.join(",")} 导入更新成功！</span>
+    #{/if} <br>
+    #{if successSendOnTaobao}
+        <span class="help-block" style="color: green;">订单：${successSendOnTaobao?.join(",")} 在淘宝上自动发货成功！</span>
+    #{/if} <br>
+
         <span class="help-block"><a href="/express-companies">查看快递公司信息</a></span>
     </div>
 </form>

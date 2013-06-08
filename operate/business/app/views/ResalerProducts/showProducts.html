@@ -67,7 +67,15 @@
             >添加</button>
         #{/if}
         #{else}
-            <a href="${product.url}" target="_blank">${product.partnerProductId}</a>
+            %{
+                url = product.url
+                if (url.contains("?")) {
+                    url = url + '&r=' + org.apache.commons.lang.math.RandomUtils.nextInt();
+                } else {
+                    url = url + '?r=' + org.apache.commons.lang.math.RandomUtils.nextInt()
+                }
+            }%
+            <a href="${product.url.contains("?") ? product.url + '&r=' +  }" target="_blank">${product.partnerProductId}</a>
         #{/else}
     </td>
     <td>&{'resaler.product.status.' + product.status}</td>

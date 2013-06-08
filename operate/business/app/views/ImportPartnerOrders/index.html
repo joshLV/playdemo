@@ -22,7 +22,7 @@
         <span class="help-block">注意：上传时，保证数据放在Sheet1.</span>
         <span class="help-block" style="color: red;" id="err-info">
         ${errorInfo}
-            #{if unBindGoodsList}未映射关系的商品ID【${unBindGoodsList.size()}】个：${unBindGoodsList?.join(",")}<br>#{/if}
+            #{if unBindGoodsSet}未映射关系的商品ID【${unBindGoodsSet.size()}】个：${unBindGoodsSet?.join(",")}<br>#{/if}
             #{if diffOrderPriceList}订单金额和一百券不一致，请核对【${diffOrderPriceList.size()}】个：${diffOrderPriceList?.join(",")}<br>#{/if}
             #{if notEnoughInventoryGoodsList}请先解决渠道商品ID：${notEnoughInventoryGoodsList?.join(",")}对应的一百券商品库存不足的问题！<br>#{/if}
             #{if existedOrderList}重复订单【${existedOrderList?.size()}】个：${existedOrderList?.join(",")}<br>#{/if}
@@ -35,7 +35,7 @@
 
 <div class="control-group">
     <div class="controls">
-        <buttoln class="btn btn-primary" type="submit">上传</button>
+        <button class="btn btn-primary" type="submit">上传</button>
     </div>
 </div>
 #{/form}

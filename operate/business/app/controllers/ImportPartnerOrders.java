@@ -194,7 +194,6 @@ public class ImportPartnerOrders extends Controller {
         List<String> importSuccessOrderList = new ArrayList<>();
         Set<String> unBindGoodsSet = new HashSet<>();
         List<String> diffOrderPriceList = new ArrayList<>();
-        System.out.println(new Gson().toJson(logisticImportDataList));
         processLogisticList(logisticImportDataList, OuterOrderPartner.TB, existedOrderList,
                 notEnoughInventoryGoodsList, importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
 
@@ -225,8 +224,8 @@ public class ImportPartnerOrders extends Controller {
                 outerOrder = logistic.toOuterOrder(partner);
             }
             if (partner == OuterOrderPartner.WB) {
-                createWubaYbqOrder(logistic, partner, outerOrder, importSuccessOrderList, unBindGoodsSet,
-                        notEnoughInventoryGoodsList, diffOrderPriceList);
+                createWubaYbqOrder(logistic, partner, outerOrder, importSuccessOrderList,
+                        notEnoughInventoryGoodsList, diffOrderPriceList, unBindGoodsSet);
             } else {
                 createYbqOrder(logistic, outerOrder, partner, notEnoughInventoryGoodsList, importSuccessOrderList, unBindGoodsSet);
             }
@@ -234,8 +233,8 @@ public class ImportPartnerOrders extends Controller {
 
     }
     private static void createWubaYbqOrder(LogisticImportData logistic, OuterOrderPartner partner, OuterOrder outerOrder,
-            List<String> importSuccessOrderList, Set<String> unBindGoodsSet, List<String> notEnoughInventoryGoodsList,
-            List<String> diffOrderPriceList) {
+            List<String> importSuccessOrderList, List<String> notEnoughInventoryGoodsList,
+            List<String> diffOrderPriceList, Set<String> unBindGoodsSet) {
         //先取得订单总金额
         BigDecimal orderAmount = logistic.salePrice;
         Resaler wubaResaler = Resaler.findApprovedByLoginName(Resaler.WUBA_LOGIN_NAME);

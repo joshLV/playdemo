@@ -1,11 +1,22 @@
 package controllers;
 
+import com.taobao.api.ApiException;
+import com.taobao.api.Constants;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.request.LogisticsOnlineConfirmRequest;
+import com.taobao.api.response.LogisticsOnlineConfirmResponse;
+import models.accounts.AccountType;
+import models.ktv.KtvTaobaoUtil;
+import models.oauth.OAuthToken;
+import models.oauth.WebSite;
 import models.order.ExpressCompany;
 import models.order.Freight;
 import models.order.LogisticImportData;
 import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.order.RealGoodsReturnEntry;
+import models.resale.Resaler;
 import models.supplier.Supplier;
 import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReadStatus;
@@ -13,6 +24,7 @@ import net.sf.jxls.reader.XLSReader;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
+import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.vfs.VirtualFile;
@@ -94,6 +106,8 @@ public class UploadOrderShippingInfos extends Controller {
             render("UploadOrderShippingInfos/index.html", errorInfo, supplierList, returnEntryList);
         }
 
+        List<LogisticImportData> successTaobaoLogistics = new ArrayList<>();
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
         for (LogisticImportData logistic : logistics) {
             if (StringUtils.isBlank(logistic.expressCompany)) {
                 emptyExpressInofs.add(logistic.orderNumber);
@@ -124,7 +138,12 @@ public class UploadOrderShippingInfos extends Controller {
             orderItems.sendAt = new Date();
             orderItems.save();
             uploadSuccessOrders.add(logistic.orderNumber);
+            if (orderItems.order.userId.equals(resaler.getId())
+                    && orderItems.order.operator.id.equals(resaler.operator.getId()) ) {
+                successTaobaoLogistics.add(logistic);
+            }
         }
+        JPA.em().flush();
 
         List<ExpressCompany> expressCompanyList = ExpressCompany.findAll();
         renderArgs.put("emptyExpressInofs", emptyExpressInofs);
@@ -133,6 +152,31 @@ public class UploadOrderShippingInfos extends Controller {
         renderArgs.put("unExistedOrders", unExistedOrders);
         renderArgs.put("unExistedExpressCompanys", unExistedExpressCompanys);
         renderArgs.put("uploadSuccessOrders", uploadSuccessOrders);
+
+        //淘宝自动发货
+        List<String> successSendOnTaobao = new ArrayList<>();
+
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(KtvTaobaoUtil.URL, resaler.taobaoCouponAppKey,
+                resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
+        //找到淘宝的token
+        OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+        for (LogisticImportData logisticImportData : successTaobaoLogistics) {
+            LogisticsOnlineConfirmRequest request = new LogisticsOnlineConfirmRequest();
+            request.setTid(Long.parseLong(logisticImportData.getOuterOrderNo()));
+            request.setOutSid(logisticImportData.getExpressNumber());
+            try {
+                LogisticsOnlineConfirmResponse response = taobaoClient.execute(request, token.accessToken);
+                if (response.isSuccess()) {
+                    successSendOnTaobao.add(logisticImportData.getOuterOrderNo());
+                }else {
+                    Logger.error("淘宝确认收货失败 %s %s", response.getSubCode(), response.getSubMsg());
+                }
+            }catch (ApiException e) {
+                Logger.error(e, "淘宝确认收货失败");
+            }
+        }
+        renderArgs.put("successSendOnTaobao", successSendOnTaobao);
+
         render("UploadOrderShippingInfos/index.html", supplierList);
     }
 
