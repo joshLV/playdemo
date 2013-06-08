@@ -8,58 +8,65 @@
 <div class="bd batch-verify">
     <h2>${title}</h2>
 
-    <form id="coupon-form" action="@{SupplierAppointments.showAppointmentCoupon()}">
-        <div class="field-sect">
-            <div class="field-group">
-                <label>选择分店</label>
-            #{if shop == null}
-                #{select 'shopId', id:"shopId", value:shopId}
-                    #{list items:shopList, as:'shop'}
-                        #{option shop?.id}${shop?.name}#{/option}
-                    #{/list}
-                #{/select}
-            #{/if}
-            #{else}
-                <p>${shop?.name}</p>
-                <input type="hidden" name="shopId" id="shopId" value="${shop?.id}"/>
-            #{/else}
-            </div>
-            <div class="field-group">
-                <label class="coupon-label" for="enter-coupon">输入9位券号</label>
-                <input type="text" size="12" maxlength="12" name="couponSn" autofocus="true" id="enter-coupon"
-                       class="enter-coupon" value="${couponSn}"/>
-                <button class="btn add-coupon" type="submit" id="query">查询</button>
-            #{if errors?.size()>0}
-                <span style="border:1px solid #ff0000;color:#ff0000;line-height: 2;margin-left: 20px;">#{error 'error-info' /}</span>
-            #{/if}
-            </div>
+    <form id="coupon-form" action="@{SupplierAppointments.index()}">
+        <div class="field-group" style="padding-left: 0px">
+            <table cellspacing="0" cellpadding="0" border="0">
+                *{<tr>}*
+                    *{<td>门店}*
+                        *{<select name="shopId" value="${shopId}" style="width: auto">}*
+                        *{#{list items:shopList,as:'s'}}*
+                            *{<option value="${s.id}" ${shopId==s?.id ?'selected':''}/>${s.name}&nbsp;&nbsp;}*
+                        *{#{/list}}*
+                        *{</select>}*
+                        *{&nbsp;&nbsp;&nbsp;&nbsp;券号:}*
+                        *{<input type="text" size="12" maxlength="9" name="couponSn" id="couponSn" value="${couponSn}"/>}*
+                    *{</td>}*
+                *{</tr>}*
+                <tr>
+                    <td>手机
+                        <input type="text" size="12" maxlength="11" name="phone" id="couponSn" value="${couponSn}"/>
+                        &nbsp;预约日期:
+                        <input type="text" size="12" maxlength="9" name="appointmentDate" id="couponSn"
+                               value="${couponSn}"/>
+                    </td>
+                    <td wdith="50%">
+                        <button class="btn add-coupon" type="submit" id="query" style="margin-left: 20px">查询</button>
+                        <a href="@{SupplierAppointments.showAdd()}" class="btn"
+                           style="width: auto;background-color: #5bb75b;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);">新增预约</a>
+                    </td>
+                </tr>
+            </table>
         </div>
         <table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">
             <tr>
+                <th width="110">手机</th>
+                <th width="110">预约门店</th>
+                <th width="110">预约订金</th>
+                <th width="110">预约日期</th>
                 <th width="100">商品名称</th>
                 <th width="70">面值</th>
-                <th width="110">预约券号</th>
-                <th width="110">预约订金</th>
-                <th width="85">有效期</th>
+                <th width="110">预约信息</th>
             </tr>
-        #{if ecoupon}
-            <tr>
-                <td>${ecoupon.goods.shortName}</td>
-                <td>${ecoupon.faceValue}</td>
-                <td>${ecoupon.eCouponSn}</td>
-                <td>${ecoupon.advancedDeposit}</td>
-                <td>${ecoupon.expireAt}</td>
-            </tr>
+        #{if couponList}
+            #{list items:couponList,as:'ecoupon'}
+                <tr>
+                    <td>${ecoupon.orderItems.phone}</td>
+                    <td>${ecoupon.shop?.name}</td>
+                    <td>${ecoupon.advancedDeposit.formatCurrency("CNY")}</td>
+                    <td>${ecoupon.appointmentDate.format('yyyy-MM-dd')}</td>
+                    <td>${ecoupon.goods.shortName}</td>
+                    <td>${ecoupon.faceValue}</td>
+                    <td>${ecoupon.appointmentRemark}</td>
+                </tr>
+            #{/list}
         #{/if}
         </table>
-        <div class="verify-sect">
-            <a id="verify-btn"
-               #{if errors}class="btn batch-verify disabled"#{/if}#{else}class="btn batch-verify"#{/else}
-               href="javascript:void(0);">预约</a>
-        </div>
+    *{<div class="verify-sect">}*
+    *{<a id="verify-btn"}*
+    *{#{if errors}class="btn batch-verify disabled"#{/if}#{else}class="btn batch-verify"#{/else}}*
+    *{href="javascript:void(0);">预约</a>}*
+    *{<span id="success-info" style="color: green;font-size: 20px"></span>}*
+    *{</div>}*
     </form>
 </div>
 
-#{set 'moreScripts'}
-
-#{/set}

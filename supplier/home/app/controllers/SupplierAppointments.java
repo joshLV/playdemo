@@ -4,14 +4,20 @@ import com.uhuila.common.util.DateUtil;
 import controllers.supplier.SupplierInjector;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
+import models.order.ECouponStatus;
+import models.order.OrderECouponMessage;
 import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import play.data.validation.Validation;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,7 +48,7 @@ public class SupplierAppointments extends Controller {
     }
 
     /**
-     * 预约页面
+     * 已预约列表
      */
     public static void index() {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
@@ -54,53 +60,101 @@ public class SupplierAppointments extends Controller {
             error("该商户没有添加门店信息！");
         }
 
-        if (supplierUser.shop == null) {
-            render(shopList, supplierUser);
-        } else {
-            Shop shop = supplierUser.shop;
-            //根据页面录入券号查询对应信息
-            render(shop, supplierUser);
-        }
+        List<ECoupon> couponList = ECoupon.find("appointmentDate >=? and status=? and goods.supplierId=?",
+                DateUtils.truncate(new Date(), Calendar.DATE), ECouponStatus.UNCONSUMED, supplierId).fetch();
+        render(shopList, supplierUser, couponList);
     }
 
-    /**
-     * 查询
-     *
-     * @param couponSn 券号
-     */
-    public static void showAppointmentCoupon(Long shopId, String couponSn) {
+    public static void showAdd() {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
 
+        if (shopList.size() == 0) {
+            error("该商户没有添加门店信息！");
+        }
+        render(shopList);
+    }
+
+    public static void create(Long shopId, String couponSn, Date appointmentDate, String appointmentRemark) {
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        Long supplierId = supplierUser.supplier.id;
+
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        renderArgs.put("shopList", shopList);
+        renderArgs.put("couponSn", couponSn);
+
+        //检查是否输入预约券号
+        isInputCouponSn(shopId, couponSn);
+
+        //根据页面录入券号查询对应信息
+        ECoupon ecoupon = ECoupon.query(couponSn, supplierId);
+        //事先验证券的信息
+        checkCouponInfos(ecoupon, shopId);
+
+        //预约处理
+        ecoupon.appointment(appointmentDate, appointmentRemark, shopId,supplierUser);
+
+
+        render("SupplierAppointments/index.html", shopId, couponSn);
+
+    }
+
+
+    /**
+     * 验证券信息
+     */
+    public static void verifyCoupon(Long shopId, String couponSn) {
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+
+        couponSn = StringUtils.trim(couponSn);
+
+        if (StringUtils.isBlank(couponSn)) {
+            renderJSON("{\"errorInfo\":\"券号不能为空！\"}");
+        }
+        //根据页面录入券号查询对应信息
+        ECoupon ecoupon = ECoupon.query(couponSn, supplierId);
+
+        //check券和门店
+        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+        if (StringUtils.isNotEmpty(errorInfo)) {
+            renderJSON("{\"errorInfo\":\"" + errorInfo + "\"}");
+        }
+        renderJSON("{\"isOk\":\"true\"}");
+    }
+
+    private static void isInputCouponSn(Long shopId, String couponSn) {
         couponSn = StringUtils.trim(couponSn);
 
         if (StringUtils.isBlank(couponSn)) {
             Validation.addError("error-info", "券号不能为空");
         }
-        renderError(shopId, couponSn, shopList);
+        renderError(shopId);
+    }
 
-        //根据页面录入券号查询对应信息
-        ECoupon ecoupon = ECoupon.query(couponSn, supplierId);
+    /**
+     * 验证券的信息
+     */
+    private static void checkCouponInfos(ECoupon ecoupon, Long shopId) {
         if (ecoupon == null) {
             Validation.addError("error-info", "没有找到符合的券信息");
         }
-        renderError(shopId, couponSn, shopList);
+        renderError(shopId);
 
-//        ecoupon = ECoupon.findById(63969L);
         //check券和门店
         String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId);
         if (StringUtils.isNotEmpty(errorInfo)) {
             Validation.addError("error-info", errorInfo);
         }
 
-        renderError(shopId, couponSn, shopList);
+        renderError(shopId);
 
-        render("SupplierAppointments/index.html", shopId, couponSn, ecoupon, shopList);
+        //没有错误信息
+        renderArgs.put("ecoupon", ecoupon);
     }
 
-    private static void renderError(Long shopId, String couponSn, List<Shop> shopList) {
+    private static void renderError(Long shopId) {
         if (Validation.hasErrors()) {
-            render("SupplierAppointments/index.html", shopId, couponSn, shopList);
+            render("SupplierAppointments/index.html", shopId);
         }
     }
 

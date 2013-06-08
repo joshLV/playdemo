@@ -1705,25 +1705,35 @@ public class ECoupon extends Model {
     }
 
     /**
+     * 虚拟验证或预约验证第三方的券
+     */
+    public boolean couponVerifyPartnerResaler() {
+        ExtensionResult result = verifyAndCheckOnPartnerResaler();
+        if (result.code != 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 虚拟验证券号
      *
      * @return
      */
     public boolean virtualVerify(Long operateUserId) {
-        ExtensionResult result = verifyAndCheckOnPartnerResaler();
-        if (result.code != 0) {
+        String operatorInfo = "";
+        if (operateUserId != null) {
+            operatorInfo = "操作员ID:" + operateUserId.toString();
+        }
+        if (!couponVerifyPartnerResaler()) {
             return false;
         }
+        this.operateUserId = operateUserId;
         this.virtualVerify = true;
         this.virtualVerifyAt = new Date();
-
-        String operator = "";
-        if (operateUserId != null) {
-            this.operateUserId = operateUserId;
-            operator = "操作员ID:" + operateUserId.toString();
-        }
         this.save();
-        ECouponHistoryMessage.with(this).operator(operator).remark("虚拟验证").sendToMQ();
+
+        ECouponHistoryMessage.with(this).operator(operatorInfo).remark("虚拟验证").sendToMQ();
         return true;
     }
 
@@ -1756,5 +1766,25 @@ public class ECoupon extends Model {
         }
         this.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.IMPORT_VERIFY);
         this.save();
+    }
+
+    /**
+     * 二次验证商品的预约处理
+     */
+    public void appointment(Date appointmentDate, String appointmentRemark, Long shopId, SupplierUser supplierUser) {
+        if (shopId != null) {
+            this.shop = Shop.findById(shopId);
+        }
+        this.supplierUser = supplierUser;
+        this.appointmentDate = appointmentDate;
+        this.eCouponSn = generateAvailableEcouponSn(10);
+        this.appointmentRemark = StringUtils.trimToEmpty(appointmentRemark);
+        this.save();
+        OrderECouponMessage.with(this).remark("发送消费券号").sendToMQ();
+
+        //预约完成进行预约验证该券
+        couponVerifyPartnerResaler();
+
+        ECouponHistoryMessage.with(this).operator(supplierUser.userName).remark("预约验证").sendToMQ();
     }
 }

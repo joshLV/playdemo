@@ -21,7 +21,7 @@ public class SecondaryVerificationECouponSMSInvocation extends OrderECouponSMSIn
         StringBuilder sb = new StringBuilder();
         sb.append("【")
                 .append(context.goods.getSupplier().otherName)
-                .append("】预约")
+                .append("】")
                 .append(context.couponInfo)
                 .append(context.notes)
                 .append("一百券客服4006865151");
