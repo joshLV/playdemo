@@ -521,6 +521,7 @@ DELETE  /purchase-orders/{id}                      real.purchaseOrders.delete
 GET     /import-partner-orders                    ImportPartnerOrders.index
 GET     /download-partner-orders                  ImportPartnerOrders.download
 POST    /import-partner-orders                    ImportPartnerOrders.upload
+GET     /import-partner-orders/taobao-auto        ImportPartnerOrders.autoCreateTaobaoRealOrder
 
 #上传发货单
 GET     /real/upload-order-shipping             UploadOrderShippingInfos.index

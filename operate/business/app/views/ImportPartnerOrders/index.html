@@ -22,7 +22,7 @@
         <span class="help-block">注意：上传时，保证数据放在Sheet1.</span>
         <span class="help-block" style="color: red;" id="err-info">
         ${errorInfo}
-            #{if unBindGoodsList}未映射关系的商品ID【${unBindGoodsList.size()}】个：${unBindGoodsList?.join(",")}<br>#{/if}
+            #{if unBindGoodsSet}未映射关系的商品ID【${unBindGoodsSet.size()}】个：${unBindGoodsSet?.join(",")}<br>#{/if}
             #{if diffOrderPriceList}订单金额和一百券不一致，请核对【${diffOrderPriceList.size()}】个：${diffOrderPriceList?.join(",")}<br>#{/if}
             #{if notEnoughInventoryGoodsList}请先解决渠道商品ID：${notEnoughInventoryGoodsList?.join(",")}对应的一百券商品库存不足的问题！<br>#{/if}
             #{if existedOrderList}重复订单【${existedOrderList?.size()}】个：${existedOrderList?.join(",")}<br>#{/if}
@@ -43,6 +43,11 @@
 #{list items:models.order.OuterOrderPartner.values(), as:'partner'}
 <a href="@{ImportPartnerOrders.download(partner)}">${partner.partnerName()}</a>
 #{/list}
+
+
+<legend>自动导入</legend>
+<a class="btn btn-primary" href="/import-partner-orders/taobao-auto">自动导入淘宝订单</a>
+
 <script type="text/javascript">
     $("#partner").blur(function () {
         $("#err-info").html("");
