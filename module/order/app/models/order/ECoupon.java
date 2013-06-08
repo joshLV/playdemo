@@ -1781,10 +1781,9 @@ public class ECoupon extends Model {
         this.appointmentRemark = StringUtils.trimToEmpty(appointmentRemark);
         this.save();
         OrderECouponMessage.with(this).remark("发送消费券号").sendToMQ();
-
         //预约完成进行预约验证该券
         couponVerifyPartnerResaler();
 
-        ECouponHistoryMessage.with(this).operator(supplierUser.userName).remark("预约验证").sendToMQ();
+        ECouponHistoryMessage.with(this).operator(supplierUser.userName).remark("预约验证成功").sendToMQ();
     }
 }

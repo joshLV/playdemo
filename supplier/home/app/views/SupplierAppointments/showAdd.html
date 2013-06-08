@@ -10,7 +10,7 @@
 
     <form id="coupon-form" action="@{SupplierAppointments.create()}">
         <div class="field-group">
-            <label>门店</label>
+            <label>门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;店</label>
             <select name="shopId" value="${shopId}" id="shopId" style="width: auto">
             #{list items:shopList,as:'s'}
                 <option value="${s.id}" ${shopId==s?.id ?'selected':''}/>${s.name}&nbsp;&nbsp;
@@ -21,9 +21,10 @@
         <div class="field-group">
             <label class="coupon-label" for="enter-coupon">预约券号</label>
             <input type="text" size="18" maxlength="9" name="couponSn" id="couponSn" autofocus="true"
-                   class="enter-coupon" value="${couponSn}"/>
+                   class="time" value="${couponSn}"/>
+            <button class="btn add-coupon" type="button" id="searchCoupon">查询</button>
             <span id="coupon-error-info" style="color: red;margin-left: 10px;"></span>
-            <span style="color: #c0c0c0;display: block">输入完券号请回车或点击鼠标</span>
+            <span style="color: #c0c0c0;display: block">输入完券号请回车或点击【查询】</span>
         </div>
         <div id="coupon-info" style="display: none">
             <div class="field-group">
@@ -33,9 +34,9 @@
                        onfocus="WdatePicker({readOnly:true,minDate:'%y-%M-%d'})"/>
             </div>
             <div class="field-group">
-                <label class="coupon-label" for="enter-coupon">备注</label>
-                <input type="text" size="18" maxlength="9" name="appointmentRemark" id="appointmentRemark"
-                       class="enter-coupon" value="${appointmentRemark}"/>
+                <label class="coupon-label" for="appointmentRemark">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注</label>
+                <input type="text" style="width: 380px" maxlength="9" name="appointmentRemark" id="appointmentRemark"
+                       class="time" value="${appointmentRemark}"/>
             </div>
             <div class="field-group">
                 <button class="btn add-coupon" type="button" id="appointment">预约</button>
@@ -55,6 +56,9 @@
                 return false;
             }
         });
+        $("#searchCoupon").click(function () {
+            verifyCoupon('');
+        })
         $("#appointment").click(function () {
             verifyCoupon("appointment");
         })
@@ -62,16 +66,16 @@
     function verifyCoupon(val) {
         var couponSn = $("#couponSn").val();
         if (couponSn == "") {
+            $("#coupon-info").hide();
             return;
         }
         var shopId = $("#shopId").val();
-        var url="/coupon-appointment/verify";
+        var url = "/coupon-appointment/verify";
         var params = "shopId=" + shopId + "&couponSn=" + couponSn;
         if (val == "appointment") {
             params += "&appointmentDate=" + $("#appointmentDate").val() + "&appointmentRemark=" + $("#appointmentRemark").val();
-            url="/coupon-appointment";
+            url = "/coupon-appointment";
         }
-        console.log(val+"----"+url)
         $("#coupon-error-info").text("")
 
         $.ajax({
@@ -82,6 +86,7 @@
                 // 券号不能通过验证时，给出提示
                 if (data.errorInfo != null && data.errorInfo != "null") {
                     $("#coupon-error-info").text(data.errorInfo);
+                    $("#coupon-info").hide();
                     return;
                 }
                 if (val == '') {
@@ -94,6 +99,7 @@
 
             }, error: function () {
                 alert("请求失败！");
+                $("#coupon-info").hide();
                 return;
             }
 
