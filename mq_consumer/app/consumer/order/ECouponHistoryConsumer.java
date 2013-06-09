@@ -44,7 +44,6 @@ public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistor
         }
         Logger.info("process ECouponHistoryMessage:" + data);
         CouponHistory couponHistory = data.toModel();
-
         couponHistory.save();
         return Boolean.TRUE;
     }

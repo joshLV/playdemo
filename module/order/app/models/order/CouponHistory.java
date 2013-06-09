@@ -54,5 +54,26 @@ public class CouponHistory extends Model {
 
     @Column(name = "item_id")
     public Long itemId;
+    /**
+     * 第三方券号
+     */
+    @Column(name = "partner_coupon_sn")
+    public String partnerCouponSn;
+    /**
+     * 券密码
+     */
+    @Column(name = "coupon_password")
+    public String couponPassword;
 
+    /**
+     * 预约时间
+     */
+    @Column(name = "appointment_at")
+    public Date appointmentDate;
+
+    /**
+     * 券号
+     */
+    @Column(name = "coupon_sn")
+    public String couponSn;
 }

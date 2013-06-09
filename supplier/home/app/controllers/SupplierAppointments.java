@@ -12,13 +12,13 @@ import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import play.data.validation.Validation;
+import play.db.jpa.JPA;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import javax.persistence.Query;
+import java.util.*;
 
 /**
  * User: yan
@@ -50,7 +50,7 @@ public class SupplierAppointments extends Controller {
     /**
      * 已预约列表
      */
-    public static void index() {
+    public static void index(String phone, Date appointmentDate) {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Long supplierUserId = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
@@ -59,10 +59,31 @@ public class SupplierAppointments extends Controller {
         if (shopList.size() == 0) {
             error("该商户没有添加门店信息！");
         }
+        StringBuilder sql = new StringBuilder("select e from ECoupon e where e.status=:status and e.goods.supplierId=:supplierId ");
+        Map<String, Object> params = new HashMap<>();
+        params.put("status", ECouponStatus.UNCONSUMED);
+        params.put("supplierId", supplierId);
 
-        List<ECoupon> couponList = ECoupon.find("appointmentDate >=? and status=? and goods.supplierId=?",
-                DateUtils.truncate(new Date(), Calendar.DATE), ECouponStatus.UNCONSUMED, supplierId).fetch();
-        render(shopList, supplierUser, couponList);
+        if (StringUtils.isNotBlank(phone)) {
+            sql.append(" and e.orderItems.phone =:phone");
+            params.put("phone", phone);
+        }
+        if (appointmentDate == null) {
+            sql.append(" and e.appointmentDate >=:appointmentDate");
+            params.put("appointmentDate", DateUtils.truncate(new Date(), Calendar.DATE));
+        } else {
+            sql.append(" and e.appointmentDate >=:appointmentDate");
+            params.put("appointmentDate", appointmentDate);
+        }
+        sql.append(" order by e.appointmentDate desc");
+        Query query = JPA.em().createQuery(sql.toString());
+
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        List<ECoupon> couponList = query.getResultList();
+
+        render(shopList, supplierUser, couponList, appointmentDate, phone);
     }
 
     public static void showAdd() {
@@ -84,7 +105,7 @@ public class SupplierAppointments extends Controller {
         renderArgs.put("couponSn", couponSn);
 
         //检查是否输入预约券号
-        isInputCouponSn(shopId, couponSn);
+        checkInputItems(shopId, couponSn, appointmentDate);
 
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(couponSn, supplierId);
@@ -92,13 +113,34 @@ public class SupplierAppointments extends Controller {
         checkCouponInfos(ecoupon, shopId);
 
         //预约处理
-        ecoupon.appointment(appointmentDate, appointmentRemark, shopId,supplierUser);
+        if (!ecoupon.appointment(appointmentDate, appointmentRemark, shopId, supplierUser)) {
+            Validation.addError("error-info", "预约失败，请联系技术人员查看！");
+        }
+        renderError(shopId);
 
-
-        render("SupplierAppointments/index.html", shopId, couponSn);
-
+        index(null, null);
     }
 
+    public static void showEdit(Long couponId) {
+        ECoupon coupon = ECoupon.findById(couponId);
+        render(coupon);
+    }
+
+    public static void update(Long couponId, Date appointmentDate, String appointmentRemark) {
+        ECoupon coupon = ECoupon.findById(couponId);
+        if (coupon == null) {
+            Validation.addError("error-info", "没有找到符合的券信息");
+        }
+        if (Validation.hasErrors()) {
+            render("SupplierAppointments/showEdit.html");
+        }
+
+        coupon.appointmentDate = appointmentDate;
+        coupon.appointmentRemark = appointmentRemark;
+        coupon.save();
+        ECouponHistoryMessage.with(coupon).operator(SupplierRbac.currentUser().userName).remark("重新预定日期信息").sendToMQ();
+        index(null, null);
+    }
 
     /**
      * 验证券信息
@@ -122,11 +164,14 @@ public class SupplierAppointments extends Controller {
         renderJSON("{\"isOk\":\"true\"}");
     }
 
-    private static void isInputCouponSn(Long shopId, String couponSn) {
+    private static void checkInputItems(Long shopId, String couponSn, Date appointmentDate) {
         couponSn = StringUtils.trim(couponSn);
 
         if (StringUtils.isBlank(couponSn)) {
             Validation.addError("error-info", "券号不能为空");
+        }
+        if (appointmentDate == null) {
+            Validation.addError("error-info", "请选择预约日期");
         }
         renderError(shopId);
     }
@@ -154,7 +199,7 @@ public class SupplierAppointments extends Controller {
 
     private static void renderError(Long shopId) {
         if (Validation.hasErrors()) {
-            render("SupplierAppointments/index.html", shopId);
+            render("SupplierAppointments/showAdd.html", shopId);
         }
     }
 

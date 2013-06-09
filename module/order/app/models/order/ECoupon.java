@@ -653,10 +653,17 @@ public class ECoupon extends Model {
     }
 
     public void payCommission() {
+
+        BigDecimal paidToSupplierPrice = originalPrice;
+        // 验证的时候再把余款打给商户
+        if (this.goods.isSecondaryVerificationGoods()) {
+            paidToSupplierPrice = originalPrice.subtract(advancedDeposit);
+        }
+
         // 给商户打钱
         TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
                 .toAccount(getSupplierAccount())
-                .balancePaymentAmount(originalPrice)
+                .balancePaymentAmount(paidToSupplierPrice)
                 .orderId(order.getId())
                 .coupon(eCouponSn)
                 .make();
@@ -716,7 +723,7 @@ public class ECoupon extends Model {
         }
 
         //给推荐人返利金额
-        if (this.order != null && this.order.promoteUserId != null) {
+        if (this.order.promoteUserId != null) {
             User promoteUser = User.findById(this.order.promoteUserId);
             User invitedUser = User.findById(this.order.consumerId);
             if (promoteUser == null || invitedUser == null) {
@@ -1033,6 +1040,12 @@ public class ECoupon extends Model {
      */
     public static BigDecimal getLintRefundPrice(ECoupon coupon) {
         BigDecimal refundPrice = coupon.salePrice;
+        //二次验证商品并且未消费未预约的退款处理
+        if (coupon.goods.isSecondaryVerificationGoods() && coupon.status == ECouponStatus.UNCONSUMED
+                && coupon.appointmentDate != null) {
+            return coupon.salePrice.subtract(coupon.advancedDeposit);
+        }
+
         //折扣金额
         BigDecimal rebateValue = coupon.rebateValue;
         rebateValue = rebateValue == null ? BigDecimal.ZERO : rebateValue;
@@ -1771,10 +1784,13 @@ public class ECoupon extends Model {
     /**
      * 二次验证商品的预约处理
      */
-    public void appointment(Date appointmentDate, String appointmentRemark, Long shopId, SupplierUser supplierUser) {
+    public boolean appointment(Date appointmentDate, String appointmentRemark, Long shopId, SupplierUser supplierUser) {
         if (shopId != null) {
             this.shop = Shop.findById(shopId);
         }
+
+        //保留预约券号
+        String appointmentCouponSn = this.eCouponSn;
         this.supplierUser = supplierUser;
         this.appointmentDate = appointmentDate;
         this.eCouponSn = generateAvailableEcouponSn(10);
@@ -1782,8 +1798,23 @@ public class ECoupon extends Model {
         this.save();
         OrderECouponMessage.with(this).remark("发送消费券号").sendToMQ();
         //预约完成进行预约验证该券
-        couponVerifyPartnerResaler();
+        if (!couponVerifyPartnerResaler()) {
+            JPA.em().getTransaction().rollback();
+            Logger.info("二次验证商品预约，预约验证失败！");
+            return false;
+        }
 
         ECouponHistoryMessage.with(this).operator(supplierUser.userName).remark("预约验证成功").sendToMQ();
+
+        //把预付订金打给商户
+        TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
+                .toAccount(getSupplierAccount())
+                .balancePaymentAmount(advancedDeposit)
+                .orderId(order.getId())
+                .coupon(appointmentCouponSn)//记录预约券号
+                .make();
+        TradeUtil.success(consumeTrade, "二次验证商品预约给商户打预付订金(" + order.description + ")");
+
+        return true;
     }
 }
