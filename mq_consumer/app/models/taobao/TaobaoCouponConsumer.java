@@ -2,7 +2,7 @@ package models.taobao;
 
 import com.google.gson.JsonObject;
 import com.taobao.api.response.TradeGetResponse;
-import models.RabbitMQConsumerWithTx;
+import models.mq.RabbitMQConsumerWithTx;
 import models.accounts.PaymentSource;
 import models.ktv.KtvProductGoods;
 import models.ktv.KtvRoomOrderInfo;

@@ -3,7 +3,7 @@ package consumer.order;
 import extension.order.OrderECouponSMSContext;
 import jobs.dadong.DadongConsumptionRequest;
 import jobs.dadong.DadongErSendToRequest;
-import models.RabbitMQConsumerWithTx;
+import models.mq.RabbitMQConsumerWithTx;
 import models.order.ECoupon;
 import models.order.ECouponHistoryMessage;
 import models.order.OrderECouponMessage;

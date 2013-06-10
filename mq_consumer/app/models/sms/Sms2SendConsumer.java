@@ -1,6 +1,6 @@
 package models.sms;
 
-import models.RabbitMQConsumerWithTx;
+import models.mq.RabbitMQConsumerWithTx;
 import play.Logger;
 import play.Play;
 import play.jobs.OnApplicationStart;

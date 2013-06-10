@@ -1,6 +1,6 @@
 package consumer.ws;
 
-import models.RabbitMQConsumerWithTx;
+import models.mq.RabbitMQConsumerWithTx;
 import models.journal.WebServiceCallLog;
 import models.journal.WebServiceCallLogData;
 import models.journal.WebServiceCallType;

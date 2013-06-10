@@ -1,11 +1,9 @@
 package models.sina;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-import models.RabbitMQConsumerWithTx;
+import models.mq.RabbitMQConsumerWithTx;
 import models.order.ECoupon;
 import models.order.OuterOrderPartner;
 import models.sales.ResalerProduct;
@@ -13,7 +11,6 @@ import models.sales.ResalerProductJournal;
 import models.sales.ResalerProductJournalType;
 import play.Logger;
 import play.jobs.OnApplicationStart;
-import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
 import java.util.HashMap;
 import java.util.Map;

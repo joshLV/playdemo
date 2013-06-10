@@ -1,4 +1,4 @@
-package models;
+package models.mq;
 
 import play.db.jpa.JPAPlugin;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;

@@ -1,12 +1,7 @@
 package models.taobao;
 
-import models.RabbitMQConsumerWithTx;
+import models.mq.RabbitMQConsumerWithTx;
 import models.ktv.KtvSkuTaobaoMessage;
-import models.ktv.KtvTaobaoSku;
-import models.ktv.KtvTaobaoUtil;
-import models.sales.Goods;
-import models.sales.ResalerProduct;
-import play.Logger;
 
 /**
  * @author likang

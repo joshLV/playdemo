@@ -1,6 +1,6 @@
 package models.yihaodian;
 
-import models.RabbitMQConsumerWithTx;
+import models.mq.RabbitMQConsumerWithTx;
 import models.accounts.PaymentSource;
 import models.mail.MailMessage;
 import models.mail.MailUtil;

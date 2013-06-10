@@ -1,7 +1,6 @@
 package consumer.taobao;
 
-import consumer.TaobaoRabbitMQConsumerWithTx;
-import models.ktv.KtvSkuTaobaoMessage;
+import models.mq.RabbitMQConsumerWithTx;
 import models.taobao.KtvSkuMessageUtil;
 import play.jobs.OnApplicationStart;
 
@@ -11,7 +10,7 @@ import play.jobs.OnApplicationStart;
  */
 
 @OnApplicationStart(async = true)
-public class KtvSkuTaobaoActionConsumer0 extends TaobaoRabbitMQConsumerWithTx<Long> {
+public class KtvSkuTaobaoActionConsumer0 extends RabbitMQConsumerWithTx<Long> {
     private final KtvSkuTaobaoAction ktvSkuTaobaoAction = new KtvSkuTaobaoAction();
 
     @Override

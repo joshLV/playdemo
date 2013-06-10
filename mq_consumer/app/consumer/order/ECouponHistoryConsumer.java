@@ -1,6 +1,6 @@
 package consumer.order;
 
-import models.RabbitMQConsumerWithTx;
+import models.mq.RabbitMQConsumerWithTx;
 import models.order.CouponHistory;
 import models.order.ECoupon;
 import models.order.ECouponHistoryMessage;
