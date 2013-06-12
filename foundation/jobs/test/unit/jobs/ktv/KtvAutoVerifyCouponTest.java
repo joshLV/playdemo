@@ -6,9 +6,9 @@ import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import jobs.ktv.KtvAutoVerifyCoupon;
 import models.accounts.Account;
-import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
+import models.jobs.JobWithHistory;
 import models.ktv.KtvOrderStatus;
 import models.ktv.KtvProduct;
 import models.ktv.KtvRoomOrderInfo;
@@ -16,7 +16,6 @@ import models.operator.Operator;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.OrderItems;
-import models.supplier.Supplier;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +39,7 @@ public class KtvAutoVerifyCouponTest extends UnitTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
+        JobWithHistory.cleanLastBeginRunAtForTest();
         orderItem = FactoryBoy.create(OrderItems.class);
         FactoryBoy.lastOrCreate(SupplierUser.class);
         roomOrderInfo = FactoryBoy.create(KtvRoomOrderInfo.class, new BuildCallback<KtvRoomOrderInfo>() {
@@ -57,14 +57,14 @@ public class KtvAutoVerifyCouponTest extends UnitTest {
     }
 
     @Test
-    public void test不满足条件的_明天的预订() {
+    public void test不满足条件的_明天的预订() throws Exception {
         roomOrderInfo.scheduledDay = DateUtils.addDays(new Date(), 1);
         roomOrderInfo.save();
         createWithPasswordCoupons(1);
         assertEquals(ECouponStatus.UNCONSUMED, couponList.get(0).status);
         assertNull(couponList.get(0).consumedAt);
         KtvAutoVerifyCoupon job = new KtvAutoVerifyCoupon();
-        job.doJobWithHistory();
+        job.doJob();
 
         couponList.get(0).refresh();
         assertEquals(ECouponStatus.UNCONSUMED, couponList.get(0).status);
@@ -72,7 +72,7 @@ public class KtvAutoVerifyCouponTest extends UnitTest {
     }
 
     @Test
-    public void test不满足条件的_当天的预订还没到时间的() {
+    public void test不满足条件的_当天的预订还没到时间的() throws Exception {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         roomOrderInfo.scheduledTime = hour + 1;
@@ -81,7 +81,7 @@ public class KtvAutoVerifyCouponTest extends UnitTest {
         assertEquals(ECouponStatus.UNCONSUMED, couponList.get(0).status);
         assertNull(couponList.get(0).consumedAt);
         KtvAutoVerifyCoupon job = new KtvAutoVerifyCoupon();
-        job.doJobWithHistory();
+        job.doJob();
 
         couponList.get(0).refresh();
         assertEquals(ECouponStatus.UNCONSUMED, couponList.get(0).status);
@@ -89,7 +89,7 @@ public class KtvAutoVerifyCouponTest extends UnitTest {
     }
 
     @Test
-    public void test满足条件的_当天的预订已经过1小时的() {
+    public void test满足条件的_当天的预订已经过1小时的() throws Exception {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         roomOrderInfo.scheduledTime = hour - 2;
@@ -98,7 +98,7 @@ public class KtvAutoVerifyCouponTest extends UnitTest {
         assertEquals(ECouponStatus.UNCONSUMED, couponList.get(0).status);
         assertNull(couponList.get(0).consumedAt);
         KtvAutoVerifyCoupon job = new KtvAutoVerifyCoupon();
-        job.doJobWithHistory();
+        job.doJob();
 
         couponList.get(0).refresh();
         assertEquals(ECouponStatus.CONSUMED, couponList.get(0).status);

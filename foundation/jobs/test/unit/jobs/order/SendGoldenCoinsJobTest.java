@@ -6,6 +6,7 @@ import factory.callback.SequenceCallback;
 import models.consumer.User;
 import models.consumer.UserGoldenCoin;
 import jobs.order.SendGoldenCoinsJob;
+import models.jobs.JobWithHistory;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.UnitTest;
@@ -24,6 +25,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        JobWithHistory.cleanLastBeginRunAtForTest();
     }
 
     @Test

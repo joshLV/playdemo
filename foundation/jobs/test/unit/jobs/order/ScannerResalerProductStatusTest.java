@@ -3,6 +3,7 @@ package unit.jobs.order;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import jobs.order.ScannerResalerProductStatusJob;
+import models.jobs.JobWithHistory;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.ResalerProduct;
@@ -27,6 +28,7 @@ public class ScannerResalerProductStatusTest extends UnitTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        JobWithHistory.cleanLastBeginRunAtForTest();
         resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
             @Override
             public void build(Resaler target) {

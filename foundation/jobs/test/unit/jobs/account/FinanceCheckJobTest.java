@@ -8,6 +8,7 @@ import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import jobs.account.FinanceCheckJob;
+import models.jobs.JobWithHistory;
 import models.operator.Operator;
 import models.resale.Resaler;
 import models.supplier.Supplier;
@@ -33,6 +34,7 @@ public class FinanceCheckJobTest extends UnitTest {
     @Before
     public void setUp() throws Exception {
         FactoryBoy.deleteAll();
+        JobWithHistory.cleanLastBeginRunAtForTest();
 
         supplier = FactoryBoy.create(Supplier.class);
         resaler = FactoryBoy.create(Resaler.class);

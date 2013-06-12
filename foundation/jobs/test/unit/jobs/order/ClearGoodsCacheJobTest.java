@@ -3,6 +3,7 @@ package unit.jobs.order;
 import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
 import jobs.order.ClearGoodsCacheJob;
+import models.jobs.JobWithHistory;
 import models.sales.Goods;
 import models.sales.GoodsSchedule;
 import org.junit.Before;
@@ -23,6 +24,7 @@ public class ClearGoodsCacheJobTest extends UnitTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        JobWithHistory.cleanLastBeginRunAtForTest();
     }
 
     @Test

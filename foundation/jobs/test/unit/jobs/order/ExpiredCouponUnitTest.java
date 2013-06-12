@@ -4,6 +4,7 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import jobs.order.ExpiredCouponNotice;
 import jobs.order.ExpiredNoRefundCouponNotice;
+import models.jobs.JobWithHistory;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.ECoupon;
@@ -38,6 +39,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        JobWithHistory.cleanLastBeginRunAtForTest();
     }
 
     @Test

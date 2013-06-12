@@ -3,6 +3,7 @@ package unit.jobs.ktv;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import jobs.ktv.SendDailyScheduledMessage;
+import models.jobs.JobWithHistory;
 import models.ktv.KtvOrderStatus;
 import models.ktv.KtvProduct;
 import models.ktv.KtvRoomOrderInfo;
@@ -30,6 +31,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
+        JobWithHistory.cleanLastBeginRunAtForTest();
         MockMQ.clear();
         shop = FactoryBoy.create(Shop.class);
     }
@@ -39,7 +41,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         create1HourOrderInfo();
         create2HourOrderInfo();
         SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-        job.doJobWithHistory();
+        job.doJob();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
 
         assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
@@ -49,7 +51,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
     public void testJob_1个包间() throws Exception {
         create1HourOrderInfo();
         SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-        job.doJobWithHistory();
+        job.doJob();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
 
         assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
@@ -74,7 +76,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         create2HourOrderInfo();
         create3HourOrderInfo();
         SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-        job.doJobWithHistory();
+        job.doJob();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
         assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
         msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
@@ -88,7 +90,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         create3HourOrderInfo();
         create2HourOrderInfo();
         SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-        job.doJobWithHistory();
+        job.doJob();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
         assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
         msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
@@ -102,7 +104,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         create12OrderInfo();
         create4HourOrderInfo();
         SendDailyScheduledMessage job = new SendDailyScheduledMessage();
-        job.doJobWithHistory();
+        job.doJob();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
         assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至12点】", msg.getContent());
         msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);

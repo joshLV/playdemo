@@ -3,6 +3,7 @@ package unit.jobs.order;
 import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
 import jobs.order.PrepaymentNotice;
+import models.jobs.JobWithHistory;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.ECoupon;
@@ -29,6 +30,7 @@ public class PrepaymentNoticeUnitTest extends UnitTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        JobWithHistory.cleanLastBeginRunAtForTest();
 
         eCoupon = FactoryBoy.create(ECoupon.class);
         prepayment = FactoryBoy.create(Prepayment.class);

@@ -3,6 +3,7 @@ package unit.jobs.order;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import jobs.order.RetrySendFailedOrderSMSJob;
+import models.jobs.JobWithHistory;
 import models.order.ECoupon;
 import models.order.OrderECouponMessage;
 import org.junit.Before;
@@ -21,6 +22,7 @@ public class RetrySendFailedOrderSMSJobTest extends UnitTest {
     @Before
     public void setUp() throws Exception {
         FactoryBoy.deleteAll();
+        JobWithHistory.cleanLastBeginRunAtForTest();
         MockMQ.clear();
     }
 

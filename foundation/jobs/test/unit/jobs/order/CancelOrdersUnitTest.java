@@ -4,6 +4,7 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import jobs.order.CancelUnPaidOrderJob;
 import models.consumer.User;
+import models.jobs.JobWithHistory;
 import models.order.CancelUnpaidOrders;
 import models.order.Order;
 import models.order.OrderItems;
@@ -24,6 +25,7 @@ public class CancelOrdersUnitTest extends UnitTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        JobWithHistory.cleanLastBeginRunAtForTest();
     }
 
     @Test
