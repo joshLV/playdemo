@@ -3,6 +3,7 @@ package models.jobs;
 import models.jobs.annotation.JobDefine;
 import play.Logger;
 import play.jobs.Every;
+import play.modules.redis.Redis;
 
 /**
  * User: tanglq
@@ -15,5 +16,10 @@ public class FooJob extends JobWithHistory {
     @Override
     public void doJobWithHistory() throws Exception {
         Logger.info("FooJob.doJobWithHistory(): run");
+        Redis.incr(getRedisRunKey()); //运行过一次即加1
+    }
+
+    public static String getRedisRunKey() {
+        return "test.foo.job.run";
     }
 }

@@ -1,6 +1,7 @@
 package models.jobs;
 
 import models.mq.QueueIDMessage;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -99,5 +100,15 @@ public class JobsMessage extends QueueIDMessage implements Serializable {
     @Override
     public String getId() {
         return MQ_KEY + className;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("title", title)
+                .append("className", className)
+                .append("scheduledInfo", scheduledInfo)
+                .append("runnedAt", runnedAt)
+                .toString();
     }
 }
