@@ -7,9 +7,7 @@ import play.test.UnitTest;
 import java.util.Map;
 
 /**
- * User: tanglq
- * Date: 13-6-9
- * Time: 下午3:12
+ * 用于学习Redis用法，以及确保测试环境Redis可用。
  */
 public class RedisTest extends UnitTest {
 

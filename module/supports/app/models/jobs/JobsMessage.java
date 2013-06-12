@@ -1,16 +1,18 @@
 package models.jobs;
 
+import models.mq.QueueIDMessage;
+
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 用于发送到MQ保存Jobs运行历史的Message对象.
  */
-public class JobsMessage implements Serializable {
+public class JobsMessage extends QueueIDMessage implements Serializable {
 
     private static final long serialVersionUID = 7063901063912330652L;
 
-    public final static String MQ_KEY = "jobs.run.history";
+    public final static String MQ_KEY = "foundation.jobs.history";
 
     public String className;
 
@@ -94,4 +96,8 @@ public class JobsMessage implements Serializable {
         return define;
     }
 
+    @Override
+    public String getId() {
+        return MQ_KEY + className;
+    }
 }
