@@ -95,9 +95,10 @@ public class UploadOrderShippingInfos extends Controller {
         List<String> noGoodsCodeList = new ArrayList<>();
         //todo 检查实物订单信息中是否存在退货订单
         List<RealGoodsReturnEntry> returnEntryList = new ArrayList<>();
+        System.out.println("logistics = " + logistics);
         for (LogisticImportData logistic : logistics) {
             RealGoodsReturnEntry returnEntry = RealGoodsReturnEntry.findHandling(logistic.orderNumber, logistic.goodsCode);
-            if (returnEntry != null&&logistic.buyNumber != null && !logistic.buyNumber.equals(returnEntry.orderItems.buyNumber - returnEntry.returnedCount)) {
+            if (returnEntry != null && logistic.buyNumber != null && !logistic.buyNumber.equals(returnEntry.orderItems.buyNumber - returnEntry.returnedCount)) {
                 returnEntryList.add(returnEntry);
             }
         }
@@ -108,6 +109,7 @@ public class UploadOrderShippingInfos extends Controller {
 
         List<LogisticImportData> successTaobaoLogistics = new ArrayList<>();
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+
         for (LogisticImportData logistic : logistics) {
             if (StringUtils.isBlank(logistic.expressCompany)) {
                 emptyExpressInofs.add(logistic.orderNumber);
@@ -138,8 +140,10 @@ public class UploadOrderShippingInfos extends Controller {
             orderItems.sendAt = new Date();
             orderItems.save();
             uploadSuccessOrders.add(logistic.orderNumber);
-            if (orderItems.order.userId.equals(resaler.getId())
-                    && orderItems.order.operator.id.equals(resaler.operator.getId()) ) {
+            if (resaler != null && orderItems.order.userId.equals(resaler.getId())
+                    && orderItems.order.operator.id.equals(resaler.operator.getId())) {
+                System.out.println("successTaobaoLogistics = " + successTaobaoLogistics);
+
                 successTaobaoLogistics.add(logistic);
             }
         }

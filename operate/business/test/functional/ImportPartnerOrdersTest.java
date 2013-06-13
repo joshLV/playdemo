@@ -132,7 +132,8 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
         assertEquals(7, OuterOrder.count());
         assertEquals(7, Order.count());
         //未映射商品
-        Set<String> unBindGoods = (Set<String>) renderArgs("unBindGoodsList");
+        Set<String> unBindGoods = (Set<String>) renderArgs("unBindGoodsSet");
+        System.out.println("unBindGoods = " + unBindGoods);
         assertEquals(5, unBindGoods.size());
 
     }

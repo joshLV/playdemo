@@ -70,12 +70,12 @@ public class VerifiedECouponRefunds extends Controller {
             message = applyRefund(ecoupon, refundComment);
         } else if ("UNCONSUME".equals(choice)) {
             Logger.info("取消验证.");
-            if (KangouUtil.SUPPLIER_DOMAIN_NAME.equals(ecoupon.goods.getSupplier().domainName)) {
-                Logger.info("处理看购网券:" + ecoupon.id);
-                // 看购网
-                message = "看购网不支持取消验证状态:" + eCouponSn;
-                render(message);
-            }
+                if (KangouUtil.SUPPLIER_DOMAIN_NAME.equals(ecoupon.goods.getSupplier().domainName)) {
+                    Logger.info("处理看购网券:" + ecoupon.id);
+                    // 看购网
+                    message = "看购网不支持取消验证状态:" + eCouponSn;
+                    render(message);
+                }
             message = applyUnConsumed(ecoupon, refundComment);
         } else {
             message = "请输入REFUND或UNCONSUME。";
