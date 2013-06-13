@@ -4,12 +4,23 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.operator.OperateUser;
-import models.order.*;
+import models.operator.Operator;
+import models.order.ExpressCompany;
+import models.order.Freight;
+import models.order.Order;
+import models.order.OrderItems;
+import models.order.OrderShippingInfo;
+import models.order.OrderStatus;
+import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.Sku;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
 import play.mvc.Router;
@@ -52,6 +63,14 @@ public class UploadOrderShippingInfosTest extends FunctionalTest {
         OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
+
+        FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+            @Override
+            public void build(Resaler r) {
+                r.loginName = Resaler.TAOBAO_LOGIN_NAME;
+            }
+        });
+
         expressCompany = FactoryBoy.create(ExpressCompany.class);
         sku = FactoryBoy.create(Sku.class);
         goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
@@ -62,7 +81,15 @@ public class UploadOrderShippingInfosTest extends FunctionalTest {
             }
         });
         freight = FactoryBoy.create(Freight.class);
-        orderItems = FactoryBoy.create(OrderItems.class);
+
+        orderItems = FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {
+            @Override
+            public void build(OrderItems o) {
+                o.order.userId = FactoryBoy.lastOrCreate(Resaler.class).getId();
+                o.order.operator = Operator.defaultOperator();
+            }
+        });
+
         orderShippingInfo = FactoryBoy.create(OrderShippingInfo.class, new BuildCallback<OrderShippingInfo>() {
             @Override
             public void build(OrderShippingInfo target) {
