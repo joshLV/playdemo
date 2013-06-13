@@ -183,14 +183,18 @@ public class OrderECouponMessage implements Serializable {
         List<String> ecouponSNs = new ArrayList<>();
         ECoupon lastECoupon = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
+        boolean appointmentSuccess = false;
         for (ECoupon e : eCoupons) {
             if (StringUtils.isNotBlank(e.eCouponPassword)) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("券号").append(e.eCouponSn).append("密码").append(e.eCouponPassword);
                 ecouponSNs.add(sb.toString());
             } else {
-                if (eCoupons.size() >= 1 && e.goods.isKtvSupplier() && e.goods.isKtvProduct() && e.appointmentDate != null) {
-                    ecouponSNs.add("券号" + e.eCouponSn + ",预约日期:" + dateFormat.format(e.appointmentDate) + "," + e.appointmentRemark);
+                if (e.appointmentDate != null) {
+                    appointmentSuccess = true;
+                }
+                if (eCoupons.size() >= 1 && e.appointmentDate != null) {
+                    ecouponSNs.add("券号" + e.eCouponSn + ",预约日期:" + dateFormat.format(e.appointmentDate) + "," + StringUtils.trimToEmpty(e.appointmentRemark));
                 } else {
                     ecouponSNs.add("券号" + e.eCouponSn);
                 }
@@ -208,8 +212,9 @@ public class OrderECouponMessage implements Serializable {
             couponInfo += "[共" + ecouponSNs.size() + "张]";
         }
 
+        //预约商品或二次验证商品并且预约成功后不发送这段文字
         String note = ",";
-        if (orderItems.goods.isOrder) {
+        if (orderItems.goods.isOrder || (orderItems.goods.isSecondaryVerificationGoods() && !appointmentSuccess)) {
             // 需要预约的产品
             note += "此产品需预约,预约电话见商品详情,";
         }

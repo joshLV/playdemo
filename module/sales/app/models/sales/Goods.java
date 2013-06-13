@@ -2420,7 +2420,7 @@ public class Goods extends Model {
     /**
      * 是否二次验证商品
      */
-    public boolean isSecondaryVerificationGoods(String propertyName) {
-        return "1".equals(this.getProperties(propertyName, "0"));
+    public boolean isSecondaryVerificationGoods() {
+        return "1".equals(this.getProperties(Goods.SECONDARY_VERIFICATION, "0"));
     }
 }

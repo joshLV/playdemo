@@ -1,15 +1,15 @@
-package extension.ktv;
+package extension;
 
 import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
-import models.resale.Resaler;
-import org.apache.commons.lang.StringUtils;
 import util.extension.ExtensionResult;
 
 /**
- * 实现重定义ktv商品的订单券短信内容。
+ * User: yan
+ * Date: 13-6-7
+ * Time: 上午11:32
  */
-public class KtvOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
+public class SecondaryVerificationECouponSMSInvocation extends OrderECouponSMSInvocation {
     /**
      * 基于context的内容，生成短信内容，并通过context.setSmsContent()方法把短信内容传出.
      *
@@ -23,20 +23,20 @@ public class KtvOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
                 .append(context.goods.getSupplier().otherName)
                 .append("】")
                 .append(context.couponInfo)
-//                .append(context.notes)
+                .append(context.notes)
                 .append("一百券客服4006865151");
         context.setSmsContent(sb.toString());
         return ExtensionResult.SUCCESS;
     }
 
     /**
-     * 检查是否是KTV商户并且是KTV商品生成的订单.
+     * 检查是否是二次验证商品.
      *
      * @param context
      * @return
      */
     @Override
     public boolean match(OrderECouponSMSContext context) {
-        return context.goods.isKtvProduct();
+        return context.goods.isSecondaryVerificationGoods();
     }
 }

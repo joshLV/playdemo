@@ -60,6 +60,25 @@ public class ECouponHistoryMessage implements Serializable {
      */
     public Long itemId;
 
+    /**
+     * 第三方券号
+     */
+    public String partnerCouponSn;
+    /**
+     * 券密码
+     */
+    public String couponPassword;
+
+    /**
+     * 预约时间
+     */
+    public Date appointmentDate;
+
+    /**
+     * 券号
+     */
+    public String couponSn;
+
     private ECouponHistoryMessage() {
         // 不允许直接使用构造函数
     }
@@ -73,6 +92,10 @@ public class ECouponHistoryMessage implements Serializable {
         message.fromStatus = eCoupon.status;
         message.toStatus = eCoupon.status;
         message.phone = eCoupon.orderItems.phone;
+        message.partnerCouponSn = eCoupon.partnerCouponId;
+        message.couponPassword = eCoupon.eCouponPassword;
+        message.couponSn = eCoupon.eCouponSn;
+        message.appointmentDate = eCoupon.appointmentDate;
         return message;
     }
 
@@ -89,6 +112,10 @@ public class ECouponHistoryMessage implements Serializable {
         couponHistory.verifyType = verifyType;
         couponHistory.fromStatus = fromStatus;
         couponHistory.toStatus = toStatus;
+        couponHistory.partnerCouponSn = partnerCouponSn;
+        couponHistory.couponPassword = couponPassword;
+        couponHistory.couponSn = couponSn;
+        couponHistory.appointmentDate = appointmentDate;
 
         return couponHistory;
     }

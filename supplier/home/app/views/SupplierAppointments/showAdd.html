@@ -1,0 +1,107 @@
+#{extends 'layout_trader/layout2.html' /}
+#{include 'Share/nav.html' /}
+#{set title:'新增预约' /}
+#{set menu:"appointment_coupon_add" /}
+#{set 'moreStyles'}
+#{/set}
+<div class="bd batch-verify">
+    <h2>${title}</h2>
+
+    <form id="coupon-form" action="@{SupplierAppointments.create()}" method="POST">
+        <div class="field-group">
+            <label>门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;店</label>
+            <select name="shopId" value="${shopId}" id="shopId" style="width: auto">
+            #{list items:shopList,as:'s'}
+                <option value="${s.id}" ${shopId==s?.id ?'selected':''}/>${s.name}&nbsp;&nbsp;
+            #{/list}
+            </select>
+        </div>
+
+        <div class="field-group">
+            <label class="coupon-label" for="enter-coupon">预约券号</label>
+            <input type="text" size="18" maxlength="9" name="couponSn" id="couponSn" autofocus="true"
+                   class="time" value="${couponSn}"/>
+            <button class="btn add-coupon" type="button" id="searchCoupon">查询</button>
+            <span id="coupon-error-info" style="color: red;margin-left: 10px;"></span>
+            <span style="color: #c0c0c0;display: block">输入完券号请回车或点击【查询】</span>
+        </div>
+        <div id="coupon-info" style="display: none">
+            <div class="field-group">
+                <label class="coupon-label">预约日期</label>
+                <input class="time" type="text" id="appointmentDate" name="appointmentDate"
+                       value="${appointmentDate?.format('yyyy-MM-dd')}"
+                       onfocus="WdatePicker({readOnly:true,minDate:'%y-%M-%d'})"/>
+                <span id="appointmentDate-error-info" style="color: red;margin-left: 10px;"></span>
+            </div>
+            <div class="field-group">
+                <label class="coupon-label" for="appointmentRemark">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注</label>
+                <input type="text" style="width: 380px" maxlength="9" name="appointmentRemark" id="appointmentRemark"
+                       class="time" value="${appointmentRemark}"/>
+            </div>
+            <div class="field-group">
+                <button class="btn add-coupon" type="button" id="appointment">预约</button>
+            </div>
+        </div>
+    #{if errors}
+        <span id="err"
+              style="border:1px solid #ff0000;color:#ff0000;line-height: 2;margin-left: 110px;font-size: 18px">#{error 'error-info' /}</span>
+    #{/if}
+    </form>
+</div>
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#couponSn").keydown(function (e) {
+            $("#err").text("")
+            if (e.keyCode == 13) {
+                verifyCoupon();
+                return false;
+            }
+        });
+        $("#searchCoupon").click(function () {
+            verifyCoupon();
+        })
+        $("#appointment").click(function () {
+            $("#err").text("")
+            if ($("#appointmentDate").val() == "") {
+                $("#appointmentDate-error-info").text("请输入预约日期")
+                return;
+            }
+            $("#coupon-form").submit();
+        })
+    })
+    function verifyCoupon() {
+        var couponSn = $("#couponSn").val();
+        if (couponSn == "") {
+            $("#coupon-info").hide();
+            $("#coupon-error-info").text("请输入券号！")
+            return;
+        }
+        var shopId = $("#shopId").val();
+        var url = "/coupon-appointment/verify";
+        var params = "shopId=" + shopId + "&couponSn=" + couponSn;
+        $("#coupon-error-info").text("")
+
+        $.ajax({
+            url: url,
+            type: "post",
+            data: params,
+            success: function (data) {
+                // 券号不能通过验证时，给出提示
+                if (data.errorInfo != null && data.errorInfo != "null") {
+                    $("#coupon-error-info").text(data.errorInfo);
+                    $("#coupon-info").hide();
+                    return;
+                }
+                $("#coupon-info").show();
+            }, error: function () {
+                alert("请求失败！");
+                $("#coupon-info").hide();
+                return;
+            }
+
+        });
+    }
+</script>
+#{/set}

@@ -1,0 +1,65 @@
+#{extends 'layout_trader/layout2.html' /}
+#{include 'Share/nav.html' /}
+#{set title:'预约' /}
+#{set menu:"appointment_coupon" /}
+#{set 'moreStyles'}
+    #{asset.css src:['/m/verify.css'] /}
+#{/set}
+<div class="bd batch-verify">
+    <h2>${title}</h2>
+
+    <form id="coupon-form" action="@{SupplierAppointments.index()}">
+        <div class="field-group" style="padding-left: 0px">
+            <table cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                    <td>手机
+                        <input type="text" size="12" maxlength="11" name="phone" id="couponSn" value="${couponSn}"/>
+                        &nbsp;预约日期:
+                        *{<input type="text" size="12" maxlength="9" name="appointmentDate" id="couponSn"}*
+                               *{value="${appointmentDate}"/>}*
+                        <input class="time" type="text" id="appointmentDate" name="appointmentDate"
+                               value="${appointmentDate?.format('yyyy-MM-dd')}"
+                               onfocus="WdatePicker({readOnly:true})"/>
+
+                    </td>
+                    <td wdith="50%">
+                        <button class="btn add-coupon" type="submit" id="query" style="margin-left: 20px">查询</button>
+                        <a href="@{SupplierAppointments.showAdd()}" class="btn"
+                           style="width: auto;background-color: #5bb75b;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);">新增预约</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">
+            <tr>
+                <th width="100">手机</th>
+                <th width="110">预约门店</th>
+                <th width="80">预约订金</th>
+                <th width="180">商品名称</th>
+                <th width="70">面值</th>
+                <th width="110">预约日期</th>
+                <th width="110">预约信息</th>
+                <th width="70">操作</th>
+            </tr>
+        #{if couponList}
+            #{list items:couponList,as:'ecoupon'}
+                <tr>
+                    <td>${ecoupon.orderItems.phone}</td>
+                    <td>${ecoupon.shop?.name}</td>
+                    <td>${ecoupon.advancedDeposit.formatCurrency("CNY")}</td>
+                    <td>${ecoupon.goods.shortName}</td>
+                    <td>${ecoupon.faceValue}</td>
+                    <td>${ecoupon.appointmentDate.format('yyyy-MM-dd')}</td>
+                    <td>${ecoupon.appointmentRemark}</td>
+                    <td>#{if ecoupon.status==models.order.ECouponStatus.UNCONSUMED}
+                        <a href="@{SupplierAppointments.showEdit(ecoupon.id)}">修改</a>#{/if}</td>
+                </tr>
+            #{/list}
+        #{/if}
+        </table>
+    </form>
+</div>
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}

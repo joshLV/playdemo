@@ -61,9 +61,11 @@
 
         #{if ("1".equals(sellECoupon))}
             #{if navigation.ContextedPermission.hasPermission("COUPON_MULTI_VERIFY") }
-                <li><a
-                    #{if "verify".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/verify')}">券&nbsp;&nbsp;验&nbsp;&nbsp;证</a>
-                </li>#{/if}
+                <li><a #{if "appointment_coupon".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/coupon-appointment')}">预&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;约</a></li>
+                <li>
+                    <a #{if "verify".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/verify')}">券&nbsp;&nbsp;验&nbsp;&nbsp;证</a>
+                </li>
+            #{/if}
             #{if navigation.ContextedPermission.hasPermission("COUPON_INDEX")}
                 <li><a #{if "coupons".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/coupons')}">券号列表</a></li>#{/if}
             #{if navigation.ContextedPermission.hasPermission("ACCOUNT_REPORT")}

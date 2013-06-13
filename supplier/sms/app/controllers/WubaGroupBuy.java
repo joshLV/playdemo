@@ -321,7 +321,7 @@ public class WubaGroupBuy extends Controller {
 
             if (goods.originalPrice.compareTo(productPrize) > 0) {
                 Logger.error("invalid wuba productPrice: %s,goods.originPrice:%s," +
-                        "可能为了促进销售，商务降低价格销售。请确认此商品的价格信息！", productPrize, goods.originalPrice);
+                        "可能为了促进销售，商务降低价格销售。请确认此商品的价格信息！goodsId:%s", productPrize, goods.originalPrice, goods.id);
 //                putStatusAndMsg(result, "10100", "价格非法");
 //                return null;
             }

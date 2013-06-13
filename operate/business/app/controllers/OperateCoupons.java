@@ -55,6 +55,10 @@ public class OperateCoupons extends Controller {
             if (coupon.operateUserId != null) {
                 OperateUser operateUser = OperateUser.findById(coupon.operateUserId);
                 coupon.operateUserName = operateUser.userName;
+            } else {
+                if (coupon.supplierUser != null) {
+                    coupon.operateUserName = coupon.supplierUser.userName;
+                }
             }
         }
         List<Brand> brandList = Brand.findByOrder(null, operatorId, hasSeeAllSupplierPermission);

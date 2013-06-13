@@ -188,6 +188,11 @@ public class ECoupon extends Model {
     /** 1：冻结 0：解冻*/
     public Integer isFreeze;
 
+    /**
+     * 预付订金
+     */
+    @Column(name = "advanced_deposit")
+    public BigDecimal advancedDeposit;
 
     /**
      * 发送过短信的次数.
@@ -351,7 +356,11 @@ public class ECoupon extends Model {
         this.refundPrice = BigDecimal.ZERO;
         this.status = ECouponStatus.UNCONSUMED;
         if (couponSn == null) {
-            this.eCouponSn = generateAvailableEcouponSn();
+            if (goods.isSecondaryVerificationGoods()) {
+                this.eCouponSn = generateAvailableEcouponSn(9);
+            } else {
+                this.eCouponSn = generateAvailableEcouponSn(10);
+            }
             this.createType = ECouponCreateType.GENERATE;
         } else {
             if (StringUtils.isNotBlank(password)) {
@@ -424,7 +433,7 @@ public class ECoupon extends Model {
     /**
      * 生成消费者唯一的券号.
      */
-    private String generateAvailableEcouponSn() {
+    private String generateAvailableEcouponSn(int length) {
         String randomNumber;
         do {
             try {
@@ -432,7 +441,7 @@ public class ECoupon extends Model {
             } catch (InterruptedException e) {
                 // do nothing.
             }
-            randomNumber = RandomNumberUtil.generateSerialNumber(10);
+            randomNumber = RandomNumberUtil.generateSerialNumber(length);
         } while (isNotUniqueEcouponSn(randomNumber));
         return randomNumber;
     }
@@ -644,10 +653,17 @@ public class ECoupon extends Model {
     }
 
     public void payCommission() {
+
+        BigDecimal paidToSupplierPrice = originalPrice;
+        // 验证的时候再把余款打给商户
+        if (this.goods.isSecondaryVerificationGoods()) {
+            paidToSupplierPrice = originalPrice.subtract(advancedDeposit);
+        }
+
         // 给商户打钱
         TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
                 .toAccount(getSupplierAccount())
-                .balancePaymentAmount(originalPrice)
+                .balancePaymentAmount(paidToSupplierPrice)
                 .orderId(order.getId())
                 .coupon(eCouponSn)
                 .make();
@@ -707,7 +723,7 @@ public class ECoupon extends Model {
         }
 
         //给推荐人返利金额
-        if (this.order != null && this.order.promoteUserId != null) {
+        if (this.order.promoteUserId != null) {
             User promoteUser = User.findById(this.order.promoteUserId);
             User invitedUser = User.findById(this.order.consumerId);
             if (promoteUser == null || invitedUser == null) {
@@ -1024,6 +1040,12 @@ public class ECoupon extends Model {
      */
     public static BigDecimal getLintRefundPrice(ECoupon coupon) {
         BigDecimal refundPrice = coupon.salePrice;
+        //二次验证商品并且未消费未预约的退款处理
+        if (coupon.goods.isSecondaryVerificationGoods() && coupon.status == ECouponStatus.UNCONSUMED
+                && coupon.appointmentDate != null) {
+            return coupon.salePrice.subtract(coupon.advancedDeposit);
+        }
+
         //折扣金额
         BigDecimal rebateValue = coupon.rebateValue;
         rebateValue = rebateValue == null ? BigDecimal.ZERO : rebateValue;
@@ -1696,25 +1718,35 @@ public class ECoupon extends Model {
     }
 
     /**
+     * 虚拟验证或预约验证第三方的券
+     */
+    public boolean couponVerifyPartnerResaler() {
+        ExtensionResult result = verifyAndCheckOnPartnerResaler();
+        if (result.code != 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 虚拟验证券号
      *
      * @return
      */
     public boolean virtualVerify(Long operateUserId) {
-        ExtensionResult result = verifyAndCheckOnPartnerResaler();
-        if (result.code != 0) {
+        String operatorInfo = "";
+        if (operateUserId != null) {
+            operatorInfo = "操作员ID:" + operateUserId.toString();
+        }
+        if (!couponVerifyPartnerResaler()) {
             return false;
         }
+        this.operateUserId = operateUserId;
         this.virtualVerify = true;
         this.virtualVerifyAt = new Date();
-
-        String operator = "";
-        if (operateUserId != null) {
-            this.operateUserId = operateUserId;
-            operator = "操作员ID:" + operateUserId.toString();
-        }
         this.save();
-        ECouponHistoryMessage.with(this).operator(operator).remark("虚拟验证").sendToMQ();
+
+        ECouponHistoryMessage.with(this).operator(operatorInfo).remark("虚拟验证").sendToMQ();
         return true;
     }
 
@@ -1747,5 +1779,42 @@ public class ECoupon extends Model {
         }
         this.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.IMPORT_VERIFY);
         this.save();
+    }
+
+    /**
+     * 二次验证商品的预约处理
+     */
+    public boolean appointment(Date appointmentDate, String appointmentRemark, Long shopId, SupplierUser supplierUser) {
+        if (shopId != null) {
+            this.shop = Shop.findById(shopId);
+        }
+
+        //保留预约券号
+        String appointmentCouponSn = this.eCouponSn;
+        this.supplierUser = supplierUser;
+        this.appointmentDate = appointmentDate;
+        this.eCouponSn = generateAvailableEcouponSn(10);
+        this.appointmentRemark = StringUtils.trimToEmpty(appointmentRemark);
+        this.save();
+        OrderECouponMessage.with(this).remark("发送消费券号").sendToMQ();
+        //预约完成进行预约验证该券
+        if (!couponVerifyPartnerResaler()) {
+            JPA.em().getTransaction().rollback();
+            Logger.info("二次验证商品预约，预约验证失败！");
+            return false;
+        }
+
+        ECouponHistoryMessage.with(this).operator(supplierUser.userName).remark("预约验证成功").sendToMQ();
+
+        //把预付订金打给商户
+        TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
+                .toAccount(getSupplierAccount())
+                .balancePaymentAmount(advancedDeposit)
+                .orderId(order.getId())
+                .coupon(appointmentCouponSn)//记录预约券号
+                .make();
+        TradeUtil.success(consumeTrade, "二次验证商品预约给商户打预付订金(" + order.description + ")");
+
+        return true;
     }
 }

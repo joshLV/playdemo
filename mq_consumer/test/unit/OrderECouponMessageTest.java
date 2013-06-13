@@ -15,6 +15,7 @@ import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
+import models.sales.GoodsProperty;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import models.supplier.SupplierProperty;
@@ -82,8 +83,6 @@ public class OrderECouponMessageTest extends UnitTest {
         SupplierProperty supplierProperty = FactoryBoy.lastOrCreate(SupplierProperty.class, "ktv");
         supplierProperty.supplier = goods.getSupplier();
         supplierProperty.save();
-
-
 
 
     }
@@ -196,7 +195,7 @@ public class OrderECouponMessageTest extends UnitTest {
         createKtvOneCoupons(1);
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
         StringBuilder sb = new StringBuilder();
-        sb.append("【"+couponList.get(0).goods.getSupplier().otherName+"】")
+        sb.append("【" + couponList.get(0).goods.getSupplier().otherName + "】")
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
                 .append("," + couponList.get(0).appointmentRemark)
@@ -209,7 +208,7 @@ public class OrderECouponMessageTest extends UnitTest {
         createKtvMoreCoupons(2);
         StringBuilder sb = new StringBuilder();
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
-        sb.append("【"+couponList.get(0).goods.getSupplier().otherName+"】")
+        sb.append("【" + couponList.get(0).goods.getSupplier().otherName + "】")
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
                 .append("," + couponList.get(0).appointmentRemark)
@@ -220,6 +219,42 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append("一百券客服4006865151");
         assertEquals(sb.toString(), smsMessages[0].getSmsContent());
 
+    }
+
+    @Test
+    public void 二次验证单张券预约短信() {
+        GoodsProperty property = FactoryBoy.create(GoodsProperty.class);
+        property.goodsId = goods.id;
+        property.save();
+        createNoPasswordCoupons(1);
+
+        OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        StringBuilder sb = new StringBuilder();
+        sb.append("【" + couponList.get(0).goods.getSupplier().otherName + "】")
+                .append("券号").append(couponList.get(0).eCouponSn)
+                .append(",此产品需预约,预约电话见商品详情,")
+                .append("一百券客服4006865151");
+        assertEquals(sb.toString(), smsMessages[0].getSmsContent());
+    }
+
+    @Test
+    public void 二次验证单张券预约短信_noNotes() {
+        GoodsProperty property = FactoryBoy.create(GoodsProperty.class);
+        property.goodsId = goods.id;
+        property.save();
+        createNoPasswordCoupons(1);
+        couponList.get(0).appointmentDate = DateUtils.addDays(new Date(), 5);
+        couponList.get(0).appointmentRemark = "test";
+        couponList.get(0).save();
+
+        OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        StringBuilder sb = new StringBuilder();
+        sb.append("【" + couponList.get(0).goods.getSupplier().otherName + "】")
+                .append("券号").append(couponList.get(0).eCouponSn)
+                .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
+                .append("," + couponList.get(0).appointmentRemark).append(",")
+                .append("一百券客服4006865151");
+        assertEquals(sb.toString(), smsMessages[0].getSmsContent());
     }
 
     /**
