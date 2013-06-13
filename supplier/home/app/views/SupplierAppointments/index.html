@@ -52,7 +52,7 @@
                     <td>${ecoupon.appointmentDate.format('yyyy-MM-dd')}</td>
                     <td>${ecoupon.appointmentRemark}</td>
                     <td>#{if ecoupon.status==models.order.ECouponStatus.UNCONSUMED}
-                        <a href="@{SupplierAppointments.showEdit(ecoupon.id)}">修改</a>#{/if}</td>
+                        <a href="/coupon-appointment/${ecoupon.id}/edit">修改</a>#{/if}</td>
                 </tr>
             #{/list}
         #{/if}

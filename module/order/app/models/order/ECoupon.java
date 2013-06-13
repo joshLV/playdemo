@@ -1791,6 +1791,9 @@ public class ECoupon extends Model {
 
         //保留预约券号
         String appointmentCouponSn = this.eCouponSn;
+        if (advancedDeposit == null) {
+            this.advancedDeposit = this.goods.advancedDeposit;
+        }
         this.supplierUser = supplierUser;
         this.appointmentDate = appointmentDate;
         this.eCouponSn = generateAvailableEcouponSn(10);
@@ -1809,7 +1812,7 @@ public class ECoupon extends Model {
         //把预付订金打给商户
         TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
                 .toAccount(getSupplierAccount())
-                .balancePaymentAmount(advancedDeposit)
+                .balancePaymentAmount(this.advancedDeposit)
                 .orderId(order.getId())
                 .coupon(appointmentCouponSn)//记录预约券号
                 .make();
