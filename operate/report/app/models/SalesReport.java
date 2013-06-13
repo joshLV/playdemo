@@ -56,21 +56,27 @@ public class SalesReport implements Comparable<SalesReport> {
      * 本期购买，本期未消费退款金额
      */
     public BigDecimal salesRefundAmount;
+    public BigDecimal salesRefundCost;
+
 
     /**
      * 本期之前购买，本期未消费退款金额
      */
     public BigDecimal previousSalesRefundAmount;
+    public BigDecimal previousSalesRefundCost;
 
     /**
      * 本期消费，本期消费退款
      */
     public BigDecimal consumedRefundAmount;
+    public BigDecimal consumedRefundCost;
+
 
     /**
      * 本期之前消费，本期消费退款
      */
     public BigDecimal previousConsumedRefundAmount;
+    public BigDecimal previousConsumedRefundCost;
 
 
     /**
@@ -94,7 +100,7 @@ public class SalesReport implements Comparable<SalesReport> {
     public Long cheatedOrderNum;
 
     /**
-     * 刷单看陈本
+     * 刷单成本
      */
     public BigDecimal cheatedOrderCost;
 
@@ -285,10 +291,10 @@ public class SalesReport implements Comparable<SalesReport> {
 
 
     //refund ecoupon  本期购买，本期未消费退款
-    public SalesReport(BigDecimal salesRefundAmount, Goods goods, BigDecimal refundCost) {
+    public SalesReport(BigDecimal salesRefundAmount, Goods goods, BigDecimal salesRefundCost) {
         this.salesRefundAmount = salesRefundAmount;
         this.goods = goods;
-        this.refundCost = refundCost;
+        this.salesRefundCost = salesRefundCost;
     }
 
     //refund from resaler  本期购买，本期未消费退款
@@ -300,10 +306,10 @@ public class SalesReport implements Comparable<SalesReport> {
     }
 
     //refund ecoupon 本期之前购买，本期未消费退款
-    public SalesReport(BigDecimal previousSalesRefundAmount, Goods goods, BigDecimal refundCost, Goods goods1) {
+    public SalesReport(BigDecimal previousSalesRefundCostt, Goods goods, BigDecimal refundCost, Goods goods1) {
         this.previousSalesRefundAmount = previousSalesRefundAmount;
         this.goods = goods;
-        this.refundCost = refundCost;
+        this.previousSalesRefundCost = previousSalesRefundCostt;
     }
 
     //refund from resaler 本期之前购买，本期未消费退款
@@ -316,11 +322,11 @@ public class SalesReport implements Comparable<SalesReport> {
     }
 
     //refund ecoupon 本期消费，本期消费退款
-    public SalesReport(BigDecimal consumedRefundAmount, Goods goods, BigDecimal refundCost, Goods goods1,
+    public SalesReport(BigDecimal consumedRefundAmount, Goods goods, BigDecimal consumedRefundCost, Goods goods1,
                        Goods goods2) {
         this.consumedRefundAmount = consumedRefundAmount;
         this.goods = goods;
-        this.refundCost = refundCost;
+        this.consumedRefundCost = consumedRefundCost;
     }
 
     //refund from resaler 本期消费，本期消费退款
@@ -333,11 +339,11 @@ public class SalesReport implements Comparable<SalesReport> {
     }
 
     //refund ecoupon 本期之前消费，本期消费退款
-    public SalesReport(BigDecimal previousConsumedRefundAmount, Goods goods, BigDecimal refundCost, Goods goods1,
+    public SalesReport(BigDecimal previousConsumedRefundAmount, Goods goods, BigDecimal previousConsumedRefundCost, Goods goods1,
                        Goods goods2, Goods goods3) {
         this.previousConsumedRefundAmount = previousConsumedRefundAmount;
         this.goods = goods;
-        this.refundCost = refundCost;
+        this.previousConsumedRefundCost = previousConsumedRefundCost;
     }
 
     //refund from resaler 本期之前消费，本期消费退款
@@ -607,22 +613,136 @@ public class SalesReport implements Comparable<SalesReport> {
                         .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
             }
         }
+
+        //本期购买，本期未消费退款
         for (SalesReport refundItem : salesRefundList) {
             SalesReport item = map.get(getReportKey(refundItem));
             if (item == null) {
                 Goods goods = Goods.findById(refundItem.goods.id);
                 refundItem.originalPrice = goods.originalPrice;
-                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
-                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost);
+                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.salesRefundAmount);
+                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.salesRefundAmount).add(refundItem.salesRefundCost);
                 map.put(getReportKey(refundItem), refundItem);
             } else {
-                item.refundAmount = refundItem.refundAmount;
-                item.refundCost = refundItem.refundCost;
-                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
+                item.salesRefundAmount = refundItem.salesRefundAmount;
+                item.salesRefundCost = refundItem.salesRefundCost;
+                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
+                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost);
             }
         }
+
+        //本期之前购买，本期未消费退款
+        for (SalesReport refundItem : previousSalesRefundList) {
+            SalesReport item = map.get(getReportKey(refundItem));
+            if (item == null) {
+                Goods goods = Goods.findById(refundItem.goods.id);
+                refundItem.originalPrice = goods.originalPrice;
+                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.previousSalesRefundAmount);
+                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.previousSalesRefundAmount).add(refundItem
+                        .previousSalesRefundCost);
+                map.put(getReportKey(refundItem), refundItem);
+            } else {
+                item.previousSalesRefundAmount = refundItem.previousSalesRefundAmount;
+                item.previousSalesRefundCost = refundItem.previousSalesRefundCost;
+                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal
+                        .ZERO : item
+                        .cheatedOrderAmount).setScale
+                        (2);
+                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item
+                        .cheatedOrderAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).add(item.previousSalesRefundCost == null ? BigDecimal.ZERO : item.previousSalesRefundCost);
+            }
+        }
+
+        //本期之前购买，本期未消费退款
+        for (SalesReport refundItem : previousSalesRefundList) {
+            SalesReport item = map.get(getReportKey(refundItem));
+            if (item == null) {
+                Goods goods = Goods.findById(refundItem.goods.id);
+                refundItem.originalPrice = goods.originalPrice;
+                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.previousSalesRefundAmount);
+                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.previousSalesRefundAmount).add(refundItem
+                        .previousSalesRefundCost);
+                map.put(getReportKey(refundItem), refundItem);
+            } else {
+                item.previousSalesRefundAmount = refundItem.previousSalesRefundAmount;
+                item.previousSalesRefundCost = refundItem.previousSalesRefundCost;
+                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal
+                        .ZERO : item
+                        .cheatedOrderAmount).setScale
+                        (2);
+                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item
+                        .cheatedOrderAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).add(item.previousSalesRefundCost == null ? BigDecimal.ZERO : item.previousSalesRefundCost);
+            }
+        }
+
+        //本期消费，本期消费退款
+        for (SalesReport refundItem : consumedRefundList) {
+            SalesReport item = map.get(getReportKey(refundItem));
+            if (item == null) {
+                Goods goods = Goods.findById(refundItem.goods.id);
+                refundItem.originalPrice = goods.originalPrice;
+                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.consumedRefundAmount);
+                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.consumedRefundAmount).add(refundItem
+                        .consumedRefundCost);
+                map.put(getReportKey(refundItem), refundItem);
+            } else {
+                item.consumedRefundAmount = refundItem.consumedRefundAmount;
+                item.consumedRefundCost = refundItem.consumedRefundCost;
+                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount == null ? BigDecimal.ZERO : item.previousSalesRefundAmount).subtract(item.consumedRefundAmount).subtract(item
+                        .cheatedOrderAmount ==
+                        null
+                        ? BigDecimal
+                        .ZERO : item
+                        .cheatedOrderAmount).setScale
+                        (2);
+                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount == null ? BigDecimal.ZERO : item.previousSalesRefundAmount).subtract(item.consumedRefundAmount).
+                        subtract(item.cheatedOrderAmount == null ?
+                                BigDecimal.ZERO : item
+                                .cheatedOrderAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).add(item.previousSalesRefundCost == null ?
+                                BigDecimal.ZERO : item.previousSalesRefundCost).add(item.consumedRefundCost);
+            }
+        }
+
+        //本期之前消费，本期消费退款
+        for (SalesReport refundItem : previousConsumedRefundList) {
+            SalesReport item = map.get(getReportKey(refundItem));
+            if (item == null) {
+                Goods goods = Goods.findById(refundItem.goods.id);
+                refundItem.originalPrice = goods.originalPrice;
+                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.previousConsumedRefundAmount);
+                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.previousConsumedRefundAmount).add(refundItem
+                        .previousConsumedRefundCost);
+                map.put(getReportKey(refundItem), refundItem);
+            } else {
+                item.consumedRefundAmount = refundItem.consumedRefundAmount;
+                item.consumedRefundCost = refundItem.consumedRefundCost;
+                System.out.println("item.previousConsumedRefundAmount = " + item.previousConsumedRefundAmount);
+                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount == null ? BigDecimal.ZERO : item
+                        .previousSalesRefundAmount).subtract(item.consumedRefundAmount == null ? BigDecimal.ZERO : item
+                        .consumedRefundAmount).subtract(item.previousConsumedRefundAmount).subtract(item
+                        .cheatedOrderAmount ==
+                        null
+                        ? BigDecimal
+                        .ZERO : item
+                        .cheatedOrderAmount).setScale
+                        (2);
+                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount == null ? BigDecimal.ZERO : item.previousSalesRefundAmount).subtract(item
+                        .consumedRefundAmount == null ? BigDecimal.ZERO : item.consumedRefundAmount).subtract(item
+                        .previousConsumedRefundAmount).
+                        subtract(item.cheatedOrderAmount == null ?
+                                BigDecimal.ZERO : item
+                                .cheatedOrderAmount).subtract(item.previousConsumedRefundAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).add(item.previousSalesRefundCost == null ?
+                                BigDecimal.ZERO : item.previousSalesRefundCost).add(item.consumedRefundCost == null ?
+                                BigDecimal.ZERO : item.consumedRefundCost).add(item
+                                .previousConsumedRefundCost);
+            }
+        }
+
 
         for (SalesReport consumedItem : consumedResultList) {
             SalesReport item = map.get(getReportKey(consumedItem));
@@ -667,23 +787,85 @@ public class SalesReport implements Comparable<SalesReport> {
 
             }
         }
+
+        //本期购买，本期未消费退款
         totalCommission = BigDecimal.ZERO;
         for (SalesReport refundResalerItem : salesRefundResalerResultList) {
             SalesReport item = map.get(getReportKey(refundResalerItem));
             if (item == null) {
                 map.put(getReportKey(refundResalerItem), refundResalerItem);
             } else {
-                totalCommission = item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount;
-                totalCommission = totalCommission.add(refundResalerItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.refundCommissionAmount);
-                item.refundCommissionAmount = totalCommission;
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
+                totalCommission = item.salesRefundCommissionAmount == null ? BigDecimal.ZERO : item
+                        .salesRefundCommissionAmount;
+                totalCommission = totalCommission.add(refundResalerItem.salesRefundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.salesRefundCommissionAmount);
+                item.salesRefundCommissionAmount = totalCommission;
+                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount)
                         .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
-                        .add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
+                        .add(item.salesRefundCommissionAmount == null ? BigDecimal.ZERO : item.salesRefundCommissionAmount)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost)
-                        .add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost)
+                        .add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost)
                         .add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
             }
+        }
 
+        //本期之前购买，本期未消费退款
+        totalCommission = BigDecimal.ZERO;
+        for (SalesReport refundResalerItem : previousSalesRefundResalerResultList) {
+            SalesReport item = map.get(getReportKey(refundResalerItem));
+            if (item == null) {
+                map.put(getReportKey(refundResalerItem), refundResalerItem);
+            } else {
+                totalCommission = item.previousSalesRefundCommissionAmount == null ? BigDecimal.ZERO : item
+                        .previousSalesRefundCommissionAmount;
+                totalCommission = totalCommission.add(refundResalerItem.previousSalesRefundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.previousSalesRefundCommissionAmount);
+                item.previousSalesRefundCommissionAmount = totalCommission;
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item
+                        .previousSalesRefundAmount == null ? BigDecimal.ZERO : item
+                        .previousSalesRefundAmount).add(item.previousSalesRefundCommissionAmount == null ? BigDecimal.ZERO : item
+                        .previousSalesRefundCommissionAmount).add(item
+                        .previousSalesRefundCost == null ? BigDecimal.ZERO : item
+                        .previousSalesRefundCost);
+            }
+        }
+
+        //本期消费，本期消费退款
+        totalCommission = BigDecimal.ZERO;
+        for (SalesReport refundResalerItem : consumedRefundResalerResultList) {
+            SalesReport item = map.get(getReportKey(refundResalerItem));
+            if (item == null) {
+                map.put(getReportKey(refundResalerItem), refundResalerItem);
+            } else {
+                totalCommission = item.consumedRefundAmount == null ? BigDecimal.ZERO : item
+                        .consumedRefundAmount;
+                totalCommission = totalCommission.add(refundResalerItem.consumedRefundAmount == null ? BigDecimal.ZERO : refundResalerItem.consumedRefundAmount);
+                item.consumedRefundCommissionAmount = totalCommission;
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item
+                        .consumedRefundAmount == null ? BigDecimal.ZERO : item
+                        .consumedRefundAmount).add(item.consumedRefundCommissionAmount == null ? BigDecimal.ZERO : item
+                        .consumedRefundCommissionAmount).add(item
+                        .consumedRefundCost == null ? BigDecimal.ZERO : item
+                        .consumedRefundCost);
+            }
+        }
+
+        //本期之前消费，本期消费退款
+        totalCommission = BigDecimal.ZERO;
+        for (SalesReport refundResalerItem : previousConsumedRefundResalerResultList) {
+            SalesReport item = map.get(getReportKey(refundResalerItem));
+            if (item == null) {
+                map.put(getReportKey(refundResalerItem), refundResalerItem);
+            } else {
+                totalCommission = item.previousConsumedRefundAmount == null ? BigDecimal.ZERO : item
+                        .previousConsumedRefundAmount;
+                totalCommission = totalCommission.add(refundResalerItem.previousConsumedRefundAmount == null ? BigDecimal.ZERO : refundResalerItem.previousConsumedRefundAmount);
+                item.previousConsumedRefundCommissionAmount = totalCommission;
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item
+                        .previousConsumedRefundAmount == null ? BigDecimal.ZERO : item
+                        .previousConsumedRefundAmount).add(item.previousConsumedRefundCommissionAmount == null ? BigDecimal.ZERO : item
+                        .previousConsumedRefundCommissionAmount).add(item
+                        .previousConsumedRefundCost == null ? BigDecimal.ZERO : item
+                        .previousConsumedRefundCost);
+            }
         }
 
         List resultList = new ArrayList();
