@@ -19,7 +19,7 @@
 
         <div class="field-group">
             <label class="coupon-label" for="enter-coupon">预约券号</label>
-            <input type="text" size="18" maxlength="9" name="couponSn" id="couponSn" autofocus="true"
+            <input type="text" size="18" maxlength="10" name="couponSn" id="couponSn" autofocus="true"
                    class="time" value="${couponSn}"/>
             <button class="btn add-coupon" type="button" id="searchCoupon">查询</button>
             <span id="coupon-error-info" style="color: red;margin-left: 10px;"></span>
@@ -79,7 +79,7 @@
             return;
         }
         var shopId = $("#shopId").val();
-        var url = "/coupon-appointment/verify";
+        var url = "/coupon-appointment-verify";
         var params = "shopId=" + shopId + "&couponSn=" + couponSn;
         $("#coupon-error-info").text("")
 

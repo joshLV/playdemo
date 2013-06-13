@@ -96,7 +96,10 @@ public class SupplierVerifyECoupons extends Controller {
         }
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-
+        //判断商品是否二次验证商品
+        if (ecoupon.goods.isSecondaryVerificationGoods() && ecoupon.appointmentDate == null) {
+            renderJSON("{\"errorInfo\":\"该券需要先预约,才能验证!\"}");
+        }
         //check券和门店
         String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId);
         if (StringUtils.isNotEmpty(errorInfo)) {

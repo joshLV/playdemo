@@ -75,7 +75,7 @@ public class SupplierAppointments extends Controller {
             sql.append(" and e.appointmentDate >=:appointmentDate");
             params.put("appointmentDate", appointmentDate);
         }
-        sql.append(" order by e.appointmentDate desc");
+        sql.append(" order by e.appointmentDate desc ,e.id desc");
         Query query = JPA.em().createQuery(sql.toString());
 
         for (Map.Entry<String, Object> entry : params.entrySet()) {
@@ -121,8 +121,8 @@ public class SupplierAppointments extends Controller {
         index(null, null);
     }
 
-    public static void showEdit(Long couponId) {
-        ECoupon coupon = ECoupon.findById(couponId);
+    public static void showEdit(Long id) {
+        ECoupon coupon = ECoupon.findById(id);
         render(coupon);
     }
 
@@ -134,11 +134,12 @@ public class SupplierAppointments extends Controller {
         if (Validation.hasErrors()) {
             render("SupplierAppointments/showEdit.html");
         }
-
-        coupon.appointmentDate = appointmentDate;
-        coupon.appointmentRemark = appointmentRemark;
-        coupon.save();
-        ECouponHistoryMessage.with(coupon).operator(SupplierRbac.currentUser().userName).remark("重新预定日期信息").sendToMQ();
+        if (appointmentDate.compareTo(coupon.appointmentDate) != 0) {
+            coupon.appointmentDate = appointmentDate;
+            coupon.appointmentRemark = appointmentRemark;
+            coupon.save();
+            ECouponHistoryMessage.with(coupon).operator(SupplierRbac.currentUser().userName).remark("重新预定日期信息").sendToMQ();
+        }
         index(null, null);
     }
 

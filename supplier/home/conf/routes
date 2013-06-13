@@ -53,10 +53,12 @@ POST    /verify/{shopId}/{eCouponSn}            SupplierVerifyECoupons.singleQue
 POST    /verify/verify                          SupplierVerifyECoupons.verify
 GET     /verify/verified-coupons                SupplierVerifyECoupons.showVerifiedCoupons
 #二次验证类商品预约
-GET     /coupon-appointment                     SupplierAppointments.index
+GET     /coupon-appointment                      SupplierAppointments.index
 GET     /coupon-appointment/new                  SupplierAppointments.showAdd
+GET     /coupon-appointment/{id}/edit            SupplierAppointments.showEdit
 POST    /coupon-appointment                      SupplierAppointments.create
-POST    /coupon-appointment/verify               SupplierAppointments.verifyCoupon
+POST    /coupon-appointment/{id}                 SupplierAppointments.update
+POST    /coupon-appointment-verify               SupplierAppointments.verifyCoupon
 
 
 # [v2] 商户帮助页面
