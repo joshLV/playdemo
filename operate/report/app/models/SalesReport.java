@@ -53,6 +53,27 @@ public class SalesReport implements Comparable<SalesReport> {
     public BigDecimal refundAmount;
 
     /**
+     * 本期购买，本期未消费退款金额
+     */
+    public BigDecimal salesRefundAmount;
+
+    /**
+     * 本期之前购买，本期未消费退款金额
+     */
+    public BigDecimal previousSalesRefundAmount;
+
+    /**
+     * 本期消费，本期消费退款
+     */
+    public BigDecimal consumedRefundAmount;
+
+    /**
+     * 本期之前消费，本期消费退款
+     */
+    public BigDecimal previousConsumedRefundAmount;
+
+
+    /**
      * 消费金额
      */
     public BigDecimal consumedAmount;
@@ -92,6 +113,26 @@ public class SalesReport implements Comparable<SalesReport> {
      * 退款佣金成本
      */
     public BigDecimal refundCommissionAmount = BigDecimal.ZERO;
+
+    /**
+     * 本期购买，本期未消费退款佣金成本
+     */
+    public BigDecimal salesRefundCommissionAmount;
+
+    /**
+     * 本期之前购买，本期未消费退款佣金成本
+     */
+    public BigDecimal previousSalesRefundCommissionAmount;
+
+    /**
+     * 本期消费，本期消费退款佣金成本
+     */
+    public BigDecimal consumedRefundCommissionAmount;
+
+    /**
+     * 本期之前消费，本期消费退款佣金成本
+     */
+    public BigDecimal previousConsumedRefundCommissionAmount;
 
     /**
      * 刷单佣金成本
@@ -233,13 +274,6 @@ public class SalesReport implements Comparable<SalesReport> {
         this.cheatedOrderCommissionAmount = cheatedOrderCommissionAmount;
     }
 
-    //refund from resaler
-    public SalesReport(BigDecimal refundCommissionAmount, Goods goods, BigDecimal ratio, Long refundNum) {
-        this.ratio = ratio;
-        this.goods = goods;
-        this.refundCommissionAmount = refundCommissionAmount;
-        this.refundNum = refundNum;
-    }
 
     //cheated order
     public SalesReport(Goods goods, BigDecimal cheatedOrderAmount, Long cheatedOrderNum, BigDecimal cheatedOrderCost) {
@@ -250,13 +284,71 @@ public class SalesReport implements Comparable<SalesReport> {
     }
 
 
-    //refund ecoupon
-    public SalesReport(BigDecimal refundAmount, Goods goods, BigDecimal refundCost) {
-        this.refundAmount = refundAmount;
+    //refund ecoupon  本期购买，本期未消费退款
+    public SalesReport(BigDecimal salesRefundAmount, Goods goods, BigDecimal refundCost) {
+        this.salesRefundAmount = salesRefundAmount;
         this.goods = goods;
         this.refundCost = refundCost;
-
     }
+
+    //refund from resaler  本期购买，本期未消费退款
+    public SalesReport(BigDecimal salesRefundCommissionAmount, Goods goods, BigDecimal ratio, Long refundNum) {
+        this.ratio = ratio;
+        this.goods = goods;
+        this.salesRefundCommissionAmount = salesRefundCommissionAmount;
+        this.refundNum = refundNum;
+    }
+
+    //refund ecoupon 本期之前购买，本期未消费退款
+    public SalesReport(BigDecimal previousSalesRefundAmount, Goods goods, BigDecimal refundCost, Goods goods1) {
+        this.previousSalesRefundAmount = previousSalesRefundAmount;
+        this.goods = goods;
+        this.refundCost = refundCost;
+    }
+
+    //refund from resaler 本期之前购买，本期未消费退款
+    public SalesReport(BigDecimal previousSalesRefundCommissionAmount, Goods goods, BigDecimal ratio, Long refundNum,
+                       Goods goods1) {
+        this.ratio = ratio;
+        this.goods = goods;
+        this.previousSalesRefundCommissionAmount = previousSalesRefundCommissionAmount;
+        this.refundNum = refundNum;
+    }
+
+    //refund ecoupon 本期消费，本期消费退款
+    public SalesReport(BigDecimal consumedRefundAmount, Goods goods, BigDecimal refundCost, Goods goods1,
+                       Goods goods2) {
+        this.consumedRefundAmount = consumedRefundAmount;
+        this.goods = goods;
+        this.refundCost = refundCost;
+    }
+
+    //refund from resaler 本期消费，本期消费退款
+    public SalesReport(BigDecimal consumedRefundCommissionAmount, Goods goods, BigDecimal ratio, Long refundNum,
+                       Goods goods1, Goods goods2) {
+        this.ratio = ratio;
+        this.goods = goods;
+        this.consumedRefundCommissionAmount = consumedRefundCommissionAmount;
+        this.refundNum = refundNum;
+    }
+
+    //refund ecoupon 本期之前消费，本期消费退款
+    public SalesReport(BigDecimal previousConsumedRefundAmount, Goods goods, BigDecimal refundCost, Goods goods1,
+                       Goods goods2, Goods goods3) {
+        this.previousConsumedRefundAmount = previousConsumedRefundAmount;
+        this.goods = goods;
+        this.refundCost = refundCost;
+    }
+
+    //refund from resaler 本期之前消费，本期消费退款
+    public SalesReport(BigDecimal previousConsumedRefundCommissionAmount, Goods goods, BigDecimal ratio, Long refundNum,
+                       Goods goods1, Goods goods2, Goods good3) {
+        this.ratio = ratio;
+        this.goods = goods;
+        this.previousConsumedRefundCommissionAmount = previousConsumedRefundCommissionAmount;
+        this.refundNum = refundNum;
+    }
+
 
     //consumedAt ecoupon
     public SalesReport(Goods goods, BigDecimal consumedAmount) {
@@ -350,33 +442,137 @@ public class SalesReport implements Comparable<SalesReport> {
         List<SalesReport> cheatedOrderResalerResultList = query.getResultList();
 
 
-        //取得退款的数据 ecoupon
+        //取得退款的数据 ecoupon  本期购买，本期未消费退款
         sql = "select new models.SalesReport(sum(e.salePrice),e.orderItems.goods,sum(r.originalPrice)) " +
                 " from ECoupon e,OrderItems r ";
         groupBy = " group by e.orderItems.goods.id";
 
         query = JPA.em()
-                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
+                .createQuery(sql + condition.getSalesRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
 
-        for (String param : condition.getParamMap1().keySet()) {
-            query.setParameter(param, condition.getParamMap1().get(param));
+        for (String param : condition.getParamMap2().keySet()) {
+            query.setParameter(param, condition.getParamMap2().get(param));
         }
 
-        List<SalesReport> refundList = query.getResultList();
+        List<SalesReport> salesRefundList = query.getResultList();
 
-        //refund from resaler
+        //refund from resaler 本期购买，本期未消费退款
         sql = "select new models.SalesReport(sum(e.salePrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o";
         groupBy = " group by e.orderItems.goods.id,b";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.salePrice) desc");
+                .createQuery(sql + condition.getFilterSalesRefundResaler() + groupBy + " order by sum(e.salePrice) " +
+                        "desc");
 
-        for (String param : condition.getParamMap1().keySet()) {
-            query.setParameter(param, condition.getParamMap1().get(param));
+        for (String param : condition.getParamMap2().keySet()) {
+            query.setParameter(param, condition.getParamMap2().get(param));
         }
 
-        List<SalesReport> refundResalerResultList = query.getResultList();
+        List<SalesReport> salesRefundResalerResultList = query.getResultList();
+
+        //本期之前购买，本期未消费退款
+        sql = "select new models.SalesReport(sum(e.salePrice),e.orderItems.goods,sum(r.originalPrice)," +
+                "e.orderItems.goods) " +
+                " from ECoupon e," +
+                "OrderItems r ";
+        groupBy = " group by e.orderItems.goods.id";
+
+        query = JPA.em()
+                .createQuery(sql + condition.getPreviousSalesRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
+
+        for (String param : condition.getParamMap3().keySet()) {
+            query.setParameter(param, condition.getParamMap3().get(param));
+        }
+
+        List<SalesReport> previousSalesRefundList = query.getResultList();
+
+        //refund from resaler 本期之前购买，本期未消费退款
+        sql = "select new models.SalesReport(sum(e.salePrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r),r.goods" +
+                ") " +
+                " from ECoupon e,OrderItems r,Resaler b ,Order o";
+        groupBy = " group by e.orderItems.goods.id,b";
+
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterPreviousSalesRefundResaler() + groupBy + " order by sum(e.salePrice) " +
+                        "desc");
+
+        for (String param : condition.getParamMap3().keySet()) {
+            query.setParameter(param, condition.getParamMap3().get(param));
+        }
+
+        List<SalesReport> previousSalesRefundResalerResultList = query.getResultList();
+
+        //本期消费，本期消费退款
+        sql = "select new models.SalesReport(sum(e.salePrice),e.orderItems.goods,sum(r.originalPrice)," +
+                "e.orderItems.goods," +
+                "e.orderItems.goods" +
+                ") " +
+                " from ECoupon e," +
+                "OrderItems r ";
+        groupBy = " group by e.orderItems.goods.id";
+
+        query = JPA.em()
+                .createQuery(sql + condition.getConsumedRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
+
+        for (String param : condition.getParamMap2().keySet()) {
+            query.setParameter(param, condition.getParamMap2().get(param));
+        }
+
+        List<SalesReport> consumedRefundList = query.getResultList();
+
+        //refund from resaler  本期消费，本期消费退款
+        sql = "select new models.SalesReport(sum(e.salePrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)," +
+                "r.goods,r.goods" +
+                ") " +
+                " from ECoupon e,OrderItems r,Resaler b ,Order o";
+        groupBy = " group by e.orderItems.goods.id,b";
+
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterPreviousSalesRefundResaler() + groupBy + " order by sum(e.salePrice) " +
+                        "desc");
+
+        for (String param : condition.getParamMap3().keySet()) {
+            query.setParameter(param, condition.getParamMap3().get(param));
+        }
+
+        List<SalesReport> consumedRefundResalerResultList = query.getResultList();
+
+        //本期之前消费，本期消费退款
+        sql = "select new models.SalesReport(sum(e.salePrice),e.orderItems.goods,sum(r.originalPrice)," +
+                "e.orderItems.goods," +
+                "e.orderItems.goods,e.orderItems.goods" +
+                ") " +
+                " from ECoupon e," +
+                "OrderItems r ";
+        groupBy = " group by e.orderItems.goods.id";
+
+        query = JPA.em()
+                .createQuery(sql + condition.getPreviousConsumedRefundFilter() + groupBy + " order by sum(e.salePrice) desc");
+
+        for (String param : condition.getParamMap3().keySet()) {
+            query.setParameter(param, condition.getParamMap3().get(param));
+        }
+
+        List<SalesReport> previousConsumedRefundList = query.getResultList();
+
+        //refund from resaler 本期之前消费，本期消费退款
+        sql = "select new models.SalesReport(sum(e.salePrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)," +
+                "r.goods," +
+                "r.goods,r.goods" +
+                ") " +
+                " from ECoupon e,OrderItems r,Resaler b ,Order o";
+        groupBy = " group by e.orderItems.goods.id,b";
+
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterPreviousSalesRefundResaler() + groupBy + " order by sum(e.salePrice) " +
+                        "desc");
+
+        for (String param : condition.getParamMap3().keySet()) {
+            query.setParameter(param, condition.getParamMap3().get(param));
+        }
+
+        List<SalesReport> previousConsumedRefundResalerResultList = query.getResultList();
 
         //consumedAt
         sql = "select new models.SalesReport(r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
@@ -411,7 +607,7 @@ public class SalesReport implements Comparable<SalesReport> {
                         .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
             }
         }
-        for (SalesReport refundItem : refundList) {
+        for (SalesReport refundItem : salesRefundList) {
             SalesReport item = map.get(getReportKey(refundItem));
             if (item == null) {
                 Goods goods = Goods.findById(refundItem.goods.id);
@@ -472,7 +668,7 @@ public class SalesReport implements Comparable<SalesReport> {
             }
         }
         totalCommission = BigDecimal.ZERO;
-        for (SalesReport refundResalerItem : refundResalerResultList) {
+        for (SalesReport refundResalerItem : salesRefundResalerResultList) {
             SalesReport item = map.get(getReportKey(refundResalerItem));
             if (item == null) {
                 map.put(getReportKey(refundResalerItem), refundResalerItem);

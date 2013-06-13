@@ -32,6 +32,10 @@ public class SalesReportCondition implements Serializable {
     public Long supplierId = 0l;
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
+    private Map<String, Object> paramMap2 = new HashMap<>();
+    private Map<String, Object> paramMap3 = new HashMap<>();
+
+
     public Boolean hasSeeReportProfitRight;
     public Long operatorId;
     //排序字段
@@ -315,25 +319,35 @@ public class SalesReportCondition implements Serializable {
     }
 
 
-    public String getRefundFilter() {
+    /**
+     * 本期购买，本期未消费退款
+     *
+     * @return
+     */
+    public String getSalesRefundFilter() {
         StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.status=:status and e.goods.isLottery=false" +
-                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
-        paramMap1.put("status", ECouponStatus.REFUND);
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and e.consumedAt is " +
+                "null");
+        paramMap2.put("status", ECouponStatus.REFUND);
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and e.goods.shortName like :shortName");
-            paramMap1.put("shortName", "%" + shortName + "%");
+            paramMap2.put("shortName", "%" + shortName + "%");
         }
         if (StringUtils.isNotBlank(code)) {
             condBuilder.append(" and e.goods.code like :code");
-            paramMap1.put("code", code.trim() + "%");
+            paramMap2.put("code", code.trim() + "%");
         }
         if (beginAt != null) {
             condBuilder.append(" and e.refundAt >= :refundAtBegin");
-            paramMap1.put("refundAtBegin", beginAt);
+            paramMap2.put("refundAtBegin", beginAt);
+            condBuilder.append(" and e.createdAt >= :createdAtBegin");
+            paramMap2.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
             condBuilder.append(" and e.refundAt <= :refundAtEnd");
-            paramMap1.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            paramMap2.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            condBuilder.append(" and e.createdAt <= :createdAtEnd");
+            paramMap2.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
         if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
             List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
@@ -343,39 +357,49 @@ public class SalesReportCondition implements Serializable {
             }
             if (supplierIds != null && supplierIds.size() > 0) {
                 condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
-                paramMap1.put("supplierIds", supplierIds);
+                paramMap2.put("supplierIds", supplierIds);
             } else {
                 condBuilder.append(" and 1=0");
             }
         }
         if (supplierId != 0) {
             condBuilder.append(" and e.goods.supplierId = :supplierId");
-            paramMap1.put("supplierId", supplierId);
+            paramMap2.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
     }
 
-    public String getFilterRefundResaler() {
+    /**
+     * 本期购买，本期未消费退款
+     *
+     * @return
+     */
+    public String getFilterSalesRefundResaler() {
         StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.status=:status and e.goods.isLottery=false" +
-                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and e.consumedAt is " +
+                "null " +
                 "  and r.order=o and o.userId=b.id ");
-        paramMap1.put("status", ECouponStatus.REFUND);
+        paramMap2.put("status", ECouponStatus.REFUND);
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and e.goods.shortName like :shortName");
-            paramMap1.put("shortName", "%" + shortName + "%");
+            paramMap2.put("shortName", "%" + shortName + "%");
         }
         if (StringUtils.isNotBlank(code)) {
             condBuilder.append(" and e.goods.code like :code");
-            paramMap1.put("code", code.trim() + "%");
+            paramMap2.put("code", code.trim() + "%");
         }
         if (beginAt != null) {
             condBuilder.append(" and e.refundAt >= :refundAtBegin");
-            paramMap1.put("refundAtBegin", beginAt);
+            paramMap2.put("refundAtBegin", beginAt);
+            condBuilder.append(" and e.createdAt >= :createdAtBegin");
+            paramMap2.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
             condBuilder.append(" and e.refundAt <= :refundAtEnd");
-            paramMap1.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            paramMap2.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            condBuilder.append(" and e.createdAt <= :createdAtEnd");
+            paramMap2.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
         if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
             List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
@@ -385,20 +409,326 @@ public class SalesReportCondition implements Serializable {
             }
             if (supplierIds != null && supplierIds.size() > 0) {
                 condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
-                paramMap1.put("supplierIds", supplierIds);
+                paramMap2.put("supplierIds", supplierIds);
             } else {
                 condBuilder.append(" and 5 =:supplierIds");
-                paramMap1.put("supplierIds", 6);
+                paramMap2.put("supplierIds", 6);
             }
         }
         if (supplierId != 0) {
             condBuilder.append(" and r.goods.supplierId = :supplierId");
-            paramMap1.put("supplierId", supplierId);
+            paramMap2.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
     }
 
+    /**
+     * 本期之前购买，本期未消费退款
+     *
+     * @return
+     */
+    public String getPreviousSalesRefundFilter() {
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.status=:status and e.goods.isLottery=false" +
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and e.consumedAt is " +
+                "null");
+        paramMap3.put("status", ECouponStatus.REFUND);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and e.goods.shortName like :shortName");
+            paramMap3.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and e.goods.code like :code");
+            paramMap3.put("code", code.trim() + "%");
+        }
+        if (beginAt != null) {
+            condBuilder.append(" and e.refundAt >= :refundAtBegin");
+            paramMap3.put("refundAtBegin", beginAt);
+            condBuilder.append(" and e.createdAt < :createdAtBegin");
+            paramMap3.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.refundAt <= :refundAtEnd");
+            paramMap3.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap3.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 1=0");
+            }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and e.goods.supplierId = :supplierId");
+            paramMap3.put("supplierId", supplierId);
+        }
+
+        return condBuilder.toString();
+    }
+
+
+    /**
+     * 本期之前购买，本期未消费退款
+     *
+     * @return
+     */
+    public String getFilterPreviousSalesRefundResaler() {
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.status=:status and e.goods.isLottery=false" +
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and e.consumedAt is " +
+                "null" +
+                "  and r.order=o and o.userId=b.id ");
+        paramMap3.put("status", ECouponStatus.REFUND);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and e.goods.shortName like :shortName");
+            paramMap3.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and e.goods.code like :code");
+            paramMap3.put("code", code.trim() + "%");
+        }
+        if (beginAt != null) {
+            condBuilder.append(" and e.refundAt >= :refundAtBegin");
+            paramMap3.put("refundAtBegin", beginAt);
+            condBuilder.append(" and e.createdAt < :createdAtBegin");
+            paramMap3.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.refundAt <= :refundAtEnd");
+            paramMap3.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap3.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap3.put("supplierIds", 6);
+            }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap3.put("supplierId", supplierId);
+        }
+
+        return condBuilder.toString();
+    }
+
+
+    /**
+     * 本期消费，本期消费退款
+     *
+     * @return
+     */
+    public String getConsumedRefundFilter() {
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.status=:status and e.goods.isLottery=false" +
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and e.consumedAt is " +
+                " not null");
+        paramMap2.put("status", ECouponStatus.REFUND);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and e.goods.shortName like :shortName");
+            paramMap2.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and e.goods.code like :code");
+            paramMap2.put("code", code.trim() + "%");
+        }
+        if (beginAt != null) {
+            condBuilder.append(" and e.refundAt >= :refundAtBegin");
+            paramMap2.put("refundAtBegin", beginAt);
+            condBuilder.append(" and e.consumedAt >= :createdAtBegin");
+            paramMap2.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.refundAt <= :refundAtEnd");
+            paramMap2.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            condBuilder.append(" and e.consumedAt <= :createdAtEnd");
+            paramMap2.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap2.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 1=0");
+            }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and e.goods.supplierId = :supplierId");
+            paramMap2.put("supplierId", supplierId);
+        }
+
+        return condBuilder.toString();
+    }
+
+    /**
+     * 本期消费，本期消费退款
+     *
+     * @return
+     */
+    public String getFilterConsumedRefundResaler() {
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.status=:status and e.goods.isLottery=false" +
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and e.consumedAt is " +
+                " not null " +
+                "  and r.order=o and o.userId=b.id ");
+        paramMap2.put("status", ECouponStatus.REFUND);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and e.goods.shortName like :shortName");
+            paramMap2.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and e.goods.code like :code");
+            paramMap2.put("code", code.trim() + "%");
+        }
+        if (beginAt != null) {
+            condBuilder.append(" and e.refundAt >= :refundAtBegin");
+            paramMap2.put("refundAtBegin", beginAt);
+            condBuilder.append(" and e.consumedAt >= :createdAtBegin");
+            paramMap2.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.refundAt <= :refundAtEnd");
+            paramMap2.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            condBuilder.append(" and e.consumedAt <= :createdAtEnd");
+            paramMap2.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap2.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap2.put("supplierIds", 6);
+            }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap2.put("supplierId", supplierId);
+        }
+
+        return condBuilder.toString();
+    }
+
+    /**
+     * 本期之前消费，本期消费退款
+     *
+     * @return
+     */
+    public String getPreviousConsumedRefundFilter() {
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.status=:status and e.goods.isLottery=false" +
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and e.consumedAt is " +
+                " not null");
+        paramMap3.put("status", ECouponStatus.REFUND);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and e.goods.shortName like :shortName");
+            paramMap3.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and e.goods.code like :code");
+            paramMap3.put("code", code.trim() + "%");
+        }
+        if (beginAt != null) {
+            condBuilder.append(" and e.refundAt >= :refundAtBegin");
+            paramMap3.put("refundAtBegin", beginAt);
+            condBuilder.append(" and e.consumedAt < :createdAtBegin");
+            paramMap3.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.refundAt <= :refundAtEnd");
+            paramMap3.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap3.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 1=0");
+            }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and e.goods.supplierId = :supplierId");
+            paramMap3.put("supplierId", supplierId);
+        }
+
+        return condBuilder.toString();
+    }
+
+
+    /**
+     * 本期之前消费，本期消费退款
+     *
+     * @return
+     */
+    public String getFilterPreviousConsumedRefundResaler() {
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.status=:status and e.goods.isLottery=false" +
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and e.consumedAt is " +
+                " not null" +
+                "  and r.order=o and o.userId=b.id ");
+        paramMap3.put("status", ECouponStatus.REFUND);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and e.goods.shortName like :shortName");
+            paramMap3.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and e.goods.code like :code");
+            paramMap3.put("code", code.trim() + "%");
+        }
+        if (beginAt != null) {
+            condBuilder.append(" and e.refundAt >= :refundAtBegin");
+            paramMap3.put("refundAtBegin", beginAt);
+            condBuilder.append(" and e.consumedAt < :createdAtBegin");
+            paramMap3.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.refundAt <= :createdAtEnd");
+            paramMap3.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap3.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap3.put("supplierIds", 6);
+            }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap3.put("supplierId", supplierId);
+        }
+
+        return condBuilder.toString();
+    }
 
     public Map<String, Object> getParamMap() {
         return paramMap;
@@ -407,6 +737,15 @@ public class SalesReportCondition implements Serializable {
     public Map<String, Object> getParamMap1() {
         return paramMap1;
     }
+
+    public Map<String, Object> getParamMap2() {
+        return paramMap2;
+    }
+
+    public Map<String, Object> getParamMap3() {
+        return paramMap3;
+    }
+
 
     public String getFilterOfPeopleEffect() {
         StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false");
