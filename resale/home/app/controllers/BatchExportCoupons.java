@@ -8,7 +8,6 @@ import models.order.BatchCoupons;
 import models.order.BatchCouponsCondition;
 import models.order.DeliveryType;
 import models.order.ECoupon;
-import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderStatus;
 import models.resale.Resaler;
@@ -111,7 +110,7 @@ public class BatchExportCoupons extends Controller {
     }
 
 
-    public static void generate(int count, String name, Long goodsId, BigDecimal consumed) throws NotEnoughInventoryException {
+    public static void generate(int count, String name, Long goodsId, BigDecimal consumed) {
         Pattern pattern = Pattern.compile("^[0-9]*[1-9][0-9]*$");
         Resaler resaler = SecureCAS.getResaler();
         Account account = AccountUtil.getResalerAccount(resaler);

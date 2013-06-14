@@ -348,7 +348,7 @@ public class JDGroupBuy extends Controller {
         }
 
         //检查导入券订单库存
-        if (goods.hasEnoughGoodsInventory(count)) {
+        if (goods.hasEnoughInventory(count)) {
             JPA.em().getTransaction().rollback();
             Logger.info("inventory not enough,goods.id=%s", goods.id.toString());
             finish(210, "inventory not enough");
