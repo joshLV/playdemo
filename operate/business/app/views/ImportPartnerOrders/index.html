@@ -24,7 +24,7 @@
         ${errorInfo}
             #{if unBindGoodsSet}未映射关系的商品ID【${unBindGoodsSet.size()}】个：${unBindGoodsSet?.join(",")}<br>#{/if}
             #{if diffOrderPriceList}订单金额和一百券不一致，请核对【${diffOrderPriceList.size()}】个：${diffOrderPriceList?.join(",")}<br>#{/if}
-            #{if notEnoughInventoryGoodsList}请先解决渠道商品ID：${notEnoughInventoryGoodsList?.join(",")}对应的一百券商品库存不足的问题！<br>#{/if}
+            *{#{if notEnoughInventoryGoodsList}请先解决渠道商品ID：${notEnoughInventoryGoodsList?.join(",")}对应的一百券商品库存不足的问题！<br>#{/if}}*
             #{if existedOrderList}重复订单【${existedOrderList?.size()}】个：${existedOrderList?.join(",")}<br>#{/if}
         </span>
         <span class="help-block" style="color: green;" id="success-info">

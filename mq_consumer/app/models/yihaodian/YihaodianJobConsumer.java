@@ -6,8 +6,6 @@ import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
-import models.order.NotEnoughInventoryException;
-import models.order.OrderItems;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
@@ -48,27 +46,27 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
     public void consumeWithTx(String orderId) {
         //开启事务管理
         OuterOrder outerOrder = OuterOrder.find("byOrderIdAndPartner", orderId, OuterOrderPartner.YHD).first();
-        if(outerOrder == null){
+        if (outerOrder == null) {
             Logger.info("yihaodidan job consume failed: can not find orderId " + orderId);
             return;
         }
 
-        try{
+        try {
             OuterOrder.em().refresh(outerOrder, LockModeType.PESSIMISTIC_WRITE);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             //拿不到锁就放弃
             Logger.info("yihaodian job consume failed: can not lock yihaodian order %s", orderId);
             return;
         }
 
-        if(outerOrder.status == OuterOrderStatus.ORDER_DONE){
-            if(syncWithYihaodian(orderId)){
+        if (outerOrder.status == OuterOrderStatus.ORDER_DONE) {
+            if (syncWithYihaodian(orderId)) {
                 outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
                 outerOrder.save();
             }
-        }else if(outerOrder.status == OuterOrderStatus.ORDER_COPY){
+        } else if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             //等 1 分钟再发货
-            if(outerOrder.createdAt.getTime() >= (System.currentTimeMillis() - 60000)){
+            if (outerOrder.createdAt.getTime() >= (System.currentTimeMillis() - 60000)) {
                 return;
             }
 
@@ -76,7 +74,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
             Map<String, String> params = new HashMap<>();
             params.put("orderCode", orderId);
             YHDResponse response = YHDUtil.sendRequest(params, "yhd.order.detail.get", "orderInfo");
-            if(!response.isOk()){
+            if (!response.isOk()) {
                 return;
             }
             outerOrder.message = XML.serialize(response.data.getOwnerDocument());//保存订单信息
@@ -101,7 +99,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
                     Goods goods = ResalerProduct.getGoods(resaler, Long.parseLong(outerId), OuterOrderPartner.YHD);
                     if (goods != null && goods.materialType == MaterialType.ELECTRONIC) {
                         couponItems.add(orderItem);
-                    }else {
+                    } else {
                         Logger.error("yihaodian job consume warning: goods not found " + outerId);
                     }
                 }
@@ -115,7 +113,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
             }
 
             //如果没有生成一百券的订单，生成一下
-            if(outerOrder.ybqOrder == null) {
+            if (outerOrder.ybqOrder == null) {
                 String goodsReceiverMobile = response.selectTextTrim("./orderDetail/goodReceiverMoblie");
                 outerOrder.ybqOrder = buildYibaiquanOrder(couponItems, goodsReceiverMobile);
             }
@@ -123,7 +121,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
                 Logger.error("yihaodian job consume failed: build our order failed");
                 outerOrder.save();
                 return;
-            }else {
+            } else {
                 outerOrder.status = OuterOrderStatus.ORDER_DONE;
             }
             outerOrder.save();
@@ -139,7 +137,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
 
             //设置券为一号店生成的
             List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-            for(ECoupon coupon : couponList) {
+            for (ECoupon coupon : couponList) {
                 coupon.partner = ECouponPartner.YHD;
                 coupon.save();
             }
@@ -175,31 +173,25 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
 
     private models.order.Order buildYibaiquanOrder(List<Node> couponItems, String goodReceiverMobile) {
         Resaler resaler = Resaler.findOneByLoginName(YHD_LOGIN_NAME);
-        if (resaler == null){
+        if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", YHD_LOGIN_NAME);
             return null;
         }
         models.order.Order uhuilaOrder = models.order.Order.createResaleOrder(resaler);
         uhuilaOrder.save();
-        try {
-            for (Node orderItem : couponItems){
-                String outerId = XPath.selectText("./outerId", orderItem).trim();
-                Goods goods = ResalerProduct.getGoods(resaler, Long.parseLong(outerId), OuterOrderPartner.YHD);
+        for (Node orderItem : couponItems) {
+            String outerId = XPath.selectText("./outerId", orderItem).trim();
+            Goods goods = ResalerProduct.getGoods(resaler, Long.parseLong(outerId), OuterOrderPartner.YHD);
 
-                BigDecimal orderItemPrice = new BigDecimal(XPath.selectText("./orderItemPrice", orderItem).trim());
-                OrderItems uhuilaOrderItem  = uhuilaOrder.addOrderItem(
-                        goods,
-                        Long.parseLong(XPath.selectText("./orderItemNum", orderItem).trim()),
-                        goodReceiverMobile,
-                        orderItemPrice,
-                        orderItemPrice
-                );
-                uhuilaOrderItem.save();
+            BigDecimal orderItemPrice = new BigDecimal(XPath.selectText("./orderItemPrice", orderItem).trim());
+            Long number = Long.parseLong(XPath.selectText("./orderItemNum", orderItem).trim());
+            //导入券库存检查
+            if (goods.hasEnoughInventory(number)) {
+                Logger.info("yihaodian order build failed: inventory not enough");
+                JPA.em().getTransaction().rollback();
+                return null;
             }
-        } catch (NotEnoughInventoryException e) {
-            Logger.info("yihaodian order build failed: inventory not enough");
-            JPA.em().getTransaction().rollback();
-            return null;
+            uhuilaOrder.addOrderItem(goods, number, goodReceiverMobile, orderItemPrice, orderItemPrice).save();
         }
 
         uhuilaOrder.createAndUpdateInventory();

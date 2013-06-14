@@ -406,7 +406,7 @@ public class LogisticImportData implements Cloneable {
      *
      * @param partner 分销伙伴
      */
-    public Order toYbqOrder(OuterOrderPartner partner) throws NotEnoughInventoryException {
+    public Order toYbqOrder(OuterOrderPartner partner) {
         Resaler resaler = Resaler.findOneByLoginName(partner.partnerLoginName());
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
@@ -471,7 +471,7 @@ public class LogisticImportData implements Cloneable {
         return logisticImportDataList;
     }
 
-    public OrderItems createOrderItem(Order ybqOrder, Goods goods, OrderShippingInfo orderShippingInfo, Long buyNumber, BigDecimal salePrice) throws NotEnoughInventoryException {
+    public OrderItems createOrderItem(Order ybqOrder, Goods goods, OrderShippingInfo orderShippingInfo, Long buyNumber, BigDecimal salePrice) {
         OrderItems orderItems = ybqOrder.addOrderItem(goods, buyNumber, phone, salePrice, salePrice);
         orderItems.shippingInfo = orderShippingInfo;
         orderItems.options = this.options;

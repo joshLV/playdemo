@@ -9,7 +9,6 @@ import models.consumer.User;
 import models.ktv.KtvRoomOrderInfo;
 import models.ktv.KtvRoomType;
 import models.order.DeliveryType;
-import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OuterOrderPartner;
@@ -21,9 +20,7 @@ import models.sales.Goods;
 import models.sales.GoodsStatus;
 import models.sales.ResalerProduct;
 import models.sales.Shop;
-import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
 import play.data.validation.Validation;
 import play.mvc.Before;
 import play.mvc.Controller;
@@ -119,19 +116,13 @@ public class WebSinaVouchers extends Controller {
         }
         //创建订单
         Order order = Order.createConsumeOrder(user, resaler).save();
-        try {
-            //页面根据包厢ID,取得该时间段的价格信息
-            if (goods.isKtvSupplier()) {
-                createKtvOrderItem(productId, phone, scheduledDay, goods, order);
-            } else {
-                OrderItems orderItems = order.addOrderItem(goods, buyCount, phone, goods.getResalePrice(), goods.getResalePrice());
-                orderItems.outerGoodsNo = productId;
-                orderItems.save();
-            }
-
-        } catch (NotEnoughInventoryException e) {
-            Logger.info("inventory is not enough!");
-            error("库存不足！goodsId=" + goods.id);
+        //页面根据包厢ID,取得该时间段的价格信息
+        if (goods.isKtvSupplier()) {
+            createKtvOrderItem(productId, phone, scheduledDay, goods, order);
+        } else {
+            OrderItems orderItems = order.addOrderItem(goods, buyCount, phone, goods.getResalePrice(), goods.getResalePrice());
+            orderItems.outerGoodsNo = productId;
+            orderItems.save();
         }
 
         order.deliveryType = DeliveryType.SMS;
@@ -163,7 +154,7 @@ public class WebSinaVouchers extends Controller {
     /**
      * 创建ktv的订单项目信息
      */
-    private static void createKtvOrderItem(String productId, String phone, Date scheduledDay, Goods goods, Order order) throws NotEnoughInventoryException {
+    private static void createKtvOrderItem(String productId, String phone, Date scheduledDay, Goods goods, Order order) {
         Collection<Shop> shops = goods.getShopList();
         Shop shop = shops.iterator().next();
         for (String key : request.params.all().keySet()) {

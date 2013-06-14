@@ -109,7 +109,7 @@ public class ImportPartnerOrders extends Controller {
             errorInfo = "未发现有效数据！并确保数据放在名为 Sheet1 的工作表中";
             render("ImportPartnerOrders/index.html", errorInfo, partner);
         }
-        processLogisticList(logistics, partner, existedOrderList, notEnoughInventoryGoodsList,
+        processLogisticList(logistics, partner, existedOrderList,
                 importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
         render("ImportPartnerOrders/index.html", partner, errorInfo, existedOrderList, notEnoughInventoryGoodsList,
                 importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
@@ -139,13 +139,13 @@ public class ImportPartnerOrders extends Controller {
 
         List<LogisticImportData> logisticImportDataList = new ArrayList<>();
         while (true) {
-            TradesSoldGetResponse  response;
+            TradesSoldGetResponse response;
             try {
                 response = taobaoClient.execute(request, token.accessToken);
                 if (!response.isSuccess()) {
                     errorInfo = response.getSubCode();
                     break;
-                }else {
+                } else {
                     List<Trade> tradeList = response.getTrades();
                     for (Trade trade : tradeList) {
                         List<com.taobao.api.domain.Order> orderList = trade.getOrders();
@@ -179,14 +179,14 @@ public class ImportPartnerOrders extends Controller {
                             logistic.setReceiver(trade.getReceiverName());
                             logistic.setZipCode(trade.getReceiverZip());
                             logistic.setRemarks(buyerMessage);
-                            logistic.setAddress(trade.getReceiverState()+trade.getReceiverCity()+trade.getReceiverDistrict()+trade.getReceiverAddress());
+                            logistic.setAddress(trade.getReceiverState() + trade.getReceiverCity() + trade.getReceiverDistrict() + trade.getReceiverAddress());
                             logisticImportDataList.add(logistic);
                         }
                     }
                 }
-            }catch (ApiException e) {
+            } catch (ApiException e) {
                 errorInfo = e.getErrMsg();
-                break ;
+                break;
             }
             if (!response.getHasNext()) {
                 break;
@@ -194,21 +194,20 @@ public class ImportPartnerOrders extends Controller {
             page += 1;
         }
         List<String> existedOrderList = new ArrayList<>();
-        List<String> notEnoughInventoryGoodsList = new ArrayList<>();
         List<String> importSuccessOrderList = new ArrayList<>();
         Set<String> unBindGoodsSet = new HashSet<>();
         List<String> diffOrderPriceList = new ArrayList<>();
         processLogisticList(logisticImportDataList, OuterOrderPartner.TB, existedOrderList,
-                notEnoughInventoryGoodsList, importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
+                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
 
         OuterOrderPartner partner = OuterOrderPartner.TB;
-        render("ImportPartnerOrders/index.html", partner, errorInfo, existedOrderList, notEnoughInventoryGoodsList,
+        render("ImportPartnerOrders/index.html", partner, errorInfo, existedOrderList,
                 importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
     }
 
     private static void processLogisticList(List<LogisticImportData> logistics, OuterOrderPartner partner,
-            List<String> existedOrderList, List<String> notEnoughInventoryGoodsList,
-            List<String> importSuccessOrderList, Set<String> unBindGoodsSet, List<String> diffOrderPriceList) {
+                                            List<String> existedOrderList, List<String> importSuccessOrderList,
+                                            Set<String> unBindGoodsSet, List<String> diffOrderPriceList) {
         for (LogisticImportData logistic : logistics) {
             Logger.info("Process OrderNO: %s", logistic.outerOrderNo);
 
@@ -228,31 +227,32 @@ public class ImportPartnerOrders extends Controller {
                 outerOrder = logistic.toOuterOrder(partner);
             }
             if (partner == OuterOrderPartner.WB) {
-                createWubaYbqOrder(logistic, partner, outerOrder, importSuccessOrderList,
-                        notEnoughInventoryGoodsList, diffOrderPriceList, unBindGoodsSet);
+                createWubaYbqOrder(logistic, partner, outerOrder, importSuccessOrderList, diffOrderPriceList, unBindGoodsSet);
             } else {
-                createYbqOrder(logistic, outerOrder, partner, notEnoughInventoryGoodsList, importSuccessOrderList, unBindGoodsSet);
+                createYbqOrder(logistic, outerOrder, partner, importSuccessOrderList, unBindGoodsSet);
             }
         }
 
     }
+
     private static void createWubaYbqOrder(LogisticImportData logistic, OuterOrderPartner partner, OuterOrder outerOrder,
-            List<String> importSuccessOrderList, List<String> notEnoughInventoryGoodsList,
-            List<String> diffOrderPriceList, Set<String> unBindGoodsSet) {
+                                           List<String> importSuccessOrderList, List<String> diffOrderPriceList, Set<String> unBindGoodsSet) {
         //先取得订单总金额
         BigDecimal orderAmount = logistic.salePrice;
         Resaler wubaResaler = Resaler.findApprovedByLoginName(Resaler.WUBA_LOGIN_NAME);
         List<LogisticImportData> wubaLogistics = logistic.processWubaLogistic();
         Order ybqOrder = logistic.createYbqOrderByWB(partner);
         //save ybqOrder info
-        if (ybqOrder != null) {
-            outerOrder.ybqOrder = ybqOrder;
-            outerOrder.save();
-            ybqOrder.paidAt = logistic.paidAt;
-            ybqOrder.createdAt = logistic.paidAt;
-            ybqOrder.save();
-            importSuccessOrderList.add(logistic.outerOrderNo);
+        if (ybqOrder == null) {
+            Logger.info("import wuba order,ybqOrder create fail");
+            return;
         }
+        outerOrder.ybqOrder = ybqOrder;
+        outerOrder.save();
+        ybqOrder.paidAt = logistic.paidAt;
+        ybqOrder.createdAt = logistic.paidAt;
+        ybqOrder.save();
+        importSuccessOrderList.add(logistic.outerOrderNo);
 
         OrderShippingInfo orderShipInfo = logistic.createOrderShipInfo();
         BigDecimal nowOrderAmount = BigDecimal.ZERO;
@@ -266,15 +266,9 @@ public class ImportPartnerOrders extends Controller {
                 outerOrder.delete();
                 continue;
             }
-            try {
-                nowOrderAmount = nowOrderAmount.add(goods.salePrice.multiply(new BigDecimal(wubaGoodsInfo.buyNumber)));
-                //产生orderItem
-                logistic.createOrderItem(ybqOrder, goods, orderShipInfo, wubaGoodsInfo.buyNumber, goods.salePrice);
-            } catch (NotEnoughInventoryException e) {
-                e.printStackTrace();
-                notEnoughInventoryGoodsList.add(logistic.outerGoodsNo);
-                importSuccessOrderList.clear();
-            }
+            nowOrderAmount = nowOrderAmount.add(goods.salePrice.multiply(new BigDecimal(wubaGoodsInfo.buyNumber)));
+            //产生orderItem
+            logistic.createOrderItem(ybqOrder, goods, orderShipInfo, wubaGoodsInfo.buyNumber, goods.salePrice);
         }
 
         //订单价格和商品单价*数量不一致的场合
@@ -297,29 +291,22 @@ public class ImportPartnerOrders extends Controller {
      * 除了WUBA以外的订单导入
      */
     private static void createYbqOrder(LogisticImportData logistic, OuterOrder outerOrder, OuterOrderPartner partner,
-                                       List<String> notEnoughInventoryGoodsList, List<String> importSuccessOrderList, Set<String> unBindGoodsSet) {
-        Order ybqOrder;
-        try {
-            ybqOrder = logistic.toYbqOrder(partner);
-            //save ybqOrder info
-            if (ybqOrder != null) {
-                outerOrder.ybqOrder = ybqOrder;
-                outerOrder.save();
-                ybqOrder.paidAt = logistic.paidAt;
-                ybqOrder.createdAt = logistic.paidAt;
-                ybqOrder.save();
-                importSuccessOrderList.add(logistic.outerOrderNo);
-            } else {
-                //未映射商品
-                Logger.info("未映射商品NO=" + logistic.outerGoodsNo + " NOT Found!");
-                unBindGoodsSet.add(logistic.outerGoodsNo);
-            }
-        } catch (NotEnoughInventoryException e) {
-            e.printStackTrace();
-            notEnoughInventoryGoodsList.add(logistic.outerGoodsNo);
-            JPA.em().getTransaction().rollback();
-            importSuccessOrderList.clear();
+                                       List<String> importSuccessOrderList, Set<String> unBindGoodsSet) {
+        Order ybqOrder = logistic.toYbqOrder(partner);
+        //save ybqOrder info
+        if (ybqOrder != null) {
+            outerOrder.ybqOrder = ybqOrder;
+            outerOrder.save();
+            ybqOrder.paidAt = logistic.paidAt;
+            ybqOrder.createdAt = logistic.paidAt;
+            ybqOrder.save();
+            importSuccessOrderList.add(logistic.outerOrderNo);
+        } else {
+            //未映射商品
+            Logger.info("未映射商品NO=" + logistic.outerGoodsNo + " NOT Found!");
+            unBindGoodsSet.add(logistic.outerGoodsNo);
         }
     }
+
 
 }

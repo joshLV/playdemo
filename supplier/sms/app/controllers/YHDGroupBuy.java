@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import models.accounts.PaymentSource;
 import models.order.DeliveryType;
 import models.order.ECoupon;
-import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OuterOrder;
@@ -256,40 +255,40 @@ public class YHDGroupBuy extends Controller {
         }
         Order ybqOrder = Order.createResaleOrder(resaler);
         ybqOrder.save();
+        Long goodsId = null;
         try {
-            Long goodsId = null;
-            try {
-                goodsId = Long.parseLong(outerGroupId);
-            } catch (NumberFormatException e) {
-                Logger.info("goodsId is not long: %s", outerGroupId);
-                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "找不到商品,请检查 outerGroupId", null));
-                return null;
-            }
-            Goods goods = Goods.find("byId", goodsId).first();
-            if (goods == null) {
-                Logger.info("goods not found: %s", outerGroupId);
-                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "找不到商品,请检查 outerGroupId", null));
-                return null;
-            }
-            if (goods.originalPrice.compareTo(productPrize) > 0) {
-                Logger.info("invalid yhd productPrice: %s", productPrize);
-                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform_productPrize_invalid", "商品价格不合法，拒绝订单", null));
-                return null;
-            }
-
-            OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(
-                    goods, productNum, userPhone, productPrize, productPrize);
-            uhuilaOrderItem.save();
-            if (goods.materialType.equals(MaterialType.REAL)) {
-                ybqOrder.deliveryType = DeliveryType.LOGISTICS;
-            } else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
-                ybqOrder.deliveryType = DeliveryType.SMS;
-            }
-        } catch (NotEnoughInventoryException e) {
-            Logger.info("enventory not enough");
+            goodsId = Long.parseLong(outerGroupId);
+        } catch (NumberFormatException e) {
+            Logger.info("goodsId is not long: %s", outerGroupId);
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "找不到商品,请检查 outerGroupId", null));
+            return null;
+        }
+        Goods goods = Goods.find("byId", goodsId).first();
+        if (goods == null) {
+            Logger.info("goods not found: %s", outerGroupId);
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "找不到商品,请检查 outerGroupId", null));
+            return null;
+        }
+        if (goods.originalPrice.compareTo(productPrize) > 0) {
+            Logger.info("invalid yhd productPrice: %s", productPrize);
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform_productPrize_invalid", "商品价格不合法，拒绝订单", null));
+            return null;
+        }
+        //检查导入券库存
+        if (goods.hasEnoughInventory(productNum)) {
+            Logger.info("yhd.group.buy goods enventory not enough,goods.id=%s", goods.id);
             errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "库存不足", null));
             JPA.em().getTransaction().rollback();
             return null;
+        }
+
+        OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(
+                goods, productNum, userPhone, productPrize, productPrize);
+        uhuilaOrderItem.save();
+        if (goods.materialType.equals(MaterialType.REAL)) {
+            ybqOrder.deliveryType = DeliveryType.LOGISTICS;
+        } else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
+            ybqOrder.deliveryType = DeliveryType.SMS;
         }
 
         ybqOrder.createAndUpdateInventory();

@@ -2,7 +2,6 @@ package unit;
 
 import factory.FactoryBoy;
 import models.consumer.Address;
-import models.order.NotEnoughInventoryException;
 import models.order.PointGoodsOrder;
 import models.order.PointGoodsOrderSentStatus;
 import models.order.PointGoodsOrderStatus;
@@ -13,7 +12,7 @@ import play.test.UnitTest;
 
 /**
  * 积分订单的单元测试.
- *
+ * <p/>
  * User: hejun
  * Date: 12-8-9
  * Time: 下午1:16
@@ -30,7 +29,7 @@ public class PointGoodsOrderUnitTest extends UnitTest {
     }
 
     @Test
-    public void testOrderInit() throws NotEnoughInventoryException {
+    public void testOrderInit() {
         Long buyNumber = 2L;
         Long userId = pointGoodsOrder == null ? 0 : pointGoodsOrder.userId;
         PointGoods pointGoods = pointGoodsOrder == null ? null : pointGoodsOrder.pointGoods;

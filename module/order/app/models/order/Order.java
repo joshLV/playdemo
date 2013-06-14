@@ -516,18 +516,15 @@ public class Order extends Model {
      * @param salePrice    成交价
      * @param resalerPrice 作为分销商的成本价
      * @return 添加的订单条目
-     * @throws NotEnoughInventoryException
      */
-    public OrderItems addOrderItem(Goods goods, Long number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice) throws NotEnoughInventoryException {
+    public OrderItems addOrderItem(Goods goods, Long number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice) {
         return this.addOrderItem(goods, number, mobile, salePrice, resalerPrice, null, false);
     }
 
     public OrderItems addOrderItem(Goods goods, Long number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice,
-                                   DiscountCode discountCode, boolean isPromoteFlag)
-            throws NotEnoughInventoryException {
+                                   DiscountCode discountCode, boolean isPromoteFlag) {
         OrderItems orderItem = null;
         if (number > 0 && goods != null) {
-
             orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice);
             orderItem = addOrderItem(orderItem, discountCode, isPromoteFlag);
         }
@@ -535,11 +532,10 @@ public class Order extends Model {
         return orderItem;
     }
 
-    public OrderItems addOrderItem(OrderItems orderItem, DiscountCode discountCode, boolean isPromoteFlag) throws NotEnoughInventoryException {
+    public OrderItems addOrderItem(OrderItems orderItem, DiscountCode discountCode, boolean isPromoteFlag) {
         if (orderItem.buyNumber <= 0 || orderItem.goods == null) {
             return null;
         }
-        checkInventory(orderItem.goods, orderItem.buyNumber);
         //通过推荐购买的情况
         if (isPromoteFlag) {
             orderItem.rebateValue = getPromoteRebateOfGoodsAmount(orderItem.goods, orderItem.buyNumber);
@@ -619,12 +615,6 @@ public class Order extends Model {
             }
         }
         throw new RuntimeException("still could not generate an unique order number after 100000 tries");
-    }
-
-    public void checkInventory(Goods goods, long number) throws NotEnoughInventoryException {
-        if (goods.getRealStocks() < number) {
-            throw new NotEnoughInventoryException();
-        }
     }
 
     /**
@@ -968,7 +958,7 @@ public class Order extends Model {
                 goodsName += g.name + " ";
             }
         }
-        if (electronicGoods.size() > 0 && electronicGoods != null) {
+        if (electronicGoods != null && electronicGoods.size() > 0) {
             for (Goods g : electronicGoods) {
                 goodsName += g.name + " ";
             }

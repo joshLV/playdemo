@@ -172,8 +172,7 @@ public class PointGoodsOrder extends Model {
         super._delete();
     }
 
-    public PointGoodsOrder(long userId, PointGoods pointGoods, Long buyNumber) throws NotEnoughInventoryException {
-        checkInventory(pointGoods, buyNumber);
+    public PointGoodsOrder(long userId, PointGoods pointGoods, Long buyNumber)  {
         this.userId = userId;
         User user = User.findById(userId);
         UserInfo userInfo = UserInfo.findByUser(user);
@@ -259,19 +258,6 @@ public class PointGoodsOrder extends Model {
         }
 
         return Boolean.FALSE;
-    }
-
-    /**
-     * 查询库存是否充足
-     *
-     * @param pointGoods
-     * @param number
-     * @throws NotEnoughInventoryException
-     */
-    public void checkInventory(PointGoods pointGoods, long number) throws NotEnoughInventoryException {
-        if (pointGoods.baseSale < number) {
-            throw new NotEnoughInventoryException();
-        }
     }
 
     /**

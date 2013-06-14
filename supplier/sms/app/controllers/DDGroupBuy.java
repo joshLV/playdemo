@@ -9,7 +9,6 @@ import models.order.DeliveryType;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
-import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
@@ -57,10 +56,10 @@ public class DDGroupBuy extends Controller {
     /**
      * 当当新订单请求.
      *
-     * @param id            当当团购唯一标识符
-     * @param ddgid         当当商品ID
-     * @param user_mobile   用户手机号
-     * @param options       商品及数量信息
+     * @param id           当当团购唯一标识符
+     * @param ddgid        当当商品ID
+     * @param user_mobile  用户手机号
+     * @param options      商品及数量信息
      * @param express_memo
      * @param user_id
      * @param kx_order_id
@@ -69,7 +68,7 @@ public class DDGroupBuy extends Controller {
      */
     public static void order(String id, String ddgid, String user_mobile, String options, String express_memo,
                              String user_id, String kx_order_id, BigDecimal amount, String sign) {
-        Map<String, String > allParams = params.allSimple();
+        Map<String, String> allParams = params.allSimple();
         Logger.info("dangdang new order request:\n%s", new Gson().toJson(allParams));
         //取得参数信息 必填信息
         SortedMap<String, String> params = DDGroupBuyUtil.filterPlayParams(allParams);
@@ -134,26 +133,32 @@ public class DDGroupBuy extends Controller {
         for (String goodsItem : arrGoods) {
             arrGoodsItem = goodsItem.split(":");
             if (arrGoodsItem != null) {
-                if(StringUtils.isEmpty(arrGoodsItem[0])){
+                if (StringUtils.isEmpty(arrGoodsItem[0])) {
                     renderError(DDErrorCode.ORDER_EXCEPTION, "传参数据信息格式不对！请确认检查无误！");
                 }
                 Goods goods = ResalerProduct.getGoods(resaler, Long.parseLong(arrGoodsItem[0]), OuterOrderPartner.DD);
-                if (goods==null){
+                if (goods == null) {
                     renderError(DDErrorCode.ORDER_EXCEPTION, "没有对应的商品信息！");
                 }
                 BigDecimal resalerPrice = goods.getResalePrice();
-                BigDecimal number = new BigDecimal(arrGoodsItem[1]);
-                ybqPrice = ybqPrice.add(resalerPrice.multiply(number));
+                if (arrGoodsItem[1] == null) {
+                    Logger.info("dangdang params is wrong,buy_number is empty");
+                    renderError(DDErrorCode.ORDER_EXCEPTION, "传参数据信息不对！");
+                }
+                Long number = Long.parseLong(arrGoodsItem[1]);
+                ybqPrice = ybqPrice.add(resalerPrice.multiply(new BigDecimal(number.toString())));
                 if (ybqPrice.compareTo(amount) != 0) {
-                    resalerPrice = amount.divide(number);
+                    resalerPrice = amount.divide(new BigDecimal(number.toString()));
                     Logger.error("当当订单金额不一致！当当amount=" + amount + ",ybqPrice=" + ybqPrice);
                 }
-                try {
-                    //创建一百券订单Items
-                    order.addOrderItem(goods, number.longValue(), user_mobile, resalerPrice, resalerPrice);
-                } catch (NotEnoughInventoryException e) {
+
+                //检查库存
+                if (goods.hasEnoughInventory(number)) {
+                    Logger.info("dangdang goods enventory not enough,goods.id=%s", goods.id);
                     renderError(DDErrorCode.INVENTORY_NOT_ENOUGH, "库存不足！");
                 }
+                //创建一百券订单Items
+                order.addOrderItem(goods, number, user_mobile, resalerPrice, resalerPrice);
             }
         }
 
@@ -178,7 +183,6 @@ public class DDGroupBuy extends Controller {
 
     /**
      * 当当请我们发送短信.
-     *
      */
     public static void sendSms(String sign, String data, String call_time) {
         Logger.info("dangdang sendSms request:\n%s", new Gson().toJson(params.allSimple()));
@@ -227,19 +231,19 @@ public class DDGroupBuy extends Controller {
         //券已消费
         Logger.info("处理当当券(id: %s)重发, tel: %s", coupon.id, receiverMobileTel);
         if (coupon.status == ECouponStatus.CONSUMED) {
-            renserSuccessInfo(coupon, orderId, "对不起该券已消费!");
+            renderSuccessInfo(coupon, orderId, "对不起该券已消费!");
         }
         //券已退款
         if (coupon.status == ECouponStatus.REFUND) {
-            renserSuccessInfo(coupon, orderId, "对不起该券已退款!");
+            renderSuccessInfo(coupon, orderId, "对不起该券已退款!");
         }
         //券已过期
         if (coupon.expireAt.before(new Date())) {
-            renserSuccessInfo(coupon, orderId, "对不起该券已过期!");
+            renderSuccessInfo(coupon, orderId, "对不起该券已过期!");
         }
         //最多发送三次短信
         if (coupon.smsSentCount >= 3) {
-            renserSuccessInfo(coupon, orderId, "重发短信超过三次!");
+            renderSuccessInfo(coupon, orderId, "重发短信超过三次!");
         }
 
         //发送短信并返回成功
@@ -254,7 +258,7 @@ public class DDGroupBuy extends Controller {
     }
 
 
-    private static void renserSuccessInfo(ECoupon coupon, String orderId, String desc) {
+    private static void renderSuccessInfo(ECoupon coupon, String orderId, String desc) {
         Logger.info("process dangdang's request error: coupon.id: %d, desc: %s, 但返回成功消息", coupon.id, desc);
         render("dangdang/groupbuy/response/sendMessage.xml", desc, coupon, orderId);
     }

@@ -2396,7 +2396,7 @@ public class Goods extends Model {
             return defaultValue;
         }
         GoodsProperty goodsProperty = GoodsProperty.find("goodsId=? and name=?", this.id, propertyName).first();
-        if (goodsProperty == null) {
+        if (goodsProperty == null || StringUtils.isBlank(goodsProperty.value)) {
             return defaultValue;
         }
         return goodsProperty.value;
@@ -2422,5 +2422,18 @@ public class Goods extends Model {
      */
     public boolean isSecondaryVerificationGoods() {
         return "1".equals(this.getProperties(Goods.SECONDARY_VERIFICATION, "0"));
+    }
+
+    /**
+     * 检查导入券商品的库存，实物和电子券不做检查
+     */
+    public boolean hasEnoughInventory(Long number) {
+        if (couponType != GoodsCouponType.IMPORT) {
+            return false;
+        }
+        if (getRealStocks() < number) {
+            return true;
+        }
+        return false;
     }
 }

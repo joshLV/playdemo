@@ -7,7 +7,6 @@ import models.order.DeliveryType;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
-import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OuterOrder;
@@ -149,7 +148,7 @@ public class JDGroupBuy extends Controller {
         //生成一百券订单
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             Order ybqOrder = outerOrder.ybqOrder;
-            if(ybqOrder == null) {
+            if (ybqOrder == null) {
                 ybqOrder = createYbqOrder(venderTeamId, teamPrice, count, mobile);
             }
             outerOrder.status = OuterOrderStatus.ORDER_DONE;
@@ -178,7 +177,7 @@ public class JDGroupBuy extends Controller {
             outerOrder.save();
         }
 
-        if (outerOrder.status == OuterOrderStatus.ORDER_SYNCED){
+        if (outerOrder.status == OuterOrderStatus.ORDER_SYNCED) {
             String jdTeamId = message.selectTextTrim("./JdTeamId");
 
             Template template = TemplateLoader.load("jingdong/groupbuy/response/sendOrder.xml");
@@ -339,25 +338,28 @@ public class JDGroupBuy extends Controller {
         }
         Order ybqOrder = Order.createResaleOrder(resaler);
         ybqOrder.save();
-        try {
-            Goods goods = ResalerProduct.getGoods(resaler, venderTeamId, OuterOrderPartner.JD);
-            if (goods == null) {
-                finish(208, "can not find goods: " + venderTeamId);
-            }
-            if (goods.originalPrice.compareTo(teamPrice) > 0) {
-                finish(209, "invalid product price: " + teamPrice);
-            }
+        Goods goods = ResalerProduct.getGoods(resaler, venderTeamId, OuterOrderPartner.JD);
+        if (goods == null) {
+            finish(208, "can not find goods: " + venderTeamId);
+            return null;
+        }
+        if (goods.originalPrice.compareTo(teamPrice) > 0) {
+            finish(209, "invalid product price: " + teamPrice);
+        }
 
-            OrderItems uhuilaOrderItem = ybqOrder.addOrderItem( goods, count, mobile, teamPrice, teamPrice);
-            uhuilaOrderItem.save();
-            if (goods.materialType.equals(MaterialType.REAL)) {
-                ybqOrder.deliveryType = DeliveryType.LOGISTICS;
-            } else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
-                ybqOrder.deliveryType = DeliveryType.SMS;
-            }
-        } catch (NotEnoughInventoryException e) {
+        //检查导入券订单库存
+        if (goods.hasEnoughGoodsInventory(count)) {
             JPA.em().getTransaction().rollback();
+            Logger.info("inventory not enough,goods.id=%s", goods.id.toString());
             finish(210, "inventory not enough");
+        }
+
+        OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, count, mobile, teamPrice, teamPrice);
+        uhuilaOrderItem.save();
+        if (goods.materialType.equals(MaterialType.REAL)) {
+            ybqOrder.deliveryType = DeliveryType.LOGISTICS;
+        } else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
+            ybqOrder.deliveryType = DeliveryType.SMS;
         }
 
         ybqOrder.createAndUpdateInventory();
