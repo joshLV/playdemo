@@ -4,7 +4,7 @@ var locations = {
         "临安", "丽水", "宁波", "瓯海", "平湖", "衢州", "江山", "瑞安", "绍兴", "嵊州", "台州", "温岭"]
 }
 ktvProvinces=["上海", "浙江"];
-ktvCities = ["上海", "杭州", "温州"];
+ktvCities = ["上海", "杭州", "温州", "宁波", "金华", "绍兴", "嘉兴", "丽水"];
 
 var locationProvinceSelect = $("#location_province");
 var locationCitySelect = $("#location_city");

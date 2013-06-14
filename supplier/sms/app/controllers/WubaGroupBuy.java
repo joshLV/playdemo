@@ -9,7 +9,6 @@ import models.order.DeliveryType;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
-import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OuterOrder;
@@ -307,38 +306,38 @@ public class WubaGroupBuy extends Controller {
             putStatusAndMsg(result, "10100", "未找到58账户");
             return null;
         }
-        Goods goods = null;
         Order ybqOrder = Order.createResaleOrder(resaler);
 
         ybqOrder.save();
-        try {
-            goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.WB);
-            if (goods == null) {
-                putStatusAndMsg(result, "10100", "未找到商品");
-                Logger.info("goods not found: %s", outerGroupId);
-                return null;
-            }
+        Goods goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.WB);
+        if (goods == null) {
+            putStatusAndMsg(result, "10100", "未找到商品");
+            Logger.info("goods not found: %s", outerGroupId);
+            return null;
+        }
 
-            if (goods.originalPrice.compareTo(productPrize) > 0) {
-                Logger.error("invalid wuba productPrice: %s,goods.originPrice:%s," +
-                        "可能为了促进销售，商务降低价格销售。请确认此商品的价格信息！goodsId:%s", productPrize, goods.originalPrice, goods.id);
+        if (goods.originalPrice.compareTo(productPrize) > 0) {
+            Logger.error("invalid wuba productPrice: %s,goods.originPrice:%s," +
+                    "可能为了促进销售，商务降低价格销售。请确认此商品的价格信息！goodsId:%s", productPrize, goods.originalPrice, goods.id);
 //                putStatusAndMsg(result, "10100", "价格非法");
 //                return null;
-            }
+        }
 
-            OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(
-                    goods, productNum, userPhone, productPrize, productPrize);
-            uhuilaOrderItem.save();
-            if (goods.materialType.equals(MaterialType.REAL)) {
-                ybqOrder.deliveryType = DeliveryType.LOGISTICS;
-            } else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
-                ybqOrder.deliveryType = DeliveryType.SMS;
-            }
-        } catch (NotEnoughInventoryException e) {
+        //检查导入券库存
+        if (goods.hasEnoughInventory(productNum)) {
             Logger.info("enventory not enough");
             putStatusAndMsg(result, "10100", "库存不足");
             JPA.em().getTransaction().rollback();
             return null;
+        }
+
+        OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(
+                goods, productNum, userPhone, productPrize, productPrize);
+        uhuilaOrderItem.save();
+        if (goods.materialType.equals(MaterialType.REAL)) {
+            ybqOrder.deliveryType = DeliveryType.LOGISTICS;
+        } else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
+            ybqOrder.deliveryType = DeliveryType.SMS;
         }
 
         ybqOrder.createAndUpdateInventory();

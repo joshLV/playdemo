@@ -333,7 +333,7 @@ public class Supplier extends Model {
             return defaultStr;
         }
         SupplierProperty supplierProperty = SupplierProperty.find("supplier=? and name=?", this, propertyName).first();
-        if (supplierProperty == null) {
+        if (supplierProperty == null || StringUtils.isBlank(supplierProperty.value)) {
             return defaultStr;
         }
         return supplierProperty.value;
@@ -679,6 +679,7 @@ public class Supplier extends Model {
 
     /**
      * 默认运营商。
+     *
      * @return
      */
     @Transient

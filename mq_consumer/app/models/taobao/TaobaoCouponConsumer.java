@@ -10,7 +10,6 @@ import models.ktv.KtvRoomType;
 import models.order.DeliveryType;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
-import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OuterOrder;
@@ -42,8 +41,6 @@ import java.util.regex.Pattern;
 @OnApplicationStart(async = true)
 public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMessage> {
     public static String PHONE_REGEX = "^1\\d{10}$";
-
-//    public static Pattern skuPattern = Pattern.compile("(\\d+:\\d+);欢唱时间:(\\d+)点至(\\d+)点;日期:(\\d+)月(\\d+)日;?");
 
     public static Pattern skuDatePattern = Pattern.compile("(\\d+)月(\\d+)日");
     public static Pattern skuTimePattern = Pattern.compile("凌?晨?(\\d+)点至凌?晨?(\\d+)点");
@@ -181,37 +178,37 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         ybqOrder.save();
         Goods goods = ResalerProduct.getGoods(resaler, outerGroupId, OuterOrderPartner.TB);
 
-        try {
-            if (goods == null) {
-                Logger.info("goods not found: %s", outerGroupId);
+        if (goods == null) {
+            Logger.info("goods not found: %s", outerGroupId);
+            return null;
+        }
+        List<com.taobao.api.domain.Order> orders = taobaoTrade.getTrade().getOrders();
+        for (com.taobao.api.domain.Order order : orders) {
+            Long number = order.getNum();
+            BigDecimal orderItemPayment = new BigDecimal(order.getPayment());
+            BigDecimal salePrice = orderItemPayment.divide(new BigDecimal(number), RoundingMode.DOWN);
+            //导入券库存检查
+            if (goods.hasEnoughInventory(number)) {
+                Logger.error("enventory not enough: goods.id=" + goods.id);
+                JPA.em().getTransaction().rollback();
                 return null;
             }
-            List<com.taobao.api.domain.Order> orders = taobaoTrade.getTrade().getOrders();
-            for (com.taobao.api.domain.Order order : orders) {
-                Long number = order.getNum();
-                BigDecimal orderItemPayment = new BigDecimal(order.getPayment());
-                BigDecimal salePrice = orderItemPayment.divide(new BigDecimal(number), RoundingMode.DOWN);
-                OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, order.getNum(),
-                        userPhone, salePrice, salePrice);
-                uhuilaOrderItem.save();
-                //ktv商品才创建sku订单
-                if (goods.isKtvProduct()) {
-                    if (createSkuOrderInfo(uhuilaOrderItem, order, goods) == null) {
-                        JPA.em().getTransaction().rollback();
-                        return null;
-                    }
+            OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, number,
+                    userPhone, salePrice, salePrice);
+            uhuilaOrderItem.save();
+            //ktv商品才创建sku订单
+            if (goods.isKtvProduct()) {
+                if (createSkuOrderInfo(uhuilaOrderItem, order, goods) == null) {
+                    JPA.em().getTransaction().rollback();
+                    return null;
                 }
             }
+        }
 
-            if (goods.materialType.equals(MaterialType.REAL)) {
-                ybqOrder.deliveryType = DeliveryType.LOGISTICS;
-            } else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
-                ybqOrder.deliveryType = DeliveryType.SMS;
-            }
-        } catch (NotEnoughInventoryException e) {
-            Logger.error("enventory not enough: goods.id=" + goods.id, e);
-            JPA.em().getTransaction().rollback();
-            return null;
+        if (goods.materialType.equals(MaterialType.REAL)) {
+            ybqOrder.deliveryType = DeliveryType.LOGISTICS;
+        } else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
+            ybqOrder.deliveryType = DeliveryType.SMS;
         }
 
         ybqOrder.createAndUpdateInventory();

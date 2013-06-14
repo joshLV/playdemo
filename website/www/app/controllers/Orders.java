@@ -6,7 +6,6 @@ import models.consumer.User;
 import models.order.Cart;
 import models.order.DeliveryType;
 import models.order.DiscountCode;
-import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderDiscount;
 import models.order.OrderItems;
@@ -293,107 +292,106 @@ public class Orders extends Controller {
         order.save();  //为了保存OrderDiscount，需要先保存order.
 
         //添加订单条目
-        try {
-            //计算电子商品列表和非电子商品列表
-            BigDecimal eCartAmount = BigDecimal.ZERO;
-            BigDecimal rCartAmount = BigDecimal.ZERO;
-            //取得cookie中的推荐码
-            Http.Cookie tj_cookie = request.cookies.get(PROMOTER_COOKIE);
-            String discountSN = request.params.get("discountSN");
+        //计算电子商品列表和非电子商品列表
+        BigDecimal eCartAmount = BigDecimal.ZERO;
+        BigDecimal rCartAmount = BigDecimal.ZERO;
+        //取得cookie中的推荐码
+        Http.Cookie tj_cookie = request.cookies.get(PROMOTER_COOKIE);
+        String discountSN = request.params.get("discountSN");
 
-            //判断是不是推荐返利的情况
-            boolean isPromoteFlag = isByPromoteUser(user, discountSN, tj_cookie);
+        //判断是不是推荐返利的情况
+        boolean isPromoteFlag = isByPromoteUser(user, discountSN, tj_cookie);
 
-            for (models.sales.Goods goodsItem : goodsList) {
-                Long number = itemsMap.get(goodsItem.getId());
-                if (goodsItem.materialType == models.sales.MaterialType.REAL) {
-                    if (isPromoteFlag) {
-                        rCartAmount = rCartAmount.add(Order.getPromoteRebateOfTotalGoodsAmount(goodsItem, number));
-                    } else {
-                        rCartAmount = rCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
-
-                    }
-                } else if (goodsItem.materialType == models.sales.MaterialType.ELECTRONIC) {
-                    if (isPromoteFlag) {
-                        eCartAmount = eCartAmount.add(Order.getPromoteRebateOfTotalGoodsAmount(goodsItem, number));
-                    } else {
-                        eCartAmount = eCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
-                    }
-                }
-                OrderItems orderItem = null;
-
-                if (goodsItem.materialType == MaterialType.REAL) {
-                    orderItem = order.addOrderItem(goodsItem, number, receiverMobile,
-                            goodsItem.salePrice, //最终成交价
-                            goodsItem.getResalerPriceOfUhuila(), //一百券作为分销商的成本价
-                            discountCode, isPromoteFlag
-                    );
+        for (models.sales.Goods goodsItem : goodsList) {
+            Long number = itemsMap.get(goodsItem.getId());
+            if (goodsItem.materialType == models.sales.MaterialType.REAL) {
+                if (isPromoteFlag) {
+                    rCartAmount = rCartAmount.add(Order.getPromoteRebateOfTotalGoodsAmount(goodsItem, number));
                 } else {
-                    orderItem = order.addOrderItem(goodsItem, number, mobile,
-                            goodsItem.salePrice, //最终成交价
-                            goodsItem.getResalerPriceOfUhuila(), //一百券作为分销商的成本价
-                            discountCode, isPromoteFlag
-                    );
-                }
-                orderItem.save();
+                    rCartAmount = rCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
 
-                // 保存商品折扣
-                if (discountCode != null && discountCode.goods != null && discountCode.goods.id == goodsItem.id) {
-                    OrderDiscount orderDiscount = new OrderDiscount();
-                    orderDiscount.discountCode = discountCode;
-                    orderDiscount.order = order;
-                    orderDiscount.orderItem = orderItem;
-                    orderDiscount.discountAmount = Order.getDiscountValueOfGoodsAmount(goodsItem, number, discountCode);
-                    orderDiscount.save();
+                }
+            } else if (goodsItem.materialType == models.sales.MaterialType.ELECTRONIC) {
+                if (isPromoteFlag) {
+                    eCartAmount = eCartAmount.add(Order.getPromoteRebateOfTotalGoodsAmount(goodsItem, number));
+                } else {
+                    eCartAmount = eCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
                 }
             }
+            //检查导入券库存
+            if (goodsItem.hasEnoughInventory(number)) {
+                Logger.error("inventory not enough");
+                error("商品库存不足！");
+            }
+            OrderItems orderItem = null;
 
-            // 整单折扣，注意只折扣电子券产品，实物券不参与折扣.
-            if (discountCode != null && discountCode.goods == null) {
-                order.rebateValue = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
-                order.amount = eCartAmount.add(rCartAmount);
-                order.needPay = order.amount.subtract(order.rebateValue);
-                if (order.needPay.compareTo(BigDecimal.ZERO) <= 0) {
-                    order.needPay = BigDecimal.ZERO;
-                }
+            if (goodsItem.materialType == MaterialType.REAL) {
+                orderItem = order.addOrderItem(goodsItem, number, receiverMobile,
+                        goodsItem.salePrice, //最终成交价
+                        goodsItem.getResalerPriceOfUhuila(), //一百券作为分销商的成本价
+                        discountCode, isPromoteFlag
+                );
+            } else {
+                orderItem = order.addOrderItem(goodsItem, number, mobile,
+                        goodsItem.salePrice, //最终成交价
+                        goodsItem.getResalerPriceOfUhuila(), //一百券作为分销商的成本价
+                        discountCode, isPromoteFlag
+                );
+            }
+            orderItem.save();
 
+            // 保存商品折扣
+            if (discountCode != null && discountCode.goods != null && discountCode.goods.id == goodsItem.id) {
                 OrderDiscount orderDiscount = new OrderDiscount();
                 orderDiscount.discountCode = discountCode;
                 orderDiscount.order = order;
-                orderDiscount.discountAmount = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
+                orderDiscount.orderItem = orderItem;
+                orderDiscount.discountAmount = Order.getDiscountValueOfGoodsAmount(goodsItem, number, discountCode);
                 orderDiscount.save();
             }
-            //判断cookie中的推荐码是否存在;
-            if (isPromoteFlag) {
-                String tj_cookieValue = tj_cookie == null ? "" : tj_cookie.value;
-                if ("".equals(tj_cookieValue)) tj_cookieValue = discountSN;
-                User promoterUser = User.getUserByPromoterCode(tj_cookieValue);
-                if (promoterUser != null && promoterUser != user) {
-                    //保存推荐人的用户ID
-                    order.promoteUserId = promoterUser.id;
-                    // 不需要有rebateValue
-                    // order.rebateValue = Order.getPromoteRebateOfTotalECartAmount(order);
-                    order.amount = eCartAmount.add(rCartAmount);
-                    //如果通过注册的，则更新推荐关系
-                    PromoteRebate promoteRebate = PromoteRebate.find("promoteUser=? and invitedUser=? and registerFlag=true", promoterUser, user).first();
-                    if (promoteRebate != null) {
-                        promoteRebate.promoteUser = promoterUser;
-                        promoteRebate.order = order;
-                        promoteRebate.rebateAmount = Order.getPromoteRebateAmount(order);
-                        promoteRebate.registerFlag = false;
-                        promoteRebate.save();
-                    } else {
-                        //记录推荐人和被推荐人的关系
-                        new PromoteRebate(promoterUser, user, order, Order.getPromoteRebateAmount(order), false).save();
-                    }
-                }
+        }
+
+        // 整单折扣，注意只折扣电子券产品，实物券不参与折扣.
+        if (discountCode != null && discountCode.goods == null) {
+            order.rebateValue = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
+            order.amount = eCartAmount.add(rCartAmount);
+            order.needPay = order.amount.subtract(order.rebateValue);
+            if (order.needPay.compareTo(BigDecimal.ZERO) <= 0) {
+                order.needPay = BigDecimal.ZERO;
             }
 
-        } catch (NotEnoughInventoryException e) {
-            //todo 缺少库存
-            Logger.error(e, "inventory not enough");
-            error("商品库存不足！");
+            OrderDiscount orderDiscount = new OrderDiscount();
+            orderDiscount.discountCode = discountCode;
+            orderDiscount.order = order;
+            orderDiscount.discountAmount = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
+            orderDiscount.save();
         }
+        //判断cookie中的推荐码是否存在;
+        if (isPromoteFlag) {
+            String tj_cookieValue = tj_cookie == null ? "" : tj_cookie.value;
+            if ("".equals(tj_cookieValue)) tj_cookieValue = discountSN;
+            User promoterUser = User.getUserByPromoterCode(tj_cookieValue);
+            if (promoterUser != null && promoterUser != user) {
+                //保存推荐人的用户ID
+                order.promoteUserId = promoterUser.id;
+                // 不需要有rebateValue
+                // order.rebateValue = Order.getPromoteRebateOfTotalECartAmount(order);
+                order.amount = eCartAmount.add(rCartAmount);
+                //如果通过注册的，则更新推荐关系
+                PromoteRebate promoteRebate = PromoteRebate.find("promoteUser=? and invitedUser=? and registerFlag=true", promoterUser, user).first();
+                if (promoteRebate != null) {
+                    promoteRebate.promoteUser = promoterUser;
+                    promoteRebate.order = order;
+                    promoteRebate.rebateAmount = Order.getPromoteRebateAmount(order);
+                    promoteRebate.registerFlag = false;
+                    promoteRebate.save();
+                } else {
+                    //记录推荐人和被推荐人的关系
+                    new PromoteRebate(promoterUser, user, order, Order.getPromoteRebateAmount(order), false).save();
+                }
+            }
+        }
+
         order.remark = remark;
 
         //确认订单

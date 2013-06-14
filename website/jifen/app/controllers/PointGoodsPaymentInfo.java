@@ -6,7 +6,6 @@ import models.consumer.User;
 import models.consumer.UserInfo;
 import models.consumer.UserPoint;
 import models.order.DeliveryType;
-import models.order.NotEnoughInventoryException;
 import models.order.OrderItems;
 import models.order.PointGoodsOrder;
 import models.sales.MaterialType;
@@ -30,7 +29,7 @@ import static play.Logger.warn;
 @With({SecureCAS.class, WebsiteInjector.class})
 public class PointGoodsPaymentInfo extends Controller {
 
-    public static void index(Long gid, int number, String mobile, String remark){
+    public static void index(Long gid, int number, String mobile, String remark) {
 
         //加载用户账户信息
         User user = SecureCAS.getUser();
@@ -38,24 +37,25 @@ public class PointGoodsPaymentInfo extends Controller {
         long amount = pointGoods.pointPrice * number;
         UserInfo userInfo = UserInfo.findByUser(user);
 
-        renderArgs.put("pointGoods",pointGoods);
-        renderArgs.put("gid",gid);
+        renderArgs.put("pointGoods", pointGoods);
+        renderArgs.put("gid", gid);
         renderArgs.put("number", number);
         renderArgs.put("amount", amount);
-        renderArgs.put("userInfo",userInfo);
-        renderArgs.put("mobile",mobile);
-        renderArgs.put("remark",remark);
+        renderArgs.put("userInfo", userInfo);
+        renderArgs.put("mobile", mobile);
+        renderArgs.put("remark", remark);
         render(user);
     }
 
     /**
      * 生成订单并存至数据库
-     * @param goodsId   积分商品ID
-     * @param number    积分商品购买数量
-     * @param mobile    接收手机
-     * @param remark    附言
+     *
+     * @param goodsId 积分商品ID
+     * @param number  积分商品购买数量
+     * @param mobile  接收手机
+     * @param remark  附言
      */
-    public static void create(Long goodsId, int number, String mobile, String remark){
+    public static void create(Long goodsId, int number, String mobile, String remark) {
 
         //如果订单中有电子券，则必须填写手机号
         Http.Cookie cookie = request.cookies.get("identity");
@@ -96,11 +96,10 @@ public class PointGoodsPaymentInfo extends Controller {
             List<PointGoods> rGoodsList = new ArrayList<>();
             int rGoodsAmount = 0;
 
-            if (pointGoods.materialType == models.sales.MaterialType.REAL){
+            if (pointGoods.materialType == models.sales.MaterialType.REAL) {
                 rGoodsList.add(pointGoods);
                 rGoodsAmount = pointGoods.pointPrice.intValue() * number;
-            }
-            else{
+            } else {
                 eGoodsList.add(pointGoods);
                 eGoodsAmount = pointGoods.pointPrice.intValue() * number;
             }
@@ -120,42 +119,36 @@ public class PointGoodsPaymentInfo extends Controller {
         }
 
         // 创建订单
-        try {
-            models.order.PointGoodsOrder pointGoodsOrder = new models.order.PointGoodsOrder(user.id,pointGoods,new Long(number));
-            // 判断是否需要物流
-            if (pointGoodsOrder.containsRealGoods()){
-                pointGoodsOrder.deliveryType = DeliveryType.LOGISTICS;
-                if (defaultAddress != null){
-                    pointGoodsOrder.setAddress(defaultAddress);
-                }
+        models.order.PointGoodsOrder pointGoodsOrder = new models.order.PointGoodsOrder(user.id, pointGoods, new Long(number));
+        // 判断是否需要物流
+        if (pointGoodsOrder.containsRealGoods()) {
+            pointGoodsOrder.deliveryType = DeliveryType.LOGISTICS;
+            if (defaultAddress != null) {
+                pointGoodsOrder.setAddress(defaultAddress);
             }
-            else{
-                pointGoodsOrder.deliveryType = DeliveryType.SMS;
-                pointGoodsOrder.receiverMobile = receiverMobile;
-            }
-            // 添加用户的留言信息
-            pointGoodsOrder.remark = remark;
-            // 创建订单，减少库存，增加销量，扣除积分
-            pointGoodsOrder.createAndUpdateInventory();
+        } else {
+            pointGoodsOrder.deliveryType = DeliveryType.SMS;
+            pointGoodsOrder.receiverMobile = receiverMobile;
+        }
+        // 添加用户的留言信息
+        pointGoodsOrder.remark = remark;
+        // 创建订单，减少库存，增加销量，扣除积分
+        pointGoodsOrder.createAndUpdateInventory();
 //            System.out.println("执行 创建订单");
 
-            // 添加用户积分使用记录
-            UserPoint userPoint = new UserPoint();
-            userPoint.addRecord(user,"127","0",pointGoodsOrder.amount,pointGoodsOrder.totalPoint);
+        // 添加用户积分使用记录
+        UserPoint userPoint = new UserPoint();
+        userPoint.addRecord(user, "127", "0", pointGoodsOrder.amount, pointGoodsOrder.totalPoint);
 //            System.out.println("添加 用户积分使用记录");
 
-            // 跳转兑换明细
-            redirect("/payment_info/" + pointGoodsOrder.orderNumber);
-        }
-        catch (NotEnoughInventoryException e){
-            error(404, "商品库存不足，很抱歉给您造成不便！");
-        }
+        // 跳转兑换明细
+        redirect("/payment_info/" + pointGoodsOrder.orderNumber);
 
     }
 
-    public static void success(String orderNumber){
+    public static void success(String orderNumber) {
         PointGoodsOrder order = PointGoodsOrder.findByOrderNumber(orderNumber);
-        if (order == null){
+        if (order == null) {
             error(404, "没有找到该商品！");
         }
         render();

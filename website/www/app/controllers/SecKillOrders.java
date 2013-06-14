@@ -5,7 +5,6 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.order.Cart;
 import models.order.DeliveryType;
-import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.MaterialType;
@@ -47,14 +46,7 @@ public class SecKillOrders extends Controller {
             return;
         }
         //检查库存
-        try {
-
-            checkInventory(secKillGoodsItem, 1);
-        } catch (NotEnoughInventoryException e) {
-            //缺少库存
-            Logger.info(e, "Inventory not enough,goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
-            redirect("/seckill-goods");
-        }
+        checkInventory(secKillGoodsItem, 1);
 
         User user = SecureCAS.getUser();
         List<String> orderItemsMobiles = OrderItems.getMobiles(user);
@@ -128,22 +120,9 @@ public class SecKillOrders extends Controller {
             render("SecKillOrders/index.html", user, orderItemsMobiles);
         }
 
-        Order order = null;
-
-        try {
-            order = doCreateSecKillOrder(mobile, remark, count, user,
-                    secKillGoodsItem, isElectronic, isReal, defaultAddress,
-                    receiverMobile);
-
-        } catch (NotEnoughInventoryException e) {
-            // 缺少库存
-            Logger.info(e, "Inventory not enough,goodsId:"
-                    + secKillGoodsItem.secKillGoods.goods.id);
-            redirect("/seckill-goods");
-        } catch (Exception e) {
-            Logger.error(e, "出现异常，事务回滚");
-            redirect("/seckill-goods");
-        }
+        Order order = doCreateSecKillOrder(mobile, remark, count, user,
+                secKillGoodsItem, isElectronic, isReal, defaultAddress,
+                receiverMobile);
 
         if (order == null) {
             Logger.error("没有建立订单，这是不可能出现的，请检查代码");
@@ -156,7 +135,7 @@ public class SecKillOrders extends Controller {
     private static Order doCreateSecKillOrder(String mobile, String remark,
                                               long count, User user, SecKillGoodsItem secKillGoodsItem,
                                               boolean isElectronic, boolean isReal, Address defaultAddress,
-                                              String receiverMobile) throws NotEnoughInventoryException {
+                                              String receiverMobile) {
         //创建订单
         Order order = Order.createConsumeOrder(user);
         if (isElectronic) {
@@ -190,7 +169,7 @@ public class SecKillOrders extends Controller {
 
 
     private static void addSecKillOrderItem(Order order, SecKillGoodsItem secKillGoodsItem,
-                                            long count, String receiverMobile) throws NotEnoughInventoryException {
+                                            long count, String receiverMobile) {
         if (count <= 0) {
             throw new IllegalArgumentException("count:" + count);
         }
@@ -207,11 +186,12 @@ public class SecKillOrders extends Controller {
         order.needPay = order.amount.subtract(order.rebateValue);
     }
 
-    private static void checkInventory(SecKillGoodsItem secKillGoodsItem,
-                                       long count) throws NotEnoughInventoryException {
+    private static void checkInventory(SecKillGoodsItem secKillGoodsItem, long count) {
 
         if (secKillGoodsItem.baseSale <= 0 || secKillGoodsItem.baseSale < count) {
-            throw new NotEnoughInventoryException();
+            //缺少库存
+            Logger.info("Inventory not enough,goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
+            redirect("/seckill-goods");
         }
     }
 
