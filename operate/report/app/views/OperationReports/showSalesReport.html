@@ -133,12 +133,12 @@ beginValue:condition?.beginAt?.format(), endValue:condition?.endAt?.format()/}
     </div>
     <br/>
     <br/>
-    *{<ul class="nav nav-pills">}*
-        *{<li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>}*
-        *{<li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>}*
-        *{<li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>}*
-        *{<li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>}*
-    *{</ul>}*
+*{<ul class="nav nav-pills">}*
+*{<li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>}*
+*{<li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>}*
+*{<li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>}*
+*{<li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>}*
+*{</ul>}*
     <input type="hidden" id="condition_interval" name="condition.interval"/>
     <input type="hidden" id="J_rank" name="desc" value="${desc}"/>
 </form>
@@ -146,7 +146,12 @@ beginValue:condition?.beginAt?.format(), endValue:condition?.endAt?.format()/}
 <div class="alert alert-success">
         <span>在此期间 总销售金额：<b>￥${summary?.totalAmount?:0}</b>,
             刷单总额：<b>￥${summary?.cheatedOrderAmount?:0}</b>,
-            总退款金额：<b>￥${summary?.refundAmount?:0}</b>,
+                        本期购买本期未消费退款金额：<b>￥${summary?.salesRefundAmount?:0}</b>,
+                        本期前购买本期未消费退款金额：<b>￥${summary?.previousSalesRefundAmount?:0}</b>,
+                        本期消费本期消费退款：<b>￥${summary?.consumedRefundAmount?:0}</b>,
+                        本期前消费本期消费退款：<b>￥${summary?.previousConsumedRefundAmount?:0}</b>,
+
+        *{总退款金额：<b>￥${summary?.refundAmount?:0}</b>,}*
             消费券总额：<b>￥${summary?.totalConsumed?:0}</b>,
             净销售金额：<b>￥${summary?.netSalesAmount?:0}</b>
         #{if hasSeeReportProfitRight == true}
@@ -265,23 +270,36 @@ beginValue:condition?.beginAt?.format(), endValue:condition?.endAt?.format()/}
     刷单金额
 </a>
 </th>#{/else}
-#{if desc.equals("000000010000") }
-<th width="70px" class="rank rank-asc"><a class="fn-rank"
-                                          data-rank="000000020000">
-    退款总额
-</a>
-</th>#{/if}
-#{elseif desc.equals("000000020000")}
-<th width="70px" class="rank rank-desc"><a class="fn-rank"
-                                           data-rank="000000010000">
-    退款总额
-</a>
-</th>#{/elseif}
-#{else}
-<th width="70px" class="rank"><a class="fn-rank" data-rank="000000020000">
-    退款总额
-</a>
-</th>#{/else}
+*{#{if desc.equals("000000010000") }}*
+*{<th width="70px" class="rank rank-asc"><a class="fn-rank"}*
+*{data-rank="000000020000">}*
+*{退款总额}*
+*{</a>}*
+*{</th>#{/if}}*
+*{#{elseif desc.equals("000000020000")}}*
+*{<th width="70px" class="rank rank-desc"><a class="fn-rank"}*
+*{data-rank="000000010000">}*
+*{退款总额}*
+*{</a>}*
+*{</th>#{/elseif}}*
+*{#{else}}*
+*{<th width="70px" class="rank"><a class="fn-rank" data-rank="000000020000">}*
+*{退款总额}*
+*{</a>}*
+*{</th>#{/else}}*
+
+<th>
+    本期购买本期未消费退款金额
+</th>
+<th>
+    本期前购买本期未消费退款金额
+</th>
+<th>
+    本期消费本期消费退款
+</th>
+<th>
+    本期前消费本期消费退款
+</th>
 #{if desc.equals("000000001000") }
 <th width="80px" class="rank rank-asc"><a class="fn-rank"
                                           data-rank="000000002000">
@@ -383,13 +401,59 @@ baseUrl=play.Play.configuration.getProperty("uri.operate_business");
         ${(report?.cheatedOrderAmount?:0).format('#0.00')}
         #{/else}
     </td>
-    <td style="text-align:right;">
+*{<td style="text-align:right;">}*
+*{#{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}}*
+*{<a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}"}*
+*{target="_blank"> ${(report?.refundAmount?:0).format('#0.00')}</a>}*
+*{#{/if}}*
+*{#{else}}*
+*{${(report?.refundAmount?:0).format('#0.00')}}*
+*{#{/else}}*
+*{</td>}*
+    <td style="text-align: right;">
         #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
-            <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}"
-               target="_blank"> ${(report?.refundAmount?:0).format('#0.00')}</a>
+            <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}&condition.refundForm=salesRefund"
+               target="_blank">
+            ${(report?.salesRefundAmount?:0).format('#0.00')}
+            </a>
         #{/if}
         #{else}
-        ${(report?.refundAmount?:0).format('#0.00')}
+        ${(report?.salesRefundAmount?:0).format('#0.00')}
+        #{/else}
+
+
+    </td>
+    <td style="text-align: right;">
+        #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
+            <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}&condition.refundForm=previousSalesRefund"
+               target="_blank">
+            ${(report?.previousSalesRefundAmount?:0).format('#0.00')}
+            </a>
+        #{/if}
+        #{else}
+        ${(report?.previousSalesRefundAmount?:0).format('#0.00')}
+        #{/else}
+    </td>
+    <td style="text-align: right;">
+        #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
+            <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}&condition.refundForm=consumedRefund"
+               target="_blank">
+            ${(report?.consumedRefundAmount?:0).format('#0.00')}
+            </a>
+        #{/if}
+        #{else}
+        ${(report?.consumedRefundAmount?:0).format('#0.00')}
+        #{/else}
+    </td>
+    <td style="text-align: right;">
+        #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
+            <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}&condition.refundForm=previousConsumedRefund"
+               target="_blank">
+            ${(report?.previousConsumedRefundAmount?:0).format('#0.00')}
+            </a>
+        #{/if}
+        #{else}
+        ${(report?.previousConsumedRefundAmount?:0).format('#0.00')}
         #{/else}
     </td>
     <td style="text-align:right;">

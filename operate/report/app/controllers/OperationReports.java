@@ -289,7 +289,7 @@ public class OperationReports extends Controller {
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
 //        if (flagWithCondition) {
 
-        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition,hasSeeReportProfitRight);
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition, hasSeeReportProfitRight);
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
 
@@ -540,8 +540,17 @@ public class OperationReports extends Controller {
                 report.consumedAmount = BigDecimal.ZERO;
             }
 
-            if (report.refundAmount == null) {
-                report.refundAmount = BigDecimal.ZERO;
+            if (report.salesRefundAmount == null) {
+                report.salesRefundAmount = BigDecimal.ZERO;
+            }
+            if (report.previousSalesRefundAmount == null) {
+                report.previousSalesRefundAmount = BigDecimal.ZERO;
+            }
+            if (report.consumedRefundAmount == null) {
+                report.consumedRefundAmount = BigDecimal.ZERO;
+            }
+            if (report.previousConsumedRefundAmount == null) {
+                report.previousConsumedRefundAmount = BigDecimal.ZERO;
             }
             if (report.totalAmount == null) {
                 report.totalAmount = BigDecimal.ZERO;
@@ -603,8 +612,17 @@ public class OperationReports extends Controller {
 
 
         for (SalesReport report : salesReportList) {
-            if (report.refundAmount == null) {
-                report.refundAmount = BigDecimal.ZERO;
+            if (report.salesRefundAmount == null) {
+                report.salesRefundAmount = BigDecimal.ZERO;
+            }
+            if (report.previousSalesRefundAmount == null) {
+                report.previousSalesRefundAmount = BigDecimal.ZERO;
+            }
+            if (report.consumedRefundAmount == null) {
+                report.consumedRefundAmount = BigDecimal.ZERO;
+            }
+            if (report.previousConsumedRefundAmount == null) {
+                report.previousConsumedRefundAmount = BigDecimal.ZERO;
             }
             if (report.consumedAmount == null) {
                 report.consumedAmount = BigDecimal.ZERO;
@@ -723,8 +741,8 @@ public class OperationReports extends Controller {
             if (report.consumedPrice == null) {
                 report.consumedPrice = BigDecimal.ZERO;
             }
-            if(report.profit==null){
-                report.profit=BigDecimal.ZERO;
+            if (report.profit == null) {
+                report.profit = BigDecimal.ZERO;
             }
 
         }
@@ -1034,7 +1052,7 @@ public class OperationReports extends Controller {
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
-        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition,hasSeeReportProfitRight);
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition, hasSeeReportProfitRight);
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
 
