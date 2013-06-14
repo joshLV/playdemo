@@ -60,6 +60,7 @@ public class CouponsCondition implements Serializable {
     public Boolean hasSeeAllSupplierPermission;
     public Long goodsId;
     public String supplierCategoryCode;
+    public String refundForm = "";
 
     public Boolean isCheatedOrder;
 
@@ -94,6 +95,7 @@ public class CouponsCondition implements Serializable {
             }
         }
 
+
         if (createdAtBegin != null) {
             sql.append(" and e.createdAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", createdAtBegin);
@@ -118,11 +120,46 @@ public class CouponsCondition implements Serializable {
         if (refundAtBegin != null) {
             sql.append(" and e.refundAt >= :refundAtBegin");
             paramMap.put("refundAtBegin", refundAtBegin);
+            //本期购买，本期未消费退款
+            if (refundForm.equals("salesRefund")) {
+                sql.append(" and e.consumedAt is null ");
+                sql.append(" and e.createdAt >= :createdAtBegin");
+                paramMap.put("createdAtBegin", refundAtBegin);
+                //本期之前购买，本期未消费退款
+            } else if (refundForm.equals("previousSalesRefund")) {
+                sql.append(" and e.consumedAt is null ");
+                sql.append(" and e.createdAt < :createdAtBegin");
+                paramMap.put("createdAtBegin", refundAtBegin);
+            }
+            //本期消费，本期消费退款
+            else if (refundForm.equals("consumedRefund")) {
+                sql.append(" and e.consumedAt is not null  ");
+                sql.append(" and e.consumedAt >= :createdAtBegin");
+                paramMap.put("createdAtBegin", refundAtBegin);
+                //本期之前消费，本期消费退款
+            } else if (refundForm.equals("previousConsumedRefund")) {
+                sql.append(" and e.consumedAt is not null ");
+                sql.append(" and e.consumedAt < :createdAtBegin");
+                paramMap.put("createdAtBegin", refundAtBegin);
+            }
         }
 
         if (refundAtEnd != null) {
             sql.append(" and e.refundAt <= :refundAtEnd");
             paramMap.put("refundAtEnd", DateUtil.getEndOfDay(refundAtEnd));
+            //本期购买，本期未消费退款
+            if (refundForm.equals("salesRefund")) {
+                sql.append(" and e.consumedAt is null ");
+                sql.append(" and e.createdAt <= :createdAtEnd");
+                paramMap.put("createdAtEnd", DateUtil.getEndOfDay(refundAtEnd));
+            } //本期消费，本期消费退款
+            else if (refundForm.equals("consumedRefund")) {
+                sql.append(" and e.consumedAt is not null  ");
+                sql.append(" and e.consumedAt <= :createdAtEnd");
+                paramMap.put("createdAtEnd", DateUtil.getEndOfDay(refundAtEnd));
+                //本期之前消费，本期消费退款
+            }
+
         }
         if (virtualVerifyAtBegin != null) {
             sql.append(" and e.virtualVerifyAt >= :virtualVerifyAtBegin");
@@ -351,7 +388,7 @@ public class CouponsCondition implements Serializable {
             }
         }
 
-        if (isCheatedOrder !=null && isCheatedOrder) {
+        if (isCheatedOrder != null && isCheatedOrder) {
             sql.append(" and e.isCheatedOrder=true");
         }
 

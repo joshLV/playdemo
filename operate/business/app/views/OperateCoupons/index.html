@@ -52,6 +52,7 @@
     <input type="hidden" name="condition.isCheatedOrder" value="${condition?.isCheatedOrder}">
     <input type="hidden" name="condition.salesId" value="${condition?.salesId}">
     <input type="hidden" name="condition.categoryCode" value="${condition?.categoryCode}">
+    <input type="hidden" name="condition.refundForm" value="${condition?.refundForm}">
 
     <div class="control-group">
 
@@ -166,7 +167,24 @@
     </div>
 
 </form>
-<div style="color:#0082CA;padding-bottom: 15px"> 总计：${couponPage.size()}
+<div>
+#{if condition.refundForm == "salesRefund"}
+    本期购买，本期未消费退款
+#{/if}
+#{elseif condition.refundForm == "previousSalesRefund"}}
+    本期之前购买，本期未消费退款
+#{/elseif}
+#{elseif condition.refundForm == "consumedRefund"}}
+    本期消费，本期消费退款
+#{/elseif}
+#{elseif condition.refundForm == "previousConsumedRefund"}}
+    本期之前消费，本期消费退款
+#{/elseif}
+</div>
+<div style="color:#0082CA;padding-bottom: 15px">
+
+
+    总计：${couponPage.size()}
     条记录&nbsp;&nbsp;&nbsp;总金额：${amountSummary?.formatCurrency('CNY')}</div>
 #{vx.other_tab name:'coupon',enumItems: models.order.ECouponStatus.values(),select:'condition_status',value:condition?.status/}
 

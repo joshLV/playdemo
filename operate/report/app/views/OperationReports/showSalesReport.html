@@ -411,16 +411,50 @@ baseUrl=play.Play.configuration.getProperty("uri.operate_business");
 *{#{/else}}*
 *{</td>}*
     <td style="text-align: right;">
-    ${(report?.salesRefundAmount?:0).format('#0.00')}
+        #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
+            <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}&condition.refundForm=salesRefund"
+               target="_blank">
+            ${(report?.salesRefundAmount?:0).format('#0.00')}
+            </a>
+        #{/if}
+        #{else}
+        ${(report?.salesRefundAmount?:0).format('#0.00')}
+        #{/else}
+
+
     </td>
     <td style="text-align: right;">
-    ${(report?.previousSalesRefundAmount?:0).format('#0.00')}
+        #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
+            <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}&condition.refundForm=previousSalesRefund"
+               target="_blank">
+            ${(report?.previousSalesRefundAmount?:0).format('#0.00')}
+            </a>
+        #{/if}
+        #{else}
+        ${(report?.previousSalesRefundAmount?:0).format('#0.00')}
+        #{/else}
     </td>
     <td style="text-align: right;">
-    ${(report?.consumedRefundAmount?:0).format('#0.00')}
+        #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
+            <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}&condition.refundForm=consumedRefund"
+               target="_blank">
+            ${(report?.consumedRefundAmount?:0).format('#0.00')}
+            </a>
+        #{/if}
+        #{else}
+        ${(report?.consumedRefundAmount?:0).format('#0.00')}
+        #{/else}
     </td>
     <td style="text-align: right;">
-    ${(report?.previousConsumedRefundAmount?:0).format('#0.00')}
+        #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
+            <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}&condition.refundForm=previousConsumedRefund"
+               target="_blank">
+            ${(report?.previousConsumedRefundAmount?:0).format('#0.00')}
+            </a>
+        #{/if}
+        #{else}
+        ${(report?.previousConsumedRefundAmount?:0).format('#0.00')}
+        #{/else}
     </td>
     <td style="text-align:right;">
         <a href="${baseUrl}/coupons?condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}"
