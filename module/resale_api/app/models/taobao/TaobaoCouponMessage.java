@@ -34,7 +34,7 @@ public class TaobaoCouponMessage extends QueueIDMessage implements Serializable 
     }
 
     @Override
-    public String getId() {
+    public String messageId() {
         return MQ_KEY + this.getOuterOrderId();
     }
 

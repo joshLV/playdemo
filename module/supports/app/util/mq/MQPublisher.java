@@ -31,7 +31,7 @@ public class MQPublisher {
 
     public static void recordMessage(QueueIDMessage message) {
         Long messageCount = Redis.incr(MESSAGE_COUNT_KEY);
-        if (message.getQueueIDRunType() == QueueIDRunType.ONLY_RUN_FIRST
+        if (message.queueIDRunType() == QueueIDRunType.ONLY_RUN_FIRST
                 && Redis.exists(getMessageRedisId(message))) {
             return;
         }
@@ -40,6 +40,6 @@ public class MQPublisher {
     }
 
     public static String getMessageRedisId(QueueIDMessage message) {
-        return "queueid." + message.getId();
+        return "queueid." + message.messageId();
     }
 }

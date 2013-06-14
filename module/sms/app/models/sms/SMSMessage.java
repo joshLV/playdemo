@@ -141,7 +141,7 @@ public class SMSMessage extends QueueIDMessage implements Serializable {
     }
 
     @Override
-    public String getId() {
+    public String messageId() {
         return mqKey + this.phoneNumbers + this.getContent().hashCode();
     }
 }

@@ -36,7 +36,7 @@ public class WebSqlCommandMessage extends QueueIDMessage implements Serializable
     public String sqlResult;
 
     @Override
-    public String getId() {
+    public String messageId() {
         return MQ_KEY + this.hashCode();
     }
 

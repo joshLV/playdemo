@@ -88,7 +88,7 @@ public class UserWebIdentificationData extends QueueIDMessage implements Seriali
     }
 
     @Override
-    public String getId() {
+    public String messageId() {
         return MQ_KEY + this.cookieId;
     }
 }

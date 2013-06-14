@@ -15,14 +15,18 @@ public abstract class QueueIDMessage {
         uuid = UUID.randomUUID().toString();
     }
 
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public String getUuid() {
         return uuid;
     }
 
-    public QueueIDRunType getQueueIDRunType() {
+    public QueueIDRunType queueIDRunType() {
         return QueueIDRunType.ONLY_RUN_FIRST;
     }
 
-    public abstract String getId();
+    public abstract String messageId();
 
 }

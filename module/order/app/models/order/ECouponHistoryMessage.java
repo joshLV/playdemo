@@ -85,7 +85,7 @@ public class ECouponHistoryMessage extends QueueIDMessage implements Serializabl
     }
 
     @Override
-    public String getId() {
+    public String messageId() {
         return MQ_KEY + "_" + this.eCouponId;
     }
 

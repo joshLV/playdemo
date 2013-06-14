@@ -69,7 +69,7 @@ public class OrderECouponMessage extends QueueIDMessage implements Serializable 
     }
 
     @Override
-    public String getId() {
+    public String messageId() {
         if (eCouponId != null && eCouponId > 0) {
             return MQ_KEY + "_ECOUPON_" + this.eCouponId;
         }

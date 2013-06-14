@@ -24,7 +24,7 @@ public abstract class RabbitMQConsumerWithTx<T> extends RabbitMQConsumer<T> {
                 return;
             }
             Set<String> uuidsNeedRun = null;
-            if (queueIDMessage.getQueueIDRunType() == QueueIDRunType.LAST_IN_FIRST_RUN) {
+            if (queueIDMessage.queueIDRunType() == QueueIDRunType.LAST_IN_FIRST_RUN) {
                 uuidsNeedRun = Redis.zrevrange(MQPublisher.getMessageRedisId(queueIDMessage), 0, 0);
             } else {
                 uuidsNeedRun = Redis.zrange(MQPublisher.getMessageRedisId(queueIDMessage), 0, 0);

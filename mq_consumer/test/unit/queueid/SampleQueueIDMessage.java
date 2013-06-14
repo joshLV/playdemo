@@ -23,12 +23,12 @@ public class SampleQueueIDMessage extends QueueIDMessage implements Serializable
     }
 
     @Override
-    public String getId() {
+    public String messageId() {
         return MQ_KEY + orderId;
     }
 
     @Override
-    public QueueIDRunType getQueueIDRunType() {
+    public QueueIDRunType queueIDRunType() {
         return queueIDRunType;
     }
 
