@@ -28,6 +28,7 @@ import play.vfs.VirtualFile;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -135,6 +136,8 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
 
     @Test
     public void 输入已验证的一百券券号并完成退款() throws Exception {
+        ecoupon.consumedAt=new Date();
+        ecoupon.save();
         User user = FactoryBoy.create(User.class);
         order.userId = yibaiquanResaler.id;
         order.consumerId = user.id;
@@ -171,6 +174,8 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
 
     @Test
     public void 输入已验证的分销券号并完成退款() throws Exception {
+        ecoupon.consumedAt=new Date();
+        ecoupon.save();
         // 分销商
         Resaler resaler = FactoryBoy.create(Resaler.class);
         order.userId = resaler.id;
