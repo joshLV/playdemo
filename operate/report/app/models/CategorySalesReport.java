@@ -1248,15 +1248,16 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
             return new CategorySalesReport(0l, BigDecimal.ZERO);
         }
         BigDecimal totalAmount = BigDecimal.ZERO;
-        BigDecimal netSalesAmount = BigDecimal.ZERO;
         BigDecimal refundAmount = BigDecimal.ZERO;
         BigDecimal totolSalePrice = BigDecimal.ZERO;
         BigDecimal totalCost = BigDecimal.ZERO;
         BigDecimal channelCost = BigDecimal.ZERO;
-        BigDecimal grossMargin = BigDecimal.ZERO;
         BigDecimal profit = BigDecimal.ZERO;
         BigDecimal summaryConsumed = BigDecimal.ZERO;
         BigDecimal cheatedOrderAmount = BigDecimal.ZERO;
+        BigDecimal netSalesAmount = BigDecimal.ZERO;
+        BigDecimal grossMargin = BigDecimal.ZERO;
+
 
         for (CategorySalesReport item : resultList) {
             totalAmount = totalAmount.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
