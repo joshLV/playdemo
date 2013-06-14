@@ -1,32 +1,21 @@
 package unit.website;
 
+import factory.FactoryBoy;
 import models.consumer.UserWebIdentification;
 import models.consumer.UserWebIdentificationData;
 import models.website.UserWebIdentificationConsumer;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import play.Logger;
-import play.db.jpa.JPA;
-import play.db.jpa.JPAPlugin;
 import play.test.UnitTest;
-import factory.FactoryBoy;
 
 public class UserWebIdentificationConsumerTest extends UnitTest {
-	
-	private class UserWebIdentificationConsumerImpl extends UserWebIdentificationConsumer {
-		public void doCousumer(UserWebIdentificationData data) {
-			this.consume(data);
-		}
-	}
 
-	private UserWebIdentificationConsumerImpl consumer;
+	private UserWebIdentificationConsumer consumer;
 
 	@Before
 	public void setUp() {
 		FactoryBoy.deleteAll();
-		consumer = new UserWebIdentificationConsumerImpl();
+		consumer = new UserWebIdentificationConsumer();
 	}
 	
 	@Test
@@ -34,10 +23,8 @@ public class UserWebIdentificationConsumerTest extends UnitTest {
 		assertEquals(0l, UserWebIdentification.count());
 		UserWebIdentificationData data = new UserWebIdentificationData();
 		data.cookieId = "didfa-33413adfa-313413-31ad";
-		consumer.doCousumer(data);
+		consumer.consumeWithTx(data);
 		
-		JPAPlugin.startTx(true);
 		assertEquals(1l, UserWebIdentification.count());
-		JPAPlugin.closeTx(true);
 	}
 }
