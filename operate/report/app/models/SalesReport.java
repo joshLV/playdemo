@@ -497,11 +497,7 @@ public class SalesReport implements Comparable<SalesReport> {
         }
 
         List<SalesReport> previousSalesRefundList = query.getResultList();
-        for (SalesReport report : previousSalesRefundList) {
-            System.out.println("report.previousSalesRefundAmount = " + report.previousSalesRefundAmount);
-        }
 
-        System.out.println("previousSalesRefundList = " + previousSalesRefundList.size());
 
         //refund from resaler 本期之前购买，本期未消费退款
         sql = "select new models.SalesReport(sum(e.salePrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r),r.goods" +
@@ -545,11 +541,13 @@ public class SalesReport implements Comparable<SalesReport> {
         groupBy = " group by e.orderItems.goods.id,b";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterPreviousSalesRefundResaler() + groupBy + " order by sum(e.salePrice) " +
+                .createQuery(sql + condition.getFilterConsumedRefundResaler() + groupBy + " " +
+                        "order by sum(e" +
+                        ".salePrice) " +
                         "desc");
 
-        for (String param : condition.getParamMap3().keySet()) {
-            query.setParameter(param, condition.getParamMap3().get(param));
+        for (String param : condition.getParamMap2().keySet()) {
+            query.setParameter(param, condition.getParamMap2().get(param));
         }
 
         List<SalesReport> consumedRefundResalerResultList = query.getResultList();
@@ -581,7 +579,10 @@ public class SalesReport implements Comparable<SalesReport> {
         groupBy = " group by e.orderItems.goods.id,b";
 
         query = JPA.em()
-                .createQuery(sql + condition.getFilterPreviousSalesRefundResaler() + groupBy + " order by sum(e.salePrice) " +
+                .createQuery(sql + condition.getFilterPreviousConsumedRefundResaler() + groupBy + " " +
+                        "" +
+                        "order by sum" +
+                        "(e.salePrice) " +
                         "desc");
 
         for (String param : condition.getParamMap3().keySet()) {
@@ -637,8 +638,10 @@ public class SalesReport implements Comparable<SalesReport> {
                 item.salesRefundAmount = refundItem.salesRefundAmount;
                 item.salesRefundCost = refundItem.salesRefundCost;
                 item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost);
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost);
+
+//                        (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost);
             }
         }
 
@@ -649,48 +652,29 @@ public class SalesReport implements Comparable<SalesReport> {
                 Goods goods = Goods.findById(refundItem.goods.id);
                 refundItem.originalPrice = goods.originalPrice;
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.previousSalesRefundAmount);
+                System.out.println(" refundItem.profit = " + refundItem.profit);
                 refundItem.profit = BigDecimal.ZERO.subtract(refundItem.previousSalesRefundAmount).add(refundItem
                         .previousSalesRefundCost);
+                System.out.println(" 222refundItem.profit = " + refundItem.profit);
                 map.put(getReportKey(refundItem), refundItem);
             } else {
                 item.previousSalesRefundAmount = refundItem.previousSalesRefundAmount;
                 item.previousSalesRefundCost = refundItem.previousSalesRefundCost;
-                System.out.println("refundItem = " + refundItem.goods.salePrice);
-                System.out.println("item.previousSalesRefundAmount = " + item.previousSalesRefundAmount);
                 item.netSalesAmount = (item
                         .totalAmount == null ?
                         BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal
                         .ZERO : item
                         .cheatedOrderAmount).setScale
                         (2);
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item
-                        .cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).add(item.previousSalesRefundCost == null ? BigDecimal.ZERO : item.previousSalesRefundCost);
+                System.out.println("111item.profit = " + item.profit);
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item.previousSalesRefundAmount == null ? BigDecimal.ZERO : item.previousSalesRefundAmount).add(item.previousSalesRefundCost == null ? BigDecimal.ZERO : item.previousSalesRefundCost);
+                System.out.println("222item.profit = " + item.profit);
+//                        (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item
+//                        .cheatedOrderAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).add(item.previousSalesRefundCost == null ? BigDecimal.ZERO : item.previousSalesRefundCost);
             }
         }
 
-        //本期之前购买，本期未消费退款
-        for (SalesReport refundItem : previousSalesRefundList) {
-            SalesReport item = map.get(getReportKey(refundItem));
-            if (item == null) {
-                Goods goods = Goods.findById(refundItem.goods.id);
-                refundItem.originalPrice = goods.originalPrice;
-                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.previousSalesRefundAmount);
-                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.previousSalesRefundAmount).add(refundItem
-                        .previousSalesRefundCost);
-                map.put(getReportKey(refundItem), refundItem);
-            } else {
-                item.previousSalesRefundAmount = refundItem.previousSalesRefundAmount;
-                item.previousSalesRefundCost = refundItem.previousSalesRefundCost;
-                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal
-                        .ZERO : item
-                        .cheatedOrderAmount).setScale
-                        (2);
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item
-                        .cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).add(item.previousSalesRefundCost == null ? BigDecimal.ZERO : item.previousSalesRefundCost);
-            }
-        }
 
         //本期消费，本期消费退款
         for (SalesReport refundItem : consumedRefundList) {
@@ -712,12 +696,14 @@ public class SalesReport implements Comparable<SalesReport> {
                         .ZERO : item
                         .cheatedOrderAmount).setScale
                         (2);
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount == null ? BigDecimal.ZERO : item.previousSalesRefundAmount).subtract(item.consumedRefundAmount).
-                        subtract(item.cheatedOrderAmount == null ?
-                                BigDecimal.ZERO : item
-                                .cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).add(item.previousSalesRefundCost == null ?
-                                BigDecimal.ZERO : item.previousSalesRefundCost).add(item.consumedRefundCost);
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item.consumedRefundAmount == null ? BigDecimal.ZERO : item.consumedRefundAmount).add(item.consumedRefundAmount == null ? BigDecimal.ZERO : item.consumedRefundCost);
+
+//                        (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount == null ? BigDecimal.ZERO : item.previousSalesRefundAmount).subtract(item.consumedRefundAmount).
+//                        subtract(item.cheatedOrderAmount == null ?
+//                                BigDecimal.ZERO : item
+//                                .cheatedOrderAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).add(item.previousSalesRefundCost == null ?
+//                                BigDecimal.ZERO : item.previousSalesRefundCost).add(item.consumedRefundCost);
             }
         }
 
@@ -743,16 +729,19 @@ public class SalesReport implements Comparable<SalesReport> {
                         .ZERO : item
                         .cheatedOrderAmount).setScale
                         (2);
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount == null ? BigDecimal.ZERO : item.previousSalesRefundAmount).subtract(item
-                        .consumedRefundAmount == null ? BigDecimal.ZERO : item.consumedRefundAmount).subtract(item
-                        .previousConsumedRefundAmount).
-                        subtract(item.cheatedOrderAmount == null ?
-                                BigDecimal.ZERO : item
-                                .cheatedOrderAmount).subtract(item.previousConsumedRefundAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).add(item.previousSalesRefundCost == null ?
-                                BigDecimal.ZERO : item.previousSalesRefundCost).add(item.consumedRefundCost == null ?
-                                BigDecimal.ZERO : item.consumedRefundCost).add(item
-                                .previousConsumedRefundCost);
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item.previousConsumedRefundAmount == null ? BigDecimal.ZERO : item.previousConsumedRefundAmount).add(item.previousConsumedRefundCost == null ? BigDecimal.ZERO : item.previousConsumedRefundCost);
+
+
+//                        (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount == null ? BigDecimal.ZERO : item.previousSalesRefundAmount).subtract(item
+//                        .consumedRefundAmount == null ? BigDecimal.ZERO : item.consumedRefundAmount).subtract(item
+//                        .previousConsumedRefundAmount).
+//                        subtract(item.cheatedOrderAmount == null ?
+//                                BigDecimal.ZERO : item
+//                                .cheatedOrderAmount).subtract(item.previousConsumedRefundAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).add(item.previousSalesRefundCost == null ?
+//                                BigDecimal.ZERO : item.previousSalesRefundCost).add(item.consumedRefundCost == null ?
+//                                BigDecimal.ZERO : item.consumedRefundCost).add(item
+//                                .previousConsumedRefundCost);
             }
         }
 
@@ -770,6 +759,7 @@ public class SalesReport implements Comparable<SalesReport> {
 
         //merge from resaler if commissionRatio
         BigDecimal totalCommission = BigDecimal.ZERO;
+        System.out.println("paidResalerResultList.size() = " + paidResalerResultList.size());
         for (SalesReport resalerItem : paidResalerResultList) {
             SalesReport item = map.get(getReportKey(resalerItem));
             if (item == null) {
@@ -778,13 +768,19 @@ public class SalesReport implements Comparable<SalesReport> {
                 totalCommission = item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount;
                 totalCommission = totalCommission.add(resalerItem.totalAmountCommissionAmount == null ? BigDecimal.ZERO : resalerItem.totalAmountCommissionAmount);
                 item.totalAmountCommissionAmount = totalCommission;
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+                System.out.println("1212item.profit = " + item.profit);
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(resalerItem.totalAmountCommissionAmount);
+//                                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
+//                        .subtract(totalCommission == null ? BigDecimal.ZERO : totalCommission)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+                System.out.println("3434item.profit = " + item.profit);
+                System.out.println("totalCommission = " + totalCommission);
+
             }
         }
 
         totalCommission = BigDecimal.ZERO;
+        System.out.println("cheatedOrderResalerResultList = " + cheatedOrderResalerResultList);
         for (SalesReport cheatedResalerItem : cheatedOrderResalerResultList) {
             SalesReport item = map.get(getReportKey(cheatedResalerItem));
             if (item == null) {
@@ -793,16 +789,21 @@ public class SalesReport implements Comparable<SalesReport> {
                 totalCommission = item.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : item.cheatedOrderCommissionAmount;
                 totalCommission = totalCommission.add(cheatedResalerItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedResalerItem.cheatedOrderCommissionAmount);
                 item.cheatedOrderCommissionAmount = totalCommission;
+                System.out.println("5656item.profit = " + item.profit);
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit);
+                //.subtract(cheatedResalerItem.cheatedOrderCommissionAmount);
+                System.out.println("7878item.profit = " + item.profit);
 
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+//                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
+//                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
 
             }
         }
 
         //本期购买，本期未消费退款
         totalCommission = BigDecimal.ZERO;
+        System.out.println("salesRefundResalerResultList = " + salesRefundResalerResultList);
         for (SalesReport refundResalerItem : salesRefundResalerResultList) {
             SalesReport item = map.get(getReportKey(refundResalerItem));
             if (item == null) {
@@ -812,12 +813,16 @@ public class SalesReport implements Comparable<SalesReport> {
                         .salesRefundCommissionAmount;
                 totalCommission = totalCommission.add(refundResalerItem.salesRefundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.salesRefundCommissionAmount);
                 item.salesRefundCommissionAmount = totalCommission;
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
-                        .add(item.salesRefundCommissionAmount == null ? BigDecimal.ZERO : item.salesRefundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost)
-                        .add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost)
-                        .add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+//                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item.salesRefundCommissionAmount == null ? BigDecimal.ZERO : item.salesRefundCommissionAmount);
+//
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).add(refundResalerItem.salesRefundCommissionAmount);
+
+//                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount)
+//                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
+//                        .add(item.salesRefundCommissionAmount == null ? BigDecimal.ZERO : item.salesRefundCommissionAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost)
+//                        .add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost)
+//                        .add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
             }
         }
 
@@ -828,19 +833,25 @@ public class SalesReport implements Comparable<SalesReport> {
             if (item == null) {
                 map.put(getReportKey(refundResalerItem), refundResalerItem);
             } else {
+                System.out.println("333item.profit = " + item.profit);
+
                 totalCommission = item.previousSalesRefundCommissionAmount == null ? BigDecimal.ZERO : item
                         .previousSalesRefundCommissionAmount;
                 totalCommission = totalCommission.add(refundResalerItem.previousSalesRefundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.previousSalesRefundCommissionAmount);
                 item.previousSalesRefundCommissionAmount = totalCommission;
-                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item
-                        .previousSalesRefundAmount == null ? BigDecimal.ZERO : item
-                        .previousSalesRefundAmount).add(item.previousSalesRefundCommissionAmount == null ? BigDecimal.ZERO : item
-                        .previousSalesRefundCommissionAmount).add(item
-                        .previousSalesRefundCost == null ? BigDecimal.ZERO : item
-                        .previousSalesRefundCost);
+//                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item.previousSalesRefundCommissionAmount == null ? BigDecimal.ZERO : item.previousSalesRefundCommissionAmount);
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).add(refundResalerItem.previousSalesRefundCommissionAmount);
+//                        .subtract(item
+//                                .previousSalesRefundAmount == null ? BigDecimal.ZERO : item
+//                                .previousSalesRefundAmount).add(item.previousSalesRefundCommissionAmount == null ? BigDecimal.ZERO : item
+//                                .previousSalesRefundCommissionAmount).add(item
+//                                .previousSalesRefundCost == null ? BigDecimal.ZERO : item
+//                                .previousSalesRefundCost);
+                System.out.println("444item.profit = " + item.profit);
+
             }
         }
-
+        System.out.println("consumedRefundResalerResultList.size() = " + consumedRefundResalerResultList.size());
         //本期消费，本期消费退款
         totalCommission = BigDecimal.ZERO;
         for (SalesReport refundResalerItem : consumedRefundResalerResultList) {
@@ -848,16 +859,20 @@ public class SalesReport implements Comparable<SalesReport> {
             if (item == null) {
                 map.put(getReportKey(refundResalerItem), refundResalerItem);
             } else {
-                totalCommission = item.consumedRefundAmount == null ? BigDecimal.ZERO : item
-                        .consumedRefundAmount;
-                totalCommission = totalCommission.add(refundResalerItem.consumedRefundAmount == null ? BigDecimal.ZERO : refundResalerItem.consumedRefundAmount);
+                totalCommission = item.consumedRefundCommissionAmount == null ? BigDecimal.ZERO : item
+                        .consumedRefundCommissionAmount;
+                totalCommission = totalCommission.add(refundResalerItem.consumedRefundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.consumedRefundCommissionAmount);
                 item.consumedRefundCommissionAmount = totalCommission;
-                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item
-                        .consumedRefundAmount == null ? BigDecimal.ZERO : item
-                        .consumedRefundAmount).add(item.consumedRefundCommissionAmount == null ? BigDecimal.ZERO : item
-                        .consumedRefundCommissionAmount).add(item
-                        .consumedRefundCost == null ? BigDecimal.ZERO : item
-                        .consumedRefundCost);
+//                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item.consumedRefundCommissionAmount == null ? BigDecimal.ZERO : item.consumedRefundCommissionAmount);
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).add(refundResalerItem.consumedRefundCommissionAmount);
+
+//
+//                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item
+//                        .consumedRefundAmount == null ? BigDecimal.ZERO : item
+//                        .consumedRefundAmount).add(item.consumedRefundCommissionAmount == null ? BigDecimal.ZERO : item
+//                        .consumedRefundCommissionAmount).add(item
+//                        .consumedRefundCost == null ? BigDecimal.ZERO : item
+//                        .consumedRefundCost);
             }
         }
 
@@ -868,16 +883,19 @@ public class SalesReport implements Comparable<SalesReport> {
             if (item == null) {
                 map.put(getReportKey(refundResalerItem), refundResalerItem);
             } else {
-                totalCommission = item.previousConsumedRefundAmount == null ? BigDecimal.ZERO : item
-                        .previousConsumedRefundAmount;
-                totalCommission = totalCommission.add(refundResalerItem.previousConsumedRefundAmount == null ? BigDecimal.ZERO : refundResalerItem.previousConsumedRefundAmount);
+                totalCommission = item.previousConsumedRefundCommissionAmount == null ? BigDecimal.ZERO : item
+                        .previousConsumedRefundCommissionAmount;
+                totalCommission = totalCommission.add(refundResalerItem.previousConsumedRefundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.previousConsumedRefundCommissionAmount);
                 item.previousConsumedRefundCommissionAmount = totalCommission;
-                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item
-                        .previousConsumedRefundAmount == null ? BigDecimal.ZERO : item
-                        .previousConsumedRefundAmount).add(item.previousConsumedRefundCommissionAmount == null ? BigDecimal.ZERO : item
-                        .previousConsumedRefundCommissionAmount).add(item
-                        .previousConsumedRefundCost == null ? BigDecimal.ZERO : item
-                        .previousConsumedRefundCost);
+//                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item.previousConsumedRefundCommissionAmount == null ? BigDecimal.ZERO : item.previousConsumedRefundCommissionAmount);
+                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).add(refundResalerItem.previousConsumedRefundCommissionAmount);
+
+//                item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item
+//                        .previousConsumedRefundAmount == null ? BigDecimal.ZERO : item
+//                        .previousConsumedRefundAmount).add(item.previousConsumedRefundCommissionAmount == null ? BigDecimal.ZERO : item
+//                        .previousConsumedRefundCommissionAmount).add(item
+//                        .previousConsumedRefundCost == null ? BigDecimal.ZERO : item
+//                        .previousConsumedRefundCost);
             }
         }
 
@@ -1209,7 +1227,6 @@ public class SalesReport implements Comparable<SalesReport> {
             netSalesAmount = netSalesAmount.add(item.netSalesAmount == null ? BigDecimal.ZERO : item.netSalesAmount);
             cheatedOrderAmount = cheatedOrderAmount.add(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount);
         }
-
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
             grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
@@ -1230,7 +1247,7 @@ public class SalesReport implements Comparable<SalesReport> {
 //         后面一位：1是升序，2是降序
         switch (this.orderBy) {
             case "02":
-                return arg.goods.code.compareTo(this.goods.code);
+                return (arg.goods.code).compareTo(this.goods.code);
             case "01":
                 return this.goods.code.compareTo(arg.goods.code);
             case "12":

@@ -705,8 +705,8 @@ public class SalesReportCondition implements Serializable {
             paramMap3.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
-            condBuilder.append(" and e.refundAt <= :createdAtEnd");
-            paramMap3.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            condBuilder.append(" and e.refundAt <= :refundAtEnd");
+            paramMap3.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
         if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
             List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
