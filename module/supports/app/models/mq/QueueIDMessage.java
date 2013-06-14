@@ -24,7 +24,7 @@ public abstract class QueueIDMessage {
     }
 
     public QueueIDRunType queueIDRunType() {
-        return QueueIDRunType.ONLY_RUN_FIRST;
+        return QueueIDRunType.LAST_IN_FIRST_RUN;
     }
 
     public abstract String messageId();

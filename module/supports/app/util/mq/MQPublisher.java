@@ -2,6 +2,7 @@ package util.mq;
 
 import models.mq.QueueIDMessage;
 import models.mq.QueueIDRunType;
+import play.Logger;
 import play.Play;
 import play.modules.rabbitmq.producer.RabbitMQPublisher;
 import play.modules.redis.Redis;
@@ -33,6 +34,7 @@ public class MQPublisher {
         Long messageCount = Redis.incr(MESSAGE_COUNT_KEY);
         if (message.queueIDRunType() == QueueIDRunType.ONLY_RUN_FIRST
                 && Redis.exists(getMessageRedisId(message))) {
+            Logger.info("queueId only run first message, exists:" + getMessageRedisId(message));
             return;
         }
         // 如果LastRun情况下，如果运行过程中加入了新的Queue，我们认为可以先不管
