@@ -47,7 +47,7 @@ public class UploadOrderShippingInfosTest extends FunctionalTest {
     Goods goods;
     OrderShippingInfo orderShippingInfo;
     OrderShippingInfo orderShippingInfo1;
-    Freight freight
+    Freight freight;
 
     /**
      * 测试数据准备
