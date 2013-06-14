@@ -146,7 +146,12 @@ beginValue:condition?.beginAt?.format(), endValue:condition?.endAt?.format()/}
 <div class="alert alert-success">
         <span>在此期间 总销售金额：<b>￥${summary?.totalAmount?:0}</b>,
             刷单总额：<b>￥${summary?.cheatedOrderAmount?:0}</b>,
-            总退款金额：<b>￥${summary?.refundAmount?:0}</b>,
+                        本期购买本期未消费退款金额：<b>￥${summary?.salesRefundAmount?:0}</b>,
+                        本期前购买本期未消费退款金额：<b>￥${summary?.previousSalesRefundAmount?:0}</b>,
+                        本期消费本期消费退款：<b>￥${summary?.consumedRefundAmount?:0}</b>,
+                        本期前消费本期消费退款：<b>￥${summary?.previousConsumedRefundAmount?:0}</b>,
+
+        *{总退款金额：<b>￥${summary?.refundAmount?:0}</b>,}*
             消费券总额：<b>￥${summary?.totalConsumed?:0}</b>,
             净销售金额：<b>￥${summary?.netSalesAmount?:0}</b>
         #{if hasSeeReportProfitRight == true}
@@ -284,13 +289,13 @@ beginValue:condition?.beginAt?.format(), endValue:condition?.endAt?.format()/}
 *{</th>#{/else}}*
 
 <th>
-    本期购买未消费退款金额
+    本期购买本期未消费退款金额
 </th>
 <th>
     本期前购买本期未消费退款金额
 </th>
 <th>
-    本期消费消费退款
+    本期消费本期消费退款
 </th>
 <th>
     本期前消费本期消费退款
