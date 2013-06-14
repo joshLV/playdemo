@@ -3,11 +3,9 @@ package controllers;
 import com.uhuila.common.util.DateUtil;
 import controllers.supplier.SupplierInjector;
 import models.admin.SupplierUser;
-import models.order.ECoupon;
-import models.order.ECouponHistoryMessage;
-import models.order.ECouponStatus;
-import models.order.OrderECouponMessage;
+import models.order.*;
 import models.sales.Shop;
+import models.sms.SMSMessage;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -18,6 +16,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import javax.persistence.Query;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -138,7 +137,7 @@ public class SupplierAppointments extends Controller {
             coupon.appointmentDate = appointmentDate;
             coupon.appointmentRemark = appointmentRemark;
             coupon.save();
-            ECouponHistoryMessage.with(coupon).operator(SupplierRbac.currentUser().userName).remark("重新预定日期信息").sendToMQ();
+            OrderECouponMessage.with(coupon).operator(SupplierRbac.currentUser().userName).remark("重新预定日期信息").sendToMQ();
         }
         index(null, null);
     }

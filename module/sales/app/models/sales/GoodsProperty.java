@@ -17,6 +17,7 @@ public class GoodsProperty extends Model {
      */
     @Column(name = "goods_id")
     public Long goodsId;
+
     /**
      * 关键字
      */

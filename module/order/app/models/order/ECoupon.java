@@ -1807,7 +1807,7 @@ public class ECoupon extends Model {
             return false;
         }
 
-        ECouponHistoryMessage.with(this).operator(supplierUser.userName).remark("预约验证成功").sendToMQ();
+        ECouponHistoryMessage.with(this).operator(supplierUser.userName).remark("预约成功").sendToMQ();
 
         //把预付订金打给商户
         TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
