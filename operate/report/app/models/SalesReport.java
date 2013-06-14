@@ -157,6 +157,7 @@ public class SalesReport implements Comparable<SalesReport> {
      */
     public BigDecimal profit;
     public BigDecimal netSalesAmount;
+    public BigDecimal netCost;
     public BigDecimal totalCost;
     public BigDecimal ratio;
     public BigDecimal originalAmount;
@@ -614,12 +615,21 @@ public class SalesReport implements Comparable<SalesReport> {
                 Goods goods = Goods.findById(cheatedItem.goods.id);
                 cheatedItem.originalPrice = goods.originalPrice;
                 cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount);
-                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+                cheatedItem.netCost = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO :
+                        cheatedItem
+                                .cheatedOrderCost);
+                cheatedItem.grossMargin = (cheatedItem.netSalesAmount.subtract(item.netCost)).divide(cheatedItem
+                        .netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem
+                        .cheatedOrderCost);
                 map.put(getReportKey(cheatedItem), cheatedItem);
             } else {
                 item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
                 item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
                 item.netSalesAmount = item.totalAmount.subtract(item.cheatedOrderAmount);
+                item.netCost = item.totalCost.subtract(item.cheatedOrderCost);
+                item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4,
+                        RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 item.profit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
                         .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
             }
@@ -632,12 +642,17 @@ public class SalesReport implements Comparable<SalesReport> {
                 Goods goods = Goods.findById(refundItem.goods.id);
                 refundItem.originalPrice = goods.originalPrice;
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.salesRefundAmount);
+                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.salesRefundCost);
+                refundItem.grossMargin = (refundItem.netSalesAmount.subtract(item.netCost)).divide(refundItem
+                        .netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 refundItem.profit = BigDecimal.ZERO.subtract(refundItem.salesRefundAmount).add(refundItem.salesRefundCost);
                 map.put(getReportKey(refundItem), refundItem);
             } else {
                 item.salesRefundAmount = refundItem.salesRefundAmount;
                 item.salesRefundCost = refundItem.salesRefundCost;
                 item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
+                item.netCost = (item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(item.salesRefundCost).subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).setScale(2);
+                item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost);
 
 //                        (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
@@ -652,10 +667,11 @@ public class SalesReport implements Comparable<SalesReport> {
                 Goods goods = Goods.findById(refundItem.goods.id);
                 refundItem.originalPrice = goods.originalPrice;
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.previousSalesRefundAmount);
-                System.out.println(" refundItem.profit = " + refundItem.profit);
+                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.previousSalesRefundCost);
+                refundItem.grossMargin = (refundItem.netSalesAmount.subtract(refundItem.netCost)).divide(refundItem.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 refundItem.profit = BigDecimal.ZERO.subtract(refundItem.previousSalesRefundAmount).add(refundItem
                         .previousSalesRefundCost);
-                System.out.println(" 222refundItem.profit = " + refundItem.profit);
+
                 map.put(getReportKey(refundItem), refundItem);
             } else {
                 item.previousSalesRefundAmount = refundItem.previousSalesRefundAmount;
@@ -666,9 +682,16 @@ public class SalesReport implements Comparable<SalesReport> {
                         .ZERO : item
                         .cheatedOrderAmount).setScale
                         (2);
-                System.out.println("111item.profit = " + item.profit);
+                item.netCost = (item
+                        .totalCost == null ?
+                        BigDecimal.ZERO : item.totalCost).subtract(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).subtract(item.previousSalesRefundCost).subtract(item.cheatedOrderCost == null ? BigDecimal
+                        .ZERO : item
+                        .cheatedOrderCost).setScale
+                        (2);
+                item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4,
+                        RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+
                 item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item.previousSalesRefundAmount == null ? BigDecimal.ZERO : item.previousSalesRefundAmount).add(item.previousSalesRefundCost == null ? BigDecimal.ZERO : item.previousSalesRefundCost);
-                System.out.println("222item.profit = " + item.profit);
 //                        (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item
 //                        .cheatedOrderAmount)
 //                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).add(item.previousSalesRefundCost == null ? BigDecimal.ZERO : item.previousSalesRefundCost);
@@ -683,6 +706,8 @@ public class SalesReport implements Comparable<SalesReport> {
                 Goods goods = Goods.findById(refundItem.goods.id);
                 refundItem.originalPrice = goods.originalPrice;
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.consumedRefundAmount);
+                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.consumedRefundCost);
+                refundItem.grossMargin = (refundItem.netSalesAmount.subtract(refundItem.netCost)).divide(refundItem.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 refundItem.profit = BigDecimal.ZERO.subtract(refundItem.consumedRefundAmount).add(refundItem
                         .consumedRefundCost);
                 map.put(getReportKey(refundItem), refundItem);
@@ -696,6 +721,17 @@ public class SalesReport implements Comparable<SalesReport> {
                         .ZERO : item
                         .cheatedOrderAmount).setScale
                         (2);
+                item.netCost = (item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(item
+                        .salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).subtract(item.previousSalesRefundCost == null ? BigDecimal.ZERO : item.previousSalesRefundCost).subtract(item.consumedRefundCost).subtract(item
+                        .cheatedOrderCost ==
+                        null
+                        ? BigDecimal
+                        .ZERO : item
+                        .cheatedOrderCost).setScale
+                        (2);
+                item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4,
+                        RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+
                 item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item.consumedRefundAmount == null ? BigDecimal.ZERO : item.consumedRefundAmount).add(item.consumedRefundAmount == null ? BigDecimal.ZERO : item.consumedRefundCost);
 
 //                        (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.salesRefundAmount == null ? BigDecimal.ZERO : item.salesRefundAmount).subtract(item.previousSalesRefundAmount == null ? BigDecimal.ZERO : item.previousSalesRefundAmount).subtract(item.consumedRefundAmount).
@@ -714,6 +750,9 @@ public class SalesReport implements Comparable<SalesReport> {
                 Goods goods = Goods.findById(refundItem.goods.id);
                 refundItem.originalPrice = goods.originalPrice;
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.previousConsumedRefundAmount);
+                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.previousConsumedRefundCost);
+                refundItem.grossMargin = (refundItem.netSalesAmount.subtract(refundItem.netCost)).divide(refundItem.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+
                 refundItem.profit = BigDecimal.ZERO.subtract(refundItem.previousConsumedRefundAmount).add(refundItem
                         .previousConsumedRefundCost);
                 map.put(getReportKey(refundItem), refundItem);
@@ -729,6 +768,17 @@ public class SalesReport implements Comparable<SalesReport> {
                         .ZERO : item
                         .cheatedOrderAmount).setScale
                         (2);
+                item.netCost = (item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(item.salesRefundCost == null ? BigDecimal.ZERO : item.salesRefundCost).subtract(item.previousSalesRefundCost == null ? BigDecimal.ZERO : item
+                        .previousSalesRefundCost).subtract(item.consumedRefundCost == null ? BigDecimal.ZERO : item
+                        .consumedRefundCost).subtract(item.previousConsumedRefundCost).subtract(item
+                        .cheatedOrderCost ==
+                        null
+                        ? BigDecimal
+                        .ZERO : item
+                        .cheatedOrderCost).setScale
+                        (2);
+                item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4,
+                        RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 item.profit = (item.profit == null ? BigDecimal.ZERO : item.profit).subtract(item.previousConsumedRefundAmount == null ? BigDecimal.ZERO : item.previousConsumedRefundAmount).add(item.previousConsumedRefundCost == null ? BigDecimal.ZERO : item.previousConsumedRefundCost);
 
 
