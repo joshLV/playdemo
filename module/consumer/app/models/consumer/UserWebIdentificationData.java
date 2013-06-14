@@ -1,17 +1,16 @@
 package models.consumer;
 
+import models.mq.QueueIDMessage;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-public class UserWebIdentificationData implements Serializable {
+public class UserWebIdentificationData extends QueueIDMessage implements Serializable {
 
     private static final long serialVersionUID = 197132060911893921L;
+
+    public static final String MQ_KEY = "website.identification";
     
     public String cookieId;
 
@@ -86,5 +85,10 @@ public class UserWebIdentificationData implements Serializable {
     	uwi.registerCount = this.registerCount;
     	uwi.userAgent = this.userAgent;
     	return uwi;
+    }
+
+    @Override
+    public String getId() {
+        return MQ_KEY + this.cookieId;
     }
 }

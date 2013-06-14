@@ -1,5 +1,6 @@
 package models.sms;
 
+import models.mq.QueueIDMessage;
 import models.order.OrderItemsFeeType;
 import play.Play;
 import util.mq.MQPublisher;
@@ -14,8 +15,8 @@ import java.util.List;
  *
  * User: likang
  */
-public class SMSMessage implements Serializable {
-    private static final long serialVersionUID = -8170943259282104651L;
+public class SMSMessage extends QueueIDMessage implements Serializable {
+    private static final long serialVersionUID = 8213259282104651L;
     private static final String SIGN = "【一百券】";
 
     // 短信MQ名称
@@ -35,6 +36,8 @@ public class SMSMessage implements Serializable {
     // 计费专用
     private Long orderItemsId;
     private OrderItemsFeeType feeType;
+
+    public String mqKey;
 
     public SMSMessage(String content, String phoneNumber, String code) {
         this.setContent(content);
@@ -125,6 +128,7 @@ public class SMSMessage implements Serializable {
      * 通过通道1发出短信.
      */
     public void send() {
+        this.mqKey = SMS_QUEUE;
         MQPublisher.publish(SMS_QUEUE, this);
     }
 
@@ -132,6 +136,12 @@ public class SMSMessage implements Serializable {
      * 通过通道2发出短信.
      */
     public void send2() {
+        this.mqKey = SMS2_QUEUE;
         MQPublisher.publish(SMS2_QUEUE, this);
+    }
+
+    @Override
+    public String getId() {
+        return mqKey + this.phoneNumbers + this.getContent().hashCode();
     }
 }

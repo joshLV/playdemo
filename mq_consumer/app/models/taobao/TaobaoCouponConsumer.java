@@ -310,6 +310,6 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
 
     @Override
     protected String queue() {
-        return TaobaoCouponMessageUtil.QUEUE_NAME;
+        return TaobaoCouponMessage.MQ_KEY;
     }
 }

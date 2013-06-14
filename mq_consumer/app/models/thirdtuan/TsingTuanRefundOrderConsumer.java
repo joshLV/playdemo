@@ -4,7 +4,6 @@ import models.mq.RabbitMQConsumerWithTx;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
 import play.Logger;
-import play.jobs.OnApplicationStart;
 import util.ws.WebServiceRequest;
 
 import java.util.HashMap;
@@ -12,7 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@OnApplicationStart(async = true)
+//@OnApplicationStart(async = true)
 public class TsingTuanRefundOrderConsumer extends RabbitMQConsumerWithTx<TsingTuanOrder> {
 
     @Override

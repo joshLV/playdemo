@@ -26,6 +26,7 @@ import java.util.List;
 
 /**
  * 发送订单的短信，如果有多个短信，会一次发掉。
+ * 已经加入QueueId支持.
  */
 @OnApplicationStart(async = true)
 public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMessage> {

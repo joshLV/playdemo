@@ -3,8 +3,8 @@ package models.order;
 import com.google.common.collect.Lists;
 import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
+import models.mq.QueueIDMessage;
 import models.resale.Resaler;
-import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import play.Logger;
@@ -22,11 +22,11 @@ import java.util.List;
 /**
  * 包装处理订单和券相关的消息.
  */
-public class OrderECouponMessage implements Serializable {
+public class OrderECouponMessage extends QueueIDMessage implements Serializable {
 
-    private static final long serialVersionUID = 706323206329883135L;
+    private static final long serialVersionUID = 793732320988395L;
 
-    public static final String MQ_KEY = Play.mode.isProd() ? "send_order_sms" : "send_order_sms_dev";
+    public static final String MQ_KEY = Play.mode.isProd() ? "order.sms" : "order.sms_dev";
 
     // 默认的生成券短信格式.
     private static DefaultAction<OrderECouponSMSContext> defaultSmsAction = new DefaultAction<OrderECouponSMSContext>() {
@@ -68,11 +68,12 @@ public class OrderECouponMessage implements Serializable {
         // 禁止直接创建对象
     }
 
-    public OrderECouponMessage(Long _orderItemId, Long _eCouponId, String _phone, String _remark) {
-        this.orderItemId = _orderItemId;
-        this.eCouponId = _eCouponId;
-        this.phone = _phone;
-        this.remark = _remark;
+    @Override
+    public String getId() {
+        if (eCouponId != null && eCouponId > 0) {
+            return MQ_KEY + "_ECOUPON_" + this.eCouponId;
+        }
+        return MQ_KEY + "_ITEM_" + this.orderItemId;
     }
 
     public static OrderECouponMessage with(OrderItems orderItems) {

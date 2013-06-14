@@ -13,6 +13,7 @@ import models.sms.SMSMessage;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -94,6 +95,7 @@ public class SupplierVerifyECoupons extends Controller {
         if (StringUtils.isBlank(eCouponSn)) {
             renderJSON("{\"errorInfo\":\"券号不能为空！\"}");
         }
+        Logger.info("SupplierVerifyECoupons.singleQuery: query eCouponSN (%s)", eCouponSn);
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
         //判断商品是否二次验证商品
@@ -103,8 +105,10 @@ public class SupplierVerifyECoupons extends Controller {
         //check券和门店
         String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId);
         if (StringUtils.isNotEmpty(errorInfo)) {
+            Logger.info("SupplierVerifyECoupons.singleQuery: Error eCouponSN (%s), errorInfo: %s", eCouponSn, errorInfo);
             renderJSON("{\"errorInfo\":\"" + errorInfo + "\"}");
         } else {
+            Logger.info("SupplierVerifyECoupons.singleQuery: success eCouponSN (%s) goods: %s", eCouponSn, ecoupon.goods.shortName);
             renderJSON("{\"goodsName\":\"" + ecoupon.goods.shortName + "\",\"faceValue\":" + ecoupon.faceValue
                     + ",\"expireAt\":\"" + DateUtil.dateToString(ecoupon.expireAt, 0) + "\"}");
         }
@@ -120,6 +124,7 @@ public class SupplierVerifyECoupons extends Controller {
         if (ArrayUtils.isNotEmpty(eCouponSns)) {
             for (String eCouponSn : eCouponSns) {
                 final String stripedECouponSN = StringUtils.strip(eCouponSn);
+                Logger.info("SupplierVerifyECoupons.verify: verify eCouponSN (%s)", stripedECouponSN);
                 // 设置RemoteRecallCheck所使用的标识ID，下次调用时不会再重试.
                 RemoteRecallCheck.setId("COUPON_" + eCouponSn);
                 // 使用事务重试
@@ -130,6 +135,7 @@ public class SupplierVerifyECoupons extends Controller {
                     }
                 });
                 RemoteRecallCheck.cleanUp();
+                Logger.info("SupplierVerifyECoupons.verify: verify eCouponSN (%s) result: %s", stripedECouponSN, result);
                 eCouponResult.add(result != null ? result : "调用失败");
             }
         }

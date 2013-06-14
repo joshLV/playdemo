@@ -5,7 +5,7 @@ import models.jobs.annotation.JobDefine;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
-import models.taobao.TaobaoCouponMessageUtil;
+import models.taobao.TaobaoCouponMessage;
 import play.Logger;
 import play.Play;
 import play.jobs.Every;
@@ -32,7 +32,7 @@ public class TaobaoCouponJob extends JobWithHistory {
                 OuterOrderStatus.RESEND_COPY,
                 OuterOrderStatus.REFUND_COPY).fetch();
         for (OuterOrder outerOrder : outerOrders) {
-            TaobaoCouponMessageUtil.send(outerOrder.id);
+            new TaobaoCouponMessage(outerOrder.id).send();
         }
     }
 }

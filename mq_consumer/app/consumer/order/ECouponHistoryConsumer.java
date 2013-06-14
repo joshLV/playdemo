@@ -12,9 +12,6 @@ import util.transaction.TransactionRetry;
 
 /**
  * 保存ECouponHistory。
- * User: tanglq
- * Date: 13-1-23
- * Time: 上午11:32
  */
 @OnApplicationStart(async = true)
 public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistoryMessage> {

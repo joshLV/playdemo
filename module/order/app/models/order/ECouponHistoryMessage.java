@@ -1,5 +1,6 @@
 package models.order;
 
+import models.mq.QueueIDMessage;
 import util.mq.MQPublisher;
 
 import javax.persistence.Column;
@@ -12,11 +13,11 @@ import java.util.Date;
  * Date: 13-1-23
  * Time: 上午11:25
  */
-public class ECouponHistoryMessage implements Serializable {
+public class ECouponHistoryMessage extends QueueIDMessage implements Serializable {
 
-    private static final long serialVersionUID = 31693283113062L;
+    private static final long serialVersionUID = 31693183903062L;
 
-    public static final String MQ_KEY = "order.ecoupon.history";
+    public static final String MQ_KEY = "ecoupon.history";
 
     public Long eCouponId;
 
@@ -81,6 +82,11 @@ public class ECouponHistoryMessage implements Serializable {
 
     private ECouponHistoryMessage() {
         // 不允许直接使用构造函数
+    }
+
+    @Override
+    public String getId() {
+        return MQ_KEY + "_" + this.eCouponId;
     }
 
     public static ECouponHistoryMessage with(ECoupon eCoupon) {
