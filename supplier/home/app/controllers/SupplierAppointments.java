@@ -137,7 +137,7 @@ public class SupplierAppointments extends Controller {
             coupon.appointmentDate = appointmentDate;
             coupon.appointmentRemark = appointmentRemark;
             coupon.save();
-            OrderECouponMessage.with(coupon).operator(SupplierRbac.currentUser().userName).remark("重新预定日期信息").sendToMQ();
+            OrderECouponMessage.with(coupon).operator(SupplierRbac.currentUser().userName).remark("重新预约日期信息").sendToMQ();
         }
         index(null, null);
     }
