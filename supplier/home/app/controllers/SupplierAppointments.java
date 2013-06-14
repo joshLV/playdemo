@@ -133,7 +133,7 @@ public class SupplierAppointments extends Controller {
         if (Validation.hasErrors()) {
             render("SupplierAppointments/showEdit.html");
         }
-        if (appointmentDate.compareTo(coupon.appointmentDate) != 0) {
+        if (appointmentDate !=null && appointmentDate.compareTo(coupon.appointmentDate) != 0) {
             coupon.appointmentDate = appointmentDate;
             coupon.appointmentRemark = appointmentRemark;
             coupon.save();

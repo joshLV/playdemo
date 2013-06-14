@@ -240,8 +240,10 @@
                     #{if (coupon.goods.isKtvSupplier() ) && coupon.goods.isKtvProduct()}
                         <br>预订：${coupon.appointmentDate?.format('M月d日')}<br>${coupon.appointmentRemark}
                     #{/if }
-                    预约日期：${coupon.appointmentDate.format()}<br>
-                ${coupon.appointmentRemark}
+                    #{else }
+                        预约日期：${coupon.appointmentDate.format()}<br>
+                    ${coupon.appointmentRemark}
+                    #{/else}
                 #{/if}
             </span>
         </td>
