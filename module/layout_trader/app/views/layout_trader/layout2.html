@@ -61,7 +61,9 @@
 
         #{if ("1".equals(sellECoupon))}
             #{if navigation.ContextedPermission.hasPermission("COUPON_MULTI_VERIFY") }
+                #{if (helper.SupplierMenus.getAppointmentMenu(currentUser?.supplier?.id))}
                 <li><a #{if "appointment_coupon".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/coupon-appointment')}">预&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;约</a></li>
+                #{/if}
                 <li>
                     <a #{if "verify".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/verify')}">券&nbsp;&nbsp;验&nbsp;&nbsp;证</a>
                 </li>
