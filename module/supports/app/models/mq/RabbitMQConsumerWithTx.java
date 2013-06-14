@@ -23,15 +23,12 @@ public abstract class RabbitMQConsumerWithTx<T> extends RabbitMQConsumer<T> {
                 Logger.info("未找到需要运行的Redis Message Key，应该是已经运行好了，本次运行跳过。message:" + queueIDMessage);
                 return;
             }
-            Set<String> uuidsNeedRun = null;
             if (queueIDMessage.queueIDRunType() == QueueIDRunType.LAST_IN_FIRST_RUN) {
-                uuidsNeedRun = Redis.zrevrange(MQPublisher.getMessageRedisId(queueIDMessage), 0, 0);
-            } else {
-                uuidsNeedRun = Redis.zrange(MQPublisher.getMessageRedisId(queueIDMessage), 0, 0);
-            }
-            if (!uuidsNeedRun.contains(queueIDMessage.getUuid())) {
-                Logger.info("当前消息不是需要执行的Message，跳过。message:" + queueIDMessage);
-                return;
+                Set<String> uuidsNeedRun = Redis.zrevrange(MQPublisher.getMessageRedisId(queueIDMessage), 0, 0);
+                if (!uuidsNeedRun.contains(queueIDMessage.getUuid())) {
+                    Logger.info("当前消息不是需要执行的Message，跳过。message:" + queueIDMessage);
+                    return;
+                }
             }
         }
 
@@ -41,16 +38,16 @@ public abstract class RabbitMQConsumerWithTx<T> extends RabbitMQConsumer<T> {
         try {
             consumeWithTx(t);
 
-            // 执行成功，清除queue id
-            // 问题：在LAST_IN_FIRST_RUN情况下，如果运行过程中加入了新的Queue，我们认为可以先不管，直接清除掉此队列
-            if (queueIDMessage != null) {
-                Redis.del(new String[]{MQPublisher.getMessageRedisId(queueIDMessage)});
-            }
         } catch (RuntimeException e) {
             rollback = true;
             throw e;
         } finally {
             JPAPlugin.closeTx(rollback);
+        }
+        // 执行成功，清除queue id
+        // 问题：在LAST_IN_FIRST_RUN情况下，如果运行过程中加入了新的Queue，我们认为可以先不管，直接清除掉此队列
+        if (queueIDMessage != null) {
+            Redis.del(new String[]{MQPublisher.getMessageRedisId(queueIDMessage)});
         }
     }
 

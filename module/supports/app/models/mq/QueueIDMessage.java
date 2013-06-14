@@ -4,7 +4,7 @@ import java.util.UUID;
 
 /**
  * 用于标识Message对象的基类.
- *
+ * <p/>
  * RabbitMQConsumer收到此对象的基类时，会以getId()返回的值，到Redis库中去查找是否有此队列。
  */
 public abstract class QueueIDMessage {
@@ -24,7 +24,7 @@ public abstract class QueueIDMessage {
     }
 
     public QueueIDRunType queueIDRunType() {
-        return QueueIDRunType.LAST_IN_FIRST_RUN;
+        return QueueIDRunType.ONLY_RUN_FIRST;
     }
 
     public abstract String messageId();
