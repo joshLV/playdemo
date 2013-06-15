@@ -91,18 +91,18 @@
                   value="${condition?.userName}"/>
     #{layout_operate.dateRangePickerField  name:'日期',begin:'condition.beginAt',end:'condition.endAt',
     beginValue:condition?.beginAt?.format(), endValue:condition?.endAt?.format()/}
-        *{起止日期}*
-        *{<div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">}*
-            *{<input class="input-small" id="condition_begin" name="condition.beginAt" size="16" type="text"}*
-                   *{value="${condition.beginAt?.format()}">}*
-            *{<span class="add-on"><i class="icon-th"></i></span>}*
-        *{</div>}*
-        *{-}*
-        *{<div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">}*
-            *{<input class="input-small" id="condition_end" name="condition.endAt" size="16" type="text"}*
-                   *{value="${condition.endAt?.format()}">}*
-            *{<span class="add-on"><i class="icon-th"></i></span>}*
-        *{</div>}*
+    *{起止日期}*
+    *{<div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">}*
+    *{<input class="input-small" id="condition_begin" name="condition.beginAt" size="16" type="text"}*
+    *{value="${condition.beginAt?.format()}">}*
+    *{<span class="add-on"><i class="icon-th"></i></span>}*
+    *{</div>}*
+    *{-}*
+    *{<div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">}*
+    *{<input class="input-small" id="condition_end" name="condition.endAt" size="16" type="text"}*
+    *{value="${condition.endAt?.format()}">}*
+    *{<span class="add-on"><i class="icon-th"></i></span>}*
+    *{</div>}*
 
         <button type="submit" class="btn btn-large btn-primary" id="search" onclick="showSalesReport()">搜索</button>
 
@@ -113,12 +113,12 @@
         #{/if}
         </div>
 
-        *{<ul class="nav nav-pills">}*
-            *{<li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>}*
-            *{<li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>}*
-            *{<li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>}*
-            *{<li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>}*
-        *{</ul>}*
+    *{<ul class="nav nav-pills">}*
+    *{<li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>}*
+    *{<li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>}*
+    *{<li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>}*
+    *{<li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>}*
+    *{</ul>}*
         <input type="hidden" id="condition_interval" name="condition.interval"/>
         <input type="hidden" id="condition_hasRight" name="hasRight" value="false"/>
         <input type="hidden" id="J_rank" name="condition.desc" value="${condition?.desc}"/>
@@ -127,8 +127,11 @@
     <div class="alert alert-success">
         <span>在此期间 销售<b>${summary?.totalBuyNumber?:0}</b>笔 总销售额：<b>${summary?.totalAmount?:0}</b>元,
             总消费金额：<b>${summary?.consumedAmount?:0}</b>元,
+                        总消费成本：<b>${summary?.consumedCost?:0}</b>元,
             总退款金额：<b>${summary?.refundAmount?:0}</b>元,
             净销售额：<b>${summary?.netSalesAmount?:0}</b>元,
+                        净销售成本：<b>${summary?.netCost?:0}</b>元,
+
             毛利率：<b>${(summary?.grossMargin?:0).format('#0.00')}%</b>
             总利润：<b>${summary?.profit?:0}</b> 元</span>
     </div>
@@ -141,9 +144,11 @@
         #{layout_operate.sortField name:'售出数量', descField:condition?.desc, desc:'000000020',asc:'000000010'/}
         #{layout_operate.sortField name:'总销售额', descField:condition?.desc, desc:'020000000',asc:'010000000'/}
         #{layout_operate.sortField name:'消费金额', descField:condition?.desc, desc:'002000000',asc:'001000000'/}
+        <th>消费成本</th>
         #{layout_operate.sortField name:'退款金额', descField:condition?.desc, desc:'000200000',asc:'000100000'/}
         #{layout_operate.sortField name:'刷单金额', descField:condition?.desc, desc:'000020000',asc:'000010000'/}
         #{layout_operate.sortField name:'净销售额', descField:condition?.desc, desc:'000002000',asc:'000001000'/}
+        <th>净销售成本</th>
         #{if hasSeeReportProfitRight== true}
             #{layout_operate.sortField name:'毛利率', descField:condition?.desc, desc:'000000002',asc:'000000001'/}
         #{/if}
@@ -171,6 +176,9 @@
                 ${(report?.consumedAmount?:0).format('#0.00')}</a>
             </td>
             <td style="text-align:right">
+            ${(report?.consumedCost?:0).format('#0.00')}
+            </td>
+            <td style="text-align:right">
                 <a target="_blank"
                    href="${baseUrl}/coupons?condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
                 ${(report?.refundAmount?:0).format('#0.00')}</a>
@@ -185,6 +193,9 @@
                 <a target="_blank"
                    href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
                 ${(report?.netSalesAmount?:0).format('#0.00')}</a>
+            </td>
+            <td style="text-align:right">
+            ${(report?.netCost?:0).format('#0.00')}
             </td>
             #{if hasSeeReportProfitRight == true}
                 <td style="text-align:right">${(report?.grossMargin?:0).format('#0.00')}%</td>

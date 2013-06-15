@@ -84,6 +84,9 @@ public class SalesReport implements Comparable<SalesReport> {
      */
     public BigDecimal consumedAmount;
 
+
+    public BigDecimal consumedCost;
+
     /**
      * 消费金额汇总
      */
@@ -178,6 +181,7 @@ public class SalesReport implements Comparable<SalesReport> {
         this.profit = profit;
         this.netSalesAmount = netSalesAmount;
         this.totalCost = totalCost;
+        this.netCost = totalCost;
     }
 
     public SalesReport(OperateUser operateUser) {
@@ -191,6 +195,7 @@ public class SalesReport implements Comparable<SalesReport> {
         this.profit = BigDecimal.ZERO;
         this.netSalesAmount = BigDecimal.ZERO;
         this.totalCost = BigDecimal.ZERO;
+        this.netCost = BigDecimal.ZERO;
     }
 
     //from resaler
@@ -200,14 +205,16 @@ public class SalesReport implements Comparable<SalesReport> {
         this.totalAmountCommissionAmount = totalAmountCommissionAmount;
     }
 
-    public SalesReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal consumedAmount, BigDecimal profit, BigDecimal grossMargin, Long totalBuyNumber, BigDecimal netSalesAmount) {
+    public SalesReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal consumedAmount, BigDecimal consumedCost, BigDecimal profit, BigDecimal grossMargin, Long totalBuyNumber, BigDecimal netSalesAmount, BigDecimal netCost) {
         this.totalAmount = totalAmount;
         this.consumedAmount = consumedAmount;
+        this.consumedCost = consumedCost;
         this.profit = profit;
         this.refundAmount = refundAmount;
         this.totalBuyNumber = totalBuyNumber;
         this.grossMargin = grossMargin;
         this.netSalesAmount = netSalesAmount;
+        this.netCost = netCost;
     }
 
     //refund from resaler
@@ -226,6 +233,7 @@ public class SalesReport implements Comparable<SalesReport> {
             this.refundCost = refundCost;
         } else if (status == ECouponStatus.CONSUMED) {
             this.consumedAmount = amount;
+            this.consumedCost = refundCost;
         }
     }
 
@@ -1049,7 +1057,7 @@ public class SalesReport implements Comparable<SalesReport> {
         List<SalesReport> paidResalerResultList = query.getResultList();
 
         //取得退款的数据 ecoupon
-        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(r.originalPrice),e.status) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
+        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(e.originalPrice),e.status) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
@@ -1062,7 +1070,7 @@ public class SalesReport implements Comparable<SalesReport> {
         List<SalesReport> refundList = query.getResultList();
 
         //取得消费的数据 ecoupon
-        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(r.originalPrice),e.status) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
+        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(e.originalPrice),e.status) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
@@ -1100,13 +1108,27 @@ public class SalesReport implements Comparable<SalesReport> {
         for (SalesReport cheatedItem : cheatedOrderResultList) {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(cheatedItem));
             if (item == null) {
-                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.refundAmount);
+                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount);
+                cheatedItem.netCost = cheatedItem.totalCost.subtract(cheatedItem.cheatedOrderCost);
+                if (cheatedItem.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
+                    cheatedItem.grossMargin = BigDecimal.ZERO;
+                } else {
+                    cheatedItem.grossMargin = (cheatedItem.netSalesAmount.subtract(cheatedItem.netCost)).divide(cheatedItem.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                }
+
                 cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
                 map.put(getReportKeyOfPeopleEffect(cheatedItem), cheatedItem);
             } else {
                 item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
                 item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
                 item.netSalesAmount = item.totalAmount.subtract(item.cheatedOrderAmount);
+                item.netCost = item.totalCost.subtract(item.cheatedOrderCost);
+                if (item.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
+                    item.grossMargin = BigDecimal.ZERO;
+                } else {
+                    item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                }
+
                 item.profit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
                         .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
             }
@@ -1117,11 +1139,26 @@ public class SalesReport implements Comparable<SalesReport> {
                 item.refundAmount = refundItem.refundAmount;
                 item.refundCost = refundItem.refundCost;
                 item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
+                item.netCost = (item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(item.refundCost).subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).setScale(2);
+
+                if (item.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
+                    item.grossMargin = BigDecimal.ZERO;
+                } else {
+                    item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                }
+
                 item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
 
             } else {
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
+                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.refundCost);
+                if (refundItem.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
+                    refundItem.grossMargin = BigDecimal.ZERO;
+                } else {
+                    refundItem.grossMargin = (refundItem.netSalesAmount.subtract(refundItem.netCost)).divide(refundItem.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                }
+
                 refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost);
                 map.put(getReportKeyOfPeopleEffect(refundItem), refundItem);
             }
@@ -1131,6 +1168,7 @@ public class SalesReport implements Comparable<SalesReport> {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(consumedItem));
             if (item != null) {
                 item.consumedAmount = consumedItem.consumedAmount;
+                item.consumedCost = consumedItem.consumedCost;
             } else {
                 map.put(getReportKeyOfPeopleEffect(consumedItem), consumedItem);
             }
@@ -1242,7 +1280,9 @@ public class SalesReport implements Comparable<SalesReport> {
         BigDecimal netProfit = BigDecimal.ZERO;
         BigDecimal refundAmount = BigDecimal.ZERO;
         BigDecimal consumedAmount = BigDecimal.ZERO;
+        BigDecimal consumedCost = BigDecimal.ZERO;
         BigDecimal netSalesAmount = BigDecimal.ZERO;
+        BigDecimal netCost = BigDecimal.ZERO;
         BigDecimal totalSalePrice = BigDecimal.ZERO;
         BigDecimal totalCost = BigDecimal.ZERO;
         BigDecimal grossMargin = BigDecimal.ZERO;
@@ -1250,17 +1290,19 @@ public class SalesReport implements Comparable<SalesReport> {
         for (SalesReport item : resultList) {
             totalAmount = totalAmount.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
             consumedAmount = consumedAmount.add(item.consumedAmount == null ? BigDecimal.ZERO : item.consumedAmount);
+            consumedCost = consumedCost.add(item.consumedCost == null ? BigDecimal.ZERO : item.consumedCost);
             refundAmount = refundAmount.add(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
             totalBuyNumber = totalBuyNumber + (item.buyNumber == null ? 0l : item.buyNumber);
             netSalesAmount = netSalesAmount.add(item.netSalesAmount == null ? BigDecimal.ZERO : item.netSalesAmount);
             netProfit = netProfit.add(item.profit == null ? BigDecimal.ZERO : item.profit).setScale(2, BigDecimal.ROUND_UP);
+            netCost = netCost.add(item.netCost == null ? BigDecimal.ZERO : item.netCost).setScale(2, BigDecimal.ROUND_UP);
             totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
             totalSalePrice = totalSalePrice.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
         }
         if (totalSalePrice.compareTo(BigDecimal.ZERO) != 0) {
-            grossMargin = totalSalePrice.subtract(totalCost).divide(totalSalePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            grossMargin = netSalesAmount.subtract(netCost).divide(netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
-        return new SalesReport(totalAmount, refundAmount, consumedAmount, netProfit, grossMargin, totalBuyNumber, netSalesAmount);
+        return new SalesReport(totalAmount, refundAmount, consumedAmount, consumedCost, netProfit, grossMargin, totalBuyNumber, netSalesAmount, netCost);
     }
 
     /**
