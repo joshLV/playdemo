@@ -3,6 +3,7 @@ package controllers;
 import com.google.gson.Gson;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.RmbUtil;
 import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
 import models.order.ECoupon;
@@ -201,7 +202,7 @@ public class TelephoneVerify extends Controller {
 
         Logger.info("telephone verify success: eCouponSN:%s", ecoupon.eCouponSn);
         //消费成功，价值" + ecoupon.faceValue + "元
-        return "0|验证成功";
+        return "0|券尾号" + eCouponNumber + "验证成功,面值" + RmbUtil.toNumberRMB(ecoupon.faceValue.toString());
     }
 
     /**

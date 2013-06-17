@@ -84,7 +84,7 @@ public class IVRCall implements CExecutorI {
                 req.setParameter("timestamp", timestamp.toString());
                 req.setParameter("sign", sign);
                 CResponse rep = null;
-                String url = "http://192.168.18.135:9402/tel-verify2?pt=1";
+                String url = "http://test1.quanfx.com/tel-verify2?pt=2";
                 try {//向URL发送...
                     rep = httpget.sendRequest(req, url);
                 } catch (Exception e) {
@@ -100,7 +100,10 @@ public class IVRCall implements CExecutorI {
                 cr.setParameter("_data_", reps);
                 log.debug("resp = (" + reps + ")");
 
-                String[] results = reps.split("|");
+                String[] results = reps.split("\\|");
+
+                log.debug("results.length=" + results.length);
+
                 int rcode = Integer.parseInt(results[0]);
                 cr.rcode = rcode;
                 if (results.length > 1) {
