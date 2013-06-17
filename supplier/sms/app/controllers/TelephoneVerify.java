@@ -156,7 +156,7 @@ public class TelephoneVerify extends Controller {
             if (ecoupon.shop == null) {
                 Logger.info("telephone verify failed: coupon consumed, but do not know where it consumed at");
             } else {
-                shopName = " 消费门店 " + ecoupon.shop.name;
+                shopName = ",消费门店 " + ecoupon.shop.name;
             }
             return "7|" + new SimpleDateFormat("M月d日H点m分").format(ecoupon.consumedAt) + shopName;
         } else if (ecoupon.status != ECouponStatus.UNCONSUMED) {
