@@ -6,10 +6,24 @@
         #{get 'moreScripts'/}
     <script src="@{'/public/javascripts/goods-form.js'}" type="text/javascript" charset="UTF-8"></script>
     #{/set}
-    #{layout_operate.radioField name:'goods.materialType',
-    value1:models.sales.MaterialType.ELECTRONIC.toString(),
-    value2:models.sales.MaterialType.REAL.toString(),
-    value:goods?.materialType?.toString(), required:true/}
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>&{'goods.materialType'}</label>
+
+    <div class="controls">
+        <input type="radio" name="goods.materialType" id="goods_materialType_1"
+               value="${models.sales.MaterialType.ELECTRONIC.toString()}"
+        ${goods.materialType==models.sales.MaterialType.ELECTRONIC?'checked':''}>
+    &{'goods.materialType_1'}
+        <input type="radio" name="goods.materialType" id="goods_materialType_2"
+               value="${models.sales.MaterialType.REAL.toString()}"
+        ${goods.materialType==models.sales.MaterialType.REAL?'checked':''}>
+    &{'goods.materialType_2'}
+    </div>
+</div>
+*{#{layout_operate.radioField name:'goods.materialType',}*
+*{value1:models.sales.MaterialType.ELECTRONIC.toString(),}*
+*{value2:models.sales.MaterialType.REAL.toString(),}*
+*{value:goods?.materialType?.toString(), required:true/}}*
     #{layout_operate.checkboxField name:'goods.publishedPlatforms', items:models.sales.GoodsPublishedPlatformType
     .values(), value:goods?.publishedPlatforms/}
 
@@ -245,6 +259,7 @@
     #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.getStatus()?:'OFFSALE'}"/>
     <input type="hidden" id="ktv_supplier" name="ktvSupplier" value="${ktvSupplier}"/>
+    <input type="hidden" id="hasSku" value="${hasSku}"/>
     <input type="hidden" id="action" name="action" value="${action}"/>
 
 </div>
@@ -292,9 +307,12 @@ $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() 
 if ($("#goods_materialType_2").attr("checked")) {
     $("#hi").show();
     $("#goods_coupon_type").hide();
-//        $("#goods_cumulative_stock").hide();
+
     $("#free_shipping").show();
-    if ($("#id_supplierName").val() != 5 && $("#goods_supplierId").val() != 5) {
+    if (($("#id_supplierName").val() == 5 || $("#goods_supplierId").val() == 5) && $("#hasSku").val() == "true") {
+
+        $("#sku").show();
+    } else {
         $("#sku").hide();
     }
 

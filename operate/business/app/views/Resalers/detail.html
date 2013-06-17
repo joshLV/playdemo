@@ -79,9 +79,8 @@
 
             <div class="controls">
                 <select name="resaler.operator.id">
-                    <option value="">--请选择--</option>
                 #{list items:operators,as:'operator'}
-                    <option value="${operator.id}" ${resaler.operator?.id==operator.id?'selected':''}>${operator.name}</option>
+                    <option value="${operator.id}" ${resaler.operator?.id==operator.id?'selected':''} >${operator.name}</option>
                 #{/list}
                 </select>
             </div>

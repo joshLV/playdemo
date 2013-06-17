@@ -428,7 +428,8 @@ public class OperateGoods extends Controller {
         List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
         setGoodsProduct(goods);
         renderInit(goods);
-
+        List<Sku> skuList = Sku.findByBrand(goods.brand.id);
+        renderArgs.put("hasSku", skuList.size() > 0);
         render(id, hasApproveGoodsPermission, ktvSupplier, productList, ktvProduct);
 
     }
