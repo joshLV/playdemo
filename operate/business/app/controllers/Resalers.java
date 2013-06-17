@@ -1,6 +1,7 @@
 package controllers;
 
 import models.operator.OperateUser;
+import models.operator.Operator;
 import models.resale.Resaler;
 import models.resale.ResalerCondition;
 import models.resale.ResalerStatus;
@@ -43,7 +44,8 @@ public class Resalers extends Controller {
         List<OperateUser> operateUserList = OperateUser.getSales(EDITOR_ROLE);
         Boolean hasHandleResalerCommissionRatioPermission = ContextedPermission.hasPermission("HANDLE_RESALER_COMMISSIONRATIO");
         Resaler resaler = Resaler.findById(id);
-        render(resaler, flag, operateUserList, hasHandleResalerCommissionRatioPermission);
+        List<Operator> operators = Operator.findUnDeleted();
+        render(resaler, flag, operateUserList, operators,hasHandleResalerCommissionRatioPermission);
     }
 
     /**
@@ -56,8 +58,8 @@ public class Resalers extends Controller {
         index(null);
     }
 
-    public static void check(long id, ResalerStatus status,String remark) {
-        Resaler.updateStatus(id, status,remark);
+    public static void check(long id, ResalerStatus status, String remark) {
+        Resaler.updateStatus(id, status, remark);
         index(null);
     }
 
