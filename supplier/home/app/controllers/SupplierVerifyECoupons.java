@@ -103,7 +103,7 @@ public class SupplierVerifyECoupons extends Controller {
             renderJSON("{\"errorInfo\":\"该券需要先预约,才能验证!\"}");
         }
         //check券和门店
-        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId,"supplierVerify");
         if (StringUtils.isNotEmpty(errorInfo)) {
             Logger.info("SupplierVerifyECoupons.singleQuery: Error eCouponSN (%s), errorInfo: %s", eCouponSn, errorInfo);
             renderJSON("{\"errorInfo\":\"" + errorInfo + "\"}");
@@ -147,7 +147,7 @@ public class SupplierVerifyECoupons extends Controller {
     private static String doVerify(Long shopId, Long supplierId,
                                    String eCouponSn, List<ECoupon> needSmsECoupons) {
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId,"supplierVerify");
         if (StringUtils.isNotEmpty(ecouponStatusDescription)) {
             return ecouponStatusDescription;
         }
