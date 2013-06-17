@@ -33,6 +33,7 @@ public class AccountUtil {
 
     /**
      * 一百券收款账户.
+     *
      * @return
      */
     public static Account getUhuilaAccount(Operator operator) {
@@ -41,6 +42,7 @@ public class AccountUtil {
 
     /**
      * 平台收款账户.
+     *
      * @return
      */
     public static Account getPlatformIncomingAccount(Operator operator) {
@@ -121,11 +123,11 @@ public class AccountUtil {
     }
 
     public static Account getSupplierAccount(long supplierId, Operator operator) {
-        return getAccount(supplierId, AccountType.SUPPLIER, false, operator);
+        return getAccount(supplierId, AccountType.SUPPLIER, true, operator);
     }
 
     public static Account getShopAccount(Long shopId, Operator operator) {
-        return getAccount(shopId, AccountType.SHOP, false, operator);
+        return getAccount(shopId, AccountType.SHOP, true, operator);
     }
 
     /**
@@ -139,6 +141,7 @@ public class AccountUtil {
     public static Account getAccount(long uid, AccountType type) {
         return getAccount(uid, type, Operator.defaultOperator());
     }
+
     public static Account getAccount(long uid, AccountType type, Operator operator) {
         return getAccount(uid, type, false, operator);
     }
