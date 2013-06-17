@@ -62,7 +62,8 @@
                             #{if resalerProduct }
                                 <a href="http://upload.taobao.com/auction/publish/edit.htm?itemNumId=${resalerProduct?.partnerProductId}&auto=false"
                                    target="_blank">去淘宝编辑</a> |
-                                <a href="${resalerProduct.url}">查看</a>
+                                <a href="${resalerProduct.url}">查看</a> |
+                                #{vx.deleteLink action:"/ktv/taobao-product", id:resalerProduct.id, name:",然后重新发布"/}
                             #{/if}
                             #{else}
                                 <a href="/ktv/taobao-product/publish?shop.id=${shop.id}&product.id=${product.id}"

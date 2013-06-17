@@ -5,8 +5,10 @@ import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.ItemAddRequest;
+import com.taobao.api.request.ItemDeleteRequest;
 import com.taobao.api.request.ItempropsGetRequest;
 import com.taobao.api.response.ItemAddResponse;
+import com.taobao.api.response.ItemDeleteResponse;
 import com.taobao.api.response.ItempropsGetResponse;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.OperateRbac;
@@ -123,7 +125,15 @@ public class KtvTaobaoProducts extends Controller {
         //找到默认的分销商
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
         //根据已知信息，创建一个符合KTV需求的商品
-        Goods goods = autoCreateGoods(shop, product);
+        Goods goods = null;
+        //创建 ktvProductGoods
+        KtvProductGoods ktvProductGoods = KtvProductGoods.find("product=? and shop=? ", product, shop).first();
+        if (ktvProductGoods != null) {
+            goods = ktvProductGoods.goods;
+        } else {
+            //根据已知信息，创建一个符合KTV需求的商品
+            goods = autoCreateGoods(shop, product);
+        }
         //根据此商品,创建一个resalerProduct
         ResalerProduct resalerProduct = ResalerProduct.alloc(OuterOrderPartner.TB, resaler, goods);
         //设置外部商品ID
@@ -201,12 +211,14 @@ public class KtvTaobaoProducts extends Controller {
         resalerProduct.partnerProduct(taobaoProductId);
         resalerProduct.save();
 
-        //创建 ktvProductGoods
-        KtvProductGoods ktvProductGoods = new KtvProductGoods();
-        ktvProductGoods.goods = goods;
-        ktvProductGoods.product = product;
-        ktvProductGoods.shop = shop;
-        ktvProductGoods.save();
+        //第一次创建ktvProductGoods
+        if (ktvProductGoods == null) {
+            ktvProductGoods = new KtvProductGoods();
+            ktvProductGoods.goods = goods;
+            ktvProductGoods.product = product;
+            ktvProductGoods.shop = shop;
+            ktvProductGoods.save();
+        }
 
         render("resale/KtvTaobaoProducts/publishResult.html", taobaoProductId, shop, product);
     }
@@ -219,7 +231,7 @@ public class KtvTaobaoProducts extends Controller {
         goods.materialType = MaterialType.ELECTRONIC;
         goods.status = GoodsStatus.ONSALE;
         goods.name = shop.name + product.name;
-        goods.expireAt=new Date();
+        goods.expireAt = new Date();
         goods.shortName = goods.name;
         goods.title = goods.name;
         goods.setDetails(goods.name);
@@ -260,5 +272,42 @@ public class KtvTaobaoProducts extends Controller {
         productGoods.save();
 
         renderJSON("{\"isOk\":true}");
+    }
+
+    /**
+     * 删除对应商品的淘宝salerProductGoods
+     */
+    public static void delete(Long id) {
+        ResalerProduct resalerProduct = ResalerProduct.find("id=? and partner=? and deleted=? order by id desc", id, OuterOrderPartner.TB, DeletedStatus.UN_DELETED).first();
+        if (resalerProduct == null) {
+            String error = "没找到对应的产品信息";
+            render("resale/KtvTaobaoProducts/publishResult.html", error);
+            return;
+        }
+        //删除淘宝上该商品
+        TaobaoClient client = new DefaultTaobaoClient(TaobaoCouponUtil.URL, resalerProduct.resaler.taobaoCouponAppKey, resalerProduct.resaler.taobaoCouponAppSecretKey);
+        OAuthToken token = OAuthToken.getOAuthToken(resalerProduct.resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+
+        ItemDeleteRequest request = new ItemDeleteRequest();
+        request.setNumIid(Long.parseLong(resalerProduct.partnerProductId));
+
+        try {
+            ItemDeleteResponse response = client.execute(request, token.accessToken);
+            if (StringUtils.isNotBlank(response.getErrorCode()) && !"isv.item-is-delete:invalid-numIid-or-iid".equals(response.getSubCode())) {
+                String error = response.getErrorCode() + ":" + response.getMsg() + "," + response.getSubCode() + ":" + response.getSubMsg();
+                render("resale/KtvTaobaoProducts/publishResult.html", error);
+                return;
+            }
+
+            //删除ResalerProduct对应的商品
+            resalerProduct.delete();
+
+        } catch (ApiException e) {
+            String error = e.getErrCode() + ":" + e.getErrMsg();
+            render("resale/KtvTaobaoProducts/publishResult.html", error);
+            return;
+        }
+        index(resalerProduct.goods.supplierId);
+
     }
 }

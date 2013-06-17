@@ -114,6 +114,7 @@ GET     /ktv/taobao-products                           resale.KtvTaobaoProducts.
 GET     /ktv/taobao-product/publish                    resale.KtvTaobaoProducts.showPublish
 POST    /ktv/taobao-product/publish                    resale.KtvTaobaoProducts.publish
 POST    /ktv/taobao-product/sync-sku                   resale.KtvTaobaoProducts.syncSku
+DELETE  /ktv/taobao-product/{id}                       resale.KtvTaobaoProducts.delete
 
 POST    /ktv/taobao/img-upload/{resalerId}             resale.KtvTaobaoImgUpload.upload
 
