@@ -28,7 +28,8 @@ import java.util.Date;
  * @author likang
  */
 public class TelephoneVerifyTest extends FunctionalTest{
-    
+
+    public static final String REEB_APP_KEY = "exos8BHw";
     Shop shop;
     SupplierUser supplierUser;
     ECoupon eCoupon;
@@ -321,6 +322,12 @@ public class TelephoneVerifyTest extends FunctionalTest{
         assertContentEquals(new SimpleDateFormat("M月d日H点m分").format(consumedAt) + ",消费门店 " + shop.name,
                 response);//;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt)
     }
+
+    /**
+     * 得到call调用的时间Sign
+     * @param timestamp
+     * @return
+     */
     private String getSign(long timestamp){
         return DigestUtils.md5Hex(TelephoneVerify.APP_KEY + timestamp);
     }

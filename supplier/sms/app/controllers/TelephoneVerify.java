@@ -54,7 +54,7 @@ public class TelephoneVerify extends Controller {
         Logger.info(new Gson().toJson(request.params.allSimple()));
         if (caller == null || caller.trim().equals("")) {
             Logger.info("telephone verify failed: invalid caller");
-            renderText("1");//主叫号码无效
+            renderText("1");//主叫号码无效 1
         }
         if (coupon == null || coupon.trim().equals("")) {
             Logger.info("telephone verify failed: invalid coupon");
@@ -62,7 +62,7 @@ public class TelephoneVerify extends Controller {
         }
         if (sign == null || sign.trim().equals("")) {
             Logger.info("telephone verify failed: invalid sign");
-            renderText("4");//签名无效
+            renderText("3");//签名无效
         }
         if (timestamp == null) {
             Logger.error("telephone verify failed: invalid timestamp");
@@ -72,7 +72,7 @@ public class TelephoneVerify extends Controller {
         //5分钟的浮动
         if (requestTimeout(timestamp, 300)) {
             Logger.error("telephone verify failed: request timeout");
-            renderText("5");//请求超时
+            renderText("3");//请求超时
         }
         //验证密码
         if (!validSign(timestamp, sign)) {
@@ -86,7 +86,7 @@ public class TelephoneVerify extends Controller {
 
         if (ecoupon == null) {
             Logger.info("telephone verify failed: coupon not found");
-            renderText("8");//对不起，未找到此券
+            renderText("4");//对不起，未找到此券
         }
 
         SupplierUser supplierUser = SupplierUser.find("loginName=? and supplierUserType=? " +
@@ -112,23 +112,23 @@ public class TelephoneVerify extends Controller {
 
         if (supplierUser == null) {
             Logger.info("telephone verify failed: invalid caller %s", caller);
-            renderText("7");//对不起，您的电话还没绑定，请使用已绑定的电话座机操作
+            renderText("1");//对不起，您的电话还没绑定，请使用已绑定的电话座机操作
         }
 
         //验证打电话进来的商户和券所属的商户是一样的
         if (!ecoupon.goods.supplierId.equals(supplierUser.supplier.getId())) {
             Logger.info("telephone verify failed: supplier not match");
-            renderText("9");//对不起，您无权验证此券
+            renderText("5");//对不起，您无权验证此券
         }
 
         if (ecoupon.isFreeze == 1) {
             Logger.info("telephone verify failed: coupon is freeze");
-            renderText("11");//对不起，该券无法消费
+            renderText("2");//对不起，该券无法消费
         }
         if (!ecoupon.checkVerifyTimeRegion(new Date())) {
             String info = ecoupon.getCheckInfo();
             Logger.info("telephone verify failed: %s", info);
-            renderText("11");//对不起，该券无法消费
+            renderText("6");//对不起，该券无法消费
         }
         // 指定门店才能消费
         // else {
@@ -207,26 +207,24 @@ public class TelephoneVerify extends Controller {
     private static String doVerify(String caller, SupplierUser supplierUser, ECoupon eCoupon) {
         ECoupon ecoupon = ECoupon.findById(eCoupon.id); //因为是重试，重新得到券ID
 
-        if (ecoupon.status == ECouponStatus.CONSUMED) {
-            Logger.info("telephone verify failed: coupon consumed");
-            return "10";//该券无法重复消费。消费时间为
-        } else if (ecoupon.status != ECouponStatus.UNCONSUMED) {
+        Logger.info("doVerify: eCouponSN: %s", eCoupon.eCouponSn);
+        if (ecoupon.status != ECouponStatus.UNCONSUMED) {
             Logger.info("telephone verify failed: coupon status invalid. %s", ecoupon.status);
-            return "11";//对不起，该券无法消费
+            return "7";//对不起，该券无法消费
         } else if (ecoupon.expireAt != null && ecoupon.expireAt.before(new Date())) {
             Logger.info("telephone verify failed: coupon expired. expiredAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.expireAt));
-            return "12";//对不起，该券已过期
+            return "6";//对不起，该券已过期
         } else if (ecoupon.effectiveAt != null && ecoupon.effectiveAt.after(new Date())) {
             Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
-            return "11";//对不起，该券无法消费
+            return "6";//对不起，该券无法消费
         } else if (!ecoupon.checkVerifyTimeRegion(new Date())) {
             Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
-            return "11";//对不起，该券无法消费
+            return "6";//对不起，该券无法消费
         }
 
         if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE)) {
             Logger.info("telephone verify failed: coupon has been refunded");
-            return "11";  //对不起，该券无法消费
+            return "2";  //对不起，该券无法消费
         }
 
         String eCouponNumber = ecoupon.getMaskedEcouponSn();
@@ -251,7 +249,7 @@ public class TelephoneVerify extends Controller {
         ecoupon.verifyTel = caller;
         ecoupon.save();
 
-        Logger.info("telephone verify success");
+        Logger.info("telephone verify success: eCouponSN:%s", ecoupon.eCouponSn);
         //消费成功，价值" + ecoupon.faceValue + "元
         return "0";
     }
