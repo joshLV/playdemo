@@ -69,14 +69,14 @@ public class IVRCall implements CExecutorI {
             if ("V_VERIFY".equals(vo_id)) {
                 // 电话验证
                 String coupon = (String) cr.getParameter("C_COUPON");
-                Long timestamp = System.currentTimeMillis()/1000;
+                Long timestamp = System.currentTimeMillis() / 1000;
                 String sign = getSign(timestamp);
                 //response = GET("/tel-verify?caller=" + phone + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
 
                 if (phone == null || phone.length() < 3) {
                     phone = "8015";
                 }
-                log.info(" call /tel-verify?caller=" + phone + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
+                log.info(" call /tel-verify2?caller=" + phone + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
                 MyHttpGet httpget = new MyHttpGet();
                 CRequest req = new CRequest();
                 req.setParameter("caller", phone);
@@ -84,13 +84,13 @@ public class IVRCall implements CExecutorI {
                 req.setParameter("timestamp", timestamp.toString());
                 req.setParameter("sign", sign);
                 CResponse rep = null;
-                String url = "http://test1.quanfx.com/tel-verify?pt=1";
+                String url = "http://192.168.18.135:9402/tel-verify2?pt=1";
                 try {//向URL发送...
                     rep = httpget.sendRequest(req, url);
                 } catch (Exception e) {
                     log.debug("调用验证接口失败 " + e);
                     cr.setParameter("TTS", "调用验证接口失败");
-                    cr.rcode = 1;
+                    cr.rcode = 2;
                     return 0;
                 }
                 //取应答数据
@@ -99,9 +99,13 @@ public class IVRCall implements CExecutorI {
                 // 是否会调用popCRURL还得看流程中根据rcode的设置，如果后续流程有_F_SEND2AGENT_ 才会打开新的窗口即popCRURL
                 cr.setParameter("_data_", reps);
                 log.debug("resp = (" + reps + ")");
-                int rcode = Integer.parseInt(reps);
-                cr.setParameter("TTS", "验证成功");
+
+                String[] results = reps.split("|");
+                int rcode = Integer.parseInt(results[0]);
                 cr.rcode = rcode;
+                if (results.length > 1) {
+                    cr.setParameter("TTS", results[1]);
+                }
                 return 0;
             } else if (vo_id.equals("V_TTS")) {   //播放一段TTS
 
@@ -278,7 +282,7 @@ public class IVRCall implements CExecutorI {
     /**
      * 得到call调用的时间Sign
      */
-    private static String getSign(long timestamp){
+    private static String getSign(long timestamp) {
         return DigestUtils.md5Hex(REEB_APP_KEY + timestamp);
     }
 }

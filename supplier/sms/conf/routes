@@ -50,6 +50,7 @@ GET     /lingshi                                LingShiSmsReceivers.getSms
 #GET     /ztsms                                  ZtSmsReceivers.getsms
 
 *       /tel-verify                             TelephoneVerify.verify
+*       /tel-verify2                            TelephoneVerify.verify2
 *       /tel-verify/face-value                  TelephoneVerify.consumedFaceValue
 *       /tel-verify/consumed-at                 TelephoneVerify.consumedAt
 *       /tel-verify/batch-info                  TelephoneVerify.batchInfo
