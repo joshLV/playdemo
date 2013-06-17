@@ -21,6 +21,7 @@
 
 <div class="body">
     <div class="bd">
+    #{if shop}
         <h2>发布:${shop.name}-${product.name}</h2>
 
         <div style="text-align:center">
@@ -29,10 +30,18 @@
             #{/if}
             #{else}
                 发布成功：
-            <a href="/ktv/taobao-products">返回</a> |
-            <a href="http://item.taobao.com/item.htm?id=${taobaoProductId}">查看淘宝商品</a>
+                <a href="/ktv/taobao-products">返回</a> |
+                <a href="http://item.taobao.com/item.htm?id=${taobaoProductId}">查看淘宝商品</a>
             #{/else}
         </div>
+    #{/if}
+    #{else}
+        <div style="text-align:center">
+            #{if error}
+                删除失败：${error}
+            #{/if}
+        </div>
+    #{/else}
     </div>
 </div>
 
