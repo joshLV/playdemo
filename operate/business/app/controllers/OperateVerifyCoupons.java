@@ -74,7 +74,7 @@ public class OperateVerifyCoupons extends Controller {
         //check券和门店
         checkCoupon(ecoupon, shopId, supplierId, shopList);
 
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId,"");
 
         if (ecoupon != null && ecoupon.operateUserId != null) {
             OperateUser operateUser = OperateUser.findById(ecoupon.operateUserId);
@@ -146,7 +146,7 @@ public class OperateVerifyCoupons extends Controller {
         //check券和门店
         checkCoupon(ecoupon, shopId, supplierId, shopList);
 
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId,"");
         if (ecouponStatusDescription != null) {
             Validation.addError("error-info", ecouponStatusDescription);
             return Boolean.FALSE;
