@@ -1027,7 +1027,7 @@ public class Goods extends Model {
     @SolrField
     public GoodsStatus getStatus() {
         if (status != null && GoodsStatus.ONSALE.equals(status) &&
-                (endOnSaleAt != null && endOnSaleAt.before(new Date())) || (getRealStocks() != null && getRealStocks() <= 0)) {
+                (endOnSaleAt != null && endOnSaleAt.before(new Date()))) {
             status = GoodsStatus.OFFSALE;
         }
         return this.status;

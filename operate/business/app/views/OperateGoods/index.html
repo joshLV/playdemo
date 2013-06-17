@@ -45,9 +45,10 @@
 
                 <td width="20%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
                                             value="${condition?.shortName}"/></td>
-                <td>商品编码：<input type="text" name="condition.code" class="input-medium"
+                <td width="20%">商品编码：<input type="text" name="condition.code" class="input-medium"
                                 value="${condition?.code}"/></td>
-                <td></td>
+                <td>编辑人员<input type="text" name="condition.updatedBy" class="input-medium"
+                               value="${condition?.updatedBy}"/></td>
             </tr>
             <tr>
                 <td width="30%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
@@ -55,24 +56,7 @@
                 <td width="20%">销售专员工号：<input type="text" name="condition.jobNumber" class="input-medium"
                                               value="${condition?.jobNumber}"/>
                 </td>
-            *{<td width="30%">编号：<input type="text" name="condition.no" class="input-medium"}*
-            *{value="${condition?.no}"/></td>}*
-
-
-            *{</tr>}*
-            *{<tr>}*
-            *{<td width="30%">现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" name="condition.salePriceBegin"}*
-            *{class="input-medium"}*
-            *{value="${condition?.salePriceBegin}"/>}*
-            *{至 <input type="text" name="condition.salePriceEnd" class="input-medium"}*
-            *{value="${condition?.salePriceEnd}"/>}*
-            *{</td>}*
-            *{<td>剩余库存：<input type="text" name="condition.saleCountBegin" class="input-small"}*
-            *{value="#{if condition?.saleCountBegin >=0}${condition?.saleCountBegin}#{/if}"/>}*
-            *{至 <input type="text" name="condition.saleCountEnd" class="input-small"}*
-            *{value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>}*
-            *{</td>}*
-                <td>状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
+                <td colspan="2">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
                 #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
                     #{option ""}不限#{/option}
                     #{option "ONSALE"}&{'goods.ONSALE'}#{/option}
@@ -119,7 +103,7 @@
             #{layout_operate.sortField name:'原价', descField:condition?.desc, desc:'0002000000000',asc:'0001000000000'/}
             #{layout_operate.sortField name:'采购价', descField:condition?.desc, desc:'0000200000000',asc:'0000100000000'/}
             #{layout_operate.sortField name:'售价', descField:condition?.desc, desc:'0000020000000',asc:'0000010000000'/}
-            #{layout_operate.sortField name:'剩余库存', descField:condition?.desc, desc:'0000002000000',asc:'0000001000000'/}
+            *{#{layout_operate.sortField name:'剩余库存', descField:condition?.desc, desc:'0000002000000',asc:'0000001000000'/}}*
             *{#{layout_operate.sortField name:'销量', descField:condition?.desc, desc:'0000000200000',asc:'0000000100000'/}}*
             #{layout_operate.sortField name:'上架时间', descField:condition?.desc, desc:'0000000000020',asc:'0000000000010'/}
             #{layout_operate.sortField name:'下架时间', descField:condition?.desc, desc:'0000000000002',asc:'0000000000001'/}
@@ -128,6 +112,7 @@
             #{layout_operate.sortField name:'类型', descField:condition?.desc, desc:'0000000000200',asc:'0000000000100'/}
                 <th width="60px">&{'goods.status'}</th>
                 <th width="70px">编码</th>
+                <th width="70px">编辑人员</th>
                 <th width="100px">操 作</th>
             </tr>
             </thead>
@@ -135,7 +120,7 @@
             <tbody>
 
             #{paginate.list items:goodsPage, as:'goods'}
-                #{set realStock:goods.realStocks/}
+                *{#{set realStock:goods.realStocks/}}*
             <tr class="#{if goods.isExpired() || realStock == 0}tr-offsale#{/if} transparent">
                 <td style="text-align:center"><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/>
                 </td>
@@ -165,7 +150,7 @@
                 <td class="amount">${goods?.faceValue?.formatCurrency('CNY')}</td>
                 <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
                 <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>
-                <td class="amount">${realStock}</td>
+                *{<td class="amount">${realStock}</td>}*
             *{<td class="amount">${goods?.getRealSaleCount()}</td>}*
 
                 #{if goods?.beginOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
@@ -211,6 +196,7 @@
                     #{/if}
                 </td>
                 <td>${goods?.code}</td>
+                <td>${goods?.updatedBy}</td>
                 <td>
                     <a href="@{OperateGoods.show(goods.id)}">查看</a>
                     /<a href="/goods/${goods.id}/edit2?page=${goodsPage.pageNumber?:'1'}&${queryString}">修改</a>

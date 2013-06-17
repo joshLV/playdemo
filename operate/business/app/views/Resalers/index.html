@@ -33,6 +33,7 @@
             <th>手机</th>
             <th>状态</th>
             <th>创建时间</th>
+            <th>运营商</th>
             <th>操 作</th>
         </tr>
         </thead>
@@ -47,6 +48,7 @@
             <td>${resaler.mobile}</td>
             <td>&{'resaler.'+resaler.status}</td>
             <td>${resaler.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>${resaler.operator?.name}</td>
             <td>
             #{if !models.resale.ResalerStatus.FREEZE.equals(resaler.status)}
             <a href="@{Resalers.detail(resaler.id,'0')}">

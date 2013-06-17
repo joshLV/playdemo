@@ -331,6 +331,7 @@ public class Resaler extends Model {
         } else {
             updResaler.commissionRatio = resaler.commissionRatio;
         }
+        updResaler.operator = resaler.operator;
         updResaler.salesId = resaler.salesId;
         updResaler.save();
     }

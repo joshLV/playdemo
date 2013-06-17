@@ -67,7 +67,8 @@ public class GoodsCondition implements Serializable {
     public Date expireAtEnd;
     public Date expireAt;
     public String operatorCode;
-
+    public String updatedBy;
+    public static int sortLength = 13;
     private Map<String, Object> paramMap = new HashMap<>();
 
     public GoodsCondition() {
@@ -98,7 +99,7 @@ public class GoodsCondition implements Serializable {
                         break;
                     }
                 }
-                String[] orderByAttr = {"g.supplierId", "g.no", "g.name", "g.faceValue", "g.originalPrice", "g.salePrice", "g.cumulativeStocks", "g.saleCount", "g.expireAt", "g.updatedAt", "g.materialType", "g.beginOnSaleAt", "g.endOnSaleAt"};
+                String[] orderByAttr = {"g.supplierId", "g.no", "g.name", "g.faceValue", "g.originalPrice", "g.salePrice", "g.saleCount", "g.expireAt", "g.updatedAt", "g.materialType", "g.beginOnSaleAt", "g.endOnSaleAt"};
                 // 添加排序属性
                 orderBy = orderByAttr[index];
                 // 添加升降序方式
@@ -123,7 +124,7 @@ public class GoodsCondition implements Serializable {
      * @return
      */
     public static boolean isValidDesc(String desc) {
-        if (desc.length() != 13) {
+        if (desc.length() != sortLength) {
             return false;
         }
         int countZero = 0;
@@ -132,7 +133,7 @@ public class GoodsCondition implements Serializable {
                 countZero++;
             }
         }
-        if (countZero != 12) {
+        if (countZero != sortLength - 1) {
             return false;
         }
         for (int i = 0; i < desc.length(); i++) {
@@ -268,7 +269,11 @@ public class GoodsCondition implements Serializable {
                 baseSaleBegin = 0;
             }
         }
-
+        if (StringUtils.isNotBlank(updatedBy)) {
+            condBuilder.append(" and (updatedBy = :updatedBy or createdBy=:createdBy)");
+            paramMap.put("updatedBy", updatedBy);
+            paramMap.put("createdBy", updatedBy);
+        }
 
         if (pointPriceBegin != null) {
             condBuilder.append(" and g.pointPrice >= :pointPriceBegin");

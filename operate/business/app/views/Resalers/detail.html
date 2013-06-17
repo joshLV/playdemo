@@ -75,6 +75,17 @@
         #{/list}
     #{/layout_operate.selectField}
         <div class="control-group">
+            <label class="control-label">运营商</label>
+
+            <div class="controls">
+                <select name="resaler.operator.id">
+                #{list items:operators,as:'operator'}
+                    <option value="${operator.id}" ${resaler.operator?.id==operator.id?'selected':''} >${operator.name}</option>
+                #{/list}
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
             <label class="control-label">会员级别</label>
 
             <div class="controls">
