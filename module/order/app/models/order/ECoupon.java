@@ -1581,7 +1581,6 @@ public class ECoupon extends Model {
         if (ecoupon.isFreeze == 1) {
             return "对不起，该券已被冻结!";
         }
-        Logger.info("ecoupon.shop.id=%s,此门店Id:%s", ecoupon.shop.id, targetShopId);
         //商户验证才检查是否限制门店使用
         if (StringUtils.isNotBlank(verifyType) && !ecoupon.isBelongShop(targetShopId)) {
             return "对不起，该券不能在此门店使用,请确认";
