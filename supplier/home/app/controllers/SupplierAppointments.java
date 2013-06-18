@@ -143,7 +143,7 @@ public class SupplierAppointments extends Controller {
         if (appointmentDate != null && appointmentDate.compareTo(coupon.appointmentDate) != 0) {
             coupon.appointmentDate = appointmentDate;
             coupon.appointmentRemark = appointmentRemark;
-            coupon.appointmentRemark = "预约门店【" + coupon.shop.name + "】" + StringUtils.trimToEmpty(appointmentRemark);
+            coupon.appointmentRemark = coupon.getRemarks(appointmentRemark);
             coupon.save();
             OrderECouponMessage.with(coupon).operator(SupplierRbac.currentUser().userName).remark("重新预约日期信息").sendToMQ();
         }

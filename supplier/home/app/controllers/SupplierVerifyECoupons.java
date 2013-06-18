@@ -152,7 +152,7 @@ public class SupplierVerifyECoupons extends Controller {
         if (StringUtils.isNotEmpty(ecouponStatusDescription)) {
             return ecouponStatusDescription;
         }
-        if (!ecoupon.needsAppointmentCoupon()) {
+        if (ecoupon.needsAppointmentCoupon()) {
             return "该券需要预约才能消费，请确认！";
         }
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {

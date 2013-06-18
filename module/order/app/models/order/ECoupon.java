@@ -1817,11 +1817,10 @@ public class ECoupon extends Model {
         this.supplierUser = supplierUser;
         this.appointmentDate = appointmentDate;
         this.eCouponSn = generateAvailableEcouponSn(10);
-        this.appointmentRemark = "预约门店【" + shop.name + "】" + StringUtils.trimToEmpty(appointmentRemark);
+        this.appointmentRemark = getRemarks(appointmentRemark);
         this.save();
 
-        OrderECouponMessage.with(this).remark("发送消费券号2").sendToMQ();
-//        ECouponHistoryMessage.with(this).operator(supplierUser.userName).remark("发送消费券号").sendToMQ();
+        OrderECouponMessage.with(this).remark("发送消费券号").sendToMQ();
 
         //预约完成进行预约验证该券
         if (!couponVerifyPartnerResaler()) {
@@ -1845,7 +1844,14 @@ public class ECoupon extends Model {
     }
 
     /**
-     * 判断是否是需要预约的券,false:没预约过 true：已预约
+     * 预约信息
+     */
+    public String getRemarks(String appointmentRemark) {
+        return "预约门店【" + shop.name + "】" + (StringUtils.isNotBlank(shop.phone) ? ("门店电话:" + shop.phone) : "") + StringUtils.trimToEmpty(appointmentRemark);
+    }
+
+    /**
+     * 判断是否是需要预约的券,true:需预约 false：不需预约
      */
     public boolean needsAppointmentCoupon() {
         return this.eCouponSn.length() < 10 && goods.isSecondaryVerificationGoods() && appointmentDate == null;
