@@ -83,7 +83,8 @@
 
     <div class="controls">
         <input type="text" name="goods.advancedDeposit" id="goods_advancedDeposit"
-               value="${goods?.advancedDeposit}">元
+               value="${goods?.advancedDeposit?:(goods.originalPrice.multiply(new java.math.BigDecimal(20)).divide(100))}">元
+        <span style="color: #808080">默认为采购价的20%</span>
         <span class="error">#{error 'goods.advancedDeposit'/}</span>
     </div>
 </div>
@@ -502,7 +503,7 @@ $("#goods_secondary_verification").click(function () {
         $("#goods_advancedDeposit").val(${goods.advancedDeposit});
         $("#goods_secondary_verification").val("1")
     } else {
-        $("#goods_advancedDeposit").val("");
+//        $("#goods_advancedDeposit").val("");
         $("#advancedDeposit").hide();
         $("#goods_secondary_verification").val("0")
     }
