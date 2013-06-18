@@ -56,6 +56,7 @@ public class SupplierVerifyECouponsTest extends FunctionalTest {
         FactoryBoy.create(Supplier.class);
         shop = FactoryBoy.create(Shop.class);
         goods = FactoryBoy.create(Goods.class);
+
         supplierUser = FactoryBoy.create(SupplierUser.class);
         coupon = FactoryBoy.create(ECoupon.class);
         FactoryBoy.create(Account.class, "balanceAccount");
@@ -91,7 +92,7 @@ public class SupplierVerifyECouponsTest extends FunctionalTest {
         Map<String, String> params = new HashMap<>();
         params.put("shopId", shop.id.toString());
         params.put("eCouponSns", coupon.eCouponSn);
-        assertEquals(ECouponStatus.UNCONSUMED,coupon.status);
+        assertEquals(ECouponStatus.UNCONSUMED, coupon.status);
         System.out.println("eCouponSN:" + coupon.eCouponSn + ", status:" + coupon.status);
         Http.Response response = POST("/verify/verify", params);
 
@@ -101,7 +102,7 @@ public class SupplierVerifyECouponsTest extends FunctionalTest {
         assertSMSContentMatch("已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
                 msg.getContent());
         coupon.refresh();
-        assertEquals(ECouponStatus.CONSUMED,coupon.status);
+        assertEquals(ECouponStatus.CONSUMED, coupon.status);
 
     }
 
