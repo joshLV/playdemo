@@ -57,6 +57,7 @@ validation.phone=无效的电话!
 validation.useEndTime=使用结束时间要在06：00之前！
 validation.largarThanBaseSale=%s要小于或等于库存!
 validation.moreThanPromoterPrice=%s不能大于推荐者返利
+validation.moreThanSalePrice=%s不能大于进价
 validation.beforeThanUseTime=%s要大于开始时间!
 validation.allRequiredUseTime=请把可用时段输入完整!
 validation.noShop=该商户没有门店，请先为商户添加门店！

@@ -554,7 +554,7 @@ public class ECoupon extends Model {
                                            String triggerCouponSn, Date realConsumedAt, String remark) {
         //===================判断是否第三方订单产生的券=并且不是导入券============================
         if (this.createType != ECouponCreateType.IMPORT) {
-            if (this.eCouponSn.length() < 10) {
+            if (this.needsAppointmentCoupon()) {
                 Logger.info("ECoupon.consumeAndPayCommission eCouponSN:%s length < 10， 可能是需要预约，不能验证", this.eCouponSn);
                 return false;
             }
@@ -646,14 +646,18 @@ public class ECoupon extends Model {
             promoteRebate.rebateAt = new Date();
             promoteRebate.save();
         }
-        //记录券历史信息
-        String historyRemark = StringUtils.isBlank(remark) ? "消费" : remark;
-        if (realConsumedAt != null) {
-            Logger.info("实际消费时间" + realConsumedAt);
-            historyRemark += ",实际消费时间" + DateUtil.dateToString(realConsumedAt, "yyyy-MM-dd");
+
+        //ktv自动验证不记录历史
+        if (type != VerifyCouponType.AUTO_VERIFY) {
+            //记录券历史信息
+            String historyRemark = StringUtils.isBlank(remark) ? "消费" : remark;
+            if (realConsumedAt != null) {
+                Logger.info("实际消费时间" + realConsumedAt);
+                historyRemark += ",实际消费时间" + DateUtil.dateToString(realConsumedAt, "yyyy-MM-dd");
+            }
+            ECouponHistoryMessage.with(this).operator(operator).remark(historyRemark)
+                    .fromStatus(previousStatus).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         }
-        ECouponHistoryMessage.with(this).operator(operator).remark(historyRemark)
-                .fromStatus(previousStatus).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         return true;
     }
 
@@ -1587,9 +1591,16 @@ public class ECoupon extends Model {
             return "对不起，该券已被冻结!";
         }
         //商户验证才检查是否限制门店使用
-        if (StringUtils.isNotBlank(verifyType) && !ecoupon.isBelongShop(targetShopId)) {
-            return "对不起，该券不能在此门店使用,请确认";
+        if (StringUtils.isNotBlank(verifyType)) {
+            if (!ecoupon.isBelongShop(targetShopId)) {
+                return "对不起，该券不能在此门店使用,请确认";
+            }
+            if (ecoupon.advancedDeposit != null && ecoupon.advancedDeposit.compareTo(ecoupon.originalPrice) > 0) {
+                Logger.info("ecoupon.advancedDeposit=%s,ecoupon.originalPrice=%s", ecoupon.advancedDeposit, ecoupon.originalPrice);
+                return "对不起，预付订金额有问题,请确认";
+            }
         }
+
         if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日HH点mm分");
             Shop shop = Shop.findById(targetShopId);
@@ -1806,9 +1817,12 @@ public class ECoupon extends Model {
         this.supplierUser = supplierUser;
         this.appointmentDate = appointmentDate;
         this.eCouponSn = generateAvailableEcouponSn(10);
-        this.appointmentRemark = StringUtils.trimToEmpty(appointmentRemark);
+        this.appointmentRemark = "预约门店【" + shop.name + "】" + StringUtils.trimToEmpty(appointmentRemark);
         this.save();
-        OrderECouponMessage.with(this).remark("发送消费券号").sendToMQ();
+
+        OrderECouponMessage.with(this).remark("发送消费券号2").sendToMQ();
+//        ECouponHistoryMessage.with(this).operator(supplierUser.userName).remark("发送消费券号").sendToMQ();
+
         //预约完成进行预约验证该券
         if (!couponVerifyPartnerResaler()) {
             JPA.em().getTransaction().rollback();
@@ -1828,5 +1842,12 @@ public class ECoupon extends Model {
         TradeUtil.success(consumeTrade, "二次验证商品预约给商户打预付订金(" + order.description + ")");
 
         return true;
+    }
+
+    /**
+     * 判断是否是需要预约的券,false:没预约过 true：已预约
+     */
+    public boolean needsAppointmentCoupon() {
+        return this.eCouponSn.length() < 10 && goods.isSecondaryVerificationGoods() && appointmentDate == null;
     }
 }

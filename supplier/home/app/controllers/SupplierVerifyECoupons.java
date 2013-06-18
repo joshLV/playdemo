@@ -98,12 +98,12 @@ public class SupplierVerifyECoupons extends Controller {
         Logger.info("SupplierVerifyECoupons.singleQuery: query eCouponSN (%s)", eCouponSn);
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-        //判断商品是否二次验证商品
-        if (ecoupon.goods.isSecondaryVerificationGoods() && ecoupon.appointmentDate == null) {
+        //判断是否需要预约的券
+        if (ecoupon.needsAppointmentCoupon()) {
             renderJSON("{\"errorInfo\":\"该券需要先预约,才能验证!\"}");
         }
         //check券和门店
-        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId,"supplierVerify");
+        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId, "supplierVerify");
         if (StringUtils.isNotEmpty(errorInfo)) {
             Logger.info("SupplierVerifyECoupons.singleQuery: Error eCouponSN (%s), errorInfo: %s", eCouponSn, errorInfo);
             renderJSON("{\"errorInfo\":\"" + errorInfo + "\"}");
@@ -113,6 +113,7 @@ public class SupplierVerifyECoupons extends Controller {
                     + ",\"expireAt\":\"" + DateUtil.dateToString(ecoupon.expireAt, 0) + "\"}");
         }
     }
+
 
     /**
      * 验证多个券
@@ -147,9 +148,12 @@ public class SupplierVerifyECoupons extends Controller {
     private static String doVerify(Long shopId, Long supplierId,
                                    String eCouponSn, List<ECoupon> needSmsECoupons) {
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId,"supplierVerify");
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId, "supplierVerify");
         if (StringUtils.isNotEmpty(ecouponStatusDescription)) {
             return ecouponStatusDescription;
+        }
+        if (!ecoupon.needsAppointmentCoupon()) {
+            return "该券需要预约才能消费，请确认！";
         }
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
             if (!ecoupon.consumeAndPayCommission(shopId, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {

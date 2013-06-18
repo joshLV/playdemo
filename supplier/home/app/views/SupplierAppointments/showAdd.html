@@ -10,11 +10,19 @@
     <form id="coupon-form" action="@{SupplierAppointments.create()}" method="POST">
         <div class="field-group">
             <label>门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;店</label>
+
+        #{if shop == null}
             <select name="shopId" value="${shopId}" id="shopId" style="width: auto">
-            #{list items:shopList,as:'s'}
-                <option value="${s.id}" ${shopId==s?.id ?'selected':''}/>${s.name}&nbsp;&nbsp;
-            #{/list}
+                #{list items:shopList,as:'s'}
+                    <option value="${s.id}" ${shopId==s?.id ?'selected':''}/>${s.name}&nbsp;&nbsp;
+                #{/list}
             </select>
+        #{/if}
+        #{else}
+            <p>${shop?.name}</p>
+            <input type="hidden" name="shopId" id="shopId" value="${shop?.id}"/>
+        #{/else}
+
         </div>
 
         <div class="field-group">

@@ -2,6 +2,7 @@ package extension;
 
 import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
+import org.apache.commons.lang.StringUtils;
 import util.extension.ExtensionResult;
 
 /**
@@ -22,6 +23,8 @@ public class SecondaryVerificationECouponSMSInvocation extends OrderECouponSMSIn
         sb.append("【")
                 .append(context.goods.getSupplier().otherName)
                 .append("】")
+                .append(StringUtils.isNotEmpty(context.goods.title) ? context.goods.title : context.goods.shortName)
+                .append(",")
                 .append(context.couponInfo)
                 .append(context.notes)
                 .append("一百券客服4006865151");

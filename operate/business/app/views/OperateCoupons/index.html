@@ -263,6 +263,9 @@
                     ${coupon.appointmentRemark}
                     #{/else}
                 #{/if}
+                #{elseif coupon.goods.isSecondaryVerificationGoods()}
+                    该券需要预约
+                #{/elseif}
             </span>
         </td>
         <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>

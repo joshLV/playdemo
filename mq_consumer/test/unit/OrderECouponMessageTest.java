@@ -19,6 +19,7 @@ import models.sales.GoodsProperty;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import models.supplier.SupplierProperty;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -231,6 +232,8 @@ public class OrderECouponMessageTest extends UnitTest {
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
         StringBuilder sb = new StringBuilder();
         sb.append("【" + couponList.get(0).goods.getSupplier().otherName + "】")
+                .append(StringUtils.isNotEmpty(couponList.get(0).goods.title) ? couponList.get(0).goods.title : couponList.get(0).goods.shortName)
+                .append(",")
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",此产品需预约,预约电话见商品详情,")
                 .append("一百券客服4006865151");
@@ -250,6 +253,8 @@ public class OrderECouponMessageTest extends UnitTest {
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
         StringBuilder sb = new StringBuilder();
         sb.append("【" + couponList.get(0).goods.getSupplier().otherName + "】")
+                .append(StringUtils.isNotEmpty(couponList.get(0).goods.title) ? couponList.get(0).goods.title : couponList.get(0).goods.shortName)
+                .append(",")
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
                 .append("," + couponList.get(0).appointmentRemark).append(",")
