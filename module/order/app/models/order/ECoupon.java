@@ -1591,8 +1591,14 @@ public class ECoupon extends Model {
             return "对不起，该券已被冻结!";
         }
         //商户验证才检查是否限制门店使用
-        if (StringUtils.isNotBlank(verifyType) && !ecoupon.isBelongShop(targetShopId)) {
-            return "对不起，该券不能在此门店使用,请确认";
+        if (StringUtils.isNotBlank(verifyType)) {
+            if (!ecoupon.isBelongShop(targetShopId)) {
+                return "对不起，该券不能在此门店使用,请确认";
+            }
+            if (ecoupon.advancedDeposit != null && ecoupon.advancedDeposit.compareTo(ecoupon.originalPrice) > 0) {
+                Logger.info("ecoupon.advancedDeposit=%s,ecoupon.originalPrice=%s", ecoupon.advancedDeposit, ecoupon.originalPrice);
+                return "对不起，预付订金额有问题,请确认";
+            }
         }
 
         if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
