@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
 import play.jobs.OnApplicationStart;
+import util.transaction.RedisLock;
 import util.transaction.RemoteRecallCheck;
 import util.transaction.TransactionCallback;
 import util.transaction.TransactionRetry;
@@ -73,6 +74,9 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
     private Boolean doSendSms(OrderECouponMessage message) {
         if (message.eCouponId != null) {
             ECoupon ecoupon = ECoupon.findById(message.eCouponId);
+            if (message.lockVersion != null && ecoupon.lockVersion < message.lockVersion) {
+                throw new RuntimeException("Retry later with bad lockVersion:" + ecoupon.lockVersion);
+            }
             if (ecoupon != null && ecoupon.canSendSMSByOperate()) {
                 sendECouponSMS(ecoupon, message);
             } else {
@@ -169,6 +173,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
     }
 
     private void sendECouponSMS(ECoupon ecoupon, OrderECouponMessage message) {
+        Logger.info("sendECouponSMS:ecoupon.id=(%d),ecoupon.sn=%s", ecoupon.id, ecoupon.eCouponSn);
         OrderECouponSMSContext smsContext = OrderECouponMessage.getOrderSMSMessage(ecoupon);
 
 

@@ -26,7 +26,7 @@ public class OrderECouponMessage extends QueueIDMessage implements Serializable 
 
     private static final long serialVersionUID = 793732320988395L;
 
-    public static final String MQ_KEY = Play.mode.isProd() ? "order.sms" : "order.sms_dev";
+    public static final String MQ_KEY = Play.mode.isProd() ? "order.v2.sms" : "order.v2.sms_dev";
 
     // 默认的生成券短信格式.
     private static DefaultAction<OrderECouponSMSContext> defaultSmsAction = new DefaultAction<OrderECouponSMSContext>() {
@@ -64,6 +64,8 @@ public class OrderECouponMessage extends QueueIDMessage implements Serializable 
      */
     public String operator;
 
+    public Integer lockVersion;
+
     private OrderECouponMessage() {
         // 禁止直接创建对象
     }
@@ -81,6 +83,7 @@ public class OrderECouponMessage extends QueueIDMessage implements Serializable 
         message.orderItemId = orderItems.id;
         message.phone = orderItems.phone;
         message.operator = "Default";
+        message.lockVersion = 0;
         return message;
     }
 
@@ -90,6 +93,7 @@ public class OrderECouponMessage extends QueueIDMessage implements Serializable 
         message.eCouponId = eCoupon.id;
         message.phone = eCoupon.orderItems.phone;
         message.operator = "Default";
+        message.lockVersion = eCoupon.lockVersion;
         return message;
     }
 

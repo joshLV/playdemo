@@ -5,6 +5,7 @@ import play.db.jpa.JPAPlugin;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 import play.modules.redis.Redis;
 import util.mq.MQPublisher;
+import util.transaction.RedisLock;
 
 import java.util.Set;
 

@@ -88,11 +88,18 @@ public class SupplierAppointments extends Controller {
     public static void showAdd() {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-
+        Long supplierUserId = SupplierRbac.currentUser().id;
+        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
         if (shopList.size() == 0) {
             error("该商户没有添加门店信息！");
         }
-        render(shopList);
+        if (supplierUser.shop == null) {
+            render(shopList, supplierUser);
+        } else {
+            Shop shop = supplierUser.shop;
+            //根据页面录入券号查询对应信息
+            render(shop, supplierUser);
+        }
     }
 
     public static void create(Long shopId, String couponSn, Date appointmentDate, String appointmentRemark) {
@@ -133,9 +140,10 @@ public class SupplierAppointments extends Controller {
         if (Validation.hasErrors()) {
             render("SupplierAppointments/showEdit.html");
         }
-        if (appointmentDate !=null && appointmentDate.compareTo(coupon.appointmentDate) != 0) {
+        if (appointmentDate != null && appointmentDate.compareTo(coupon.appointmentDate) != 0) {
             coupon.appointmentDate = appointmentDate;
             coupon.appointmentRemark = appointmentRemark;
+            coupon.appointmentRemark = "预约门店【" + coupon.shop.name + "】" + StringUtils.trimToEmpty(appointmentRemark);
             coupon.save();
             OrderECouponMessage.with(coupon).operator(SupplierRbac.currentUser().userName).remark("重新预约日期信息").sendToMQ();
         }
@@ -157,7 +165,7 @@ public class SupplierAppointments extends Controller {
         ECoupon ecoupon = ECoupon.query(couponSn, supplierId);
 
         //check券和门店
-        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId,"supplierVerify");
+        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId, "supplierVerify");
         if (StringUtils.isNotEmpty(errorInfo)) {
             renderJSON("{\"errorInfo\":\"" + errorInfo + "\"}");
         }
@@ -186,7 +194,7 @@ public class SupplierAppointments extends Controller {
         renderError(shopId);
 
         //check券和门店
-        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId,"supplierVerify");
+        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId, "supplierVerify");
         if (StringUtils.isNotEmpty(errorInfo)) {
             Validation.addError("error-info", errorInfo);
         }

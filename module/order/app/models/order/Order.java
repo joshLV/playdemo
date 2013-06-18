@@ -894,7 +894,7 @@ public class Order extends Model {
                     String remark = "产生券号";
                     //二次验证商品记录预付订金
                     if (goods.isSecondaryVerificationGoods()) {
-                        remark = "产生预约券号:" + InfoUtil.getMaskedEcouponSn(eCoupon.eCouponSn);
+                        remark = "产生预约券号";
                         eCoupon.advancedDeposit = goods.advancedDeposit;
                         eCoupon.save();
                     }
@@ -1469,6 +1469,10 @@ public class Order extends Model {
     public void sendOrderSMS(String remark) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
         for (OrderItems item : this.orderItems) {
+            //二次验证商品记录预付订金
+            if (item.goods.isSecondaryVerificationGoods()) {
+                remark = "发送预约券号";
+            }
             OrderECouponMessage.with(item).remark(remark).sendToMQ();
             //ktv商户发送给店员短信
             if (item.goods.isKtvProduct()) {

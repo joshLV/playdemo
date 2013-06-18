@@ -4,7 +4,9 @@ import play.Logger;
 import play.modules.redis.Redis;
 import redis.clients.jedis.JedisPool;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * 实现基于Redis的分布式锁机制.
@@ -21,12 +23,24 @@ public class RedisLock {
     //锁的超时时间（秒），过期删除
     public static final int EXPIRE = 300;
 
+    protected static ThreadLocal<Set<String>> _lockKeys = new ThreadLocal<>();
+
     private String key;
     //锁状态标志
     private boolean locked = false;
 
+    public static void addLockKey(String key) {
+        Set<String> keys = _lockKeys.get();
+        if (keys == null) {
+            keys = new HashSet<>();
+            _lockKeys.set(keys);
+        }
+        keys.add(key);
+    }
+
     public RedisLock(String key) {
         this.key = key;
+        RedisLock.addLockKey(key);
     }
 
     public boolean lock(long timeout) {
@@ -57,5 +71,15 @@ public class RedisLock {
         if (locked) {
             Redis.del(new String[]{key});
         }
+    }
+
+    public static void unlockAll() {
+        Set<String> keys = _lockKeys.get();
+        if (keys != null) {
+            for (String key : keys) {
+                Redis.del(new String[]{key});
+            }
+        }
+        _lockKeys.remove();
     }
 }
