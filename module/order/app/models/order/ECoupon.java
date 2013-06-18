@@ -554,8 +554,13 @@ public class ECoupon extends Model {
                                            String triggerCouponSn, Date realConsumedAt, String remark) {
         //===================判断是否第三方订单产生的券=并且不是导入券============================
         if (this.createType != ECouponCreateType.IMPORT) {
+            if (this.eCouponSn.length() < 10) {
+                Logger.info("ECoupon.consumeAndPayCommission eCouponSN:%s length < 10， 可能是需要预约，不能验证", this.eCouponSn);
+                return false;
+            }
             ExtensionResult result = verifyAndCheckOnPartnerResaler();
             if (result.code != 0) {
+                Logger.info("ECoupon.consumeAndPayCommission: SN: %s verifyAndCheckOnPartnerResaler result.code=%d return false", this.eCouponSn, result.code);
                 return false;
             }
         }
