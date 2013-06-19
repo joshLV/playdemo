@@ -67,7 +67,7 @@ public class GoodsCondition implements Serializable {
     public Date expireAtEnd;
     public Date expireAt;
     public String operatorCode;
-    public String updatedBy;
+    public String createdBy;
     public static int sortLength = 13;
     private Map<String, Object> paramMap = new HashMap<>();
 
@@ -269,10 +269,10 @@ public class GoodsCondition implements Serializable {
                 baseSaleBegin = 0;
             }
         }
-        if (StringUtils.isNotBlank(updatedBy)) {
-            condBuilder.append(" and (updatedBy = :updatedBy or createdBy=:createdBy)");
-            paramMap.put("updatedBy", updatedBy);
-            paramMap.put("createdBy", updatedBy);
+        if (StringUtils.isNotBlank(createdBy)) {
+            condBuilder.append(" and createdBy=:createdBy");
+//            paramMap.put("updatedBy", updatedBy);
+            paramMap.put("createdBy", createdBy);
         }
 
         if (pointPriceBegin != null) {

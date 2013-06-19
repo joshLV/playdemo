@@ -2,8 +2,10 @@ package models.order;
 
 import com.uhuila.common.util.DateUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +40,15 @@ public class RealGoodsReturnEntryCondition implements Serializable {
      * 商户标识.
      */
     public Long supplierId;
+    /**
+     * 申请时间起始时间.
+     */
+    public Date createdAtBegin = DateUtils.truncate(DateUtils.addDays(new Date(), -7), Calendar.DATE);
 
+    /**
+     * 申请时间结束时间.
+     */
+    public Date createdAtEnd;
     /**
      * 退货时间起始时间.
      */
@@ -65,6 +75,7 @@ public class RealGoodsReturnEntryCondition implements Serializable {
             sqlCond.append(" and r.status=:status");
             paramsMap.put("status", status);
         }
+
         if (StringUtils.isNotBlank(orderNumber)) {
             sqlCond.append(" and r.orderItems.order.orderNumber=:orderNumber");
             paramsMap.put("orderNumber", orderNumber);
@@ -85,11 +96,22 @@ public class RealGoodsReturnEntryCondition implements Serializable {
             sqlCond.append(" and r.returnedAt>=:returnedAtBegin");
             paramsMap.put("returnedAtBegin", returnedAtBegin);
         }
+
         if (returnedAtEnd != null) {
             sqlCond.append(" and r.returnedAt<=:returnedAtEnd");
             paramsMap.put("returnedAtEnd", DateUtil.getEndOfDay(returnedAtEnd));
         }
 
+        if (createdAtBegin != null) {
+            sqlCond.append(" and r.createdAt>=:createdAtBegin");
+            paramsMap.put("createdAtBegin", createdAtBegin);
+        }
+
+        if (createdAtEnd != null) {
+            sqlCond.append(" and r.createdAt<=:createdAtEnd");
+            paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
+        }
+        System.out.println(sqlCond.toString()+createdAtBegin);
         return sqlCond.toString();
     }
 

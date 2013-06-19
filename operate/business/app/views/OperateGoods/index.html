@@ -47,8 +47,8 @@
                                             value="${condition?.shortName}"/></td>
                 <td width="20%">商品编码：<input type="text" name="condition.code" class="input-medium"
                                 value="${condition?.code}"/></td>
-                <td>编辑人员<input type="text" name="condition.updatedBy" class="input-medium"
-                               value="${condition?.updatedBy}"/></td>
+                <td>编辑人员<input type="text" name="condition.createdBy" class="input-medium"
+                               value="${condition?.createdBy}"/></td>
             </tr>
             <tr>
                 <td width="30%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
@@ -103,9 +103,9 @@
             #{layout_operate.sortField name:'原价', descField:condition?.desc, desc:'0002000000000',asc:'0001000000000'/}
             #{layout_operate.sortField name:'采购价', descField:condition?.desc, desc:'0000200000000',asc:'0000100000000'/}
             #{layout_operate.sortField name:'售价', descField:condition?.desc, desc:'0000020000000',asc:'0000010000000'/}
-            *{#{layout_operate.sortField name:'剩余库存', descField:condition?.desc, desc:'0000002000000',asc:'0000001000000'/}}*
+            #{layout_operate.sortField name:'剩余库存', descField:condition?.desc, desc:'0000002000000',asc:'0000001000000'/}
             *{#{layout_operate.sortField name:'销量', descField:condition?.desc, desc:'0000000200000',asc:'0000000100000'/}}*
-            #{layout_operate.sortField name:'上架时间', descField:condition?.desc, desc:'0000000000020',asc:'0000000000010'/}
+            *{#{layout_operate.sortField name:'上架时间', descField:condition?.desc, desc:'0000000000020',asc:'0000000000010'/}}*
             #{layout_operate.sortField name:'下架时间', descField:condition?.desc, desc:'0000000000002',asc:'0000000000001'/}
             #{layout_operate.sortField name:'到期时间', descField:condition?.desc, desc:'0000000020000',asc:'0000000010000'/}
             *{#{layout_operate.sortField name:'最后修改', descField:condition?.desc, desc:'0000000002000',asc:'0000000001000'/}}*
@@ -120,7 +120,7 @@
             <tbody>
 
             #{paginate.list items:goodsPage, as:'goods'}
-                *{#{set realStock:goods.realStocks/}}*
+                #{set realStock:goods.realStocks/}
             <tr class="#{if goods.isExpired() || realStock == 0}tr-offsale#{/if} transparent">
                 <td style="text-align:center"><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/>
                 </td>
@@ -150,15 +150,15 @@
                 <td class="amount">${goods?.faceValue?.formatCurrency('CNY')}</td>
                 <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
                 <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>
-                *{<td class="amount">${realStock}</td>}*
+                <td class="amount">${realStock}</td>
             *{<td class="amount">${goods?.getRealSaleCount()}</td>}*
 
-                #{if goods?.beginOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
-                    <td style="color:red;">${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-                #{/if}
-                #{else}
-                    <td>${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-                #{/else}
+                *{#{if goods?.beginOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}}*
+                    *{<td style="color:red;">${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>}*
+                *{#{/if}}*
+                *{#{else}}*
+                    *{<td>${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>}*
+                *{#{/else}}*
 
                 #{if goods?.endOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
                     <td style="color:red;">${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
@@ -196,7 +196,7 @@
                     #{/if}
                 </td>
                 <td>${goods?.code}</td>
-                <td>${goods?.updatedBy}</td>
+                <td>${goods?.createdBy}</td>
                 <td>
                     <a href="@{OperateGoods.show(goods.id)}">查看</a>
                     /<a href="/goods/${goods.id}/edit2?page=${goodsPage.pageNumber?:'1'}&${queryString}">修改</a>
