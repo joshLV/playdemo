@@ -1599,12 +1599,12 @@ public class ECoupon extends Model {
                 Logger.info("ecoupon.advancedDeposit=%s,ecoupon.originalPrice=%s", ecoupon.advancedDeposit, ecoupon.originalPrice);
                 return "对不起，预付订金额有问题,请确认";
             }
+            //判断是否需要预约的券
+            if (ecoupon.needsAppointmentCoupon()) {
+                return "该券需要先到商家预约日期,才能验证!";
+            }
         }
 
-        //判断是否需要预约的券
-        if (ecoupon.needsAppointmentCoupon()) {
-            return "该券需要先到商家预约日期,才能验证!";
-        }
         if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日HH点mm分");
             Shop shop = Shop.findById(targetShopId);

@@ -165,7 +165,7 @@ public class SupplierAppointments extends Controller {
         ECoupon ecoupon = ECoupon.query(couponSn, supplierId);
 
         //check券和门店
-        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId, "supplierVerify");
+        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId, "");
         if (StringUtils.isNotEmpty(errorInfo)) {
             renderJSON("{\"errorInfo\":\"" + errorInfo + "\"}");
         }
@@ -194,7 +194,7 @@ public class SupplierAppointments extends Controller {
         renderError(shopId);
 
         //check券和门店
-        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId, "supplierVerify");
+        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId, "");
         if (StringUtils.isNotEmpty(errorInfo)) {
             Validation.addError("error-info", errorInfo);
         }
