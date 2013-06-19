@@ -887,7 +887,7 @@ public class Order extends Model {
                                         KtvTaobaoSku.humanTimeRange(roomOrderInfo.scheduledTime,
                                                 roomOrderInfo.scheduledTime + roomOrderInfo.product.duration);
                         eCoupon.effectiveAt = new Date();
-                        eCoupon.expireAt = DateUtils.ceiling(roomOrderInfo.scheduledDay, Calendar.DATE);
+                        eCoupon.expireAt = DateUtils.addDays(DateUtils.ceiling(roomOrderInfo.scheduledDay,Calendar.DATE), 10);
                         eCoupon.save();
                     }
 
