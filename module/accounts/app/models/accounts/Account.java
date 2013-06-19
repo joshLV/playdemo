@@ -4,6 +4,7 @@ import models.operator.Operator;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import play.Logger;
 import play.db.jpa.Model;
+import util.DateHelper;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -111,7 +112,7 @@ public class Account extends Model {
         if (accountType == AccountType.SUPPLIER) {
             BigDecimal supplierUncashAmount = (BigDecimal) find("select sum(amount) from WithdrawBill where" +
                     " account=? and status = ? and appliedAt<=?",
-                    this, WithdrawBillStatus.APPLIED, toDate).first();
+                    this, WithdrawBillStatus.APPLIED, DateHelper.afterDays(toDate, 1)).first();
 
             if (supplierUncashAmount == null) {
                 supplierUncashAmount = BigDecimal.ZERO;

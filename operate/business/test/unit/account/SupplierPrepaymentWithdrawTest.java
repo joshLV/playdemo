@@ -93,7 +93,7 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
 
         //可结算总额
         BigDecimal amount = supplierAccount.getWithdrawAmount(DateUtil.getEndOfDay(beforeDays(6)));
-        assertEquals(new BigDecimal(180).setScale(2), amount.setScale(2));
+        assertEquals(new BigDecimal(160).setScale(2), amount.setScale(2));
 
     }
 
