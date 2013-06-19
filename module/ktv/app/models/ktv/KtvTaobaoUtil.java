@@ -5,14 +5,21 @@ import com.taobao.api.Constants;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.domain.Sku;
-import com.taobao.api.request.*;
-import com.taobao.api.response.*;
+import com.taobao.api.request.ItemSkuAddRequest;
+import com.taobao.api.request.ItemSkuDeleteRequest;
+import com.taobao.api.request.ItemSkuUpdateRequest;
+import com.taobao.api.request.ItemSkusGetRequest;
+import com.taobao.api.request.SkusQuantityUpdateRequest;
+import com.taobao.api.response.ItemSkuAddResponse;
+import com.taobao.api.response.ItemSkuDeleteResponse;
+import com.taobao.api.response.ItemSkuUpdateResponse;
+import com.taobao.api.response.ItemSkusGetResponse;
+import com.taobao.api.response.SkusQuantityUpdateResponse;
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
 import models.order.OuterOrderPartner;
-import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import models.sales.Shop;
@@ -28,7 +35,17 @@ import play.db.jpa.JPA;
 
 import javax.persistence.Query;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
 
 /**
  * User: yan
@@ -44,6 +61,9 @@ public class KtvTaobaoUtil {
     private static final String ACTION_DELETE = "delete";
     private static final String ACTION_UPDATE_PRICE = "updatePrice";
     private static final String ACTION_UPDATE_QUANTITY = "updateQuantity";
+    public static final int MAX_SKU_COUNT = 600;  //淘宝最大SKU数为600，不允许比600更大的值
+    public static final int MAX_DEPLOY_DATE_COUNT = 10;  //发布的预订天数
+    public static final int PRE_ORDER_HOUR = 1;    //提前预订小时数，如11:00-13:00的包厢，只能提前1小时，即10:00前预订
 
     /**
      * 根据某一商品，更新其在淘宝上的SKU信息.
@@ -226,8 +246,7 @@ public class KtvTaobaoUtil {
         Set<Date> uniqDates = new HashSet<>();//唯一日期
         Set<String> uniqTimeRanges = new HashSet<>();//唯一时间范围
 
-        int maxSkuCount = 600;
-        int dateCount = 10;//从startDay 开始，依次往后选择不超过14个不同的日期
+        int dateCount = MAX_DEPLOY_DATE_COUNT;//从startDay 开始，依次往后选择不超过14个不同的日期
 
         List<KtvRoomOrderInfo> roomOrderInfoList = new ArrayList<>();
         Date tenMinutesAgo = DateUtils.addMinutes(new Date(), - KtvRoomOrderInfo.LOCK_MINUTE);
@@ -239,7 +258,7 @@ public class KtvTaobaoUtil {
             }
             Date day = entry.getKey();
             uniqDates.add(day);
-            if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
+            if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > MAX_SKU_COUNT) {
                 continue;
             }
             //查出该门店的该产品这一天已经卖出、或者被锁定的房间信息
@@ -251,7 +270,7 @@ public class KtvTaobaoUtil {
 
             for (KtvPriceSchedule schedule : entry.getValue()) {
                 uniqRoomTypes.add(schedule.roomType);
-                if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
+                if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > MAX_SKU_COUNT) {
                     uniqRoomTypes.remove(schedule.roomType);
                     continue;
                 }
@@ -261,14 +280,14 @@ public class KtvTaobaoUtil {
                 //取出该房型下的时间安排
                 SortedSet<Integer> startTimeArray = schedule.getStartTimesAsSet();
                 for (Integer startTime : startTimeArray) {
-                    //今天两小时之内的不能预订
-                    if (day.compareTo(today) == 0 && startTime < (currentHour + 2)) {
+                    //今天PRE_ORDER_HOUR小时之内的不能预订
+                    if (day.compareTo(today) == 0 && startTime < (currentHour + PRE_ORDER_HOUR)) {
                         continue;
                     }
                     //房型数 x 日期数 x 时间段数 不能超过600
                     String t = startTime + "-" + (startTime + product.duration);
                     uniqTimeRanges.add(t);
-                    if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > maxSkuCount) {
+                    if (uniqRoomTypes.size()*uniqDates.size()*uniqTimeRanges.size() > MAX_SKU_COUNT) {
                         uniqTimeRanges.remove(t);
                         continue;
                     }
