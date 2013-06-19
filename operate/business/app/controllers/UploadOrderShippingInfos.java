@@ -159,6 +159,7 @@ public class UploadOrderShippingInfos extends Controller {
 
         //淘宝自动发货
         List<String> successSendOnTaobao = new ArrayList<>();
+        List<String> failSendOnTaobao = new ArrayList<>();
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(KtvTaobaoUtil.URL, resaler.taobaoCouponAppKey,
                 resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
@@ -172,14 +173,17 @@ public class UploadOrderShippingInfos extends Controller {
                 LogisticsOnlineConfirmResponse response = taobaoClient.execute(request, token.accessToken);
                 if (response.isSuccess()) {
                     successSendOnTaobao.add(logisticImportData.getOuterOrderNo());
-                }else {
+                } else {
                     Logger.error("淘宝确认收货失败 %s %s", response.getSubCode(), response.getSubMsg());
+                    failSendOnTaobao.add(logisticImportData.getOuterOrderNo());
                 }
-            }catch (ApiException e) {
+            } catch (ApiException e) {
                 Logger.error(e, "淘宝确认收货失败");
             }
         }
         renderArgs.put("successSendOnTaobao", successSendOnTaobao);
+        renderArgs.put("failSendOnTaobao", failSendOnTaobao);
+
 
         render("UploadOrderShippingInfos/index.html", supplierList);
     }
