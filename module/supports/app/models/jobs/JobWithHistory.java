@@ -81,18 +81,18 @@ public class JobWithHistory<V> extends Job<V> {
 
         long beginAt = System.currentTimeMillis();
 
-        // 为避免多个jvm之间重复 10秒内再次运行的job不被执行
-        if (Redis.exists(getLastBeginRunAtRedisKey())) {
-            long lastBeginAt = Long.parseLong(Redis.get(getLastBeginRunAtRedisKey()));
-            if (Math.abs(lastBeginAt - beginAt) < getDisableWhenOtherJobsRunInMillis()) {
-                // 在指定时间（10秒）内被运行过
-                Logger.info("Job:" + message + "被另一进程在" + (new Date(lastBeginAt)) + "运行过，不再运行.");
-                return;
-            }
-        }
-        Redis.set(getLastBeginRunAtRedisKey(), String.valueOf(beginAt));
-
         try {
+            // 为避免多个jvm之间重复 10秒内再次运行的job不被执行
+            if (Redis.exists(getLastBeginRunAtRedisKey())) {
+                long lastBeginAt = Long.parseLong(Redis.get(getLastBeginRunAtRedisKey()));
+                if (Math.abs(lastBeginAt - beginAt) < getDisableWhenOtherJobsRunInMillis()) {
+                    // 在指定时间（10秒）内被运行过
+                    Logger.info("Job:" + message + "被另一进程在" + (new Date(lastBeginAt)) + "运行过，不再运行.");
+                    return;
+                }
+            }
+            Redis.set(getLastBeginRunAtRedisKey(), String.valueOf(beginAt));
+
             doJobWithHistory();
             message.runStatus = "SUCCESS";
         } catch (Exception e) {
