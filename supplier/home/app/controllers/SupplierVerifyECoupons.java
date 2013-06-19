@@ -98,10 +98,7 @@ public class SupplierVerifyECoupons extends Controller {
         Logger.info("SupplierVerifyECoupons.singleQuery: query eCouponSN (%s)", eCouponSn);
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-        //判断是否需要预约的券
-        if (ecoupon.needsAppointmentCoupon()) {
-            renderJSON("{\"errorInfo\":\"该券需要先预约,才能验证!\"}");
-        }
+
         //check券和门店
         String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId, "supplierVerify");
         if (StringUtils.isNotEmpty(errorInfo)) {
@@ -151,9 +148,6 @@ public class SupplierVerifyECoupons extends Controller {
         String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId, "supplierVerify");
         if (StringUtils.isNotEmpty(ecouponStatusDescription)) {
             return ecouponStatusDescription;
-        }
-        if (ecoupon.needsAppointmentCoupon()) {
-            return "该券需要预约才能消费，请确认！";
         }
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
             if (!ecoupon.consumeAndPayCommission(shopId, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
