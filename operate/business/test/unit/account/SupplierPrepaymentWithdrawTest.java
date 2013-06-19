@@ -12,6 +12,7 @@ import models.accounts.WithdrawAccount;
 import models.accounts.WithdrawBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
+import models.admin.SupplierUser;
 import models.operator.OperateUser;
 import models.operator.Operator;
 import models.order.ECoupon;
@@ -42,6 +43,7 @@ import static util.DateHelper.beforeDays;
 public class SupplierPrepaymentWithdrawTest extends UnitTest {
 
     Supplier supplier;
+    SupplierUser supplierUser;
     Goods goods;
     Account supplierAccount;
     WithdrawAccount withdrawAccount;
@@ -53,6 +55,7 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
         FactoryBoy.deleteAll();
         operator = FactoryBoy.create(Operator.class);
         supplier = FactoryBoy.create(Supplier.class);
+        supplierUser = FactoryBoy.create(SupplierUser.class);
         goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {
@@ -66,6 +69,32 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
         incomingAccount.amount = new BigDecimal(10000);
         incomingAccount.save();
         operateUser = FactoryBoy.create(OperateUser.class);
+    }
+
+    @Test
+    public void 预付款超额消费_提现2次_有效期内结算() {
+        Prepayment prepayment = 创建预付款(beforeDays(20), beforeDays(10), new BigDecimal(100));
+        assertBigDecimalEquals(BigDecimal.ZERO, 账户余额());
+        assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(19)));
+        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
+
+        产生多笔20元消费记录(beforeDays(18), 10);  // 200元
+        assertBigDecimalEquals(new BigDecimal(200), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(200), 可结算余额(beforeDays(7)));
+        assertBigDecimalEquals(new BigDecimal(100), 可提现金额(beforeDays(7)));
+        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
+        提现申请(new BigDecimal(20));
+        提现申请(new BigDecimal(20));
+        List<WithdrawBill> withdrawBills = WithdrawBill.findAll();
+        for (int i = 0; i < 2; i++) {
+            withdrawBills.get(i).appliedAt = beforeDays(5 + i);
+            withdrawBills.get(i).save();
+        }
+
+        //可结算总额
+        BigDecimal amount = supplierAccount.getWithdrawAmount(DateUtil.getEndOfDay(beforeDays(6)));
+        assertEquals(new BigDecimal(180).setScale(2), amount.setScale(2));
+
     }
 
     @Test
@@ -288,6 +317,26 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
         assertBigDecimalEquals(new BigDecimal(60), 预付款余额());
     }
 
+    private void 提现申请(BigDecimal amount) {
+        Long supplierId = supplierUser.supplier.id;
+        Supplier supplier = Supplier.findById(supplierId);
+        Account account = supplierUser.getSupplierAccount();
+        if (amount == null || amount.compareTo(account.amount) > 0 || amount.compareTo(new BigDecimal("10")) < 0) {
+            return;
+        }
+
+        WithdrawBill withdraw = new WithdrawBill();
+        withdraw.userName = withdrawAccount.userName;
+        withdraw.account = supplierAccount;
+        withdraw.bankCity = withdrawAccount.bankCity;
+        withdraw.bankName = withdrawAccount.bankName;
+        withdraw.subBankName = withdrawAccount.subBankName;
+        withdraw.cardNumber = withdrawAccount.cardNumber;
+        withdraw.amount = amount;
+
+        String accountName = account.accountType == AccountType.SHOP ? supplier.otherName + ":" + supplierUser.shop.name : supplier.otherName;
+        withdraw.apply(supplierUser.loginName, account, accountName);
+    }
 
     private BigDecimal 账户余额() {
         BigDecimal amount = AccountUtil.getSupplierAccount(supplier.id, supplier.defaultOperator()).amount;

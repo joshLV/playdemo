@@ -102,11 +102,23 @@ public class Account extends Model {
      * 从指定日期到以前所有的未结算过的可结算金额.
      * 可结算金额=账户余额-指定日期之后消费总额
      */
-    public BigDecimal getWithdrawAmount(Date date) {
-        BigDecimal vostroAmount = AccountSequence.getVostroAmountTo(this, date);
+    public BigDecimal getWithdrawAmount(Date toDate) {
+        BigDecimal vostroAmount = AccountSequence.getVostroAmountTo(this, toDate);
         Logger.info("Account.getWithdrawAmount vostroAmount=" + vostroAmount + ", uncashAmount=" + uncashAmount);
         if (uncashAmount == null) {
             return vostroAmount == null ? BigDecimal.ZERO : vostroAmount;
+        }
+        if (accountType == AccountType.SUPPLIER) {
+            BigDecimal supplierUncashAmount = (BigDecimal) find("select sum(amount) from WithdrawBill where" +
+                    " account=? and status = ? and appliedAt<=?",
+                    this, WithdrawBillStatus.APPLIED, toDate).first();
+
+            if (supplierUncashAmount == null) {
+                supplierUncashAmount = BigDecimal.ZERO;
+            }
+            Logger.info("SupplierAccount.getWithdrawAmount vostroAmount=" + vostroAmount + ", " +
+                    "supplierUncashAmount=" + supplierUncashAmount);
+            return vostroAmount.subtract(supplierUncashAmount);
         }
         return vostroAmount.subtract(uncashAmount);
     }
