@@ -158,10 +158,10 @@ public class OperateVerifyCoupons extends Controller {
             String historyRemark = "运营平台代理验证，原因:" + remark;
             if (!ecoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser(), null, VerifyCouponType.OP_VERIFY,
                     ecoupon.eCouponSn, consumedAt, historyRemark)) {
-                if (ecoupon.partner == null) {
+                if (ecoupon.partner != null) {
                     Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！");
                 } else {
-                    Validation.addError("error-info", "可能该券是二次验证商品，需要预约，请确认！");
+                    Validation.addError("error-info", "可能该券是二次验证商品，需到商家预约日期才能消费，请确认！");
                 }
             }
             if (Validation.hasErrors()) {
