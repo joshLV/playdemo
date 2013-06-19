@@ -25,6 +25,7 @@ public class WithdrawBillCondition implements Serializable {
 
     public String searchUser;
 
+    public long supplierId = 0;
     public String interval;
     public List<Long> ids;
 

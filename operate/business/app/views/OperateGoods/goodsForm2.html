@@ -82,8 +82,14 @@
     <label class="control-label"><span style="color: red; ">*</span>&{'goods.advancedDeposit'}</label>
 
     <div class="controls">
+        #{if "edit".equals(action)}
         <input type="text" name="goods.advancedDeposit" id="goods_advancedDeposit"
                value="${goods?.advancedDeposit?:(goods.originalPrice.multiply(new java.math.BigDecimal(20)).divide(100))}">元
+        #{/if}
+        #{else}
+            <input type="text" name="goods.advancedDeposit" id="goods_advancedDeposit"
+                   value="">元
+        #{/else}
         <span style="color: #808080">默认为采购价的20%</span>
         <span class="error">#{error 'goods.advancedDeposit'/}</span>
     </div>
