@@ -29,7 +29,7 @@
             <label class="control-label">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</label>
             <label class="controls control-value">&{'account.type.' + bill.account.accountType}#{if org.apache.commons.lang.StringUtils.isNotBlank(bill.accountName)}
                 (${bill.accountName})#{/if}
-            #{if bill?.account?.accountType ==  models.accounts.AccountType.SUPPLIER && contract?.id!=null}
+            #{if (bill?.account?.accountType ==  models.accounts.AccountType.SUPPLIER || bill?.account?.accountType ==  models.accounts.AccountType.SHOP)&& contract?.id!=null}
                 <a href="/supplier_contract/${contract?.id}/view" target="_blank">查看合同</a>
             #{/if}
             </label>

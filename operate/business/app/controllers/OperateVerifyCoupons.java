@@ -74,7 +74,7 @@ public class OperateVerifyCoupons extends Controller {
         //check券和门店
         checkCoupon(ecoupon, shopId, supplierId, shopList);
 
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId,"");
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId, "");
 
         if (ecoupon != null && ecoupon.operateUserId != null) {
             OperateUser operateUser = OperateUser.findById(ecoupon.operateUserId);
@@ -146,7 +146,7 @@ public class OperateVerifyCoupons extends Controller {
         //check券和门店
         checkCoupon(ecoupon, shopId, supplierId, shopList);
 
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId,"");
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId, "");
         if (ecouponStatusDescription != null) {
             Validation.addError("error-info", ecouponStatusDescription);
             return Boolean.FALSE;
@@ -158,7 +158,11 @@ public class OperateVerifyCoupons extends Controller {
             String historyRemark = "运营平台代理验证，原因:" + remark;
             if (!ecoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser(), null, VerifyCouponType.OP_VERIFY,
                     ecoupon.eCouponSn, consumedAt, historyRemark)) {
-                Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！");
+                if (ecoupon.partner != null) {
+                    Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！");
+                } else {
+                    Validation.addError("error-info", "可能该券是二次验证商品，需到商家预约日期才能消费，请确认！");
+                }
             }
             if (Validation.hasErrors()) {
                 return Boolean.FALSE;

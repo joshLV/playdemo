@@ -62,8 +62,8 @@ public class WithdrawApproval extends Controller {
 
         JPAExtPaginator<WithdrawBill> billPage = WithdrawBill.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
-        String integer = "123";
-        render(billPage, condition);
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        render(billPage, condition, supplierList);
     }
 
     public static void detail(Long id, Long uid) {
@@ -94,7 +94,8 @@ public class WithdrawApproval extends Controller {
                 Shop shop = Shop.findById(uid);
                 Supplier supplier = Supplier.findById(shop.supplierId);
                 account = AccountUtil.getShopAccount(uid, supplier.defaultOperator());
-
+                contract = SupplierContract.find("supplierId=? order by createdAt desc ", supplier.id).first();
+                renderArgs.put("contract", contract);
                 renderArgs.put("supplierId", shop.supplierId);
                 renderArgs.put("supplierName", supplier.getName());
                 break;

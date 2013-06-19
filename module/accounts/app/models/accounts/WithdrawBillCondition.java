@@ -25,6 +25,7 @@ public class WithdrawBillCondition implements Serializable {
 
     public String searchUser;
 
+    public String shopName;
     public long supplierId = 0;
     public String interval;
     public List<Long> ids;
@@ -54,7 +55,7 @@ public class WithdrawBillCondition implements Serializable {
                         break;
 
                     case SHOP:
-                        filter.append(" and accountName in (select s.name from Shop s where s.name like :searchUser)");
+                        filter.append(" and accountName  like :searchUser");
                         params.put("searchUser", "%" + searchUser + "%");
                         break;
 
@@ -75,7 +76,11 @@ public class WithdrawBillCondition implements Serializable {
             }
         } else {
             if (StringUtils.isNotBlank(searchUser)) {
-                filter.append(" and applier in (select loginName from User u where u.mobile=:searchUser) ");
+                filter.append(" and accountName  like :searchUser");
+                filter.append(" or applier like :searchUser");
+                params.put("searchUser", "%" + searchUser + "%");
+
+                filter.append(" or applier in (select loginName from User u where u.mobile=:searchUser) ");
                 filter.append(" or applier in (select loginName from User u where u.loginName=:searchUser)");
                 filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.receiverMobile=:searchUser)");
                 filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.buyerMobile=:searchUser)");
@@ -101,37 +106,37 @@ public class WithdrawBillCondition implements Serializable {
         }
 
 
-        if (StringUtils.isNotBlank(searchUser)) {
-            filter.append(" and applier in (select loginName from User u where u.mobile=:searchUser) ");
-            params.put("searchUser", searchUser);
-        }
-
-
-        if (StringUtils.isNotBlank(searchUser)) {
-            filter.append(" or applier in (select loginName from User u where u.loginName=:searchUser)");
-            params.put("searchUser", searchUser);
-        }
-
-        if (StringUtils.isNotBlank(searchUser)) {
-            filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.receiverMobile=:searchUser)");
-            params.put("searchUser", searchUser);
-        }
-
-
-        if (StringUtils.isNotBlank(searchUser)) {
-            filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.buyerMobile=:searchUser)");
-            params.put("searchUser", searchUser);
-        }
-
-        if (StringUtils.isNotBlank(searchUser)) {
-            filter.append("or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =:searchUser)))");
-            params.put("searchUser", searchUser);
-        }
+//        if (StringUtils.isNotBlank(searchUser)) {
+//            filter.append(" or applier in (select loginName from User u where u.mobile=:searchUser) ");
+//            params.put("searchUser", searchUser);
+//        }
+//
+//
+//        if (StringUtils.isNotBlank(searchUser)) {
+//            filter.append(" or applier in (select loginName from User u where u.loginName=:searchUser)");
+//            params.put("searchUser", searchUser);
+//        }
+//
+//        if (StringUtils.isNotBlank(searchUser)) {
+//            filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.receiverMobile=:searchUser)");
+//            params.put("searchUser", searchUser);
+//        }
+//
+//
+//        if (StringUtils.isNotBlank(searchUser)) {
+//            filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.buyerMobile=:searchUser)");
+//            params.put("searchUser", searchUser);
+//        }
+//
+//        if (StringUtils.isNotBlank(searchUser)) {
+//            filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =:searchUser)))");
+//            params.put("searchUser", searchUser);
+//        }
         if (ids != null && ids.size() != 0) {
             filter.append(" and id in :ids");
             params.put("ids", ids);
         }
-
+        System.out.println(filter.toString());
         return filter.toString();
     }
 

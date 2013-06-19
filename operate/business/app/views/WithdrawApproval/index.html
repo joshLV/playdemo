@@ -210,8 +210,11 @@
                 #{option "SHOP"}&{'account.type.SHOP'}#{/option}
             #{/select}</td>
 
-            <td><label class="control-label" id="l-searchUser">&nbsp;消费者手机或帐号</label></td>
-            <td><input type="text" name="condition.searchUser" class="input-medium"
+            <td><label class="control-label" id="l-searchUser">&nbsp;关键字</label></td>
+            <td><input type="text" name="condition.searchUser" class="input-large" rel="tooltip"
+                       data-placement="bottom"
+                       placeholder="商户/门店/申请者/消费者帐号/手机"
+                       data-original-title='商户/门店/申请者/消费者帐号/手机'
                        value="${condition?.searchUser}"/>
             </td>
 
@@ -272,12 +275,12 @@ form:'form'/}
                                name="withdrawIds"/>
                     #{/if}
                 </td>
-                <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                <td>&{'account.type.' + withdrawBill.account.accountType}#{if org.apache.commons.lang.StringUtils.isNotBlank(withdrawBill.accountName)}
-                    (${withdrawBill.accountName})#{/if}</td>
-                <td>${withdrawBill.applier}</td>
-                <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
-                <td>&{'withdraw.' + withdrawBill.status}</td>
+                <td>${withdrawBill?.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>&{'account.type.' + withdrawBill?.account.accountType}#{if org.apache.commons.lang.StringUtils.isNotBlank(withdrawBill?.accountName)}
+                    (${withdrawBill?.accountName})#{/if}</td>
+                <td>${withdrawBill?.applier}</td>
+                <td>${withdrawBill?.amount.formatCurrency('CNY')}</td>
+                <td>&{'withdraw.' + withdrawBill?.status}</td>
                 <td>${withdrawBill.processedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${withdrawBill?.operator}</td>
                 <td>
