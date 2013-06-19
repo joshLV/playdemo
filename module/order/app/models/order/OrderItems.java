@@ -714,10 +714,10 @@ public class OrderItems extends Model {
     @Transient
     public Long getUnusedECouponNumber() {
         final OrderItems thisOrderItems = this;
-        return CacheHelper.getCache(CacheHelper.getCacheKey(CACHEKEY + this.id, "UNUSEDECouponNumber"), new CacheCallBack<Long>() {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(CACHEKEY + this.id, "UNUSEDECouponNumber2"), new CacheCallBack<Long>() {
             @Override
             public Long loadData() {
-                return ECoupon.count("orderItems=? and status<>?", thisOrderItems, ECouponStatus.CONSUMED);
+                return ECoupon.count("orderItems=? and status = ?", thisOrderItems, ECouponStatus.UNCONSUMED);
             }
         });
     }

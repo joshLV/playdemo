@@ -19,7 +19,27 @@
         <input type="text" name="condition.orderNumber" value="${condition?.orderNumber}" class="input-medium"/>
         商品名称
         <input type="text" name="condition.goodsName" value="${condition?.goodsName}" class="input-medium"/>
+        退货状态
+    #{select 'condition.status', class:'input-small', value:condition.status}
+        #{option ""}不限#{/option}
+        #{option "RETURNING"}退货中#{/option}
+        #{option "RETURNED"}已退货#{/option}
+    #{/select}
+    </div>
+    <div class="control-group">
         申请时间
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" id="createdAtBegin" name="condition.createdAtBegin" size="16" type="text"
+                   value="${condition.createdAtBegin?.format()}">
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+        至
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" id="createdAtEnd" name="condition.createdAtEnd" size="16" type="text"
+                   value="${condition.createdAtEnd?.format()}">
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+        退货时间
         <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
             <input class="input-small" id="returnedAtBegin" name="condition.returnedAtBegin" size="16" type="text"
                    value="${condition.returnedAtBegin?.format()}">
@@ -31,12 +51,6 @@
                    value="${condition.returnedAtEnd?.format()}">
             <span class="add-on"><i class="icon-th"></i></span>
         </div>
-        退货状态
-    #{select 'condition.status', class:'input-small', value:condition.status}
-        #{option ""}不限#{/option}
-        #{option "RETURNING"}退货中#{/option}
-        #{option "RETURNED"}已退货#{/option}
-    #{/select}
         <button class="btn btn-large btn-primary" id="search" type="submit">搜索</button>
     </div>
 
