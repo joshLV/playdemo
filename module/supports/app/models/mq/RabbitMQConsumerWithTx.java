@@ -4,6 +4,7 @@ import play.Logger;
 import play.db.jpa.JPAPlugin;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 import play.modules.redis.Redis;
+import play.modules.redis.RedisConnectionManager;
 import util.mq.MQPublisher;
 import util.transaction.RedisLock;
 
@@ -39,16 +40,17 @@ public abstract class RabbitMQConsumerWithTx<T> extends RabbitMQConsumer<T> {
         try {
             consumeWithTx(t);
 
+            // 执行成功，清除queue id
+            // 问题：在LAST_IN_FIRST_RUN情况下，如果运行过程中加入了新的Queue，我们认为可以先不管，直接清除掉此队列
+            if (queueIDMessage != null) {
+                Redis.del(new String[]{MQPublisher.getMessageRedisId(queueIDMessage)});
+            }
         } catch (RuntimeException e) {
             rollback = true;
             throw e;
         } finally {
             JPAPlugin.closeTx(rollback);
-        }
-        // 执行成功，清除queue id
-        // 问题：在LAST_IN_FIRST_RUN情况下，如果运行过程中加入了新的Queue，我们认为可以先不管，直接清除掉此队列
-        if (queueIDMessage != null) {
-            Redis.del(new String[]{MQPublisher.getMessageRedisId(queueIDMessage)});
+            RedisConnectionManager.closeConnection();
         }
     }
 

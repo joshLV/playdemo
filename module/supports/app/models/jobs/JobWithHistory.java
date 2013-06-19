@@ -8,6 +8,7 @@ import play.jobs.Every;
 import play.jobs.Job;
 import play.jobs.On;
 import play.modules.redis.Redis;
+import play.modules.redis.RedisConnectionManager;
 import util.mq.MQPublisher;
 
 import java.util.ArrayList;
@@ -104,6 +105,8 @@ public class JobWithHistory<V> extends Job<V> {
             message.runRemark(StringUtil.join(safeGetRemarks(), ""));
             MQPublisher.publish(JobsMessage.MQ_KEY, message);
             cleanRemarks();
+
+            RedisConnectionManager.closeConnection();
         }
 
     }
