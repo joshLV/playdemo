@@ -69,13 +69,13 @@
         #{else}
             %{
                 url = product.url
-                if (url.contains("?")) {
-                    url = url + '&r=' + org.apache.commons.lang.math.RandomUtils.nextInt();
-                } else {
-                    url = url + '?r=' + org.apache.commons.lang.math.RandomUtils.nextInt()
-                }
+            if (url.contains("?")) {
+            url = url + '&r=' + org.apache.commons.lang.math.RandomUtils.nextInt();
+            } else {
+            url = url + '?r=' + org.apache.commons.lang.math.RandomUtils.nextInt()
+            }
             }%
-            <a href="${product.url.contains("?")?:product.url + '&r='}" target="_blank">${product.partnerProductId}</a>
+            <a href="${url}" target="_blank">${product.partnerProductId}</a>
         #{/else}
     </td>
     <td>&{'resaler.product.status.' + product.status}</td>
