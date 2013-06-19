@@ -1,5 +1,7 @@
 package facade.order.vo;
 
+import facade.order.translate.OuterOrderMessage;
+import facade.order.translate.OuterOrderMessageTranslate;
 import models.order.Order;
 
 /**
@@ -15,4 +17,12 @@ public class OuterOrderResult {
 
     public OuterOrderResultCode resultCode;
 
+
+    public OuterOrderMessage getOuterOrderMessage(OuterOrderMessageTranslate translate) {
+        switch (resultCode) {
+            case INVALID_PARTNER:
+                return translate.getInvalidPartnerMessage(this);
+        }
+        return translate.getSuccessMessage(this);
+    }
 }
