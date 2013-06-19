@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Trade>
+    <Head>
+        <Version>1</Version>
+        <TimeStamp>2013-06-05 12:01:02</TimeStamp>
+        <StatusCode>200</StatusCode>
+        <SequenceId>123qwer</SequenceId>
+        <Signed>${sign.raw()}</Signed>
+    </Head>
+    <Body>${body.raw()}</Body>
+</Trade>
