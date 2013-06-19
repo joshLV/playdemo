@@ -1,12 +1,10 @@
 package controllers;
 
 import controllers.supplier.SupplierInjector;
-import models.accounts.Account;
-import models.accounts.AccountSequence;
-import models.accounts.AccountSequenceCondition;
-import models.accounts.TradeType;
+import models.accounts.*;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
+import models.order.Order;
 import models.order.OrderItems;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
@@ -57,10 +55,21 @@ public class SupplierAccountSequences extends Controller {
                 String postfix = orderItems.size() > 1 ? "等" + orderItems.size() + "个商品" : "";
                 sequence.remark = orderItems.get(0).goods.shortName + postfix;
             }
+            setOrderInfo(sequence);
         }
         renderArgs.put("condition", condition);
 
         render(account, accountSequences);
     }
 
+    private static Order setOrderInfo(AccountSequence accountSequence) {
+        if (accountSequence.orderId != null) {
+            Order order = Order.findById(accountSequence.orderId);
+            if (order != null) {
+                accountSequence.orderNumber = order.orderNumber;
+            }
+            return order;
+        }
+        return null;
+    }
 }
