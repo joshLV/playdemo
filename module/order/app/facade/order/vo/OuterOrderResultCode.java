@@ -5,4 +5,7 @@ package facade.order.vo;
  */
 public enum OuterOrderResultCode {
     SUCCESS,
+
+
+    INVALID_PARTNER,    //无效的Resaler.Partner
 }

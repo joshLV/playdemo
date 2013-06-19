@@ -89,10 +89,8 @@ public class JDGroupBuy extends Controller {
 
     private static Boolean doSendOrder(String restXml, JingdongMessage message) {
         Integer count = Integer.parseInt(message.selectTextTrim("./Count"));
-
         BigDecimal teamPrice = new BigDecimal(message.selectTextTrim("./TeamPrice")).divide(new BigDecimal("100"));
         BigDecimal origin = new BigDecimal(message.selectTextTrim("./Origin")).divide(new BigDecimal("100"));
-
         String mobile = message.selectTextTrim("./Mobile");
         String jdOrderId = message.selectTextTrim("./JdOrderId").trim();
         Long venderTeamId = Long.parseLong(message.selectTextTrim("./VenderTeamId").trim());
