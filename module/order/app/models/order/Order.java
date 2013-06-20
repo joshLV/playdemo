@@ -14,6 +14,8 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.consumer.UserWebIdentification;
+import models.huanlegu.HuanleguMessage;
+import models.huanlegu.HuanleguUtil;
 import models.kangou.KangouCard;
 import models.kangou.KangouUtil;
 import models.ktv.KtvRoomOrderInfo;
@@ -35,14 +37,17 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.time.DateUtils;
+import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.exceptions.UnexpectedException;
+import play.libs.XPath;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.solr.Solr;
 import util.common.InfoUtil;
+import util.extension.ExtensionResult;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -59,6 +64,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -265,6 +271,9 @@ public class Order extends Model {
 
     @Transient
     public String outerOrderNumber;
+
+    @Column(name = "supplier_order_number")
+    public String supplierOrderNumber;
 
     public Order() {
     }
@@ -1013,6 +1022,30 @@ public class Order extends Model {
                 eCoupon.save();
                 KangouUtil.setCardUseAndSend(eCoupon);
                 eCoupon.autoVerify();  // 自动验证掉
+            }else if (HuanleguUtil.SUPPLIER_DOMAIN_NAME.equals(orderItem.goods.getSupplier().domainName)) {
+                HuanleguMessage message = HuanleguUtil.confirmOrder(eCoupon, 1);
+                if (message.isOk()) {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Node voucher = message.selectNode("./Voucher");
+                    eCoupon.supplierECouponId = StringUtils.trimToNull(XPath.selectText("./VoucherId", voucher));
+                    eCoupon.supplierECouponPwd = StringUtils.trimToNull(XPath.selectText("./VoucherValue", voucher));
+                    try {
+                        Date effectiveAt = format.parse(StringUtils.trimToNull(XPath.selectText("./StartUseDate", voucher)));
+                        Date expireAt = format.parse(StringUtils.trimToNull(XPath.selectText("./EndUseDate", voucher)));
+
+                        eCoupon.effectiveAt = DateUtils.ceiling(effectiveAt, Calendar.DATE);
+                        eCoupon.expireAt = DateUtils.ceiling(expireAt, Calendar.DATE);
+                    }catch (ParseException e) {
+                    }
+                    eCoupon.save();
+
+                    eCoupon.order.supplierOrderNumber = message.selectTextTrim("./HvOrderId");
+                    eCoupon.order.save();
+                }else {
+                    eCoupon.delete();
+                    throw new RuntimeException("can not generate a huanlegu goods. request failed: " + goods.getId());
+                }
+
             }
 
         }

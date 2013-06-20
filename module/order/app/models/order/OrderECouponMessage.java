@@ -5,6 +5,7 @@ import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
 import models.mq.QueueIDMessage;
 import models.resale.Resaler;
+import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import play.Logger;
@@ -34,7 +35,8 @@ public class OrderECouponMessage extends QueueIDMessage implements Serializable 
         public ExtensionResult execute(OrderECouponSMSContext ctx) {
             if (ctx.getSmsContent() == null) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(StringUtils.isNotEmpty(ctx.goods.title) ? ctx.goods.title : ctx.goods.shortName)
+                Goods goods = ctx.getGoods();
+                sb.append(StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName)
                         .append(ctx.couponInfo)
                         .append(ctx.notes)
                         .append("截止").append(ctx.expiredDate)
@@ -225,8 +227,7 @@ public class OrderECouponMessage extends QueueIDMessage implements Serializable 
         }
 
         String expiredDate = dateFormat.format(lastECoupon.expireAt);
-        OrderECouponSMSContext context = new OrderECouponSMSContext(orderItems.order, orderItems.goods,
-                orderItems, couponInfo, note, expiredDate);
+        OrderECouponSMSContext context = new OrderECouponSMSContext(eCoupons, couponInfo, note, expiredDate);
 
         ExtensionResult result = ExtensionInvoker.run(OrderECouponSMSInvocation.class, context, defaultSmsAction);
 

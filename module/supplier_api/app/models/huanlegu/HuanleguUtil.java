@@ -1,6 +1,7 @@
 package models.huanlegu;
 
 import models.jingdong.groupbuy.JDGroupBuyUtil;
+import models.order.ECoupon;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import play.Logger;
@@ -31,6 +32,35 @@ public class HuanleguUtil {
     public static String CLIENT_ID = "789";
 
     public static String GATEWAY_URL = "http://example.com/api/send/";
+
+    public static final String SUPPLIER_DOMAIN_NAME = "huanlegu";
+
+    public static HuanleguMessage resend(ECoupon coupon) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("pageIndex", 1);
+        params.put("pageSize", 1);
+        params.put("orderId", coupon.order.id);
+        params.put("hvOrderId", coupon.order.supplierOrderNumber);
+        params.put("voucherId", coupon.supplierECouponId);
+
+        return sendRequest("resendVoucher", params);
+    }
+
+    public static HuanleguMessage confirmOrder(ECoupon coupon, int quantity) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("orderId", coupon.order.id);
+        params.put("dealTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(coupon.order.createdAt));
+        params.put("name", "");
+        params.put("mobile", coupon.orderItems.phone);
+        params.put("quantity", quantity);
+        params.put("ticketId", coupon.goods.supplierGoodsId);
+        params.put("salePrice", "");
+        params.put("isSendSms", 1);
+        params.put("certificateType", "0");//不需要证件
+        params.put("certificateNum", "");
+
+        return sendRequest("confirmOrder", params);
+    }
 
     public static String encrypt(String content) {
         try {
@@ -130,7 +160,7 @@ public class HuanleguUtil {
             }
         }else {
             message.errorMsg = StringUtils.trimToNull(XPath.selectText("/Trade/Body/Message", document));
-            Logger.info("huanlegu message failed: %s", message.errorMsg);
+            Logger.error("huanlegu message failed: %s", message.errorMsg);
         }
 
         return message;

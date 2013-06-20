@@ -20,7 +20,7 @@ public class KtvOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
     public ExtensionResult execute(OrderECouponSMSContext context) {
         StringBuilder sb = new StringBuilder();
         sb.append("【")
-                .append(context.goods.getSupplier().otherName)
+                .append(context.getGoods().getSupplier().otherName)
                 .append("】")
                 .append(context.couponInfo)
 //                .append(context.notes)
@@ -37,6 +37,6 @@ public class KtvOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
      */
     @Override
     public boolean match(OrderECouponSMSContext context) {
-        return context.goods.isKtvProduct();
+        return context.getGoods().isKtvProduct();
     }
 }

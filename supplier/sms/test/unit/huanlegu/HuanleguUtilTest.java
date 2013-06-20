@@ -2,6 +2,7 @@ package unit.huanlegu;
 
 import models.huanlegu.HuanleguMessage;
 import models.huanlegu.HuanleguUtil;
+import org.apache.commons.collections.ListUtils;
 import org.junit.Test;
 import play.mvc.Before;
 import play.templates.Template;
@@ -45,6 +46,7 @@ public class HuanleguUtilTest extends UnitTest {
     @Test
     public void testRequest() throws Exception {
         String body = "<PageSize>3</PageSize>\n" +
+                "<PageSize>4</PageSize>\n" +
                 "<Sight>\n" +
                 "    <SightId>1223</SightId>\n" +
                 "    <SightName>景点名</SightName>\n" +
@@ -65,6 +67,7 @@ public class HuanleguUtilTest extends UnitTest {
         assertTrue(message.isOk());
         assertEquals("1", message.version);
         assertEquals("3", message.selectTextTrim("./PageSize"));
+        assertEquals(2, message.selectNodes("./PageSize").size());
         assertEquals("景点名", message.selectTextTrim("./Sight/SightName"));
     }
 }
