@@ -197,6 +197,7 @@ public class OrderECouponMessageTest extends UnitTest {
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
         StringBuilder sb = new StringBuilder();
         sb.append("【" + couponList.get(0).goods.getSupplier().otherName + "】")
+                .append(couponList.get(0).goods.title)
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
                 .append("," + couponList.get(0).appointmentRemark)
@@ -210,6 +211,7 @@ public class OrderECouponMessageTest extends UnitTest {
         StringBuilder sb = new StringBuilder();
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
         sb.append("【" + couponList.get(0).goods.getSupplier().otherName + "】")
+                .append(couponList.get(0).goods.title)
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
                 .append("," + couponList.get(0).appointmentRemark)
