@@ -285,4 +285,7 @@ public class OperateUser extends Model {
     public static OperateUser findBySalesId(Long salesId) {
         return OperateUser.find("id=? and deleted=?", salesId, DeletedStatus.UN_DELETED).first();
     }
+
+
+
 }

@@ -61,6 +61,9 @@ GET     /launch-qt                              QingtuanLauncher.index
 *      /api/v1/tsingtuan/coupons                thirdtuan.TsingTuans.coupons
 *      /api/v1/tsingtuan/check                  thirdtuan.TsingTuans.check
 
+GET     /wubaThirdBillSequences                 thirdtuan.DDGroupBuy.wubaThirdBillSequences
+
+
 # 虚拟短信通道
 *      /vxsms                                   VxSmses.send
 
