@@ -12,5 +12,6 @@ public enum OuterOrderResultCode {
     NOT_FOUND_GOODS,          // 找不到对应的商品
     INVALID_PRICE,            // 售价低于进价
     INVENTORY_NOT_ENOUGH,     // 库存不足（只检查导入券)
+    CONCURRENCY_REQUEST,      // 并发请求
     INVALID_BUY_COUNT         // 购买数量必须大于0
 }

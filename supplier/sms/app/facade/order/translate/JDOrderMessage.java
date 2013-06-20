@@ -1,9 +1,7 @@
 package facade.order.translate;
 
 /**
- * User: tanglq
- * Date: 13-6-20
- * Time: 上午11:20
+ * 京东生成订单的返回消息包装类.
  */
 public class JDOrderMessage extends OuterOrderMessage {
     public Integer code;

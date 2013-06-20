@@ -126,7 +126,8 @@ public class OuterOrderFacade {
             try { // 将订单写入数据库
                 JPA.em().flush();
             } catch (Exception e) { // 如果写入失败，说明 已经存在一个相同的orderId 的订单，则放弃
-                recordResultMessage(205, "there is another parallel request");
+                e.printStackTrace();
+                return OuterOrderResult.build(OuterOrderResultCode.CONCURRENCY_REQUEST, "并发请求:" + outerOrderVO.outerOrderId);
             }
         }
         // TODO: 考虑申请OuterOrder行锁后再处理订单
@@ -201,9 +202,6 @@ public class OuterOrderFacade {
 
         Logger.info("outerOrderVO.totalAmount: %s  itemTotalAmount: %s", outerOrderVO.totalAmount, itemTotalAmount);
         return outerOrderVO.totalAmount.compareTo(itemTotalAmount) == 0;
-    }
-
-    private static void recordResultMessage(int resultCode, String resultMessage) {
     }
 
     private static boolean checkPhone(String phone) {

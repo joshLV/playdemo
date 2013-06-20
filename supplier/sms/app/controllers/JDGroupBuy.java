@@ -7,34 +7,26 @@ import facade.order.vo.OuterECouponVO;
 import facade.order.vo.OuterOrderItemVO;
 import facade.order.vo.OuterOrderResult;
 import facade.order.vo.OuterOrderVO;
-import models.accounts.PaymentSource;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JingdongMessage;
-import models.order.DeliveryType;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
 import models.order.Order;
-import models.order.OrderItems;
-import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
-import models.sales.MaterialType;
 import models.sales.ResalerProduct;
 import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
-import play.db.jpa.JPA;
 import play.libs.IO;
 import play.libs.XPath;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.templates.Template;
 import play.templates.TemplateLoader;
-import util.transaction.TransactionCallback;
-import util.transaction.TransactionRetry;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -72,7 +64,7 @@ public class JDGroupBuy extends Controller {
     }
 
     /**
-     * 订单
+     * 生成订单
      */
     public static void sendOrder() {
         final String restXml = IO.readContentAsString(request.body);
@@ -136,140 +128,6 @@ public class JDGroupBuy extends Controller {
         }
 
         renderTemplate("jingdong/groupbuy/response/main.xml");
-    }
-
-
-    /**
-     * 订单
-     */
-    public static void sendOrderOld() {
-        final String restXml = IO.readContentAsString(request.body);
-        Logger.info("jingdong sendOrder request:\n%s", restXml);
-        final JingdongMessage message = JDGroupBuyUtil.parseMessage(restXml);
-        //解析请求
-        if (!message.isOk()) {
-            finish(201, "parse send_order request xml error");
-        }
-
-        // 事务重试.
-        TransactionRetry.run(new TransactionCallback<Boolean>() {
-            @Override
-            public Boolean doInTransaction() {
-                return doSendOrder(restXml, message);
-            }
-        });
-
-        renderTemplate("jingdong/groupbuy/response/main.xml");
-    }
-
-    private static Boolean doSendOrder(String restXml, JingdongMessage message) {
-        Integer count = Integer.parseInt(message.selectTextTrim("./Count"));
-        BigDecimal teamPrice = new BigDecimal(message.selectTextTrim("./TeamPrice")).divide(new BigDecimal("100"));
-        BigDecimal origin = new BigDecimal(message.selectTextTrim("./Origin")).divide(new BigDecimal("100"));
-        String mobile = message.selectTextTrim("./Mobile");
-        String jdOrderId = message.selectTextTrim("./JdOrderId").trim();
-        Long venderTeamId = Long.parseLong(message.selectTextTrim("./VenderTeamId").trim());
-
-        //检查购买数量
-        if (count <= 0) {
-            recordResultMessage(202, "the buy number must be a positive one"); // done
-            return Boolean.FALSE;
-        }
-        //检查订单总额是否匹配
-        if (teamPrice.multiply(new BigDecimal(count)).compareTo(origin) != 0) {
-            recordResultMessage(203, "the total amount does not match the team price and count"); // done
-            return Boolean.FALSE;
-        }
-
-        //检查手机号
-        if (!checkPhone(mobile)) {
-            recordResultMessage(204, "invalid mobile: " + mobile); //done
-            return Boolean.FALSE;
-        }
-
-        List<Node> jdCoupons = message.selectNodes("./Coupons/Coupon");
-
-        //检查并保存此新请求
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.JD, jdOrderId).first();
-        //如果找不到该orderCode的订单，说明还没有新建，则新建一个
-        if (outerOrder == null) {
-            outerOrder = new OuterOrder();
-            outerOrder.partner = OuterOrderPartner.JD;
-            outerOrder.resaler = Resaler.findApprovedByLoginName(Resaler.JD_LOGIN_NAME);
-            outerOrder.status = OuterOrderStatus.ORDER_COPY;
-            outerOrder.orderId = jdOrderId;
-            outerOrder.message = restXml;
-            outerOrder.save();
-            try { // 将订单写入数据库
-                JPA.em().flush();
-            } catch (Exception e) { // 如果写入失败，说明 已经存在一个相同的orderId 的订单，则放弃
-                recordResultMessage(205, "there is another parallel request");
-                return Boolean.FALSE;
-            }
-        }
-        /*
-        //申请行锁后处理订单
-        try {
-            // 尝试申请一个行锁
-            JPA.em().refresh(outerOrder, LockModeType.PESSIMISTIC_WRITE);
-        } catch (PersistenceException e) {
-            //没拿到锁 放弃
-            recordResultMessage(206, "there is another parallel request");
-            return Boolean.FALSE;
-        }
-        */
-        //生成一百券订单
-        if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
-            Order ybqOrder = outerOrder.ybqOrder;
-            if (ybqOrder == null) {
-                ybqOrder = createYbqOrder(venderTeamId, teamPrice, count, mobile);
-            }
-            outerOrder.status = OuterOrderStatus.ORDER_DONE;
-            outerOrder.ybqOrder = ybqOrder;
-            outerOrder.message = restXml;
-            outerOrder.save();
-        }
-        //保存京东的券号密码
-        List<ECoupon> coupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-        if (outerOrder.status == OuterOrderStatus.ORDER_DONE || outerOrder.status == OuterOrderStatus.ORDER_SYNCED) {
-            if (coupons.size() != jdCoupons.size()) {
-                recordResultMessage(211, "coupon size not matched, ybq size: " + coupons.size() + " jd size:" + jdCoupons.size());
-                return Boolean.FALSE;
-            }
-            // 保存京东的券号密码
-            for (int i = 0; i < coupons.size(); i++) {
-                ECoupon coupon = coupons.get(i);
-                Node jdCoupon = jdCoupons.get(i);
-
-                coupon.partner = ECouponPartner.JD;
-                coupon.partnerCouponId = XPath.selectText("./CouponId", jdCoupon).trim();
-                coupon.partnerCouponPwd = XPath.selectText("./CouponPwd", jdCoupon).trim();
-                coupon.save();
-            }
-            outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
-            outerOrder.save();
-        }
-
-        if (outerOrder.status == OuterOrderStatus.ORDER_SYNCED) {
-            String jdTeamId = message.selectTextTrim("./JdTeamId");
-
-            Template template = TemplateLoader.load("jingdong/groupbuy/response/sendOrder.xml");
-
-            Resaler resaler = Resaler.findApprovedByLoginName(Resaler.JD_LOGIN_NAME);
-            Goods goods = ResalerProduct.getGoods(resaler, venderTeamId, OuterOrderPartner.JD);
-            Map<String, Object> params = new HashMap<>();
-            params.put("jdTeamId", jdTeamId);
-            params.put("venderTeamId", venderTeamId);
-            params.put("ybqOrder", outerOrder.ybqOrder);
-            params.put("coupons", coupons);
-            params.put("goods", goods);
-            renderArgs.put("data", template.render(params));
-            Logger.info("jd send order success: %s", outerOrder.ybqOrder.getId());
-            recordResultMessage(200, "success");  // done.
-        } else {
-            recordResultMessage(212, "the order has been processed");
-        }
-        return Boolean.TRUE;
     }
 
     /**
@@ -353,6 +211,9 @@ public class JDGroupBuy extends Controller {
         finish(200, "success");
     }
 
+    /**
+     * 重发短信.
+     */
     public static void sendSms() {
         String restXml = IO.readContentAsString(request.body);
         Logger.info("jingdong sendSms request:\n%s", restXml);
@@ -399,50 +260,6 @@ public class JDGroupBuy extends Controller {
         params.put("mobile", mobile);
         renderArgs.put("data", template.render(params));
         finish(200, "success");
-    }
-
-
-    // 创建一百券订单
-    private static Order createYbqOrder(Long venderTeamId, BigDecimal teamPrice, long count, String mobile) {
-        Resaler resaler = Resaler.findOneByLoginName(Resaler.JD_LOGIN_NAME);
-        Logger.info("create ybq order");
-        if (resaler == null) {
-            finish(207, "can not find the jingdong resaler");
-        }
-        Order ybqOrder = Order.createResaleOrder(resaler);
-        ybqOrder.save();
-        Goods goods = ResalerProduct.getGoods(resaler, venderTeamId, OuterOrderPartner.JD);
-        if (goods == null) {
-            finish(208, "can not find goods: " + venderTeamId);  //done
-            return null;
-        }
-        if (goods.originalPrice.compareTo(teamPrice) > 0) {
-            finish(209, "invalid product price: " + teamPrice);  //done
-        }
-
-        //检查导入券订单库存
-        if (goods.hasEnoughInventory(count)) {
-            JPA.em().getTransaction().rollback();
-            Logger.info("inventory not enough,goods.id=%s", goods.id.toString());
-            finish(210, "inventory not enough");  // done
-        }
-
-        OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, count, mobile, teamPrice, teamPrice);
-        uhuilaOrderItem.save();
-        if (goods.materialType.equals(MaterialType.REAL)) {
-            ybqOrder.deliveryType = DeliveryType.LOGISTICS;
-        } else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
-            ybqOrder.deliveryType = DeliveryType.SMS;
-        }
-
-        ybqOrder.createAndUpdateInventory();
-        ybqOrder.accountPay = ybqOrder.needPay;
-        ybqOrder.discountPay = BigDecimal.ZERO;
-        ybqOrder.payMethod = PaymentSource.getBalanceSource().code;
-        ybqOrder.payAndSendECoupon();
-        ybqOrder.save();
-
-        return ybqOrder;
     }
 
     private static void finish(int resultCode, String resultMessage) {

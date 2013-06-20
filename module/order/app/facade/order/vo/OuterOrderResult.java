@@ -46,6 +46,8 @@ public class OuterOrderResult {
                 return translate.getInventoryNotEnoughMessage(this);
             case INVALID_BUY_COUNT:
                 return translate.getInvalidBuyCountMessage(this);
+            case CONCURRENCY_REQUEST:
+                return translate.getConcurrencyRequestMessage(this);
         }
         return translate.getUnknownMessage(this);
     }

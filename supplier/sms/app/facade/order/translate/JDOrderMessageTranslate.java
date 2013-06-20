@@ -3,9 +3,7 @@ package facade.order.translate;
 import facade.order.vo.OuterOrderResult;
 
 /**
- * User: tanglq
- * Date: 13-6-20
- * Time: 上午11:21
+ * 用于京东订单生成的返回结果处理类
  */
 public class JDOrderMessageTranslate implements OuterOrderMessageTranslate<JDOrderMessage> {
     @Override
@@ -51,5 +49,10 @@ public class JDOrderMessageTranslate implements OuterOrderMessageTranslate<JDOrd
     @Override
     public JDOrderMessage getInvalidBuyCountMessage(OuterOrderResult result) {
         return new JDOrderMessage(202, "the buy number must be a positive one");
+    }
+
+    @Override
+    public JDOrderMessage getConcurrencyRequestMessage(OuterOrderResult result) {
+        return new JDOrderMessage(205, "there is another parallel request");
     }
 }

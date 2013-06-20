@@ -26,4 +26,6 @@ public interface OuterOrderMessageTranslate<T extends OuterOrderMessage> {
     T getInventoryNotEnoughMessage(OuterOrderResult result);
 
     T getInvalidBuyCountMessage(OuterOrderResult result);
+
+    T getConcurrencyRequestMessage(OuterOrderResult result);
 }
