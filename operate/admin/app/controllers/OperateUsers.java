@@ -1,11 +1,16 @@
 package controllers;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.uhuila.common.constants.DeletedStatus;
 import models.operator.OperateRole;
 import models.operator.OperateUser;
+import models.wuba.WubaResponse;
+import models.wuba.WubaUtil;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.libs.Images;
@@ -13,10 +18,13 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -64,6 +72,7 @@ public class OperateUsers extends Controller {
         List rolesList = OperateRole.findAll();
         render(rolesList);
     }
+
 
     /**
      * 创建操作员
@@ -181,6 +190,59 @@ public class OperateUsers extends Controller {
     public static void checkLoginName(Long id, String loginName, String mobile) {
         String returnFlag = OperateUser.checkValue(id, loginName, mobile);
         renderJSON(returnFlag);
+    }
+
+    public static void wubaThirdBillSequences() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("jiesuantime", "2013-05-03");
+        WubaResponse response = WubaUtil.sendRequest(params, "emc.groupbuy.queryjiesuan", false, false,
+                false);
+        JsonObject data3 = new JsonObject();
+        JsonObject data4 = new JsonObject();
+        if (response.isOk()) {
+            data3 = response.data.getAsJsonObject();
+            Logger.info("Consuemd---data:", data3);
+            int length = response.data.getAsJsonArray().size();
+            for (int i = 0; i < length; i++) {
+                JsonObject data1 = response.data.getAsJsonArray().get(i).getAsJsonObject();
+                Logger.info("Consuemd---data1:", data1);
+                String accountedAtStr = data1.get("usetime").getAsString();
+                String outerOrderNo = data1.get("orderid58").getAsString();
+                BigDecimal businessAmount = data1.get("groupprice").getAsBigDecimal();
+                BigDecimal commissionFee = data1.get("commission").getAsBigDecimal();
+                BigDecimal settleAmount = data1.get("jiesuanmoney").getAsBigDecimal();
+                Logger.info("Consuemd---accountedAtStr:", accountedAtStr, ",outerOrderNo:", outerOrderNo, "," +
+                        "businessAmount:",
+                        businessAmount, ",commissionFee:", commissionFee, ",settleAmount:", settleAmount);
+            }
+
+        }
+
+        //结算退款追回数据查询
+        params = new HashMap<>();
+        params.put("refundtime", "2013-05-03");
+        response = WubaUtil.sendRequest(params, "emc.groupbuy.queryrefundjiesuan", false, false, false);
+        if (response.isOk()) {
+            data4 = response.data.getAsJsonObject();
+            Logger.info("Refund---data:", data3);
+            JsonArray jsonArray = response.data.getAsJsonArray();
+            int length = jsonArray.size();
+            for (int i = 0; i < length; i++) {
+                JsonObject data1 = jsonArray.get(i).getAsJsonObject();
+                Logger.info("Refund---data1:", data1);
+                String accountedAtStr = data1.get("refundtime").getAsString();
+                String outerOrderNo = data1.get("orderid58").getAsString();
+                BigDecimal businessAmount = data1.get("groupprice").getAsBigDecimal();
+                BigDecimal commissionFee = data1.get("commission").getAsBigDecimal();
+                BigDecimal settleAmount = data1.get("jiesuanmoney").getAsBigDecimal();
+                Logger.info("Refund---accountedAtStr:", accountedAtStr, ",outerOrderNo:", outerOrderNo, "," +
+                        "businessAmount:",
+                        businessAmount, ",commissionFee:", commissionFee, ",settleAmount:", settleAmount);
+            }
+
+        }
+
+        render(data3, data4);
     }
 
 }
