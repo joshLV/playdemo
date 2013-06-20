@@ -93,6 +93,11 @@ public class OperateVerifyCoupons extends Controller {
             Validation.addError("error-info", "对不起，该券不能在此门店使用!");
         }
 
+        //判断是否需要预约的券
+        if (ecoupon != null && ecoupon.needsAppointmentCoupon()) {
+            Validation.addError("error-info", "该券需要先到商家预约日期,才能验证!");
+        }
+
         if (Validation.hasErrors()) {
             render("OperateVerifyCoupons/index.html", ecoupon, supplierId, shopList);
         }

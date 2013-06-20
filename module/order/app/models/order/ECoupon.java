@@ -1858,6 +1858,6 @@ public class ECoupon extends Model {
      * 判断是否是需要预约的券,true:需预约 false：不需预约
      */
     public boolean needsAppointmentCoupon() {
-        return this.eCouponSn.length() < 10 && goods.isSecondaryVerificationGoods() && appointmentDate == null;
+        return this.eCouponSn.length() < 10 ||( goods.isSecondaryVerificationGoods() && appointmentDate == null);
     }
 }
