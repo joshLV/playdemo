@@ -5,6 +5,7 @@ import models.admin.SupplierUser;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.Order;
 import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +14,8 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +36,11 @@ public class SupplierECoupons extends Controller {
         SupplierUser supplierUser = SupplierRbac.currentUser();
         Long supplierId = supplierUser.supplier.id;
         List<Shop> shopList;
-        if (supplierUser.shop!= null){
+        if (supplierUser.shop != null) {
             condition.shopId = supplierUser.shop.id;
             shopList = new ArrayList<>();
             shopList.add(supplierUser.shop);
-        } else{
+        } else {
             shopList = Shop.findShopBySupplier(supplierId);
         }
         condition.supplier = supplierUser.supplier;
@@ -62,7 +65,8 @@ public class SupplierECoupons extends Controller {
         }
         condition.supplier = SupplierRbac.currentUser().supplier;
         condition.status = ECouponStatus.CONSUMED;
-
+        SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
+        SimpleDateFormat dateFormat0 = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "券内容列表_" + System.currentTimeMillis() + ".xls");
         JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
@@ -71,12 +75,27 @@ public class SupplierECoupons extends Controller {
             coupon.verifyTypeInfo = Messages.get("coupon." + coupon.verifyType);
             coupon.statusInfo = Messages.get("coupon." + coupon.status);
             if (coupon.supplierUser != null) {
-                if (StringUtils.isNotBlank(coupon.supplierUser.userName))
+                if (StringUtils.isNotBlank(coupon.supplierUser.userName)) {
                     staff = coupon.supplierUser.userName;
-                if (StringUtils.isNotBlank(coupon.supplierUser.jobNumber))
-                    staff += "(工号:" + coupon.supplierUser.jobNumber + ")";
+                } else {
+                    staff = coupon.supplierUser.loginName;
+                }
+//                if (StringUtils.isNotBlank(coupon.supplierUser.jobNumber))
+//                    staff += "(工号:" + coupon.supplierUser.jobNumber + ")";
             }
             coupon.staff = staff;
+            if (coupon.appointmentDate != null) {
+                if (coupon.goods.isKtvProduct()) {
+                    coupon.excelRemarks = "预订：" + dateFormat.format(coupon.appointmentDate) + "\r" + coupon.appointmentRemark;
+                } else {
+                    coupon.excelRemarks = "预约日期：" + dateFormat0.format(coupon.appointmentDate) + "\r" + coupon.appointmentRemark;
+                }
+            }
+            try {
+                coupon.expireAt = dateFormat.parse(dateFormat0.format(coupon.expireAt));
+                coupon.consumedAt = dateFormat.parse(dateFormat0.format(coupon.consumedAt));
+            } catch (ParseException e) {
+            }
         }
         render(couponPage, condition);
     }

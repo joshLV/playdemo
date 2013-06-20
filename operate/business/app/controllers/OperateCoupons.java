@@ -1,15 +1,7 @@
 package controllers;
 
 import models.operator.OperateUser;
-import models.order.CouponHistory;
-import models.order.CouponsCondition;
-import models.order.ECoupon;
-import models.order.ECouponHistoryMessage;
-import models.order.ECouponStatus;
-import models.order.OrderECouponMessage;
-import models.order.OrderItems;
-import models.order.OuterOrder;
-import models.order.VerifyCouponType;
+import models.order.*;
 import models.sales.Brand;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
@@ -37,11 +29,8 @@ public class OperateCoupons extends Controller {
     public static void index(CouponsCondition condition) {
         Boolean hasEcouponRefundPermission = ContextedPermission.hasPermission("ECOUPON_REFUND");
         Boolean hasViewEcouponSnPermission = ContextedPermission.hasPermission("VIEW_ECOUPONSN");
-        if (condition == null) {
-            condition = new CouponsCondition();
-            condition.hidPaidAtBegin = DateHelper.beforeDays(1);
-            condition.hidPaidAtEnd = new Date();
-        }
+        condition = getOrdersCondition(condition);
+
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
@@ -207,9 +196,8 @@ public class OperateCoupons extends Controller {
     @ActiveNavigation("coupons_index")
     public static void couponExcelOut(CouponsCondition condition) {
 
-        if (condition == null) {
-            condition = new CouponsCondition();
-        }
+        condition = getOrdersCondition(condition);
+
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "券列表_" + System.currentTimeMillis() + ".xls");
         condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
@@ -262,6 +250,20 @@ public class OperateCoupons extends Controller {
 
         render(couponsList);
 
+    }
+
+    private static CouponsCondition getOrdersCondition(CouponsCondition condition) {
+        if (condition == null) {
+            condition = new CouponsCondition();
+            condition.hidPaidAtBegin = DateHelper.beforeDays(1);
+            condition.hidPaidAtEnd = new Date();
+        } else if ((StringUtils.isBlank(condition.searchKey) || StringUtils.isBlank(condition.searchItems))
+                && condition.paidAtBegin == null && condition.paidAtEnd == null &&
+                condition.refundAtBegin == null && condition.refundAtEnd == null) {
+            condition.paidAtBegin = DateHelper.beforeDays(1);
+            condition.paidAtEnd = new Date();
+        }
+        return condition;
     }
 
     @ActiveNavigation("coupons_index")

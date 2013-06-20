@@ -80,9 +80,11 @@ public class WithdrawApproval extends Controller {
             case SUPPLIER:
                 //只能处理视惠的申请
                 account = AccountUtil.getSupplierAccount(uid, Operator.defaultOperator());
+                Supplier supplier = Supplier.findById(account.uid);
                 SupplierContract contract = SupplierContract.find("supplierId=? order by createdAt desc ", uid).first();
                 renderArgs.put("contract", contract);
                 renderArgs.put("supplierId", account.uid);
+                renderArgs.put("supplier", supplier);
                 break;
             case RESALER:
                 account = AccountUtil.getResalerAccount(uid);
@@ -92,12 +94,14 @@ public class WithdrawApproval extends Controller {
                 break;
             case SHOP:
                 Shop shop = Shop.findById(uid);
-                Supplier supplier = Supplier.findById(shop.supplierId);
+                supplier = Supplier.findById(shop.supplierId);
                 account = AccountUtil.getShopAccount(uid, supplier.defaultOperator());
                 contract = SupplierContract.find("supplierId=? order by createdAt desc ", supplier.id).first();
                 renderArgs.put("contract", contract);
                 renderArgs.put("supplierId", shop.supplierId);
                 renderArgs.put("supplierName", supplier.getName());
+                renderArgs.put("supplier", supplier);
+                renderArgs.put("shopId", uid);
                 break;
         }
 
@@ -123,7 +127,7 @@ public class WithdrawApproval extends Controller {
     @Right("APPROVE_WITHDRAW")
     public static void approve(Long id, String action, BigDecimal fee, String comment) {
         WithdrawBill bill = WithdrawBill.findById(id);
-        if (bill.status != WithdrawBillStatus.APPLIED) {
+        if (bill.status != WithdrawBillStatus.APPLIED && !"edit_supplier_remark".equals(action)) {
             error("cannot find the withdraw bill or the bill is processed");
             return;
         }
@@ -145,7 +149,21 @@ public class WithdrawApproval extends Controller {
             bill.reject(comment, OperateRbac.currentUser().userName);
 
             sendRejectedSMS(bill, comment);
+        } else if (action.equals("edit_supplier_remark")) {
+            Long supplierId = Long.valueOf(params.get("supplierId"));
+            if (StringUtils.isNotBlank(comment)) {
+                Supplier supplier = Supplier.findUnDeletedById(supplierId);
+                supplier.remark += StringUtils.trimToEmpty(comment);
+                supplier.save();
+            }
+
+            if (StringUtils.isBlank(params.get("shopId"))) {
+                redirect("/withdraw/" + id + "/detail?uid=" + supplierId);
+            } else {
+                redirect("/withdraw/" + id + "/detail?uid=" + params.get("shopId"));
+            }
         }
+
         index(null);
     }
 
