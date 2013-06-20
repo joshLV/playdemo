@@ -169,36 +169,6 @@ public class TaobaoCouponUtil {
         return false;
     }
 
-    public static boolean canVerifyOnTaobao(ECoupon coupon) {
-        if (coupon.partner != ECouponPartner.TB) {
-            Logger.info("query coupon info on taobao failed: partner not TB. couponId: %s", coupon.id);
-            return false;
-        }
-
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndYbqOrder", OuterOrderPartner.TB, coupon.order).first();
-        if (outerOrder == null) {
-            Logger.info("query coupon info on taobao failed: outerOrder not found. couponId: %s", coupon.id);
-            return false;
-        }
-        JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
-        String token = jsonObject.get("token").getAsString();
-
-        VmarketEticketBeforeconsumeRequest request = new VmarketEticketBeforeconsumeRequest();
-        request.setOrderId(Long.parseLong(outerOrder.orderId));
-        request.setVerifyCode(coupon.getSafeECouponSN());
-        request.setToken(token);
-
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(
-                URL, outerOrder.resaler.taobaoCouponAppKey, outerOrder.resaler.taobaoCouponAppSecretKey);
-        OAuthToken oAuthToken = getTokenOfTaobaoCodePlatform(outerOrder.resaler);
-        if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
-            request.setCodemerchantId(CODE_MERCHANT_ID);
-            request.setPosid(CODE_MERCHANT_POSID);
-        }
-        return true;
-
-    }
-
     /**
      * 在淘宝上验证.
      * 如果验证失败，则尝试撤销验证（可能是因为之前已经验证了），撤销成功的话重试。
@@ -228,6 +198,7 @@ public class TaobaoCouponUtil {
         beforeconsumeRequest.setOrderId(Long.parseLong(outerOrder.orderId));
         beforeconsumeRequest.setVerifyCode(coupon.getSafeECouponSN());
         beforeconsumeRequest.setToken(token);
+        //如果是码商，则要传入额外的信息
         if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             beforeconsumeRequest.setCodemerchantId(CODE_MERCHANT_ID);
             beforeconsumeRequest.setPosid(CODE_MERCHANT_POSID);
@@ -242,11 +213,11 @@ public class TaobaoCouponUtil {
                 if (beforeconsumeResponse.getRetCode() != 1) {
                     return ExtensionResult.INVALID_CALL;
                 }
-            } else {
+            }else {
                 Logger.error("tell taobao coupon verify response failed. %s", beforeconsumeResponse.getSubMsg());
                 return ExtensionResult.INVALID_CALL;
             }
-        } catch (ApiException e) {
+        }catch (ApiException e) {
             Logger.error("tell taobao coupon verify response raise exception. ", e);
             return ExtensionResult.INVALID_CALL;
         }
@@ -259,6 +230,7 @@ public class TaobaoCouponUtil {
         consumeRequest.setVerifyCode(coupon.getSafeECouponSN());
         consumeRequest.setConsumeNum(1L);
         consumeRequest.setToken(token);
+        //如果是码商，则要传入额外的信息
         if (outerOrder.resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             consumeRequest.setCodemerchantId(CODE_MERCHANT_ID);
             consumeRequest.setPosid(CODE_MERCHANT_POSID);
