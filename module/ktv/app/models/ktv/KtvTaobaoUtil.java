@@ -281,7 +281,7 @@ public class KtvTaobaoUtil {
                 SortedSet<Integer> startTimeArray = schedule.getStartTimesAsSet();
                 for (Integer startTime : startTimeArray) {
                     //今天PRE_ORDER_HOUR小时之内的不能预订
-                    if (day.compareTo(today) == 0 && startTime < (currentHour + PRE_ORDER_HOUR)) {
+                    if (day.compareTo(today) == 0 && startTime <= (currentHour + PRE_ORDER_HOUR)) {
                         continue;
                     }
                     //房型数 x 日期数 x 时间段数 不能超过600
