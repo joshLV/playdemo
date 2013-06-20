@@ -977,8 +977,8 @@ public class SalesReportCondition implements Serializable {
         Collections.sort(resultList, new Comparator<SalesReport>() {
             @Override
             public int compare(SalesReport o1, SalesReport o2) {
-                String o1_jobNumber = o1.operateUser.jobNumber;
-                String o2_jobNumber = o2.operateUser.jobNumber;
+                String o1_jobNumber = o1.operateUser.jobNumber == null ? "" : o1.operateUser.jobNumber;
+                String o2_jobNumber = o2.operateUser.jobNumber == null ? "" : o2.operateUser.jobNumber;
                 if ("jobNumber".equals(orderBy)) {
                     if ("desc".equals(orderByType)) {
                         return o1_jobNumber.compareTo(o2_jobNumber);
@@ -1034,10 +1034,12 @@ public class SalesReportCondition implements Serializable {
                         return o2_amount.compareTo(o1_amount);
                     }
                 } else if ("buyNumber".equals(orderBy)) {
+                    Long o1_buyNumber = o1.buyNumber == null ? 0l : o1.buyNumber;
+                    Long o2_buyNumber = o2.buyNumber == null ? 0l : o2.buyNumber;
                     if ("desc".equals(orderByType)) {
-                        return o1.buyNumber.compareTo(o2.buyNumber);
+                        return o1_buyNumber.compareTo(o2_buyNumber);
                     } else {
-                        return o2.buyNumber.compareTo(o1.buyNumber);
+                        return o2_buyNumber.compareTo(o1_buyNumber);
                     }
                 } else if ("grossMargin".equals(orderBy)) {
                     BigDecimal o1_amount = o1.grossMargin == null ? BigDecimal.ZERO : o1.grossMargin;
