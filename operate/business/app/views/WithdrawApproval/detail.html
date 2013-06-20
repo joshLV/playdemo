@@ -33,9 +33,9 @@
                 <label class="control-label">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</label>
                 <label class="controls control-value">&{'account.type.' + bill.account.accountType}#{if org.apache.commons.lang.StringUtils.isNotBlank(bill.accountName)}
                     (${bill.accountName})#{/if}
-                #{if (bill?.account?.accountType ==  models.accounts.AccountType.SUPPLIER || bill?.account?.accountType ==  models.accounts.AccountType.SHOP)&& contract?.id!=null}
-                    <a href="/supplier_contract/${contract?.id}/view" target="_blank">查看合同</a>
-                #{/if}
+                *{#{if (bill?.account?.accountType ==  models.accounts.AccountType.SUPPLIER || bill?.account?.accountType ==  models.accounts.AccountType.SHOP)&& contract?.id!=null}}*
+                *{<a href="/supplier_contract/${contract?.id}/view" target="_blank">查看合同</a>}*
+                *{#{/if}}*
                 </label>
             </div>
             <div class="control-group">
@@ -140,14 +140,14 @@
                 <label class="controls control-value">${supplier.userName}&nbsp;</label>
             </div>
             <div class="control-group">
-                <label class="control-label">手机</label>
-                <label class="controls control-value">${supplier?.mobile}&nbsp;</label>
+                <label class="control-label">手机/电话</label>
+                <label class="controls control-value">${supplier?.mobile}&nbsp;${supplier?.phone}</label>
             </div>
             <div class="control-group">
                 <label class="control-label">商户业务</label>
                 <label class="controls control-value">
-                ${"1".equals(supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON)) ?'销售电子券':''}
-                ${"1".equals(supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL)) ?'实物发货（原则上30天账期）':''}
+                ${"1".equals(supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON)) ?'销售电子券':''}<br>
+                ${"1".equals(supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL)) ?'实物发货（原则上30天账期）':''}<br>
                 ${"1".equals(supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER)) ?'KTV在线预订':''}
                     &nbsp;</label>
             </div>
