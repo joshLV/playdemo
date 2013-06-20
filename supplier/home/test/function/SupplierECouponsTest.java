@@ -11,6 +11,7 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
@@ -18,6 +19,8 @@ import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 import util.DateHelper;
+
+import java.util.Date;
 
 /**
  * 商户后台v2的券列表功能测试.
@@ -49,6 +52,7 @@ public class SupplierECouponsTest extends FunctionalTest {
         coupon = FactoryBoy.create(ECoupon.class);
         coupon.status = ECouponStatus.CONSUMED;
         coupon.shop = shop;
+        coupon.consumedAt= new Date();
         coupon.order.paidAt= DateHelper.beforeDays(1);
         coupon.order.save();
         coupon.save();
