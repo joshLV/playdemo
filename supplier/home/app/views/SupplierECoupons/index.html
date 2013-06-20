@@ -75,13 +75,27 @@
         #{paginate.list items:couponPage, as:'coupon'}
         <tr>
             <td>${coupon?.eCouponSn}</td>
-            <td align="left">${coupon?.goods?.shortName}</td>
+            <td align="left">${coupon?.goods?.shortName}<br>
+                <span style="color: darkred">
+                    #{if coupon.appointmentDate !=null}
+                        #{if coupon.goods.isKtvProduct()}
+                            预订：${coupon.appointmentDate?.format('M月d日')}<br>${coupon.appointmentRemark}
+                        #{/if }
+                        #{else }
+                            预约日期：${coupon.appointmentDate.format()}<br>
+                        ${coupon.appointmentRemark}
+                        #{/else}
+                    #{/if}
+                </span>
+            </td>
             <td align="right">${coupon?.faceValue?.formatCurrency('CNY')}</td>
             <td>${coupon?.getConsumedShop()}</td>
             <td>&{'coupon.'+coupon?.verifyType}</td>
             <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            <td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}
-                #{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}</td>
+            <td>#{if !"".equals(coupon?.supplierUser?.userName)}${coupon?.supplierUser?.userName}#{/if}
+            #{else}${coupon?.supplierUser.loginName}#{/else}
+                *{#{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}}*
+            </td>
         </tr>
         #{/paginate.list}
 

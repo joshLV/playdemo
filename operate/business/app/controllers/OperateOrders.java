@@ -80,7 +80,7 @@ public class OperateOrders extends Controller {
 
         orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
         BigDecimal amountSummary = Order.summary(orderList);
-
+        System.out.println(orderList.size() + ">>>>>>");
         List<Brand> brandList = Brand.findByOrder(null, operatorId, hasSeeAllSupplierPermission);
         renderArgs.put("brandList", brandList);
         render(orderList, condition, amountSummary, desc);
@@ -138,18 +138,14 @@ public class OperateOrders extends Controller {
 
 
     public static void orderExcelOut(OrdersCondition condition) {
-
         condition = getOrdersCondition(condition);
-
         String page = request.params.get("page");
-        request.format = "xls";
-        renderArgs.put("__FILE_NAME__", "订单_" + System.currentTimeMillis() + ".xls");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+//        request.format = "xls";
+//        renderArgs.put("__FILE_NAME__", "订单_" + System.currentTimeMillis() + ".xls");
         condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         condition.operatorId = OperateRbac.currentUser().id;
-        JPAExtPaginator<models.order.Order> orderList;
-
-        orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE);
-
+        JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
         for (Order order : orderList) {
             OuterOrder outerOrder = OuterOrder.getOuterOrder(order);
             if (outerOrder != null) {
@@ -169,12 +165,15 @@ public class OperateOrders extends Controller {
     }
 
     private static OrdersCondition getOrdersCondition(OrdersCondition condition) {
+
         if (condition == null) {
             condition = new OrdersCondition();
             condition.hidPaidAtBegin = DateHelper.beforeDays(1);
             condition.hidPaidAtEnd = new Date();
-        } else if (condition.shihuiSupplierId == null && (StringUtils.isBlank(condition.searchKey) || StringUtils.isBlank(condition.searchItems)) && StringUtils.isBlank(condition.outerOrderId) && condition.paidAtBegin == null && condition.paidAtEnd == null && condition.refundAtBegin == null && condition.refundAtEnd == null) {
-            condition.paidAtBegin = DateHelper.beforeDays(7);
+        } else if (condition.shihuiSupplierId == null &&
+                (StringUtils.isBlank(condition.searchKey) || StringUtils.isBlank(condition.searchItems)) &&
+                StringUtils.isBlank(condition.outerOrderId) && condition.paidAtBegin == null && condition.paidAtEnd == null && condition.refundAtBegin == null && condition.refundAtEnd == null) {
+            condition.paidAtBegin = DateHelper.beforeDays(1);
             condition.paidAtEnd = new Date();
         }
         return condition;

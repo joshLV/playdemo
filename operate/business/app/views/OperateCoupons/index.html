@@ -255,8 +255,8 @@
             </a><br>
             <span style="color: darkred">
                 #{if coupon.appointmentDate !=null}
-                    #{if (coupon.goods.isKtvSupplier() ) && coupon.goods.isKtvProduct()}
-                        <br>预订：${coupon.appointmentDate?.format('M月d日')}<br>${coupon.appointmentRemark}
+                    #{if  coupon.goods.isKtvProduct()}
+                        预订：${coupon.appointmentDate?.format('M月d日')}<br>${coupon.appointmentRemark}
                     #{/if }
                     #{else }
                         预约日期：${coupon.appointmentDate.format()}<br>
