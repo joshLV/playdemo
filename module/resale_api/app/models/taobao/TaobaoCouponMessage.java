@@ -12,9 +12,14 @@ import java.io.Serializable;
  */
 public class TaobaoCouponMessage extends QueueIDMessage implements Serializable {
     private static final long serialVersionUID = -8173232582104951L;
-    public static final String MQ_KEY = Play.mode.isProd() ? "order.taobao.coupon" : "order.taobao.coupon";
+    public static final String MQ_KEY = Play.mode.isProd() ? "order.v2.taobao.coupon" : "order.v2.taobao.coupon_dev";
 
     public Long outerOrderId;
+
+    /**
+     * 保存outerOrderId的lockVersion，在consumer中检查，如果不一致则让consumer重试.
+     */
+    public Integer lockVersion;
 
     public TaobaoCouponMessage(Long outerOrderId) {
         this.outerOrderId = outerOrderId;
@@ -26,6 +31,11 @@ public class TaobaoCouponMessage extends QueueIDMessage implements Serializable 
 
     public void setOuterOrderId(Long outerOrderId) {
         this.outerOrderId = outerOrderId;
+    }
+
+    public TaobaoCouponMessage lockVersion(Integer value) {
+        this.lockVersion = value;
+        return this;
     }
 
     @Override

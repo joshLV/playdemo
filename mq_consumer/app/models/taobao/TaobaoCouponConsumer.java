@@ -53,6 +53,11 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     @Override
     public void consumeWithTx(TaobaoCouponMessage taobaoCouponMessage) {
         OuterOrder outerOrder = OuterOrder.findById(taobaoCouponMessage.outerOrderId);
+        if (outerOrder.lockVersion < taobaoCouponMessage.lockVersion) {
+            Logger.info("outerOrder(id:%d) lockVersion is Old, retry later.", outerOrder.id);
+            // 这里不抛异常，因为此Consumer本来就不重试 see retries();  一分钟后Jobs会重试.
+            // throw new RuntimeException("outerOrder(id:" + outerOrder.id + ") lockVersion is Old, retry later.");
+        }
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             //订单接收到，开始创建一百券订单，并告诉淘宝我们的订单信息
             Logger.info("start taobao coupon consumer send order");

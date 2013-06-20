@@ -32,7 +32,7 @@ public class TaobaoCouponJob extends JobWithHistory {
                 OuterOrderStatus.RESEND_COPY,
                 OuterOrderStatus.REFUND_COPY).fetch();
         for (OuterOrder outerOrder : outerOrders) {
-            new TaobaoCouponMessage(outerOrder.id).send();
+            new TaobaoCouponMessage(outerOrder.id).lockVersion(outerOrder.lockVersion).send();
         }
     }
 }
