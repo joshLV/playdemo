@@ -9,10 +9,12 @@ import models.order.OrderItems;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +41,7 @@ public class SupplierAccountSequences extends Controller {
 
         if (condition == null) {
             condition = new AccountSequenceCondition();
+            condition.createdAtBegin = DateUtils.addDays(new Date(), -15);
         }
         condition.account = account;
 

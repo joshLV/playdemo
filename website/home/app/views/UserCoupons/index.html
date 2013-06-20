@@ -7,13 +7,19 @@
 <script src="@{'/public/javascripts/common.jq.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
-    function applyRefund(id, money, rebateValue) {
+    function applyRefund(id, money, rebateValue, advancedDeposit) {
         $("#coupon_id").val(id);
         if (rebateValue == null) {
             rebateValue = 0;
         }
-        $("#money").html("¥" + (money - rebateValue));
-        $.common.dialog({'id':'refund', 'title':'申请退款'});
+        if (advancedDeposit == null) {
+            advancedDeposit = 0;
+        }
+        if (money - advancedDeposit < 0) {
+            return;
+        }
+        $("#money").html("¥" + (money - rebateValue - advancedDeposit));
+        $.common.dialog({'id': 'refund', 'title': '申请退款'});
     }
 
     function cancel() {
@@ -25,7 +31,7 @@
         var url = "/coupons/refund/" + coupon_id;
         $.post(
                 url,
-                {"applyNote":""},
+                {"applyNote": ""},
                 function (data) {
                     if (data.error != 'ok') {
                         alert("申请失败: " + data.error);
@@ -45,11 +51,11 @@
         if (times == 0) {
             $("#send").hide();
             $("#gone").show();
-            $.common.dialog({'id':'sendMsg', 'title':'发送短信'});
+            $.common.dialog({'id': 'sendMsg', 'title': '发送短信'});
         } else {
             $("#mobile").html(phone);
             $("#id").val(id);
-            $.common.dialog({'id':'sendMsg', 'title':'发送短信'});
+            $.common.dialog({'id': 'sendMsg', 'title': '发送短信'});
             $("#gone").hide();
             $("#send").show();
 
@@ -91,12 +97,12 @@
         var couponshopsId = item.join(",");
 
         $.ajax({
-            url:"/coupons-message/" + id + "/send?couponshopsId=" + couponshopsId,
-            type:'GET',
-            error:function () {
+            url: "/coupons-message/" + id + "/send?couponshopsId=" + couponshopsId,
+            type: 'GET',
+            error: function () {
                 alert('发送失败!');
             },
-            success:function (data) {
+            success: function (data) {
                 if (data == '0') {
                     $("#send_dialog").html("<div style='text-align:center;padding-top:15px'>短信已发送成功，请查收！</div>");
                     cnt--;
@@ -226,11 +232,11 @@
                         coupon?.orderItems?.secKillGoods==null && coupon?.orderItems?.secKillGoodsItemId==null && coupon?.goods?.materialType== models.sales.MaterialType.ELECTRONIC
                         && coupon?.isFreeze!=1}
                             <a class="red"
-                               href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}','${coupon?.rebateValue}')"
+                               href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}','${coupon?.rebateValue}','${coupon?.advancedDeposit}')"
                                id="apply_${coupon.id}">申请退款</a>
                         #{/if}
                         #{elseif coupon.status != models.order.ECouponStatus.REFUND && coupon.status != models.order.ECouponStatus.CONSUMED && coupon?.isFreeze!=1}
-                             不可退款
+                            不可退款
                         #{/elseif}
                         #{elseif  coupon?.isFreeze==1}
                             已冻结

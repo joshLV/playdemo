@@ -9,6 +9,7 @@ import models.order.Order;
 import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import play.i18n.Messages;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
@@ -17,6 +18,7 @@ import play.mvc.With;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @With({SupplierRbac.class, SupplierInjector.class})
@@ -31,6 +33,7 @@ public class SupplierECoupons extends Controller {
     public static void index(CouponsCondition condition) {
         if (condition == null) {
             condition = new CouponsCondition();
+            condition.consumedAtBegin = DateUtils.addDays(new Date(), -15);
         }
 
         SupplierUser supplierUser = SupplierRbac.currentUser();
@@ -62,6 +65,7 @@ public class SupplierECoupons extends Controller {
         int pageNumber = getPageNumber();
         if (condition == null) {
             condition = new CouponsCondition();
+            condition.consumedAtBegin = DateUtils.addDays(new Date(), -15);
         }
         condition.supplier = SupplierRbac.currentUser().supplier;
         condition.status = ECouponStatus.CONSUMED;

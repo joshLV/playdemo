@@ -60,13 +60,13 @@
     <table cellspacing="0" cellpadding="0" border="0" class="standard-table">
         <thead>
         <tr>
+            <th width="45px">消费者手机</th>
             <th width="45px">券号</th>
             <th width="120px">商品名称</th>
             <th width="30px">面值</th>
             <th width="50px">消费门店</th>
             <th width="50px">验证方式</th>
             <th width="50px">消费时间</th>
-            <th width="50px">店员</th>
         </tr>
         </thead>
 
@@ -74,6 +74,7 @@
         #{set i:0/}
         #{paginate.list items:couponPage, as:'coupon'}
         <tr>
+            <td>${coupon?.orderItems?.phone}</td>
             <td>${coupon?.eCouponSn}</td>
             <td align="left">${coupon?.goods?.shortName}<br>
                 <span style="color: darkred">
@@ -90,12 +91,14 @@
             </td>
             <td align="right">${coupon?.faceValue?.formatCurrency('CNY')}</td>
             <td>${coupon?.getConsumedShop()}</td>
-            <td>&{'coupon.'+coupon?.verifyType}</td>
-            <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            <td>#{if !"".equals(coupon?.supplierUser?.userName)}${coupon?.supplierUser?.userName}#{/if}
-            #{else}${coupon?.supplierUser.loginName}#{/else}
-                *{#{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}}*
+            <td>&{'coupon.'+coupon?.verifyType}<br>
+                #{if coupon?.verifyType!=models.order.VerifyCouponType.AUTO_VERIFY}
+                    #{if !"".equals(coupon?.supplierUser?.userName) && coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}
+                    #{else}${coupon?.supplierUser?.loginName}#{/else}
+                #{/if}
+
             </td>
+            <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
         </tr>
         #{/paginate.list}
 
