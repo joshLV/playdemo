@@ -22,8 +22,8 @@ public class KtvOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
         sb.append("【")
                 .append(context.goods.getSupplier().otherName)
                 .append("】")
+                .append(context.goods.title)
                 .append(context.couponInfo)
-//                .append(context.notes)
                 .append("一百券客服4006865151");
         context.setSmsContent(sb.toString());
         return ExtensionResult.SUCCESS;
