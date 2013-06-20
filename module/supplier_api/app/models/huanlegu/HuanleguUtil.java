@@ -26,7 +26,7 @@ import java.util.Map;
 public class HuanleguUtil {
     public static final String CODE_CHARSET = "utf-8";
 
-    public static String SECRET_KEY = "123";
+    public static String SECRET_KEY = "12345678";
     public static String DISTRIBUTOR_ID = "456";
     public static String CLIENT_ID = "789";
 
@@ -65,7 +65,7 @@ public class HuanleguUtil {
         );
     }
 
-    public HuanleguMessage sendRequest(String action, Map<String, Object> params) {
+    public static HuanleguMessage sendRequest(String action, Map<String, Object> params) {
         //准备 url 和 模板数据
         String url = GATEWAY_URL + action + "/";
         String templatePath = "huanlegu/request/" + action + ".xml";
@@ -74,7 +74,7 @@ public class HuanleguUtil {
 
         //生成rest请求内容
         Logger.info("huanlegu request %s:\n%s", action, data);
-        String restRequest = JDGroupBuyUtil.makeRequestRest(data);
+        String restRequest = makeRequestRest(data);
         Logger.info("huanlegu request %s encrypted:\n%s", action, restRequest);
 
         //发起请求
@@ -121,7 +121,7 @@ public class HuanleguUtil {
             if (rawMessage != null) {
                 //解析加密字符串
                 String decryptedMessage = decrypt(rawMessage);
-                if (verify(decryptedMessage, message.sign)) {
+                if (verify(message.sequenceId, decryptedMessage, message.sign)) {
                     Logger.info("huanlegu response decrypted:\n%s", decryptedMessage);
                     message.message = XPath.selectNode("/Body", XML.getDocument("<Body>" + decryptedMessage + "</Body>"));
                 }else {
@@ -136,8 +136,8 @@ public class HuanleguUtil {
         return message;
     }
 
-    public static boolean verify(String decryptedContent, String sign) {
-        return encrypt(decryptedContent).equalsIgnoreCase(sign);
+    public static boolean verify(String serial, String decryptedContent, String sign) {
+        return sign(serial, decryptedContent).equalsIgnoreCase(sign);
     }
 
     /**
@@ -147,9 +147,9 @@ public class HuanleguUtil {
      * @return 完整的REST请求内容
      */
     public static String makeRequestRest(String data) {
-        Template template = TemplateLoader.load("jingdong/groupbuy/request/main.xml");
+        Template template = TemplateLoader.load("huanlegu/request.xml");
         Map<String, Object> params = new HashMap<>();
-        String serial = "";
+        String serial = String.valueOf(System.currentTimeMillis());
         params.put("version", "1");
         params.put("sequenceId", serial);
         params.put("distributorId", DISTRIBUTOR_ID);

@@ -31,14 +31,32 @@ public class JingdongMessage {
         return message != null;
     }
 
+    /**
+     * 选择节点.
+     *
+     * @param path 类似 ./a/b
+     * @return 节点
+     */
     public Node selectNode(String path) {
         return XPath.selectNode(path, message);
     }
 
+    /**
+     * 选择节点列表.
+     *
+     * @param path 类似 ./a/b
+     * @return 节点列表
+     */
     public List<Node> selectNodes(String path) {
         return XPath.selectNodes(path, message);
     }
 
+    /**
+     * 选择节点内容.
+     *
+     * @param path 类似 ./a/b
+     * @return 节点内容
+     */
     public String selectTextTrim(String path) {
         return StringUtils.trimToNull(XPath.selectText(path, message));
     }
