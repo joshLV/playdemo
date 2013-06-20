@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Trade>
+    <Head>
+        <Version>${version.raw()}</Version>
+        <SequenceId>${sequenceId.raw()}</SequenceId>
+        <DistributorId>${distributorId.raw()}</DistributorId>
+        <ClientId>${clientId.raw()}</ClientId>
+        <TimeStamp>${timeStamp.raw()}</TimeStamp>
+        <Signed>${sign.raw()}</Signed>
+    </Head>
+    ${body.raw()}
+</Trade>

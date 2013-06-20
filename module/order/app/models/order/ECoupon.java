@@ -247,6 +247,12 @@ public class ECoupon extends Model {
     public String supplierECouponId;
 
     /**
+     * 第三方发码平台(作为Supplier）发券密码（或者别的什么信息）.
+     */
+    @Column(name = "supplier_coupon_pwd")
+    public String supplierECouponPwd;
+
+    /**
      * 消费者预约日期。
      */
     @Column(name = "appointment_date")

@@ -2,6 +2,7 @@ package extension;
 
 import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
+import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
 import util.extension.ExtensionResult;
 
@@ -20,10 +21,11 @@ public class SecondaryVerificationECouponSMSInvocation extends OrderECouponSMSIn
     @Override
     public ExtensionResult execute(OrderECouponSMSContext context) {
         StringBuilder sb = new StringBuilder();
+        Goods goods = context.getGoods();
         sb.append("【")
-                .append(context.goods.getSupplier().otherName)
+                .append(goods.getSupplier().otherName)
                 .append("】")
-                .append(StringUtils.isNotEmpty(context.goods.title) ? context.goods.title : context.goods.shortName)
+                .append(StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName)
                 .append(",")
                 .append(context.couponInfo)
                 .append(context.notes)
@@ -40,6 +42,6 @@ public class SecondaryVerificationECouponSMSInvocation extends OrderECouponSMSIn
      */
     @Override
     public boolean match(OrderECouponSMSContext context) {
-        return context.goods.isSecondaryVerificationGoods();
+        return context.getGoods().isSecondaryVerificationGoods();
     }
 }

@@ -1,0 +1,4 @@
+<Body>
+    <SightId>${sightId}</SightId>
+    <SightName>${sightName}</SightName>
+</Body>
