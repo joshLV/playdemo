@@ -188,9 +188,20 @@
                         #{else}${coupon?.eCouponSn}#{/else}
                     </td>
                     <td>
-                        <a class="pic" href="${goodsUrl}" target="_blank"><img
-                                src="${coupon?.goods?.imageTinyPath}"/></a>
-                        <a href="${goodsUrl}" target="_blank">${coupon?.goods?.name}</a>
+                        *{<a class="pic" href="${goodsUrl}" target="_blank"><img}*
+                                *{src="${coupon?.goods?.imageTinyPath}"/></a>}*
+                        <a href="${goodsUrl}" target="_blank">${coupon?.goods?.name}</a></br>
+ <span style="color: darkred">
+     #{if coupon.appointmentDate !=null}
+         #{if coupon.goods.isKtvProduct()}
+             预订：${coupon.appointmentDate?.format('M月d日')}<br>${coupon.appointmentRemark}
+         #{/if }
+         #{else }
+             预约日期：${coupon.appointmentDate.format()}<br>
+         ${coupon.appointmentRemark}
+         #{/else}
+     #{/if}
+ </span>
                     </td>
                     <td>${coupon.order.orderNumber}</td>
                     <td>
