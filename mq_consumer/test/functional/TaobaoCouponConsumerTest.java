@@ -93,7 +93,7 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
         long couponCount = ECoupon.count();
 
 
-        TaobaoCouponMessage taobaoCouponMessage = new TaobaoCouponMessage(outerOrder.id);
+        TaobaoCouponMessage taobaoCouponMessage = new TaobaoCouponMessage(outerOrder.id).lockVersion(outerOrder.lockVersion);
 
         TaobaoCouponConsumer taobaoCouponConsumer = new TaobaoCouponConsumer();
         taobaoCouponConsumer.consumeWithTx(taobaoCouponMessage);
@@ -118,7 +118,7 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
 
         int smsSendCount = ((ECoupon) ECoupon.findAll().get(0)).smsSentCount;
 
-        TaobaoCouponMessage taobaoCouponMessage = new TaobaoCouponMessage(outerOrder.id);
+        TaobaoCouponMessage taobaoCouponMessage = new TaobaoCouponMessage(outerOrder.id).lockVersion(outerOrder.lockVersion);
 
         TaobaoCouponConsumer taobaoCouponConsumer = new TaobaoCouponConsumer();
         taobaoCouponConsumer.consumeWithTx(taobaoCouponMessage);
