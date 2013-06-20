@@ -195,6 +195,7 @@ public class TaobaoCouponUtil {
             request.setCodemerchantId(CODE_MERCHANT_ID);
             request.setPosid(CODE_MERCHANT_POSID);
         }
+        return true;
 
     }
 
@@ -241,11 +242,11 @@ public class TaobaoCouponUtil {
                 if (beforeconsumeResponse.getRetCode() != 1) {
                     return ExtensionResult.INVALID_CALL;
                 }
-            }else {
+            } else {
                 Logger.error("tell taobao coupon verify response failed. %s", beforeconsumeResponse.getSubMsg());
                 return ExtensionResult.INVALID_CALL;
             }
-        }catch (ApiException e) {
+        } catch (ApiException e) {
             Logger.error("tell taobao coupon verify response raise exception. ", e);
             return ExtensionResult.INVALID_CALL;
         }
@@ -359,7 +360,7 @@ public class TaobaoCouponUtil {
 
     /**
      * 获取淘宝电子凭证平台的OauthToken与一般使用方式不同。
-     *
+     * <p/>
      * 在与淘宝电子凭证平台交互时，如果是自己发码，需要使用自身淘宝账户的token，如果是码商发码，需要使用码商的token
      *
      * @param resaler 分销商
@@ -373,8 +374,8 @@ public class TaobaoCouponUtil {
         if (resaler.taobaoCouponAppKey.equals(CODE_MERCHANT_APP_KEY)) {
             //如果是码商
             token = OAuthToken.find("byServiceUserIdAndWebSite", String.valueOf(CODE_MERCHANT_ID), WebSite.TAOBAO).first();
-        }else {
-            token =  OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+        } else {
+            token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
         }
         if (token == null || token.isExpired()) {
             throw new UnexpectedException("!!!!!!!!!!!!!!!!!! 淘宝 token 过期 请联系技术人员(" + resaler.id + ")");
@@ -387,7 +388,7 @@ public class TaobaoCouponUtil {
         return sign != null && sign.equals(sign(taobaoCouponServiceKey, params));
     }
 
-    public static String sign(String taobaoCouponServiceKey , Map<String, String> params) {
+    public static String sign(String taobaoCouponServiceKey, Map<String, String> params) {
         StringBuilder paramString = new StringBuilder(taobaoCouponServiceKey);
         TreeMap<String, String> orderedParams = new TreeMap<>(params);
         for (String key : orderedParams.keySet()) {
