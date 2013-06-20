@@ -94,6 +94,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
 
         assertEquals(1, OuterOrder.count());
         resaler.loginName = Resaler.JD_LOGIN_NAME;
+        resaler.partner = "JD";
         resaler.save();
 
         resalerProduct.partnerProductId = "10494286";
@@ -115,6 +116,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     @Test
     public void testImpOrder_JD_Success7AndUnbindGoods5() {
         resaler.loginName = Resaler.JD_LOGIN_NAME;
+        resaler.partner = "JD";
         resaler.save();
 
         resalerProduct.partnerProductId = "10528592";

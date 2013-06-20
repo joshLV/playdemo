@@ -219,7 +219,7 @@ public class OperateRbac extends Controller {
         checkRight(currentMenuName);
 
         long endLoadCurrentMenus = System.currentTimeMillis();
-        Logger.info("OperateRbac.loadCurrentMenu spent %d ms", (endLoadCurrentMenus - beginLoadCurrentMenus));
+        Logger.debug("OperateRbac.loadCurrentMenu spent %d ms", (endLoadCurrentMenus - beginLoadCurrentMenus));
     }
 
     public static void injectDefaultMenus() {

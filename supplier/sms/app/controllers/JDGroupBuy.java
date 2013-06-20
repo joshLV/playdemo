@@ -1,5 +1,12 @@
 package controllers;
 
+import facade.order.OuterOrderFacade;
+import facade.order.translate.JDOrderMessage;
+import facade.order.translate.JDOrderMessageTranslate;
+import facade.order.vo.OuterECouponVO;
+import facade.order.vo.OuterOrderItemVO;
+import facade.order.vo.OuterOrderResult;
+import facade.order.vo.OuterOrderVO;
 import models.accounts.PaymentSource;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JingdongMessage;
@@ -76,6 +83,74 @@ public class JDGroupBuy extends Controller {
             finish(201, "parse send_order request xml error");
         }
 
+        Resaler resaler = Resaler.findApprovedByLoginName(Resaler.JD_LOGIN_NAME);
+        Integer count = Integer.parseInt(message.selectTextTrim("./Count"));
+        BigDecimal teamPrice = new BigDecimal(message.selectTextTrim("./TeamPrice")).divide(new BigDecimal("100"));
+        BigDecimal origin = new BigDecimal(message.selectTextTrim("./Origin")).divide(new BigDecimal("100"));
+        String mobile = message.selectTextTrim("./Mobile");
+        String jdOrderId = message.selectTextTrim("./JdOrderId").trim();
+        Long venderTeamId = Long.parseLong(message.selectTextTrim("./VenderTeamId").trim());
+
+        OuterOrderVO outerOrderVO = OuterOrderVO.build(resaler)
+                .outerOrderId(jdOrderId)
+                .totalAmount(origin)   //总价
+                .mobile(mobile);
+
+        OuterOrderItemVO outerOrderItemVO = OuterOrderItemVO.build()
+                .venderTeamId(venderTeamId)
+                .count(count).price(teamPrice);
+
+        outerOrderVO.addItem(outerOrderItemVO);
+
+        List<Node> jdCoupons = message.selectNodes("./Coupons/Coupon");
+        // 保存京东的券号密码
+        for (int i = 0; i < jdCoupons.size(); i++) {
+            Node jdCoupon = jdCoupons.get(i);
+            OuterECouponVO outerECouponVO = new OuterECouponVO();
+            outerECouponVO.eCouponSN = XPath.selectText("./CouponId", jdCoupon).trim();
+            outerECouponVO.eCouponPassword = XPath.selectText("./CouponPwd", jdCoupon).trim();
+            outerOrderItemVO.addECouponVO(outerECouponVO);
+        }
+
+        OuterOrderResult outerOrderResult = OuterOrderFacade.createOuterOrder(outerOrderVO);
+
+        //记录并翻译成京东的消息.
+        recordResultMessage(outerOrderResult.getOuterOrderMessage(new JDOrderMessageTranslate()));
+
+        if (outerOrderResult.outerOrder.status == OuterOrderStatus.ORDER_SYNCED) {
+            String jdTeamId = message.selectTextTrim("./JdTeamId");
+            Template template = TemplateLoader.load("jingdong/groupbuy/response/sendOrder.xml");
+
+            Goods goods = ResalerProduct.getGoods(resaler, venderTeamId, OuterOrderPartner.JD);
+            Map<String, Object> params = new HashMap<>();
+            params.put("jdTeamId", jdTeamId);
+            params.put("venderTeamId", venderTeamId);
+            params.put("ybqOrder", outerOrderResult.outerOrder.ybqOrder);
+            params.put("coupons", outerOrderResult.eCoupons);
+            params.put("goods", goods);
+            renderArgs.put("data", template.render(params));
+            Logger.info("jd send order success: %s", outerOrderResult.outerOrder.ybqOrder.getId());
+            recordResultMessage(200, "success");  // done.
+        } else {
+            recordResultMessage(212, "the order has been processed");
+        }
+
+        renderTemplate("jingdong/groupbuy/response/main.xml");
+    }
+
+
+    /**
+     * 订单
+     */
+    public static void sendOrderOld() {
+        final String restXml = IO.readContentAsString(request.body);
+        Logger.info("jingdong sendOrder request:\n%s", restXml);
+        final JingdongMessage message = JDGroupBuyUtil.parseMessage(restXml);
+        //解析请求
+        if (!message.isOk()) {
+            finish(201, "parse send_order request xml error");
+        }
+
         // 事务重试.
         TransactionRetry.run(new TransactionCallback<Boolean>() {
             @Override
@@ -97,18 +172,18 @@ public class JDGroupBuy extends Controller {
 
         //检查购买数量
         if (count <= 0) {
-            recordResultMessage(202, "the buy number must be a positive one");
+            recordResultMessage(202, "the buy number must be a positive one"); // done
             return Boolean.FALSE;
         }
         //检查订单总额是否匹配
         if (teamPrice.multiply(new BigDecimal(count)).compareTo(origin) != 0) {
-            recordResultMessage(203, "the total amount does not match the team price and count");
+            recordResultMessage(203, "the total amount does not match the team price and count"); // done
             return Boolean.FALSE;
         }
 
         //检查手机号
         if (!checkPhone(mobile)) {
-            recordResultMessage(204, "invalid mobile: " + mobile);
+            recordResultMessage(204, "invalid mobile: " + mobile); //done
             return Boolean.FALSE;
         }
 
@@ -190,7 +265,7 @@ public class JDGroupBuy extends Controller {
             params.put("goods", goods);
             renderArgs.put("data", template.render(params));
             Logger.info("jd send order success: %s", outerOrder.ybqOrder.getId());
-            recordResultMessage(200, "success");
+            recordResultMessage(200, "success");  // done.
         } else {
             recordResultMessage(212, "the order has been processed");
         }
@@ -338,18 +413,18 @@ public class JDGroupBuy extends Controller {
         ybqOrder.save();
         Goods goods = ResalerProduct.getGoods(resaler, venderTeamId, OuterOrderPartner.JD);
         if (goods == null) {
-            finish(208, "can not find goods: " + venderTeamId);
+            finish(208, "can not find goods: " + venderTeamId);  //done
             return null;
         }
         if (goods.originalPrice.compareTo(teamPrice) > 0) {
-            finish(209, "invalid product price: " + teamPrice);
+            finish(209, "invalid product price: " + teamPrice);  //done
         }
 
         //检查导入券订单库存
         if (goods.hasEnoughInventory(count)) {
             JPA.em().getTransaction().rollback();
             Logger.info("inventory not enough,goods.id=%s", goods.id.toString());
-            finish(210, "inventory not enough");
+            finish(210, "inventory not enough");  // done
         }
 
         OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, count, mobile, teamPrice, teamPrice);
@@ -380,6 +455,11 @@ public class JDGroupBuy extends Controller {
     private static void recordResultMessage(int resultCode, String resultMessage) {
         renderArgs.put("resultCode", resultCode);
         renderArgs.put("resultMessage", resultMessage);
+    }
+
+    private static void recordResultMessage(JDOrderMessage jdOrderMessage) {
+        renderArgs.put("resultCode", jdOrderMessage.code);
+        renderArgs.put("resultMessage", jdOrderMessage.message);
     }
 
     private static boolean checkPhone(String phone) {

@@ -57,6 +57,7 @@ public class KangouOrderTest extends FunctionalTest {
             @Override
             public void build(Resaler target) {
                 target.loginName = Resaler.JD_LOGIN_NAME;
+                target.partner = "JD";
             }
         });
         //创建可欠款账户

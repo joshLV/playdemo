@@ -80,6 +80,7 @@ public class ResalerProductStatusReportsTest extends FunctionalTest {
             @Override
             public void build(Resaler target) {
                 target.loginName = Resaler.JD_LOGIN_NAME;
+                target.partner = "JD";
             }
         });
         ResalerProduct jingdongProduct = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {

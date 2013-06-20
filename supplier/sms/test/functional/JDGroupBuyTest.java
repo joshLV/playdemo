@@ -41,6 +41,7 @@ public class JDGroupBuyTest extends FunctionalTest {
             @Override
             public void build(Resaler target) {
                 target.loginName = Resaler.JD_LOGIN_NAME;
+                target.partner = "JD";
             }
         });
         product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {

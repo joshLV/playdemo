@@ -40,7 +40,7 @@ public class NavigationHandler {
                 new CacheCallBack<List<String>>() {
                     @Override
                     public List<String> loadData() {
-                        Logger.info("initStackMenuNamesThreadLocal(%s, %s, %d)", applicationName, activeNavigationName, user.id);
+                        Logger.debug("initStackMenuNamesThreadLocal(%s, %s, %d)", applicationName, activeNavigationName, user.id);
                         List<OperateNavigation> navigateionStackList = OperateNavigation
                                 .getNavigationParentStack(applicationName, activeNavigationName);
                         if (navigateionStackList == null) {
@@ -78,7 +78,7 @@ public class NavigationHandler {
     }
 
     private static List<ContextedMenu> getSecondLevelMenulsThreadLocalWithoutCache(String applicationName, String activeNavigationName, OperateUser user) {
-        Logger.info("initSecondLevelMenusThreadLocal(%s, %s, %d)", applicationName, activeNavigationName, user.id);
+        Logger.debug("initSecondLevelMenusThreadLocal(%s, %s, %d)", applicationName, activeNavigationName, user.id);
         List<OperateNavigation> secondLevelNavigations = OperateNavigation
                 .getSecondLevelNavigations(applicationName, activeNavigationName);
         if (secondLevelNavigations == null) {
@@ -108,7 +108,7 @@ public class NavigationHandler {
                 new CacheCallBack<List<ContextedMenu>>() {
                     @Override
                     public List<ContextedMenu> loadData() {
-                        Logger.info("initTopMenusThreadLocal(%d)", user.id);
+                        Logger.debug("initTopMenusThreadLocal(%d)", user.id);
                         List<OperateNavigation> topNavigations = OperateNavigation.getTopNavigations();
                         List<ContextedMenu> _topMenus = new ArrayList<>();
                         for (OperateNavigation navigation : topNavigations) {
