@@ -16,7 +16,7 @@
         <label class="control-label"><span style="color: red; ">*</span> 商户</label>
 
         <div class="controls">
-        #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:supplierList/}
+        #{vx.selectInputField name:"supplierName", id:"supplierId", list:supplierList/}
             <span class="error" id="err-supplierUser_supplier_id">#{error 'supplierId'/}</span>
         </div>
     </div>

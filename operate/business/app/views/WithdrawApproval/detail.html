@@ -5,107 +5,165 @@
 <style type="text/css">
     .control-label {
         font-weight: bold;
+        float: left;
     }
 
     .control-value {
         line-height: 28px;
         margin-left: 180px;
+        /*display: inline;*/
     }
 
-    .form-horizontal .control-group {
+    .control-group {
         margin-bottom: 4px;
     }
+
 </style>
 #{/set}
 
-<div class="row-fluid">
-    <legend>提现申请明细</legend>
-    <div class="form-horizontal">
-        <div class="control-group">
-            <label class="control-label">申请时间</label>
-            <label class="controls control-value">${bill?.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</label>
-        </div>
-        <div class="control-group">
-            <label class="control-label">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</label>
-            <label class="controls control-value">&{'account.type.' + bill.account.accountType}#{if org.apache.commons.lang.StringUtils.isNotBlank(bill.accountName)}
-                (${bill.accountName})#{/if}
-            #{if (bill?.account?.accountType ==  models.accounts.AccountType.SUPPLIER || bill?.account?.accountType ==  models.accounts.AccountType.SHOP)&& contract?.id!=null}
-                <a href="/supplier_contract/${contract?.id}/view" target="_blank">查看合同</a>
+<div class="span6">
+    <div class="box">
+        <div class="box-title"><h3>提现申请明细</h3></div>
+        <div class="box-content">
+            <div class="control-group">
+                <label class="control-label">申请时间</label>
+                <label class="controls control-value">${bill?.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</label>
+                <label class="controls control-value">&{'account.type.' + bill.account.accountType}#{if org.apache.commons.lang.StringUtils.isNotBlank(bill.accountName)}
+                    (${bill.accountName})#{/if}
+                #{if (bill?.account?.accountType ==  models.accounts.AccountType.SUPPLIER || bill?.account?.accountType ==  models.accounts.AccountType.SHOP)&& contract?.id!=null}
+                    <a href="/supplier_contract/${contract?.id}/view" target="_blank">查看合同</a>
+                #{/if}
+                </label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">申 请 者</label>
+                <label class="controls control-value">${bill?.applier}
+                    &nbsp;&nbsp; (&nbsp;uid:${uid}&nbsp;) &nbsp;&nbsp;
+                #{if  bill.account.accountType==models.accounts.AccountType.CONSUMER }
+                    <a href="/coupons?condition.searchKey=UID&condition.searchItems=${uid}&condition.status=REFUND"
+                       target="_blank">查看相关券</a>
+                    &nbsp;<a
+                        href="/reports/consumer?condition.accountName=${bill.accountName}&condition.tradeType=REFUND&condition.accountUid=${uid}"
+                        target="_blank">账户资金明细</a>
+                #{/if}
+                #{if  bill.account.accountType==models.accounts.AccountType.SUPPLIER }
+                    <a href="/reports/supplier?supplierName=${supplierName}&supplierId=${supplierId}&condition.accountUid=${uid}&condition.tradeType=PURCHASE_COSTING"
+                       target="_blank">账户资金明细</a>
+                #{/if}
+                #{if bill.account.accountType==models.accounts.AccountType.SHOP}
+                    <a href="/reports/supplier?supplierName=${supplierName}&supplierId=${supplierId}&shopId=${uid}"
+                       target="_blank">账户资金明细</a>
+                #{/if}
+                </label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">申请金额</label>
+                <label class="controls control-value">${bill?.amount.formatCurrency('CNY')}</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">已通过提现金额 </label>
+                <label class="controls control-value">${sum.formatCurrency('CNY')}</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">所在城市</label>
+                <label class="controls control-value">${bill?.bankCity}</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">开户银行</label>
+                <label class="controls control-value">${bill?.bankName}</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">分行名称</label>
+                <label class="controls control-value">${bill?.subBankName}</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">开户姓名</label>
+                <label class="controls control-value">${bill?.userName}</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">银行卡号</label>
+                <label class="controls control-value">${bill?.cardNumber}</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">申请状态</label>
+                <label class="controls control-value">&{'withdraw.' + bill.status}</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">手续费</label>
+                <label class="controls control-value">${bill?.fee?.formatCurrency('CNY')}&nbsp;</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">备注</label>
+                <label class="controls control-value">${bill?.comment}</label>
+            </div>
+            <div class="form-actions">
+            #{if bill.status == models.accounts.WithdrawBillStatus.APPLIED && hasApproveWithdrawPermission}
+                <a data-toggle="modal" href="#agree-modal" class="btn btn-primary">通过</a>
+                <a data-toggle="modal" href="#reject-modal" class="btn btn-danger">拒绝</a>
             #{/if}
-            </label>
-        </div>
-        <div class="control-group">
-            <label class="control-label">申 请 者</label>
-            <label class="controls control-value">${bill?.applier}
-                &nbsp;&nbsp; (&nbsp;uid:${uid}&nbsp;) &nbsp;&nbsp;
-            #{if  bill.account.accountType==models.accounts.AccountType.CONSUMER }
-                <a href="/coupons?condition.searchKey=UID&condition.searchItems=${uid}&condition.status=REFUND"
-                   target="_blank">查看相关券</a>
-                &nbsp;<a
-                    href="/reports/consumer?condition.accountName=${bill.accountName}&condition.tradeType=REFUND&condition.accountUid=${uid}"
-                    target="_blank">账户资金明细</a>
-            #{/if}
-            #{if  bill.account.accountType==models.accounts.AccountType.SUPPLIER }
-                <a href="/reports/supplier?supplierName=${supplierName}&supplierId=${supplierId}&condition.accountUid=${uid}&condition.tradeType=PURCHASE_COSTING"
-                   target="_blank">账户资金明细</a>
-            #{/if}
-            #{if bill.account.accountType==models.accounts.AccountType.SHOP}
-                <a href="/reports/supplier?supplierName=${supplierName}&supplierId=${supplierId}&shopId=${uid}" target="_blank">账户资金明细</a>
-            #{/if}
-            </label>
-        </div>
-        <div class="control-group">
-            <label class="control-label">申请金额</label>
-            <label class="controls control-value">${bill?.amount.formatCurrency('CNY')}</label>
-        </div>
-        <div class="control-group">
-            <label class="control-label">已通过提现金额 </label>
-            <label class="controls control-value">${sum.formatCurrency('CNY')}</label>
-        </div>
-        <div class="control-group">
-            <label class="control-label">所在城市</label>
-            <label class="controls control-value">${bill?.bankCity}</label>
-        </div>
-        <div class="control-group">
-            <label class="control-label">开户银行</label>
-            <label class="controls control-value">${bill?.bankName}</label>
-        </div>
-        <div class="control-group">
-            <label class="control-label">分行名称</label>
-            <label class="controls control-value">${bill?.subBankName}</label>
-        </div>
-        <div class="control-group">
-            <label class="control-label">开户姓名</label>
-            <label class="controls control-value">${bill?.userName}</label>
-        </div>
-        <div class="control-group">
-            <label class="control-label">银行卡号</label>
-            <label class="controls control-value">${bill?.cardNumber}</label>
-        </div>
-        <div class="control-group">
-            <label class="control-label">申请状态</label>
-            <label class="controls control-value">&{'withdraw.' + bill.status}</label>
-        </div>
-        <div class="control-group">
-            <label class="control-label">手续费</label>
-            <label class="controls control-value">${bill?.fee?.formatCurrency('CNY')}</label>
-        </div>
-        <div class="control-group">
-            <label class="control-label">备注</label>
-            <label class="controls control-value">${bill?.comment}</label>
-        </div>
-        <div class="form-actions">
-        #{if bill.status == models.accounts.WithdrawBillStatus.APPLIED && hasApproveWithdrawPermission}
-            <a data-toggle="modal" href="#agree-modal" class="btn btn-primary">通过</a>
-            <a data-toggle="modal" href="#reject-modal" class="btn btn-danger">拒绝</a>
-        #{/if}
-        #{else}
-            <a href="/withdraw" class="btn btn-primary">返回</a>
-        #{/else}
+            #{else}
+                <a href="/withdraw" class="btn btn-primary">返回</a>
+            #{/else}
+            </div>
         </div>
     </div>
-
 </div>
+#{if supplier}
+<div class="span6">
+    <div class="box">
+    *{<legend>提现申请明细</legend>}*
+        <div class="box-title"><h3>商户信息</h3></div>
+        <div class="box-content">
+            <div class="control-group">
+                <label class="control-label">商户名</label>
+                <label class="controls control-value">${supplier.fullName}
+                    #{if (bill?.account?.accountType ==  models.accounts.AccountType.SUPPLIER || bill?.account?.accountType ==  models.accounts.AccountType.SHOP)&& contract?.id!=null}
+                        <a href="/supplier_contract/${contract?.id}/view" target="_blank">查看合同</a>
+                    #{/if}
+                </label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">商户简称</label>
+                <label class="controls control-value">${supplier.otherName}</label>
+            </div>
+            #{if  bill?.account?.accountType ==  models.accounts.AccountType.SHOP}
+                <div class="control-group">
+                    <label class="control-label">门店</label>
+                    <label class="controls control-value">${bill?.accountName}</label>
+                </div>
+            #{/if}
+            <div class="control-group">
+                <label class="control-label">联系人</label>
+                <label class="controls control-value">${supplier.userName}&nbsp;</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">手机</label>
+                <label class="controls control-value">${supplier?.mobile}&nbsp;</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">商户业务</label>
+                <label class="controls control-value">
+                ${"1".equals(supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON)) ?'销售电子券':''}
+                ${"1".equals(supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL)) ?'实物发货（原则上30天账期）':''}
+                ${"1".equals(supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER)) ?'KTV在线预订':''}
+                    &nbsp;</label>
+            </div>
+            <div class="control-group">
+                <label class="control-label">商户备注</label>
+                <label class="controls control-value">
+                    &nbsp;${supplier?.remark}</label>
+            </div>
+            <div class="form-actions">
+                <a data-toggle="modal" href="#supplier-remark-modal" class="btn btn-primary">修改商户备注</a>
+            </div>
+        </div>
+    </div>
+</div>
+#{/if}
+*{</div>}*
 <div id="agree-modal" class="modal hide">
     <div class="modal-header">
         <button class="close" data-dismiss="modal">×</button>
@@ -167,6 +225,38 @@
     </div>
 #{/form}
 </div>
+
+<div id="supplier-remark-modal" class="modal hide">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>填写商家备注信息</h3>
+    </div>
+
+#{form @WithdrawApproval.approve(), class:'form-horizontal',id:'supplier_remark_form',onsubmit:'return check0()'}
+    <div class="modal-body">
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="reject_comment">商户备注</label>
+
+                <div class="controls">
+                    <textarea rows="3" class="input-xlarge" id="supplier_comment" name="comment"
+                            ></textarea>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">关闭</a>
+        <input type="hidden" name="supplierId" value="${supplier.id}">
+        <input type="hidden" name="shopId" value="${shopId}">
+        <input type="hidden" name="id" value="${bill.id}">
+        <input type="hidden" name="action" value="edit_supplier_remark">
+        <button id="remark_edit" class="btn btn-danger" type="submit">编辑</button>
+        </button>
+    </div>
+#{/form}
+</div>
+
 <script>
     function check() {
 //        var strText = document.getElementById('reject_comment').value;
@@ -182,6 +272,12 @@
             $('#fail').attr('class', "btn disabled");
             return true;
         }
+    }
+    function check0() {
+        $('#remark_edit').attr('disabled', "true");
+        $("#remark_edit").html("正在提交");
+        $('#remark_edit').attr('class', "btn disabled");
+        return true;
     }
 
     function disableButton() {

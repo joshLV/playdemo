@@ -209,6 +209,8 @@ public class OperateCoupons extends Controller {
 
         if (condition == null) {
             condition = new CouponsCondition();
+            condition.hidPaidAtBegin = DateHelper.beforeDays(1);
+            condition.hidPaidAtEnd = new Date();
         }
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "券列表_" + System.currentTimeMillis() + ".xls");
