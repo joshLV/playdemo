@@ -15,6 +15,7 @@ import util.ws.WebServiceRequest;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -77,6 +78,64 @@ public class WubaUtil {
             }
         }
         return ExtensionResult.code(1).message("58同城接口调用失败");
+    }
+
+    public static JsonArray consumedBill() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("jiesuantime", "2013-05-03");
+        WubaResponse response = WubaUtil.sendRequest(params, "emc.groupbuy.queryjiesuan", false, false,
+                false);
+        JsonObject data3 = new JsonObject();
+        JsonObject data4 = new JsonObject();
+        if (response.isOk()) {
+            data3 = response.data.getAsJsonObject();
+            Logger.info("Consuemd---data:", data3);
+            int length = response.data.getAsJsonArray().size();
+            for (int i = 0; i < length; i++) {
+                JsonObject data1 = response.data.getAsJsonArray().get(i).getAsJsonObject();
+                Logger.info("Consuemd---data1:", data1);
+                String accountedAtStr = data1.get("usetime").getAsString();
+                String outerOrderNo = data1.get("orderid58").getAsString();
+                BigDecimal businessAmount = data1.get("groupprice").getAsBigDecimal();
+                BigDecimal commissionFee = data1.get("commission").getAsBigDecimal();
+                BigDecimal settleAmount = data1.get("jiesuanmoney").getAsBigDecimal();
+                Logger.info("Consuemd---accountedAtStr:", accountedAtStr, ",outerOrderNo:", outerOrderNo, "," +
+                        "businessAmount:",
+                        businessAmount, ",commissionFee:", commissionFee, ",settleAmount:", settleAmount);
+            }
+
+        }
+        return response.data.getAsJsonArray();
+    }
+
+    public static JsonArray refundBill() {
+        //结算退款追回数据查询
+        JsonObject data3 = new JsonObject();
+        JsonObject data4 = new JsonObject();
+        Map<String, Object> params = new HashMap<>();
+        params = new HashMap<>();
+        params.put("refundtime", "2013-05-03");
+        WubaResponse response = WubaUtil.sendRequest(params, "emc.groupbuy.queryrefundjiesuan", false, false, false);
+        if (response.isOk()) {
+            data4 = response.data.getAsJsonObject();
+            Logger.info("Refund---data:", data4);
+            JsonArray jsonArray = response.data.getAsJsonArray();
+            int length = jsonArray.size();
+            for (int i = 0; i < length; i++) {
+                JsonObject data1 = jsonArray.get(i).getAsJsonObject();
+                Logger.info("Refund---data1:", data1);
+                String accountedAtStr = data1.get("refundtime").getAsString();
+                String outerOrderNo = data1.get("orderid58").getAsString();
+                BigDecimal businessAmount = data1.get("groupprice").getAsBigDecimal();
+                BigDecimal commissionFee = data1.get("commission").getAsBigDecimal();
+                BigDecimal settleAmount = data1.get("jiesuanmoney").getAsBigDecimal();
+                Logger.info("Refund---accountedAtStr:", accountedAtStr, ",outerOrderNo:", outerOrderNo, "," +
+                        "businessAmount:",
+                        businessAmount, ",commissionFee:", commissionFee, ",settleAmount:", settleAmount);
+            }
+
+        }
+        return response.data.getAsJsonArray();
     }
 
     public static JsonArray allProductTypes() {

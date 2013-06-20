@@ -12,7 +12,6 @@ GET     /users/{id}/edit                        OperateUsers.edit
 POST    /users/{id}                             OperateUsers.update
 DELETE  /users/{id}                             OperateUsers.delete
 
-GET     /wubaThirdBillSequences                 OperateUsers.wubaThirdBillSequences
 
 GET     /profile                                OperateUsersProfiles.index
 POST    /profile                                OperateUsersProfiles.update

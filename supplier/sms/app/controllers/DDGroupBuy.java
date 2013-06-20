@@ -2,6 +2,7 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import models.accounts.PaymentSource;
 import models.dangdang.groupbuy.DDErrorCode;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
@@ -16,6 +17,7 @@ import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
+import models.wuba.WubaUtil;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import play.Logger;
@@ -261,6 +263,12 @@ public class DDGroupBuy extends Controller {
     private static void renderSuccessInfo(ECoupon coupon, String orderId, String desc) {
         Logger.info("process dangdang's request error: coupon.id: %d, desc: %s, 但返回成功消息", coupon.id, desc);
         render("dangdang/groupbuy/response/sendMessage.xml", desc, coupon, orderId);
+    }
+
+    public static void wubaThirdBillSequences() {
+        JsonArray data3 = WubaUtil.consumedBill();
+        JsonArray data4 = WubaUtil.refundBill();
+        render(data3, data4);
     }
 }
 
