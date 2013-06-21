@@ -35,6 +35,15 @@ public class HuanleguUtil {
 
     public static final String SUPPLIER_DOMAIN_NAME = "huanlegu";
 
+    public static HuanleguMessage getSightInfo(String sightId, String sightName) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("sightId", sightId);
+        params.put("sightName", sightName);
+
+        return sendRequest("getSightInfo", params);
+    }
+
+
     public static HuanleguMessage resend(ECoupon coupon) {
         Map<String, Object> params = new HashMap<>();
         params.put("pageIndex", 1);

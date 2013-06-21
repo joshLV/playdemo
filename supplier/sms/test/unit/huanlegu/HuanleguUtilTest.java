@@ -4,6 +4,7 @@ import models.huanlegu.HuanleguMessage;
 import models.huanlegu.HuanleguUtil;
 import org.apache.commons.collections.ListUtils;
 import org.junit.Test;
+import play.Play;
 import play.mvc.Before;
 import play.templates.Template;
 import play.templates.TemplateLoader;
@@ -69,5 +70,11 @@ public class HuanleguUtilTest extends UnitTest {
         assertEquals("3", message.selectTextTrim("./PageSize"));
         assertEquals(2, message.selectNodes("./PageSize").size());
         assertEquals("景点名", message.selectTextTrim("./Sight/SightName"));
+    }
+
+    @Test
+    public void testReal() {
+        Play.id="abc";
+        HuanleguUtil.getSightInfo("SH19910069", "上海欢乐谷");
     }
 }
