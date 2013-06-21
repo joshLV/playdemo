@@ -4,8 +4,8 @@ import com.taobao.api.ApiException;
 import com.taobao.api.Constants;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
-import com.taobao.api.request.LogisticsOnlineConfirmRequest;
-import com.taobao.api.response.LogisticsOnlineConfirmResponse;
+import com.taobao.api.request.LogisticsOfflineSendRequest;
+import com.taobao.api.response.LogisticsOfflineSendResponse;
 import models.accounts.AccountType;
 import models.ktv.KtvTaobaoUtil;
 import models.oauth.OAuthToken;
@@ -166,11 +166,12 @@ public class UploadOrderShippingInfos extends Controller {
         //找到淘宝的token
         OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
         for (LogisticImportData logisticImportData : successTaobaoLogistics) {
-            LogisticsOnlineConfirmRequest request = new LogisticsOnlineConfirmRequest();
+            LogisticsOfflineSendRequest request = new LogisticsOfflineSendRequest();
             request.setTid(Long.parseLong(logisticImportData.getOuterOrderNo()));
             request.setOutSid(logisticImportData.getExpressNumber());
+            request.setCompanyCode(logisticImportData.getExpressCompany().trim());
             try {
-                LogisticsOnlineConfirmResponse response = taobaoClient.execute(request, token.accessToken);
+                LogisticsOfflineSendResponse response = taobaoClient.execute(request, token.accessToken);
                 if (response.isSuccess()) {
                     successSendOnTaobao.add(logisticImportData.getOuterOrderNo());
                 } else {

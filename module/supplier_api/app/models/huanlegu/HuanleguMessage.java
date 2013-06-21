@@ -1,4 +1,4 @@
-package models.jingdong.groupbuy;
+package models.huanlegu;
 
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Node;
@@ -8,25 +8,24 @@ import java.util.List;
 
 /**
  * @author likang
- *         Date: 13-2-2
+ *         Date: 13-6-19
  */
-public class JingdongMessage {
+public class HuanleguMessage {
     public String version;
-    public Long venderId;
-    public Boolean zip;
-    public Boolean encrypt;
-
-    public String resultCode;
-    public String resultMessage;
+    public String timeStamp;
+    public String statusCode;
+    public String errorMsg;
+    public String sequenceId;
+    public String sign;
 
     public Node message;
 
     /**
-     * 判断京东响应是否OK.
+     * 判断欢乐谷响应是否OK.
      */
     public boolean isOk() {
-        if (resultCode != null){
-            return resultCode.equals("200");
+        if (statusCode != null){
+            return statusCode.equals("200");
         }
         return message != null;
     }

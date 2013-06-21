@@ -265,10 +265,19 @@ public class DDGroupBuy extends Controller {
         render("dangdang/groupbuy/response/sendMessage.xml", desc, coupon, orderId);
     }
 
-    public static void wubaThirdBillSequences() {
-        JsonArray data3 = WubaUtil.consumedBill();
-        JsonArray data4 = WubaUtil.refundBill();
-        render(data3, data4);
+    public static void wubaThirdBillSequences(String date) {
+        JsonArray data3 = WubaUtil.consumedBill(date);
+//        for (JsonElement element : data3) {
+//                JsonObject jsonObject1 = element.getAsJsonObject();
+//                String accountedAtStr = jsonObject1.get("usetime").getAsString();
+//                String outerOrderNo = jsonObject1.get("orderid58").getAsString();
+//                BigDecimal businessAmount = jsonObject1.get("groupprice").getAsBigDecimal();
+//                BigDecimal commissionFee = jsonObject1.get("commission").getAsBigDecimal();
+//                BigDecimal settleAmount = jsonObject1.get("jiesuanmoney").getAsBigDecimal();
+//            }
+
+        JsonArray data4 = WubaUtil.refundBill(date);
+        render(data3.toString(), data4.toString());
     }
 }
 

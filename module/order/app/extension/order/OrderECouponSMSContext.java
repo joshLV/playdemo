@@ -1,20 +1,19 @@
 package extension.order;
 
+import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
 import util.extension.InvocationContext;
+
+import java.util.List;
 
 /**
  * 订单券短信内容上下文.
  */
 public class OrderECouponSMSContext implements InvocationContext {
 
-    public Order order;
-
-    public Goods goods;
-
-    public OrderItems orderItems;
+    public List<ECoupon> couponList;
 
     /**
      * 券内容
@@ -35,16 +34,30 @@ public class OrderECouponSMSContext implements InvocationContext {
 
     private String smsContent;
 
-    public OrderECouponSMSContext(Order order, Goods goods, OrderItems orderItems, String couponInfo, String notes,
-                                  String expiredDate) {
-        this.order = order;
-        this.goods = goods;
-        this.orderItems = orderItems;
+    public OrderECouponSMSContext(List<ECoupon> couponList, String couponInfo, String notes, String expiredDate) {
+        this.couponList = couponList;
+
         this.couponInfo = couponInfo;
         this.notes = notes;
         this.expiredDate = expiredDate;
         this.smsContent = null;
         this.needSendSMS = true;
+    }
+
+    public Order getOrder() {
+        return getFirstCoupon().order;
+    }
+
+    public OrderItems getOrderItem() {
+        return getFirstCoupon().orderItems;
+    }
+
+    public Goods getGoods() {
+        return getFirstCoupon().goods;
+    }
+
+    public ECoupon getFirstCoupon() {
+        return couponList.get(0);
     }
 
     public String getSmsContent() {
