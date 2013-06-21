@@ -115,7 +115,7 @@ public class Prepayment extends Model {
      * 只有从未被结算过的预付款记录才允许修改和删除
      */
     public boolean canUpdate() {
-        return AccountSequence.countByPrepayment(id) <= 0l;
+        return AccountSequence.countByPrepayment(id) <= 0l && this.settlementStatus==SettlementStatus.UNCLEARED;
     }
 
     public static Prepayment getLastUnclearedPrepayments(long uid) {
@@ -206,4 +206,20 @@ public class Prepayment extends Model {
                 supplier.id).fetch();
     }
 
+    public static void toHistoryData(Long id,String loginName) {
+        Prepayment prepayment = Prepayment.findById(id);
+        PrepaymentHistory history = new PrepaymentHistory();
+        history.amount = prepayment.amount;
+        history.createdAt = new Date();
+        history.createdBy=loginName;
+        history.prepaymentId = id;
+        history.effectiveAt = prepayment.effectiveAt;
+        history.expireAt = prepayment.expireAt;
+        history.remark = prepayment.remark;
+        history.supplier = prepayment.supplier;
+        history.withdrawAmount = prepayment.withdrawAmount;
+        history.settlementStatus = prepayment.settlementStatus;
+        history.save();
+
+    }
 }

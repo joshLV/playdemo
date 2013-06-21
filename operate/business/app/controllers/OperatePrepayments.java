@@ -4,6 +4,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.SettlementStatus;
 import models.order.Prepayment;
+import models.order.PrepaymentHistory;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -78,6 +79,8 @@ public class OperatePrepayments extends Controller {
 
         prepayment.create();
 
+        prepayment.refresh();
+        Prepayment.toHistoryData(prepayment.id, loginName);
         index(null);
     }
 
@@ -99,7 +102,13 @@ public class OperatePrepayments extends Controller {
 
         Prepayment.update(id, prepayment, loginName);
 
+        Prepayment.toHistoryData(id, loginName);
         index(null);
+    }
+
+    public static void history(Long id) {
+        List<PrepaymentHistory> historyList = PrepaymentHistory.find("prepaymentId=? order by id desc", id).fetch();
+        render("OperatePrepayments/history.html", historyList);
     }
 
     public static void delete(Long id) {

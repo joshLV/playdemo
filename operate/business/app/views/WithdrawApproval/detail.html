@@ -144,6 +144,20 @@
                 <label class="controls control-value">${supplier?.mobile}&nbsp;${supplier?.phone}</label>
             </div>
             <div class="control-group">
+                <label class="control-label">业务员</label>
+                <label class="controls control-value">
+                %{ operatorUser=null;
+                    if(supplier.salesId!=null){
+                    operatorUser=models.operator.OperateUser.findById(supplier?.salesId); }
+                    }%
+                    #{if operatorUser?.userName !=null && operatorUser?.userName!=''}
+                    ${operatorUser?.userName}
+                    #{/if}
+                    #{else}
+                    ${operatorUser?.loginName}
+                    #{/else}&nbsp;</label>
+            </div>
+            <div class="control-group">
                 <label class="control-label">商户业务</label>
                 <label class="controls control-value">
                 ${"1".equals(supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON)) ?'销售电子券':''}<br>

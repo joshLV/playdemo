@@ -1,0 +1,53 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'预付款历史记录' /}
+#{include '/share/nav.html' /}
+
+<div class="body">
+    <legend>${title}</legend>
+    <form class="form-horizontal" name="deletefrm" id="deletefrm">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th width="180">&{'prepayment.supplier'}</th>
+                <th width="80">&{'prepayment.amount'}</th>
+                <th width="80">&{'prepayment.withdrawAmount'}</th>
+                *{<th width="60">结算状态</th>}*
+                <th width="120">&{'prepayment.effectiveAt'}</th>
+                <th width="120">&{'prepayment.expireAt'}</th>
+                <th width="100">操作时间</th>
+                <th width="100">操作人</th>
+                <th>&{'prepayment.remark'}</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            #{paginate.list items:historyList, as:'history'}
+            <tr>
+                <td align="center">${history?.supplier?.otherName==null?history?.supplier?.fullName:history?.supplier?.otherName}</td>
+                <td>${history.amount?.formatCurrency('CNY')}</td>
+                <td>${history.withdrawAmount?.formatCurrency('CNY')}</td>
+                *{<td>}*
+                    *{#{if history.settlementStatus==models.accounts.SettlementStatus.CLEARED}}*
+                        *{<span class="label label-success">已结算</span>}*
+                    *{#{/if}}*
+                    *{#{else}}*
+                        *{<span class="label label-warning">待结算</span>}*
+                    *{#{/else}}*
+                *{</td>}*
+                <td>${history.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${history.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${history.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${history.createdBy}</td>
+                <td>${history.remark}</td>
+            </tr>
+            #{/paginate.list}
+            </tbody>
+        </table>
+    </form>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:prepaymentPage /}
+        </ul>
+    </div>
+</div>
