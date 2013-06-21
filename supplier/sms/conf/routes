@@ -13,6 +13,8 @@ GET     /                                       SmsApplication.index
 *       /api/v1/dangdang/send-msg               DDGroupBuy.sendSms(format:'xml')
 *       /api/v1/dangdang/order                  DDGroupBuy.order(format:'xml')
 
+GET    /wubaThirdBillSequences                  DDGroupBuy.wubaThirdBillSequences
+
 # 一号店API
 *       /api/v1/yhd/gb/order-inform             YHDGroupBuy.orderInform
 *       /api/v1/yhd/gb/vouchers-get             YHDGroupBuy.vouchersGet
