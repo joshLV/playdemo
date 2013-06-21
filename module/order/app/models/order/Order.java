@@ -1039,9 +1039,11 @@ public class Order extends Model {
                     }
                     eCoupon.save();
 
-                    eCoupon.order.supplierOrderNumber = message.selectTextTrim("./HvOrderId");
-                    eCoupon.order.save();
-                } else {
+                    if (eCoupon.order.supplierOrderNumber == null) {
+                        eCoupon.order.supplierOrderNumber = message.selectTextTrim("./HvOrderId");
+                        eCoupon.order.save();
+                    }
+                }else {
                     eCoupon.delete();
                     throw new RuntimeException("can not generate a huanlegu goods. request failed: " + goods.getId());
                 }
