@@ -171,7 +171,8 @@ public class WubaUtil {
      * @return 解析为json对象形式的58返回结果
      */
     public static WubaResponse sendRequest(Map<String, Object> appParams, String method,
-                                           boolean requestNeedEncrypt, boolean responseNeedDecrypt, boolean postMethod) {
+                                           boolean requestNeedEncrypt, boolean responseNeedDecrypt,
+                                           boolean postMethod) {
         // 系统级参数设置
         Map<String, Object> params = sysParams();
         params.put("m", method);
@@ -182,21 +183,25 @@ public class WubaUtil {
         if (requestNeedEncrypt) {
             params.put("param", encryptMessage(jsonRequest, SECRET_KEY));
         } else {
-            params.put("param", jsonRequest);
+            if (postMethod) {
+                params.put("param", jsonRequest);
+            } else {
+                for (Map.Entry<String, Object> entry : appParams.entrySet()) {
+                    params.put(entry.getKey(), entry.getValue());
+                }
+            }
         }
 
-        Logger.info("wuba request %s:\n%s", method, jsonRequest);
+        Logger.info("wuba request %s:\n%s", method, new Gson().toJson(params));
+
+        WebServiceRequest paramRequest = WebServiceRequest.url(GATEWAY_URL)
+                .type("58_" + method)
+                .params(params).addKeyword("58");
         String json;
         if (postMethod) {
-            json = WebServiceRequest.url(GATEWAY_URL)
-                    .type("58_" + method)
-                    .params(params).addKeyword("58")
-                    .postString();
+            json = paramRequest.postString();
         } else {
-            json = WebServiceRequest.url(GATEWAY_URL)
-                    .type("58_" + method)
-                    .params(params).addKeyword("58")
-                    .getString();
+            json = paramRequest.getString();
         }
         Logger.info("wuba response:\n%s", json);
 
