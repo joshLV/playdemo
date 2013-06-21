@@ -522,6 +522,9 @@ public class WithdrawApproval extends Controller {
             //发送结算通知短信
             sendWithdrawnSMS(bill, comment, "您的账户中有" + bill.amount + "已结款, 含转帐手续费" + bill.fee + "元,请查收.");
         }
+        if (prepayment != null) {
+            Prepayment.toHistoryData(prepaymentId, OperateRbac.currentUser().userName);
+        }
         index(null);
     }
 
