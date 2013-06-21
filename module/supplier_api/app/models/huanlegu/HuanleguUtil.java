@@ -5,6 +5,7 @@ import models.order.ECoupon;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import play.Logger;
+import play.Play;
 import play.exceptions.UnexpectedException;
 import play.libs.Codec;
 import play.libs.XML;
@@ -27,11 +28,10 @@ import java.util.Map;
 public class HuanleguUtil {
     public static final String CODE_CHARSET = "utf-8";
 
-    public static String SECRET_KEY = "12345678";
-    public static String DISTRIBUTOR_ID = "456";
-    public static String CLIENT_ID = "789";
-
-    public static String GATEWAY_URL = "http://example.com/api/send/";
+    public static String SECRET_KEY = Play.configuration.getProperty("huanlegu.secret_key", "D7A38EFD4E1D4F42B5C198CEF8727022");
+    public static String DISTRIBUTOR_ID = Play.configuration.getProperty("huanlegu.distributor_id", "10001097");
+    public static String CLIENT_ID = Play.configuration.getProperty("huanlegu.client_id", "HVC000000065");
+    public static String GATEWAY_URL = Play.configuration.getProperty("huanlegu.gateway_url", "http://202.104.133.113:8060/api/send/");
 
     public static final String SUPPLIER_DOMAIN_NAME = "huanlegu";
 
@@ -90,7 +90,7 @@ public class HuanleguUtil {
 
     public static String sign(String serial, String content) {
         return Codec.encodeBASE64(
-                Codec.hexMD5(serial + CLIENT_ID + DISTRIBUTOR_ID + content.length())
+                Codec.hexMD5(serial + DISTRIBUTOR_ID + CLIENT_ID + content.length())
                         .toLowerCase()
         );
     }
