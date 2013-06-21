@@ -2,8 +2,6 @@ package extension.ktv;
 
 import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
-import models.resale.Resaler;
-import org.apache.commons.lang.StringUtils;
 import util.extension.ExtensionResult;
 
 /**
@@ -22,7 +20,7 @@ public class KtvOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
         sb.append("【")
                 .append(context.getGoods().getSupplier().otherName)
                 .append("】")
-                .append(context.goods.title)
+                .append(context.getGoods().title)
                 .append(context.couponInfo)
                 .append("一百券客服4006865151");
         context.setSmsContent(sb.toString());
