@@ -57,13 +57,13 @@ GET     /lingshi                                LingShiSmsReceivers.getSms
 *       /tel-verify/consumed-at                 TelephoneVerify.consumedAt
 *       /tel-verify/batch-info                  TelephoneVerify.batchInfo
 
-# 青团爬虫启动
+# d
 GET     /launch-qt                              QingtuanLauncher.index
 # 清团接口
 *      /api/v1/tsingtuan/coupons                thirdtuan.TsingTuans.coupons
 *      /api/v1/tsingtuan/check                  thirdtuan.TsingTuans.check
 
-GET     /wubaThirdBillSequences                 thirdtuan.DDGroupBuy.wubaThirdBillSequences
+GET     /wubaThirdBillSequences                 DDGroupBuy.wubaThirdBillSequences
 
 
 # 虚拟短信通道
