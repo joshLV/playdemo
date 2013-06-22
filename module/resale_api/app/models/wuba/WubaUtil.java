@@ -112,19 +112,19 @@ public class WubaUtil {
         JsonArray jsonArray = new JsonArray();
         JsonObject jsonObject = new JsonObject();
         Map<String, Object> params = new HashMap<>();
-        params.put("refundtiime", date);
-        WubaResponse response = sendRequest(params, "emc.groupbuy.queryjiesuan", false, false, USE_GET_METHOD);
+        params.put("refundtime", date);
+        WubaResponse response = sendRequest(params, "emc.groupbuy.queryrefundjiesuan", false, false, USE_GET_METHOD);
         if (response.isOk()) {
             jsonObject = response.data.getAsJsonObject();
             jsonArray = jsonObject.get("refundDetails").getAsJsonArray();
-            for (JsonElement element : jsonArray) {
-                JsonObject jsonObject1 = element.getAsJsonObject();
-                String accountedAtStr = jsonObject1.get("refundtime").getAsString();
-                String outerOrderNo = jsonObject1.get("orderid58").getAsString();
-                BigDecimal businessAmount = jsonObject1.get("groupprice").getAsBigDecimal();
-                BigDecimal commissionFee = jsonObject1.get("commission").getAsBigDecimal();
-                BigDecimal settleAmount = jsonObject1.get("jiesuanmoney").getAsBigDecimal();
-            }
+//            for (JsonElement element : jsonArray) {
+//                JsonObject jsonObject1 = element.getAsJsonObject();
+//                String accountedAtStr = jsonObject1.get("refundtime").getAsString();
+//                String outerOrderNo = jsonObject1.get("orderid58").getAsString();
+//                BigDecimal businessAmount = jsonObject1.get("groupprice").getAsBigDecimal();
+//                BigDecimal commissionFee = jsonObject1.get("commission").getAsBigDecimal();
+//                BigDecimal settleAmount = jsonObject1.get("jiesuanmoney").getAsBigDecimal();
+//            }
         }
         return jsonArray;
     }

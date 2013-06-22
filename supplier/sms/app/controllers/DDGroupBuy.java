@@ -266,7 +266,8 @@ public class DDGroupBuy extends Controller {
     }
 
     public static void wubaThirdBillSequences(String date) {
-        JsonArray data3 = WubaUtil.consumedBill(date);
+        System.out.println("date:"+date);
+        JsonArray data3Json = WubaUtil.consumedBill(date);
 //        for (JsonElement element : data3) {
 //                JsonObject jsonObject1 = element.getAsJsonObject();
 //                String accountedAtStr = jsonObject1.get("usetime").getAsString();
@@ -276,8 +277,11 @@ public class DDGroupBuy extends Controller {
 //                BigDecimal settleAmount = jsonObject1.get("jiesuanmoney").getAsBigDecimal();
 //            }
 
-        JsonArray data4 = WubaUtil.refundBill(date);
-        render(data3.toString(), data4.toString());
+        JsonArray data4Json = WubaUtil.refundBill(date);
+
+        String data3 = data3Json.toString();
+        String data4 = data4Json.toString();
+        render(data3,data4);
     }
 }
 
