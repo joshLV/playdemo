@@ -1,4 +1,4 @@
-package facade.order.vo;
+package facade.order.constant;
 
 /**
  * 通过enum生成不同渠道的返回错误信息.

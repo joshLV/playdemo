@@ -1,9 +1,7 @@
 package facade.order.translate;
 
 /**
- * User: tanglq
- * Date: 13-6-19
- * Time: 下午6:22
+ * 生成渠道订单Facade的返回消息接口.
  */
 public class OuterOrderMessage {
 }

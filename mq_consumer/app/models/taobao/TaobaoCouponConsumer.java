@@ -104,6 +104,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             for (ECoupon coupon : eCoupons) {
                 final String errInfo = ECoupon.applyRefund(coupon);
                 if (!errInfo.equals(ECoupon.ECOUPON_REFUND_OK)) {
+                    // TODO: 在ECoupon记录一下申请过退款，渠道方可能退款成功了，需要跟进，并记录退款历史
                     Logger.error("taobao refund error !!!!!!!! coupon id: %s. %s", coupon.id, errInfo);
                 }
             }

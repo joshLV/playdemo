@@ -1,5 +1,6 @@
 package facade.order.vo;
 
+import facade.order.constant.OuterOrderResultCode;
 import facade.order.translate.OuterOrderMessage;
 import facade.order.translate.OuterOrderMessageTranslate;
 import models.order.ECoupon;

@@ -3,7 +3,7 @@ package facade.order;
 import facade.order.vo.OuterECouponVO;
 import facade.order.vo.OuterOrderItemVO;
 import facade.order.vo.OuterOrderResult;
-import facade.order.vo.OuterOrderResultCode;
+import facade.order.constant.OuterOrderResultCode;
 import facade.order.vo.OuterOrderVO;
 import models.accounts.PaymentSource;
 import models.order.DeliveryType;
@@ -51,7 +51,6 @@ public class OuterOrderFacade {
                 return doCreateOuterOrder(outerOrderVO);
             }
         });
-
     }
 
 
