@@ -259,7 +259,8 @@ public class OperateCoupons extends Controller {
             condition.hidPaidAtEnd = new Date();
         } else if ((StringUtils.isBlank(condition.searchKey) || StringUtils.isBlank(condition.searchItems))
                 && condition.paidAtBegin == null && condition.paidAtEnd == null &&
-                condition.refundAtBegin == null && condition.refundAtEnd == null) {
+                condition.refundAtBegin == null && condition.refundAtEnd == null && condition.consumedAtBegin ==
+                null && condition.consumedAtEnd == null) {
             condition.paidAtBegin = DateHelper.beforeDays(1);
             condition.paidAtEnd = new Date();
         }
