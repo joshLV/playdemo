@@ -3,6 +3,8 @@ package models.accounts;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.util.SerialNumberUtil;
 import models.order.Prepayment;
+import models.sales.Shop;
+import models.supplier.Supplier;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -213,6 +215,7 @@ public class AccountSequence extends Model {
 
     /**
      * 查询在指定日期前没有结算的account账户进账的钱，减去所有出款项(除提现)且未结算的金额。
+     *
      * @param account
      * @param toDate
      * @return
@@ -231,6 +234,7 @@ public class AccountSequence extends Model {
 
     /**
      * 查询所有出款项(除提现)且未结算的金额
+     *
      * @param account
      * @param toDate
      * @return
@@ -324,6 +328,27 @@ public class AccountSequence extends Model {
             query.setParameter(key, condition.getParams().get(key));
         }
         return query.getResultList();
+    }
+
+    public static void setAccountSequenceInfo(AccountSequence accountSequence) {
+        if (accountSequence.account.accountType == AccountType.SUPPLIER) {
+            Supplier supplier = Supplier.findById(accountSequence.account.uid);
+            if (supplier != null) {
+                accountSequence.supplierName = supplier.otherName + "/" + supplier.fullName;
+                accountSequence.accountName = supplier.loginName;
+            }
+        }
+        if (accountSequence.account.accountType == AccountType.SHOP) {
+            Shop shop = Shop.findById(accountSequence.account.uid);
+            if (shop == null) {
+                return;
+            }
+            Supplier supplier = Supplier.findById(shop.supplierId);
+            if (supplier != null) {
+                accountSequence.supplierName = supplier.otherName + "/" + supplier.fullName;
+                accountSequence.accountName = supplier.loginName + "/" + shop.name;
+            }
+        }
     }
 
     @Override

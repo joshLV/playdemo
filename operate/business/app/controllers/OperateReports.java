@@ -164,11 +164,7 @@ public class OperateReports extends Controller {
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
             if (accountSequence.account != null) {
-                Supplier supplier = Supplier.findById(accountSequence.account.uid);
-                if (supplier != null) {
-                    accountSequence.supplierName = supplier.otherName + "/" + supplier.fullName;
-                    accountSequence.accountName = supplier.loginName;
-                }
+                AccountSequence.setAccountSequenceInfo(accountSequence);
                 setOrderInfo(accountSequence);
             }
         }
@@ -185,6 +181,7 @@ public class OperateReports extends Controller {
 
         render(accountSequencePage, summary, supplierList, condition, supplierId, shopId);
     }
+
 
     /**
      * 查询商户提现汇总.
@@ -232,8 +229,7 @@ public class OperateReports extends Controller {
             Supplier supplier = Supplier.findById(supplierId);
             if (independentShops == null) {
                 independentShops = new ArrayList<>();
-            }
-            else if(supplier!=null){
+            } else if (supplier != null) {
                 renderArgs.put("independentShopsSupplierName", supplier.getName());
             }
             renderArgs.put("independentShops", independentShops);
@@ -422,7 +418,7 @@ public class OperateReports extends Controller {
         List<AccountSequenceStatistic> statisticList = AccountSequence.statisticByCondition(condition);
         AccountSequenceSummary summary = AccountSequence.findSummaryByCondition(condition);
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        render("OperateReports/showSupplierReport.html", statisticList, summary, supplierList, condition,supplierId,shopId);
+        render("OperateReports/showSupplierReport.html", statisticList, summary, supplierList, condition, supplierId, shopId);
     }
 }
 

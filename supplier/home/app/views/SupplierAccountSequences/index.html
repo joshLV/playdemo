@@ -54,9 +54,9 @@
         <table class="standard-table">
             <thead>
             <tr>
-                <th width="3%">流水号</th>
+                <th width="18%">交易时间</th>
+                <th width="10%">账户类型</th>
                 <th width="25%">备注</th>
-                <th width="12%">交易时间</th>
                 <th width="10%">交易类型</th>
                 <th width="15%">收入支出(元)</th>
                 <th width="10%">账户余额(元)</th>
@@ -66,11 +66,11 @@
             <tbody>
             #{paginate.list items:accountSequences, as:'accountSequence'}
             <tr>
-                <td>${accountSequence?.serialNumber}</td>
+                <td>${accountSequence?.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>${accountSequence?.accountName}</td>
                 <td>${accountSequence?.remark}#{if accountSequence?.tradeType != models.accounts.TradeType.WITHDRAW}
                     <br/>订单号:${accountSequence?.orderNumber}
                 #{/if}</td>
-                <td>${accountSequence?.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>&{'trade_type.'+accountSequence?.tradeType}</td>
                 <td>
                     <div #{if accountSequence?.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
