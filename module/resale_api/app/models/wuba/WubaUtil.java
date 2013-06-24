@@ -83,7 +83,7 @@ public class WubaUtil {
         return ExtensionResult.code(1).message("58同城接口调用失败");
     }
 
-    public static JsonObject consumedBill(String date) {
+    public static WubaResponse consumedBill(String date) {
         //结算数据查询
         JsonObject jsonObject = new JsonObject();
         Map<String, Object> params = new HashMap<>();
@@ -103,10 +103,10 @@ public class WubaUtil {
 //
 //            }
         }
-        return jsonObject;
+        return response;
     }
 
-    public static JsonObject refundBill(String date) {
+    public static WubaResponse refundBill(String date) {
         //退款数据查询
         JsonArray jsonArray = new JsonArray();
         JsonObject jsonObject = new JsonObject();
@@ -125,7 +125,7 @@ public class WubaUtil {
 //                BigDecimal settleAmount = jsonObject1.get("jiesuanmoney").getAsBigDecimal();
 //            }
         }
-        return jsonObject;
+        return response;
     }
 
 
