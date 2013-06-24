@@ -706,7 +706,7 @@ public class Order extends Model {
                 haveFreight = true;
             }
             Long baseSale = orderItem.goods.getRealStocks();
-            if (baseSale == 10 || baseSale == 0) {
+            if (orderItem.goods.couponType == GoodsCouponType.IMPORT && (baseSale == 10 || baseSale == 0)) {
                 //发送提醒邮件
                 MailMessage mailMessage = new MailMessage();
                 mailMessage.addRecipient(EMAIL_RECEIVER);
@@ -1507,6 +1507,7 @@ public class Order extends Model {
                 remark = "发送预约券号";
             }
             OrderECouponMessage.with(item).remark(remark).sendToMQ();
+
             //ktv商户发送给店员短信
             if (item.goods.isKtvProduct()) {
                 KtvRoomOrderInfo roomOrderInfo = KtvRoomOrderInfo.find("orderItem", item).first();

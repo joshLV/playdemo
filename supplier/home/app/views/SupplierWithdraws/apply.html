@@ -29,6 +29,7 @@
                     <th>所在城市</th>
                     <th>支行名称</th>
                     <th>银行卡号</th>
+                    <th>商户信息</th>
                 </tr>
                 #{list withdrawAccounts, as:'withdrawAccount'}
                     <tr>
@@ -41,6 +42,13 @@
                         <td>${withdrawAccount.bankCity}</td>
                         <td>${withdrawAccount.subBankName}</td>
                         <td>${withdrawAccount.cardNumber}</td>
+                        #{if withdrawAccount.accountType==models.accounts.AccountType.SHOP}
+                        %{shop=models.sales.Shop.findById(withdrawAccount?.userId) ;}%
+                            <td>${currentUser?.supplier?.fullName}/${shop?.name}</td>
+                        #{/if}
+                        #{else}
+                            <td>${currentUser?.supplier?.fullName}</td>
+                        #{/else}
                     </tr>
                 #{/list}
             </table>

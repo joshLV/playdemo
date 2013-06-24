@@ -58,6 +58,7 @@ public class SupplierAccountSequences extends Controller {
                 String postfix = orderItems.size() > 1 ? "等" + orderItems.size() + "个商品" : "";
                 sequence.remark = orderItems.get(0).goods.shortName + postfix;
             }
+            AccountSequence.setAccountSequenceInfo(sequence);
             setOrderInfo(sequence);
         }
         renderArgs.put("condition", condition);

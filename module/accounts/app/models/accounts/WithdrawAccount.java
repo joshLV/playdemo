@@ -69,11 +69,10 @@ public class WithdrawAccount extends Model {
     public static List<WithdrawAccount> findAllBySupplier(long supplierId) {
         List<WithdrawAccount> withdrawAccounts = find("(userId=? and accountType=?) or supplierId = ? ", supplierId, AccountType.SUPPLIER, supplierId).fetch();
         for (WithdrawAccount withdrawAccount : withdrawAccounts) {
-            if (withdrawAccount.accountType == AccountType.SHOP){
+            if (withdrawAccount.accountType == AccountType.SHOP) {
                 withdrawAccount.shopId = withdrawAccount.userId;
             }
         }
         return withdrawAccounts;
     }
-
 }
