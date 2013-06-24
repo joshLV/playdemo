@@ -80,7 +80,6 @@ public class OperateOrders extends Controller {
 
         orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
         BigDecimal amountSummary = Order.summary(orderList);
-        System.out.println(orderList.size() + ">>>>>>");
         List<Brand> brandList = Brand.findByOrder(null, operatorId, hasSeeAllSupplierPermission);
         renderArgs.put("brandList", brandList);
         render(orderList, condition, amountSummary, desc);
@@ -172,7 +171,7 @@ public class OperateOrders extends Controller {
             condition.hidPaidAtEnd = new Date();
         } else if (condition.shihuiSupplierId == null &&
                 (StringUtils.isBlank(condition.searchKey) || StringUtils.isBlank(condition.searchItems)) &&
-                StringUtils.isBlank(condition.outerOrderId) && condition.paidAtBegin == null && condition.paidAtEnd == null && condition.refundAtBegin == null && condition.refundAtEnd == null) {
+                StringUtils.isBlank(condition.outerOrderId) && condition.paidAtBegin == null && condition.paidAtEnd == null) {
             condition.paidAtBegin = DateHelper.beforeDays(1);
             condition.paidAtEnd = new Date();
         }

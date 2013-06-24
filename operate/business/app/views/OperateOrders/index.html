@@ -120,30 +120,18 @@
         #{option "balance"}余额#{/option}
     #{/select}
 
-    </div>
-    <div class="control-group">
-        退款时间：
-        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
-            <input class="input-small" id="refundAtBegin" name="condition.refundAtBegin" size="16" type="text"
-                   value="${condition.refundAtBegin?.format()}">
-            <span class="add-on"><i class="icon-th"></i></span>
-        </div>
-        至
-        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
-            <input class="input-small" id="refundAtEnd" name="condition.refundAtEnd" size="16" type="text"
-                   value="${condition.refundAtEnd?.format()}">
-            <span class="add-on"><i class="icon-th"></i></span>
-        </div>
-
         订单来源：#{select 'condition.userType', class:'input-small', value:condition.userType}
         #{option ""}不限#{/option}
         #{option "CONSUMER"}&{'order.CONSUMER'}#{/option}
         #{option "RESALER"}&{'order.RESALER'}#{/option}
     #{/select}
+        物流方式：
+    #{select 'condition.deliveryType', class:'input-small', value:condition.deliveryType}
+        #{option ""}不限#{/option}
+        #{option models.order.DeliveryType.SMS}无物流#{/option}
+        #{option models.order.DeliveryType.LOGISTICS}有物流#{/option}
+    #{/select}
 
-        外部订单号：
-        <input type="text" name="condition.outerOrderId" value="${condition.outerOrderId}"
-               class="input-medium"/>
     </div>
 
 
@@ -160,6 +148,10 @@
         <input type="text" name="condition.searchItems" value="${condition.searchItems}"
                class="input-medium"/>
 
+        外部订单号：
+        <input type="text" name="condition.outerOrderId" value="${condition.outerOrderId}"
+               class="input-medium"/>
+
         订单状态：
     #{select 'condition.status', id:'condition_status', class:'input-medium', value:condition.status}
         #{option ""}不限#{/option}
@@ -174,12 +166,6 @@
         #{option "RETURNED"}&{'order.RETURNED'}#{/option}
 
 
-    #{/select}
-        物流方式：
-    #{select 'condition.deliveryType', class:'input-small', value:condition.deliveryType}
-        #{option ""}不限#{/option}
-        #{option models.order.DeliveryType.SMS}无物流#{/option}
-        #{option models.order.DeliveryType.LOGISTICS}有物流#{/option}
     #{/select}
 
         &nbsp;&nbsp;
@@ -248,12 +234,12 @@ select:'condition_status',value:condition?.status/}
     #{else}
         <th width="60px" class="rank"><a class="fn-rank" data-rank="0000020">付款时间</a></th>#{/else}
 
-    #{if desc.equals("0000001") }
-        <th width="60px" class="rank rank-asc"><a class="fn-rank" data-rank="0000002">退款时间</a></th>#{/if}
-    #{elseif desc.equals("0000002")}
-        <th width="60px" class="rank rank-desc"><a class="fn-rank" data-rank="0000001">退款时间</a></th>#{/elseif}
-    #{else}
-        <th width="60px" class="rank"><a class="fn-rank" data-rank="0000002">退款时间</a></th>#{/else}
+    *{#{if desc.equals("0000001") }}*
+    *{<th width="60px" class="rank rank-asc"><a class="fn-rank" data-rank="0000002">退款时间</a></th>#{/if}}*
+    *{#{elseif desc.equals("0000002")}}*
+    *{<th width="60px" class="rank rank-desc"><a class="fn-rank" data-rank="0000001">退款时间</a></th>#{/elseif}}*
+    *{#{else}}*
+    *{<th width="60px" class="rank"><a class="fn-rank" data-rank="0000002">退款时间</a></th>#{/else}}*
 
         <th width="50px">操 作</th>
     </tr>
@@ -341,7 +327,6 @@ select:'condition_status',value:condition?.status/}
         <td rowspan="${order?.orderItems?.size()}">${order.amount?.formatCurrency('CNY')}</td>
         <td rowspan="${order?.orderItems?.size()}">${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td rowspan="${order?.orderItems?.size()}">${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-        <td rowspan="${order?.orderItems?.size()}">${order.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td rowspan="${order?.orderItems?.size()}">
             #{a @OperateOrders.details(order.id)}详情#{/a}
             #{if order.electronicGoods.size() > 0}

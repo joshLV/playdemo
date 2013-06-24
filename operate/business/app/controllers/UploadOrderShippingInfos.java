@@ -95,7 +95,6 @@ public class UploadOrderShippingInfos extends Controller {
         List<String> noGoodsCodeList = new ArrayList<>();
         //todo 检查实物订单信息中是否存在退货订单
         List<RealGoodsReturnEntry> returnEntryList = new ArrayList<>();
-        System.out.println("logistics = " + logistics);
         for (LogisticImportData logistic : logistics) {
             RealGoodsReturnEntry returnEntry = RealGoodsReturnEntry.findHandling(logistic.orderNumber, logistic.goodsCode);
             if (returnEntry != null && logistic.buyNumber != null && !logistic.buyNumber.equals(returnEntry.orderItems.buyNumber - returnEntry.returnedCount)) {
