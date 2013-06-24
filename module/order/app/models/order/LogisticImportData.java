@@ -406,13 +406,18 @@ public class LogisticImportData implements Cloneable {
      *
      * @param partner 分销伙伴
      */
-    public Order toYbqOrder(OuterOrderPartner partner) {
+    public Order toYbqOrder(OuterOrderPartner partner, Boolean TBAutoImportRealOrder) {
         Resaler resaler = Resaler.findOneByLoginName(partner.partnerLoginName());
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
             return null;
         }
-        Goods goods = ResalerProduct.getGoodsByPartnerProductId(resaler, outerGoodsNo, partner);
+        Goods goods = null;
+        if (TBAutoImportRealOrder) {
+            goods = ResalerProduct.getGoodsByOuterGoodsNo(resaler, outerGoodsNo, partner);
+        } else {
+            goods = ResalerProduct.getGoodsByPartnerProductId(resaler, outerGoodsNo, partner);
+        }
         if (goods == null) {
             Logger.info("goods not found: %s,", outerGoodsNo);
             return null;
