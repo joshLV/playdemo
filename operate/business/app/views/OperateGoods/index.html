@@ -46,7 +46,7 @@
                 <td width="20%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
                                             value="${condition?.shortName}"/></td>
                 <td width="20%">商品编码：<input type="text" name="condition.code" class="input-medium"
-                                value="${condition?.code}"/></td>
+                                            value="${condition?.code}"/></td>
                 <td>编辑人员<input type="text" name="condition.createdBy" class="input-medium"
                                value="${condition?.createdBy}"/></td>
             </tr>
@@ -64,6 +64,9 @@
                     #{option "APPLY"}&{'goods.APPLY'}#{/option}
                     #{option "REJECT"}&{'goods.REJECT'}#{/option}
                 #{/select}
+                    商品分类：
+                #{layout_operate.selectList name:'condition.categoryId', value:condition?.categoryId, list:categoryList/}
+
                     设置精选：<input type="checkbox" name="condition.priority" id="priority" class="input-medium"
                                 value="${condition?.priority}" ${condition?.priority == 1 ?'checked':''}/>
                     &nbsp; &nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery"
@@ -153,12 +156,12 @@
                 <td class="amount">${realStock}</td>
             *{<td class="amount">${goods?.getRealSaleCount()}</td>}*
 
-                *{#{if goods?.beginOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}}*
-                    *{<td style="color:red;">${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>}*
-                *{#{/if}}*
-                *{#{else}}*
-                    *{<td>${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>}*
-                *{#{/else}}*
+            *{#{if goods?.beginOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}}*
+            *{<td style="color:red;">${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>}*
+            *{#{/if}}*
+            *{#{else}}*
+            *{<td>${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>}*
+            *{#{/else}}*
 
                 #{if goods?.endOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
                     <td style="color:red;">${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
