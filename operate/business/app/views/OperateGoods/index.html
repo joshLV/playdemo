@@ -103,6 +103,7 @@
             #{layout_operate.sortField name:'商户', descField:condition?.desc, desc:'2000000000000',asc:'1000000000000'/}
             *{#{layout_operate.sortField name:'编号', descField:condition?.desc, desc:'0200000000000',asc:'0100000000000'/}}*
             #{layout_operate.sortField name:'名称', descField:condition?.desc, desc:'0020000000000',asc:'0010000000000'/}
+            <th width="70px">分类</th>
             #{layout_operate.sortField name:'原价', descField:condition?.desc, desc:'0002000000000',asc:'0001000000000'/}
             #{layout_operate.sortField name:'采购价', descField:condition?.desc, desc:'0000200000000',asc:'0000100000000'/}
             #{layout_operate.sortField name:'售价', descField:condition?.desc, desc:'0000020000000',asc:'0000010000000'/}
@@ -150,6 +151,7 @@
                         </tbody>
                     </table>
                 </td>
+                <td>${goods?.categories?.iterator()?.next()?.name}</td>
                 <td class="amount">${goods?.faceValue?.formatCurrency('CNY')}</td>
                 <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
                 <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>
