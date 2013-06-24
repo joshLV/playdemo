@@ -19,7 +19,6 @@ import util.ws.WebServiceRequest;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -84,7 +83,7 @@ public class WubaUtil {
         return ExtensionResult.code(1).message("58同城接口调用失败");
     }
 
-    public static JsonArray consumedBill(String date) {
+    public static JsonObject consumedBill(String date) {
         //结算数据查询
         JsonObject jsonObject = new JsonObject();
         Map<String, Object> params = new HashMap<>();
@@ -104,10 +103,10 @@ public class WubaUtil {
 //
 //            }
         }
-        return jsonArray;
+        return jsonObject;
     }
 
-    public static JsonArray refundBill(String date) {
+    public static JsonObject refundBill(String date) {
         //退款数据查询
         JsonArray jsonArray = new JsonArray();
         JsonObject jsonObject = new JsonObject();
@@ -126,7 +125,7 @@ public class WubaUtil {
 //                BigDecimal settleAmount = jsonObject1.get("jiesuanmoney").getAsBigDecimal();
 //            }
         }
-        return jsonArray;
+        return jsonObject;
     }
 
 
