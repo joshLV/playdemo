@@ -65,7 +65,6 @@ public class SupplierWithdraws extends Controller {
         BigDecimal prepaymentBalance = Prepayment.findAmountBySupplier(supplier);
 
         Logger.info("account.accountType:" + account.accountType);
-        System.out.println(supplierUser.shop.id+"=====");
         List<WithdrawAccount> withdrawAccounts = account.accountType == AccountType.SHOP ? WithdrawAccount.findByShop(supplierUser.shop.id) :
                 WithdrawAccount.findByUser(supplier.getId(), AccountType.SUPPLIER);
         List<Prepayment> prepayments = Prepayment.findBySupplier(supplier);

@@ -1,5 +1,6 @@
 package models.supplier;
 
+import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.InFuture;
 import play.data.validation.Required;
@@ -128,7 +129,6 @@ public class SupplierContract extends Model {
     }
 
     public List<SupplierContract> getSuppliersContracts() {
-        return SupplierContract.find("supplierId=?", this.supplierId
-        ).fetch();
+        return SupplierContract.find("supplierId=? and deleted=?", this.supplierId, DeletedStatus.UN_DELETED).fetch();
     }
 }
