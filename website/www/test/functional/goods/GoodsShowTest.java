@@ -60,7 +60,6 @@ public class GoodsShowTest extends FunctionalTest {
         goods.refresh();
         Response response = GET("/p/" + goods.id);
         assertIsOk(response);
-        System.out.println(">>>>>>>>>>>>>>>>>>>>" + response.out.toString());
         assertContentMatch("已下架", response);
     }
 

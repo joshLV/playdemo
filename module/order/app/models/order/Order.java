@@ -202,9 +202,9 @@ public class Order extends Model {
     @Column(name = "paid_at")
     public Date paidAt;
 
-
-    @Column(name = "refund_at")
-    public Date refundAt;
+// TODO 待删除字段
+//    @Column(name = "refund_at")
+//    public Date refundAt;
 
     public String postcode;
 
@@ -896,7 +896,7 @@ public class Order extends Model {
                                         KtvTaobaoSku.humanTimeRange(roomOrderInfo.scheduledTime,
                                                 roomOrderInfo.scheduledTime + roomOrderInfo.product.duration);
                         eCoupon.effectiveAt = new Date();
-                        eCoupon.expireAt = DateUtils.addDays(DateUtils.ceiling(roomOrderInfo.scheduledDay,Calendar.DATE), 10);
+                        eCoupon.expireAt = DateUtils.addDays(DateUtils.ceiling(roomOrderInfo.scheduledDay, Calendar.DATE), 10);
                         eCoupon.save();
                     }
 
@@ -1022,7 +1022,7 @@ public class Order extends Model {
                 eCoupon.save();
                 KangouUtil.setCardUseAndSend(eCoupon);
                 eCoupon.autoVerify();  // 自动验证掉
-            }else if (HuanleguUtil.SUPPLIER_DOMAIN_NAME.equals(orderItem.goods.getSupplier().domainName)) {
+            } else if (HuanleguUtil.SUPPLIER_DOMAIN_NAME.equals(orderItem.goods.getSupplier().domainName)) {
                 HuanleguMessage message = HuanleguUtil.confirmOrder(eCoupon, 1);
                 if (message.isOk()) {
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1035,13 +1035,13 @@ public class Order extends Model {
 
                         eCoupon.effectiveAt = DateUtils.ceiling(effectiveAt, Calendar.DATE);
                         eCoupon.expireAt = DateUtils.ceiling(expireAt, Calendar.DATE);
-                    }catch (ParseException e) {
+                    } catch (ParseException e) {
                     }
                     eCoupon.save();
 
                     eCoupon.order.supplierOrderNumber = message.selectTextTrim("./HvOrderId");
                     eCoupon.order.save();
-                }else {
+                } else {
                     eCoupon.delete();
                     throw new RuntimeException("can not generate a huanlegu goods. request failed: " + goods.getId());
                 }

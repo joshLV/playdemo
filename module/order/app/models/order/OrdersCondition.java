@@ -22,8 +22,6 @@ public class OrdersCondition {
     public Date createdAtEnd;
     public Date paidAtBegin;
     public Date paidAtEnd;
-    public Date refundAtBegin;
-    public Date refundAtEnd;
     public OrderStatus status;
     public String goodsName;
     public String orderBy;
@@ -119,14 +117,6 @@ public class OrdersCondition {
         if (hidPaidAtEnd != null) {
             sql.append(" and o.paidAt <= :paidAtEnd");
             paramsMap.put("paidAtEnd", DateUtil.getEndOfDay(hidPaidAtEnd));
-        }
-        if (refundAtBegin != null) {
-            sql.append(" and o.refundAt >= :refundAtBegin");
-            paramsMap.put("refundAtBegin", refundAtBegin);
-        }
-        if (refundAtEnd != null) {
-            sql.append(" and o.refundAt <= :refundAtEnd");
-            paramsMap.put("refundAtEnd", DateUtil.getEndOfDay(refundAtEnd));
         }
         if (status != null) {
             sql.append(" and ( o.status = :status or EXISTS (select 1 from OrderItems r where r.order=o and r.status = :status)) ");

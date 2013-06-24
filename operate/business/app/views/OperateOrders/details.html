@@ -264,14 +264,13 @@
                                                  创建时间: ${returnEntry?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}<br/>
                                                  #{if returnEntry?.status==models.order.RealGoodsReturnStatus.RETURNED}
                                                  收&nbsp;&nbsp;货&nbsp;&nbsp;人: ${returnEntry?.returnedBy}<br/>
-                                                 退回时间: ${returnEntry?.returnedAt?.format("yyyy-MM-dd HH:mm:ss")}
                                                  #{/if}"
                                                                                   data-placement="bottom"
                                                                                   data-original-title="退货单"
                                                                                   data-trigger="hover"
-                                                                                  onmouseover="$('#returnEntry_${orderItem.id}').popover('show');">(${returnEntry.returnedCount}
-                件 &{'entry.'+
-                orderItem.returnStatus})</a>#{/if}</td>
+                                                                                  onmouseover="$('#returnEntry_${orderItem.id}').popover('show');"><br>
+                (${returnEntry.returnedCount} 件 &{'entry.'+ orderItem.returnStatus}
+                退货时间：${returnEntry?.returnedAt?.format('yyyy-MM-dd HH:mm:ss')})</a>#{/if}</td>
             <td>#{if orderItem.goods.materialType == models.sales.MaterialType.REAL && returnEntry == null}
                 #{if orders.status == models.order.OrderStatus.PAID}
                     <a
@@ -431,21 +430,6 @@
         </tr>
     </table>
 </ul>
-#{if orders?.refundAt != null }
-<ul class="nav">
-    <li class="active"><a href="#"> 退款信息</a></li>
-    <table class="table">
-        <tr>
-            <td>申请退款时间：${orders?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-        </tr>
-        <tr>
-            <td>退款时间： ${orders?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-        </tr>
-    </table>
-</ul>
-#{/if}
-</div>
-
 <div class="modal" id="sendModal" style="display: none;">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>
@@ -519,6 +503,7 @@
         <a href="#" id="sure" class="btn btn-primary">确定</a>
         <a href="#" class="btn" data-dismiss="modal">取消</a>
     </div>
+</div>
 </div>
 
 
