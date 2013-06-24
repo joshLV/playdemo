@@ -87,7 +87,9 @@ public class OperateGoods extends Controller {
 
         renderArgs.put("brandList", brandList);
         String queryString = StringUtils.trimToEmpty(getQueryString());
-        render(goodsPage, supplierList, condition, queryString, hasApproveGoodsPermission);
+
+        List<Category> categoryList=Category.findByParent(0L);
+        render(goodsPage, supplierList, condition,categoryList, queryString, hasApproveGoodsPermission);
     }
 
     private static String getQueryString() {
