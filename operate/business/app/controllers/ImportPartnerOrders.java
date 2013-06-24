@@ -16,7 +16,14 @@ import models.accounts.PaymentSource;
 import models.ktv.KtvTaobaoUtil;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
-import models.order.*;
+import models.order.DeliveryType;
+import models.order.LogisticImportData;
+import models.order.Order;
+import models.order.OrderShippingInfo;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
+import models.order.OuterOrderType;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
@@ -25,7 +32,6 @@ import net.sf.jxls.reader.XLSReadStatus;
 import net.sf.jxls.reader.XLSReader;
 import operate.rbac.annotations.ActiveNavigation;
 import play.Logger;
-import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.vfs.VirtualFile;
@@ -51,6 +57,9 @@ import java.util.Set;
 @With(OperateRbac.class)
 @ActiveNavigation("import_order_index")
 public class ImportPartnerOrders extends Controller {
+    public static Boolean TB_AUTO_IMPORT_REAL_ORDER = true;
+    public static Boolean MANUAL_IMPORT_REAL_ORDER = false;
+
     @ActiveNavigation("import_order_index")
     public static void index() {
         render();
@@ -110,7 +119,7 @@ public class ImportPartnerOrders extends Controller {
             render("ImportPartnerOrders/index.html", errorInfo, partner);
         }
         processLogisticList(logistics, partner, existedOrderList,
-                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
+                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList, MANUAL_IMPORT_REAL_ORDER);
         render("ImportPartnerOrders/index.html", partner, errorInfo, existedOrderList, notEnoughInventoryGoodsList,
                 importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
     }
@@ -198,7 +207,7 @@ public class ImportPartnerOrders extends Controller {
         Set<String> unBindGoodsSet = new HashSet<>();
         List<String> diffOrderPriceList = new ArrayList<>();
         processLogisticList(logisticImportDataList, OuterOrderPartner.TB, existedOrderList,
-                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
+                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList, TB_AUTO_IMPORT_REAL_ORDER);
 
         OuterOrderPartner partner = OuterOrderPartner.TB;
         render("ImportPartnerOrders/index.html", partner, errorInfo, existedOrderList,
@@ -207,7 +216,8 @@ public class ImportPartnerOrders extends Controller {
 
     private static void processLogisticList(List<LogisticImportData> logistics, OuterOrderPartner partner,
                                             List<String> existedOrderList, List<String> importSuccessOrderList,
-                                            Set<String> unBindGoodsSet, List<String> diffOrderPriceList) {
+                                            Set<String> unBindGoodsSet, List<String> diffOrderPriceList,
+                                            Boolean TBAutoImportRealOrder) {
         for (LogisticImportData logistic : logistics) {
             Logger.info("Process OrderNO: %s", logistic.outerOrderNo);
 
@@ -229,7 +239,7 @@ public class ImportPartnerOrders extends Controller {
             if (partner == OuterOrderPartner.WB) {
                 createWubaYbqOrder(logistic, partner, outerOrder, importSuccessOrderList, diffOrderPriceList, unBindGoodsSet);
             } else {
-                createYbqOrder(logistic, outerOrder, partner, importSuccessOrderList, unBindGoodsSet);
+                createYbqOrder(logistic, outerOrder, partner, importSuccessOrderList, unBindGoodsSet, TBAutoImportRealOrder);
             }
         }
 
@@ -291,8 +301,9 @@ public class ImportPartnerOrders extends Controller {
      * 除了WUBA以外的订单导入
      */
     private static void createYbqOrder(LogisticImportData logistic, OuterOrder outerOrder, OuterOrderPartner partner,
-                                       List<String> importSuccessOrderList, Set<String> unBindGoodsSet) {
-        Order ybqOrder = logistic.toYbqOrder(partner);
+                                       List<String> importSuccessOrderList, Set<String> unBindGoodsSet,
+                                       Boolean TBAutoImportRealOrder) {
+        Order ybqOrder = logistic.toYbqOrder(partner, TBAutoImportRealOrder);
         //save ybqOrder info
         if (ybqOrder != null) {
             outerOrder.ybqOrder = ybqOrder;

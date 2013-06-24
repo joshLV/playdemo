@@ -6,6 +6,7 @@ import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
 
 import models.resale.Resaler;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -175,5 +176,11 @@ public class ResalerProduct extends Model {
     public ResalerProduct status(ResalerProductStatus status) {
         this.status = status;
         return this;
+    }
+
+    public static Goods getGoodsByOuterGoodsNo(Resaler resaler, String outerGoodsNo, OuterOrderPartner partner) {
+        ResalerProduct product = ResalerProduct.find("goodsLinkId=? and partner=? and resaler=?",
+                outerGoodsNo, partner, resaler).first();
+        return product == null ? null : product.goods;
     }
 }
