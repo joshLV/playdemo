@@ -83,16 +83,16 @@ public class WubaUtil {
         return ExtensionResult.code(1).message("58同城接口调用失败");
     }
 
-    public static WubaResponse consumedBill(String date) {
+    public static String consumedBill(String date) {
         //结算数据查询
         JsonObject jsonObject = new JsonObject();
         Map<String, Object> params = new HashMap<>();
         params.put("jiesuantime", date);
-        WubaResponse response = sendRequest(params, "emc.groupbuy.queryjiesuan", false, false, USE_GET_METHOD);
-        JsonArray jsonArray = new JsonArray();
-        if (response.isOk()) {
-            jsonObject = response.data.getAsJsonObject();
-            jsonArray = jsonObject.get("jiesuanDetails").getAsJsonArray();
+        String response = sendRequest1(params, "emc.groupbuy.queryjiesuan", false, false, USE_GET_METHOD);
+//        JsonArray jsonArray = new JsonArray();
+//        if (response.isOk()) {
+//            jsonObject = response.data.getAsJsonObject();
+//            jsonArray = jsonObject.get("jiesuanDetails").getAsJsonArray();
 //            for (JsonElement element : jsonArray) {
 //                JsonObject jsonObject1 = element.getAsJsonObject();
 //                String accountedAtStr = jsonObject1.get("usetime").getAsString();
@@ -102,20 +102,20 @@ public class WubaUtil {
 //                BigDecimal settleAmount = jsonObject1.get("jiesuanmoney").getAsBigDecimal();
 //
 //            }
-        }
+//        }
         return response;
     }
 
-    public static WubaResponse refundBill(String date) {
+    public static String refundBill(String date) {
         //退款数据查询
         JsonArray jsonArray = new JsonArray();
         JsonObject jsonObject = new JsonObject();
         Map<String, Object> params = new HashMap<>();
         params.put("refundtime", date);
-        WubaResponse response = sendRequest(params, "emc.groupbuy.queryrefundjiesuan", false, false, USE_GET_METHOD);
-        if (response.isOk()) {
-            jsonObject = response.data.getAsJsonObject();
-            jsonArray = jsonObject.get("refundDetails").getAsJsonArray();
+        String response = sendRequest1(params, "emc.groupbuy.queryrefundjiesuan", false, false, USE_GET_METHOD);
+//        if (response.isOk()) {
+//            jsonObject = response.data.getAsJsonObject();
+//            jsonArray = jsonObject.get("refundDetails").getAsJsonArray();
 //            for (JsonElement element : jsonArray) {
 //                JsonObject jsonObject1 = element.getAsJsonObject();
 //                String accountedAtStr = jsonObject1.get("refundtime").getAsString();
@@ -124,7 +124,7 @@ public class WubaUtil {
 //                BigDecimal commissionFee = jsonObject1.get("commission").getAsBigDecimal();
 //                BigDecimal settleAmount = jsonObject1.get("jiesuanmoney").getAsBigDecimal();
 //            }
-        }
+//        }
         return response;
     }
 
@@ -210,6 +210,50 @@ public class WubaUtil {
             Logger.info("wuba response decrypted: \n%s", result.toString());
 
         return result;
+    }
+
+
+    public static String sendRequest1(Map<String, Object> appParams, String method,
+                                      boolean requestNeedEncrypt, boolean responseNeedDecrypt,
+                                      boolean postMethod) {
+        // 系统级参数设置
+        Map<String, Object> params = sysParams();
+        params.put("m", method);
+
+        String jsonRequest = new Gson().toJson(appParams);
+        Logger.info("wuba request.%s:\n%s", method, jsonRequest);
+        // 应用级参数设置
+        if (requestNeedEncrypt) {
+            params.put("param", encryptMessage(jsonRequest, SECRET_KEY));
+        } else {
+            if (postMethod) {
+                params.put("param", jsonRequest);
+            } else {
+                for (Map.Entry<String, Object> entry : appParams.entrySet()) {
+                    params.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        Logger.info("wuba request %s:\n%s", method, new Gson().toJson(params));
+
+        WebServiceRequest paramRequest = WebServiceRequest.url(GATEWAY_URL)
+                .type("58_" + method)
+                .params(params).addKeyword("58");
+        String json;
+        if (postMethod) {
+            json = paramRequest.postString();
+        } else {
+            json = paramRequest.getString();
+        }
+        Logger.info("wuba response:\n%s", json);
+
+        WubaResponse result = parseResponse(json, responseNeedDecrypt);
+
+        if (responseNeedDecrypt)
+            Logger.info("wuba response decrypted: \n%s", result.toString());
+
+        return json;
     }
 
     /**

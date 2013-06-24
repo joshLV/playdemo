@@ -16,7 +16,6 @@ import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
-import models.wuba.WubaResponse;
 import models.wuba.WubaUtil;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
@@ -267,7 +266,7 @@ public class DDGroupBuy extends Controller {
 
     public static void wubaThirdBillSequences(String date) {
         System.out.println("date:" + date);
-        WubaResponse data3Json = WubaUtil.consumedBill(date);
+        String data3 = WubaUtil.consumedBill(date);
 //        for (JsonElement element : data3) {
 //                JsonObject jsonObject1 = element.getAsJsonObject();
 //                String accountedAtStr = jsonObject1.get("usetime").getAsString();
@@ -277,10 +276,10 @@ public class DDGroupBuy extends Controller {
 //                BigDecimal settleAmount = jsonObject1.get("jiesuanmoney").getAsBigDecimal();
 //            }
 
-        WubaResponse data4Json = WubaUtil.refundBill(date);
+        String data4 = WubaUtil.refundBill(date);
 
-        String data3 = data3Json.toString();
-        String data4 = data4Json.toString();
+//        String data3 = data3Json.toString();
+//        String data4 = data4Json.toString();
         render(data3, data4);
     }
 }
