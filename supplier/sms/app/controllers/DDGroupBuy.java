@@ -2,7 +2,7 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import models.accounts.PaymentSource;
 import models.dangdang.groupbuy.DDErrorCode;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
@@ -266,8 +266,8 @@ public class DDGroupBuy extends Controller {
     }
 
     public static void wubaThirdBillSequences(String date) {
-        System.out.println("date:"+date);
-        JsonArray data3Json = WubaUtil.consumedBill(date);
+        System.out.println("date:" + date);
+        JsonObject data3Json = WubaUtil.consumedBill(date);
 //        for (JsonElement element : data3) {
 //                JsonObject jsonObject1 = element.getAsJsonObject();
 //                String accountedAtStr = jsonObject1.get("usetime").getAsString();
@@ -277,11 +277,11 @@ public class DDGroupBuy extends Controller {
 //                BigDecimal settleAmount = jsonObject1.get("jiesuanmoney").getAsBigDecimal();
 //            }
 
-        JsonArray data4Json = WubaUtil.refundBill(date);
+        JsonObject data4Json = WubaUtil.refundBill(date);
 
         String data3 = data3Json.toString();
         String data4 = data4Json.toString();
-        render(data3,data4);
+        render(data3, data4);
     }
 }
 
