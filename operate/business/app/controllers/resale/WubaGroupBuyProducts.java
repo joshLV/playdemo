@@ -162,6 +162,8 @@ public class WubaGroupBuyProducts extends Controller {
         Map<String, String> requestParams = params.allSimple();
         requestParams.remove("productId");
         requestParams.remove("shopIds");
+        requestParams.remove("cityIds");
+        requestParams.remove("firstCity");
         //商家信息参数
         List<Map<String, String>> partnerParams = new ArrayList<>();
         for (String id : shopIds) {
