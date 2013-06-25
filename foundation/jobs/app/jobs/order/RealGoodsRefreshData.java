@@ -1,12 +1,15 @@
 package jobs.order;
 
+import com.uhuila.common.util.DateUtil;
 import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import models.order.OrderItems;
 import models.order.OrderStatus;
+import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
 import play.jobs.On;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,7 +22,9 @@ import java.util.List;
 @On("0 0 4 * * ?")
 public class RealGoodsRefreshData extends JobWithHistory {
     public static void doJobHistory() {
-        List<OrderItems> orderItemsList = OrderItems.find("status<>? and shippingInfo is not null", OrderStatus.PREPARED).fetch();
+        List<OrderItems> orderItemsList = OrderItems.find("shippingInfo is not null and status<>? and created >=?",
+                OrderStatus.PREPARED, DateUtil.firstDayOfMonth()).fetch();
+
         Iterator<OrderItems> it = orderItemsList.iterator();
         OrderItems orderItems = null;
         int count = 0;
