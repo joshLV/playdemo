@@ -22,7 +22,7 @@ import java.util.List;
 @On("0 0 4 * * ?")
 public class RealGoodsRefreshData extends JobWithHistory {
     public static void doJobHistory() {
-        List<OrderItems> orderItemsList = OrderItems.find("shippingInfo is not null and status<>? and created >=?",
+        List<OrderItems> orderItemsList = OrderItems.find("shippingInfo is not null and status<>? and createdAt >=?",
                 OrderStatus.PREPARED, DateUtil.firstDayOfMonth()).fetch();
 
         Iterator<OrderItems> it = orderItemsList.iterator();
