@@ -21,7 +21,8 @@ import java.util.List;
 @JobDefine(title = "实物洗数据", description = "实物洗数据，给商户打款")
 @On("0 0 4 * * ?")
 public class RealGoodsRefreshData extends JobWithHistory {
-    public static void doJobHistory() {
+    @Override
+    public void doJobWithHistory() {
         List<OrderItems> orderItemsList = OrderItems.find("shippingInfo is not null and status<>? and createdAt >=?",
                 OrderStatus.PREPARED, DateUtil.firstDayOfMonth()).fetch();
 
