@@ -156,6 +156,9 @@ public class ImportPartnerOrders extends Controller {
                     break;
                 } else {
                     List<Trade> tradeList = response.getTrades();
+                    if (tradeList == null) {
+                        tradeList = new ArrayList<>();
+                    }
                     for (Trade trade : tradeList) {
                         List<com.taobao.api.domain.Order> orderList = trade.getOrders();
                         String buyerMessage = "";
