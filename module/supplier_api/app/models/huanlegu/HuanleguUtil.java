@@ -15,7 +15,11 @@ import play.templates.TemplateLoader;
 import util.ws.WebServiceRequest;
 
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -73,10 +77,12 @@ public class HuanleguUtil {
 
     public static String encrypt(String content) {
         try {
-            byte[] raw = SECRET_KEY.getBytes(CODE_CHARSET);
-            SecretKeySpec skeySpec = new SecretKeySpec(raw, "DES");
+            SecureRandom sr = new SecureRandom();
+            DESKeySpec dks = new DESKeySpec(SECRET_KEY.getBytes(CODE_CHARSET));
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+            SecretKey securekey = keyFactory.generateSecret(dks);
             Cipher cipher = Cipher.getInstance("DES");
-            cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+            cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);
             String desEncrypted = Codec.byteToHexString(cipher.doFinal(content.getBytes(CODE_CHARSET)));
             return Codec.encodeBASE64(desEncrypted);
         } catch (Exception ex) {
@@ -85,22 +91,24 @@ public class HuanleguUtil {
     }
 
     public static String decrypt(String content) {
-        try {
-            String value = new String(Codec.decodeBASE64(content), CODE_CHARSET);
-            byte[] raw = SECRET_KEY.getBytes(CODE_CHARSET);
-            SecretKeySpec skeySpec = new SecretKeySpec(raw, "DES");
+        try{
+            String base64Decoded = new String(Codec.decodeBASE64(content), CODE_CHARSET);
+            byte[] hexDecoded = Codec.hexStringToByte(base64Decoded);
+            SecureRandom sr = new SecureRandom();
+            DESKeySpec dks = new DESKeySpec(SECRET_KEY.getBytes(CODE_CHARSET));
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+            SecretKey securekey = keyFactory.generateSecret(dks);
             Cipher cipher = Cipher.getInstance("DES");
-            cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-            return new String(cipher.doFinal(Codec.hexStringToByte(value)));
-        } catch (Exception ex) {
-            throw new UnexpectedException(ex);
+            cipher.init(Cipher.DECRYPT_MODE, securekey, sr);
+            return new String(cipher.doFinal(hexDecoded));
+        } catch (Exception e) {
+            throw new UnexpectedException(e);
         }
     }
 
     public static String sign(String serial, String content) {
         return Codec.encodeBASE64(
                 Codec.hexMD5(serial + DISTRIBUTOR_ID + CLIENT_ID + content.length())
-                        .toLowerCase()
         );
     }
 
@@ -116,8 +124,10 @@ public class HuanleguUtil {
         String restRequest = makeRequestRest(data);
         Logger.info("huanlegu request %s encrypted:\n%s", action, restRequest);
 
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("xmlContent", restRequest);
         //发起请求
-        WebServiceRequest request = WebServiceRequest.url(url).type("huanlegu."+action).requestBody(restRequest);
+        WebServiceRequest request = WebServiceRequest.url(url).type("huanlegu."+action).params(requestParams);
 
         String response = request.postString();
         Logger.info("huanlegu response %s:\n%s", action, response);

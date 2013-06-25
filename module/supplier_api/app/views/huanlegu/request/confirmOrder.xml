@@ -1,12 +1,10 @@
-<Body>
-    <OrderId>${orderId}</OrderId>
-    <DealTime>${dealTime}</DealTime>
-    <Name>${name}</Name>
-    <Mobile>${mobile}</Mobile>
-    <Quantity>${quantity}</Quantity>
-    <TicketId>${ticketId}</TicketId>
-    <SalePrice>${salePrice}</SalePrice>
-    <IsSendSms>${isSendSms}</IsSendSms>
-    <CertificateType>${certificateType}</CertificateType>
-    <CertificateNum>${certificateNum}</CertificateNum>
-</Body>
+<OrderId>${orderId}</OrderId>
+<DealTime>${dealTime}</DealTime>
+<Name>${name.raw()}</Name>
+<Mobile>${mobile}</Mobile>
+<Quantity>${quantity}</Quantity>
+<TicketId>${ticketId}</TicketId>
+<SalePrice>${salePrice}</SalePrice>
+<IsSendSms>${isSendSms}</IsSendSms>
+<CertificateType>${certificateType}</CertificateType>
+<CertificateNum>${certificateNum}</CertificateNum>

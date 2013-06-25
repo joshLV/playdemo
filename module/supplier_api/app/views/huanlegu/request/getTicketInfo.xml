@@ -1,6 +1,4 @@
-<Body>
-    <SightId>${sightId}</SightId>
-    <TicketId>${ticketId}</TicketId>
-    <PageIndex>${pageIndex}</PageIndex>
-    <PageSize>${pageSize}</PageSize>
-</Body>
+<SightId>${sightId}</SightId>
+<TicketId>${ticketId}</TicketId>
+<PageIndex>${pageIndex}</PageIndex>
+<PageSize>${pageSize}</PageSize>
