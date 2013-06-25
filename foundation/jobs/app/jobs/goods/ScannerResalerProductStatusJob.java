@@ -7,7 +7,10 @@ import models.resale.Resaler;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductStatus;
 import org.apache.commons.lang.StringUtils;
+<<<<<<< HEAD:foundation/jobs/app/jobs/goods/ScannerResalerProductStatusJob.java
 import play.jobs.Every;
+=======
+>>>>>>> develop:foundation/jobs/app/jobs/goods/ScannerResalerProductStatusJob.java
 import play.jobs.On;
 import util.ws.WebServiceRequest;
 
@@ -23,7 +26,11 @@ import java.util.regex.Pattern;
  * Date: 12-12-17
  * Time: 下午3:51
  */
+<<<<<<< HEAD:foundation/jobs/app/jobs/goods/ScannerResalerProductStatusJob.java
 @On("0 0 1 * * ?")
+=======
+@On("0 0 1 * * ?")  //每天凌晨执行
+>>>>>>> develop:foundation/jobs/app/jobs/goods/ScannerResalerProductStatusJob.java
 public class ScannerResalerProductStatusJob extends JobWithHistory {
 
     @Override

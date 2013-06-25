@@ -180,7 +180,7 @@ public class ResalerProduct extends Model {
 
     public static Goods getGoodsByOuterGoodsNo(Resaler resaler, String outerGoodsNo, OuterOrderPartner partner) {
         ResalerProduct product = ResalerProduct.find("goodsLinkId=? and partner=? and resaler=?",
-                outerGoodsNo, partner, resaler).first();
+                Long.valueOf(outerGoodsNo), partner, resaler).first();
         return product == null ? null : product.goods;
     }
 }

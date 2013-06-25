@@ -1,10 +1,11 @@
 package models.huanlegu;
 
-import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.order.ECoupon;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import play.Logger;
+import play.Play;
 import play.exceptions.UnexpectedException;
 import play.libs.Codec;
 import play.libs.XML;
@@ -14,7 +15,10 @@ import play.templates.TemplateLoader;
 import util.ws.WebServiceRequest;
 
 import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,13 +31,21 @@ import java.util.Map;
 public class HuanleguUtil {
     public static final String CODE_CHARSET = "utf-8";
 
-    public static String SECRET_KEY = "12345678";
-    public static String DISTRIBUTOR_ID = "456";
-    public static String CLIENT_ID = "789";
-
-    public static String GATEWAY_URL = "http://example.com/api/send/";
+    public static String SECRET_KEY = Play.configuration.getProperty("huanlegu.secret_key", "D7A38EFD4E1D4F42B5C198CEF8727022");
+    public static String DISTRIBUTOR_ID = Play.configuration.getProperty("huanlegu.distributor_id", "10001097");
+    public static String CLIENT_ID = Play.configuration.getProperty("huanlegu.client_id", "HVC000000065");
+    public static String GATEWAY_URL = Play.configuration.getProperty("huanlegu.gateway_url", "http://202.104.133.113:8060/api/send/");
 
     public static final String SUPPLIER_DOMAIN_NAME = "huanlegu";
+
+    public static HuanleguMessage getSightInfo(String sightId, String sightName) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("sightId", sightId);
+        params.put("sightName", sightName);
+
+        return sendRequest("getSightInfo", params);
+    }
+
 
     public static HuanleguMessage resend(ECoupon coupon) {
         Map<String, Object> params = new HashMap<>();
@@ -54,8 +66,8 @@ public class HuanleguUtil {
         params.put("mobile", coupon.orderItems.phone);
         params.put("quantity", quantity);
         params.put("ticketId", coupon.goods.supplierGoodsId);
-        params.put("salePrice", "");
-        params.put("isSendSms", 1);
+        params.put("salePrice", coupon.salePrice.toString());
+        params.put("isSendSms", 0);//下单时不发短信，下完单后会触发重发短信
         params.put("certificateType", "0");//不需要证件
         params.put("certificateNum", "");
 
@@ -64,10 +76,12 @@ public class HuanleguUtil {
 
     public static String encrypt(String content) {
         try {
-            byte[] raw = SECRET_KEY.getBytes(CODE_CHARSET);
-            SecretKeySpec skeySpec = new SecretKeySpec(raw, "DES");
+            SecureRandom sr = new SecureRandom();
+            DESKeySpec dks = new DESKeySpec(SECRET_KEY.getBytes(CODE_CHARSET));
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+            SecretKey securekey = keyFactory.generateSecret(dks);
             Cipher cipher = Cipher.getInstance("DES");
-            cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+            cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);
             String desEncrypted = Codec.byteToHexString(cipher.doFinal(content.getBytes(CODE_CHARSET)));
             return Codec.encodeBASE64(desEncrypted);
         } catch (Exception ex) {
@@ -76,22 +90,27 @@ public class HuanleguUtil {
     }
 
     public static String decrypt(String content) {
-        try {
-            String value = new String(Codec.decodeBASE64(content), CODE_CHARSET);
-            byte[] raw = SECRET_KEY.getBytes(CODE_CHARSET);
-            SecretKeySpec skeySpec = new SecretKeySpec(raw, "DES");
+        try{
+            String base64Decoded = new String(Codec.decodeBASE64(content), CODE_CHARSET);
+            byte[] hexDecoded = Codec.hexStringToByte(base64Decoded);
+            SecureRandom sr = new SecureRandom();
+            DESKeySpec dks = new DESKeySpec(SECRET_KEY.getBytes(CODE_CHARSET));
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+            SecretKey securekey = keyFactory.generateSecret(dks);
             Cipher cipher = Cipher.getInstance("DES");
-            cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-            return new String(cipher.doFinal(Codec.hexStringToByte(value)));
-        } catch (Exception ex) {
-            throw new UnexpectedException(ex);
+            cipher.init(Cipher.DECRYPT_MODE, securekey, sr);
+            return new String(cipher.doFinal(hexDecoded));
+        } catch (Exception e) {
+            throw new UnexpectedException(e);
         }
     }
 
     public static String sign(String serial, String content) {
+        System.out.println(serial+DISTRIBUTOR_ID+CLIENT_ID+content.length());
+        System.out.println(Codec.hexMD5(serial+DISTRIBUTOR_ID+CLIENT_ID+content.length()));
+        System.out.println(Codec.encodeBASE64(Codec.hexMD5(serial+DISTRIBUTOR_ID+CLIENT_ID+content.length())));
         return Codec.encodeBASE64(
-                Codec.hexMD5(serial + CLIENT_ID + DISTRIBUTOR_ID + content.length())
-                        .toLowerCase()
+                Codec.hexMD5(serial + DISTRIBUTOR_ID + CLIENT_ID + content.length())
         );
     }
 
@@ -107,17 +126,19 @@ public class HuanleguUtil {
         String restRequest = makeRequestRest(data);
         Logger.info("huanlegu request %s encrypted:\n%s", action, restRequest);
 
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("xmlContent", restRequest);
         //发起请求
-        WebServiceRequest request = WebServiceRequest.url(url).type("huanlegu."+action).requestBody(restRequest);
+        WebServiceRequest request = WebServiceRequest.url(url).type("huanlegu."+action).params(requestParams);
 
         String response = request.postString();
         Logger.info("huanlegu response %s:\n%s", action, response);
         //解析响应
-        return parseMessage(response);
+        return parseMessage(response, true);
 
     }
 
-    public static HuanleguMessage parseMessage(String document) {
+    public static HuanleguMessage parseMessage(String document, boolean isResponse) {
         Document xmlDocument;
         try{
             xmlDocument = XML.getDocument(document);
@@ -125,8 +146,9 @@ public class HuanleguUtil {
             Logger.info("huanlegu message failed: xml parse error.");
             return new HuanleguMessage();
         }
-        return parseMessage(xmlDocument);
+        return parseMessage(xmlDocument, isResponse);
     }
+
 
     /**
      * 解析欢乐谷的消息。
@@ -134,33 +156,41 @@ public class HuanleguUtil {
      * @param document  xml形式的欢乐谷消息
      * @return          解析后的欢乐谷消息
      */
-    public static HuanleguMessage parseMessage(Document document) {
+    public static HuanleguMessage parseMessage(Document document, boolean isResponse) {
         HuanleguMessage message = new HuanleguMessage();
         if (document == null) {
             Logger.info("huanlegu message failed: empty document.");
             return message;
         }
-        message.version = StringUtils.trimToNull(XPath.selectText("/Trade/Head/Version", document).trim());
-        message.timeStamp = StringUtils.trimToNull(XPath.selectText("/Trade/Head/TimeStamp", document));
-        message.statusCode = StringUtils.trimToNull(XPath.selectText("/Trade/Head/StatusCode", document));
-        message.sequenceId = StringUtils.trimToNull(XPath.selectText("/Trade/Head/SequenceId", document));
-        message.sign = StringUtils.trimToNull(XPath.selectText("/Trade/Head/Signed", document));
+        Node head =  XPath.selectNode("/Trade/Head", document);
+        message.version = StringUtils.trimToNull(XPath.selectText("./Version", head).trim());
+        message.timeStamp = StringUtils.trimToNull(XPath.selectText("./TimeStamp", head));
+        message.sequenceId = StringUtils.trimToNull(XPath.selectText("./SequenceId", head));
+        message.sign = StringUtils.trimToNull(XPath.selectText("./Signed", head));
 
-        if (message.isOk()){
-            String rawMessage = StringUtils.trimToNull(XPath.selectText("/Trade/Body", document));
-            if (rawMessage != null) {
-                //解析加密字符串
-                String decryptedMessage = decrypt(rawMessage);
-                if (verify(message.sequenceId, decryptedMessage, message.sign)) {
-                    Logger.info("huanlegu response decrypted:\n%s", decryptedMessage);
-                    message.message = XPath.selectNode("/Body", XML.getDocument("<Body>" + decryptedMessage + "</Body>"));
-                }else {
-                    Logger.error("huanlegu response error: invalid sign: %s", message.sign);
-                }
-            }
+        if (isResponse) {
+            message.statusCode = StringUtils.trimToNull(XPath.selectText("./StatusCode", head));
         }else {
+            message.distributorId = StringUtils.trimToNull(XPath.selectText("./DistributorId", head));
+            message.clientId = StringUtils.trimToNull(XPath.selectText("./ClientId", head));
+        }
+
+        if (isResponse && !"200".equals(message.statusCode)) {
             message.errorMsg = StringUtils.trimToNull(XPath.selectText("/Trade/Body/Message", document));
             Logger.error("huanlegu message failed: %s", message.errorMsg);
+            return message;
+        }
+
+        String rawMessage = StringUtils.trimToNull(XPath.selectText("/Trade/Body", document));
+        if (rawMessage != null) {
+            //解析加密字符串
+            String decryptedMessage = decrypt(rawMessage);
+            if (verify(message.sequenceId, decryptedMessage, message.sign)) {
+                Logger.info("huanlegu response decrypted:\n%s", decryptedMessage);
+                message.message = XPath.selectNode("/Body", XML.getDocument("<Body>" + decryptedMessage + "</Body>"));
+            }else {
+                Logger.error("huanlegu response error: invalid sign: %s", message.sign);
+            }
         }
 
         return message;

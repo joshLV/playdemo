@@ -1,5 +1,3 @@
-<Body>
-    <TicketId>${ticketId}</TicketId>
-    <Quantity>${quantity}</Quantity>
-    <RetailPrice>${retailPrice}</RetailPrice>
-</Body>
+<TicketId>${ticketId}</TicketId>
+<Quantity>${quantity}</Quantity>
+<RetailPrice>${retailPrice}</RetailPrice>

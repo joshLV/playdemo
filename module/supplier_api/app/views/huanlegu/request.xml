@@ -8,5 +8,5 @@
         <TimeStamp>${timeStamp.raw()}</TimeStamp>
         <Signed>${sign.raw()}</Signed>
     </Head>
-    ${body.raw()}
+    <Body>${body.raw()}</Body>
 </Trade>

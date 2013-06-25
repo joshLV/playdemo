@@ -142,6 +142,27 @@
 
             <div class="tab-pane" id="edit-partners">
                 <form class="form-horizontal" method="POST" action="/resaler-products/wb/edit/partners">
+                    <div class="control-group">
+                        <label class="control-label">发布城市 *</label>
+                        <div class="controls">
+                            <input type="checkbox" city="北京" value="2" city-shortname="bj">北京
+                            <input type="checkbox" city="上海" value="4" city-shortname="sh" checked>上海
+                            <input type="checkbox" city="天津" value="5" city-shortname="tj">天津
+                            <input type="checkbox" city="哈尔滨" value="10" city-shortname="hrb">哈尔滨
+                            <input type="checkbox" city="苏州" value="21" city-shortname="su">苏州
+                            <input type="checkbox" city="南京" value="29" city-shortname="nj">南京
+                            <input type="checkbox" city="杭州" value="35" city-shortname="hz">杭州
+                            <input type="checkbox" city="成都" value="36" city-shortname="cd">成都
+                            <input type="checkbox" city="宁波" value="205" city-shortname="nb">宁波
+                            <input type="checkbox" city="无锡" value="361" city-shortname="wx">无锡
+                            <input type="checkbox" city="常州" value="64" city-shortname="cz">常州
+                            <input type="checkbox" city="广州" value="7" city-shortname="gz">广州
+                            <input type="checkbox" city="深圳" value="11" city-shortname="sz">深圳
+                            <input type="checkbox" city="南通" value="208" city-shortname="nt">南通
+                            <input type="hidden" name="cityIds" id="cityIds">
+                            <input type="hidden" name="firstCity" id="firstCity">
+                        </div>
+                    </div>
                     %{shopIds=[]}%
                     #{list items:shopList, as:'shop'}
                     #{if shop.deleted != com.uhuila.common.constants.DeletedStatus.DELETED}
