@@ -178,6 +178,7 @@ DELETE  /seckill_goods/{id}                     SecKillGoods.delete
 
 
 GET     /callcenter/phone/jump_index                              OperateCRM.jumpIndex
+GET     /callcenter/phone/jump_index2                             OperateCRM.jumpIndex2
 GET     /callcenter/phone/jump_prev_index                         OperateCRM.jumpPrevIndex
 GET     /callcenter/phone                                         OperateCRM.getPhone
 GET     /callcenter/phone/incoming                                OperateCRM.callCenter

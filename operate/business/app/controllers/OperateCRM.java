@@ -219,6 +219,34 @@ public class OperateCRM extends Controller {
         index(phone, condition, userId, consultId, null);
     }
 
+    /**
+     * 派通Call Center系统对接.
+     * 派通调用参数.
+     * 变量名	变量值
+    phone	客户来电号码
+    oper		当前坐席工号
+    ch	当前坐席通道号
+    outch	呼入外线通道号
+    startTime	代表来电时间, 至1970年1月1日, 00:00:00 GMT.以来的毫秒数。
+    datetime	popVer=t1v2时，代表已经转化后的时间YYMMDDHHMMSS
+    dtmf	客户的按键信息
+    id	popVer=t1v2时，代表本次来电的一个唯一标识号，这个标识号可以用在日后的查询录音等功能。
+     */
+    public static void jumpIndex2(String phone, CRMCondition condition, Long userId, Long consultId, String calledNo, String agentName, String id, String callsheetId, String province, String city) {
+        ConsultRecord consult = new ConsultRecord();
+        consult.deleted = DeletedStatus.UN_DELETED;
+        consult.callNo = phone;
+        consult.calledNo = calledNo;
+        consult.agentName = agentName;
+        consult.ivrkey = id;
+        consult.callsheetId = callsheetId;
+        consult.province = province;
+        consult.city = city;
+        consult.save();
+        consultId = consult.id;
+        index(phone, condition, userId, consultId, null);
+    }
+
     public static void jumpPrevIndex(String phone, CRMCondition condition, Long userId, Long consultId) {
         index(phone, condition, userId, consultId, null);
     }
