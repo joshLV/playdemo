@@ -4,7 +4,9 @@ import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
+import models.accounts.AccountSequence;
 import models.accounts.TradeBill;
+import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.consumer.User;
 import models.sales.Goods;
@@ -653,7 +655,7 @@ public class OrderItems extends Model {
         String returnFlg = "";
 
         if (orderItems == null || orderItems.id == null || returnedCount == null || returnedCount <= 0L || returnedCount > orderItems.buyNumber) {
-            returnFlg = "{\"error\":\"no such eCoupon\"}";
+            returnFlg = "{\"error\":\"no such orderItems\"}";
             return returnFlg;
         }
         //todo 刷单的不可退款
@@ -709,6 +711,58 @@ public class OrderItems extends Model {
 
         return returnFlg;
 
+    }
+
+    /**
+     * 独立核算商户帐号.
+     *
+     * @return
+     */
+    @Transient
+    public Account getSupplierAccount() {
+        return AccountUtil.getSupplierAccount(goods.supplierId, this.order.operator);
+    }
+
+
+    /**
+     * 渠道实物订单已发货后给商户打钱
+     */
+    public void realGoodsPayCommission() {
+        //如果accountSequence如果该商户的金额大于商户帐号supplierAccount金额，则不会重复打钱
+        Account supplierAccount = getSupplierAccount();
+        AccountSequence accountSequence = AccountSequence.find("orderId=? and account=? order by id desc", order.id, supplierAccount).first();
+        if (accountSequence != null && supplierAccount.amount.compareTo(accountSequence.balance) <= 0) {
+            Logger.info("supplier.account.amount=%s,accountSequence.balance=%s", supplierAccount.amount, accountSequence.balance);
+            return;
+        }
+
+        BigDecimal paidToSupplierPrice = originalPrice;
+
+        // 给商户打钱
+        TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
+                .toAccount(supplierAccount)
+                .balancePaymentAmount(paidToSupplierPrice)
+                .orderId(order.getId())
+                .make();
+        TradeUtil.success(consumeTrade, "渠道上传发货单(实物发货)" + goods.shortName);
+
+        BigDecimal platformCommission = BigDecimal.ZERO;
+
+        if (salePrice.compareTo(resalerPrice) < 0) {
+            // 如果成交价小于分销商成本价（这种情况只有在一百券网站上才会发生），
+            // 那么一百券就没有佣金，平台的佣金也变为成交价减成本价
+            platformCommission = salePrice.subtract(originalPrice);
+        }
+
+        if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
+            // 给优惠券平台佣金
+            TradeBill platformCommissionTrade = TradeUtil.commissionTrade(order.operator)
+                    .toAccount(AccountUtil.getPlatformCommissionAccount(order.operator))
+                    .balancePaymentAmount(platformCommission)
+                    .orderId(order.getId())
+                    .make();
+            TradeUtil.success(platformCommissionTrade, order.description);
+        }
     }
 
     @Transient

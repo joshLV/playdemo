@@ -270,7 +270,7 @@
                                                                                   data-trigger="hover"
                                                                                   onmouseover="$('#returnEntry_${orderItem.id}').popover('show');"><br>
                 (${returnEntry.returnedCount} 件 &{'entry.'+ orderItem.returnStatus}
-                退货时间：${returnEntry?.returnedAt?.format('yyyy-MM-dd HH:mm:ss')})</a>#{/if}</td>
+                #{if returnEntry?.returnedAt}退货时间：${returnEntry?.returnedAt?.format('yyyy-MM-dd HH:mm:ss')}#{/if})</a>#{/if}</td>
             <td>#{if orderItem.goods.materialType == models.sales.MaterialType.REAL && returnEntry == null}
                 #{if orders.status == models.order.OrderStatus.PAID}
                     <a
@@ -312,7 +312,6 @@
             </span>
     </li>
 %{ outerOrder = models.order.OuterOrder.getOuterOrder(orders) }%
-
     <table class="table table-bordered table-striped">
 
         <tr>

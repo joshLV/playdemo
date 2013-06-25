@@ -1,4 +1,4 @@
-package jobs.order;
+package jobs.account;
 
 import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;

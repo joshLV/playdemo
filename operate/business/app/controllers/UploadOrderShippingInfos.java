@@ -138,6 +138,10 @@ public class UploadOrderShippingInfos extends Controller {
             orderItems.status = OrderStatus.SENT;
             orderItems.sendAt = new Date();
             orderItems.save();
+
+            //订单已发货，给商户打钱操作
+            orderItems.realGoodsPayCommission();
+
             uploadSuccessOrders.add(logistic.orderNumber);
             if (resaler != null && orderItems.order.userId.equals(resaler.getId())
                     && orderItems.order.operator.id.equals(resaler.operator.getId())) {
@@ -146,6 +150,7 @@ public class UploadOrderShippingInfos extends Controller {
                 successTaobaoLogistics.add(logistic);
             }
         }
+
         JPA.em().flush();
 
         List<ExpressCompany> expressCompanyList = ExpressCompany.findAll();

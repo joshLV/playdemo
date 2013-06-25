@@ -1,4 +1,4 @@
-package jobs.order;
+package jobs.goods;
 
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
