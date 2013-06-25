@@ -1,9 +1,9 @@
 package models.huanlegu;
 
-import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.order.ECoupon;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
 import play.exceptions.UnexpectedException;
@@ -18,7 +18,6 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -107,6 +106,9 @@ public class HuanleguUtil {
     }
 
     public static String sign(String serial, String content) {
+        System.out.println(serial+DISTRIBUTOR_ID+CLIENT_ID+content.length());
+        System.out.println(Codec.hexMD5(serial+DISTRIBUTOR_ID+CLIENT_ID+content.length()));
+        System.out.println(Codec.encodeBASE64(Codec.hexMD5(serial+DISTRIBUTOR_ID+CLIENT_ID+content.length())));
         return Codec.encodeBASE64(
                 Codec.hexMD5(serial + DISTRIBUTOR_ID + CLIENT_ID + content.length())
         );
@@ -132,11 +134,11 @@ public class HuanleguUtil {
         String response = request.postString();
         Logger.info("huanlegu response %s:\n%s", action, response);
         //解析响应
-        return parseMessage(response);
+        return parseMessage(response, true);
 
     }
 
-    public static HuanleguMessage parseMessage(String document) {
+    public static HuanleguMessage parseMessage(String document, boolean isResponse) {
         Document xmlDocument;
         try{
             xmlDocument = XML.getDocument(document);
@@ -144,8 +146,9 @@ public class HuanleguUtil {
             Logger.info("huanlegu message failed: xml parse error.");
             return new HuanleguMessage();
         }
-        return parseMessage(xmlDocument);
+        return parseMessage(xmlDocument, isResponse);
     }
+
 
     /**
      * 解析欢乐谷的消息。
@@ -153,33 +156,41 @@ public class HuanleguUtil {
      * @param document  xml形式的欢乐谷消息
      * @return          解析后的欢乐谷消息
      */
-    public static HuanleguMessage parseMessage(Document document) {
+    public static HuanleguMessage parseMessage(Document document, boolean isResponse) {
         HuanleguMessage message = new HuanleguMessage();
         if (document == null) {
             Logger.info("huanlegu message failed: empty document.");
             return message;
         }
-        message.version = StringUtils.trimToNull(XPath.selectText("/Trade/Head/Version", document).trim());
-        message.timeStamp = StringUtils.trimToNull(XPath.selectText("/Trade/Head/TimeStamp", document));
-        message.statusCode = StringUtils.trimToNull(XPath.selectText("/Trade/Head/StatusCode", document));
-        message.sequenceId = StringUtils.trimToNull(XPath.selectText("/Trade/Head/SequenceId", document));
-        message.sign = StringUtils.trimToNull(XPath.selectText("/Trade/Head/Signed", document));
+        Node head =  XPath.selectNode("/Trade/Head", document);
+        message.version = StringUtils.trimToNull(XPath.selectText("./Version", head).trim());
+        message.timeStamp = StringUtils.trimToNull(XPath.selectText("./TimeStamp", head));
+        message.sequenceId = StringUtils.trimToNull(XPath.selectText("./SequenceId", head));
+        message.sign = StringUtils.trimToNull(XPath.selectText("./Signed", head));
 
-        if (message.isOk()){
-            String rawMessage = StringUtils.trimToNull(XPath.selectText("/Trade/Body", document));
-            if (rawMessage != null) {
-                //解析加密字符串
-                String decryptedMessage = decrypt(rawMessage);
-                if (verify(message.sequenceId, decryptedMessage, message.sign)) {
-                    Logger.info("huanlegu response decrypted:\n%s", decryptedMessage);
-                    message.message = XPath.selectNode("/Body", XML.getDocument("<Body>" + decryptedMessage + "</Body>"));
-                }else {
-                    Logger.error("huanlegu response error: invalid sign: %s", message.sign);
-                }
-            }
+        if (isResponse) {
+            message.statusCode = StringUtils.trimToNull(XPath.selectText("./StatusCode", head));
         }else {
+            message.distributorId = StringUtils.trimToNull(XPath.selectText("./DistributorId", head));
+            message.clientId = StringUtils.trimToNull(XPath.selectText("./ClientId", head));
+        }
+
+        if (isResponse && !"200".equals(message.statusCode)) {
             message.errorMsg = StringUtils.trimToNull(XPath.selectText("/Trade/Body/Message", document));
             Logger.error("huanlegu message failed: %s", message.errorMsg);
+            return message;
+        }
+
+        String rawMessage = StringUtils.trimToNull(XPath.selectText("/Trade/Body", document));
+        if (rawMessage != null) {
+            //解析加密字符串
+            String decryptedMessage = decrypt(rawMessage);
+            if (verify(message.sequenceId, decryptedMessage, message.sign)) {
+                Logger.info("huanlegu response decrypted:\n%s", decryptedMessage);
+                message.message = XPath.selectNode("/Body", XML.getDocument("<Body>" + decryptedMessage + "</Body>"));
+            }else {
+                Logger.error("huanlegu response error: invalid sign: %s", message.sign);
+            }
         }
 
         return message;

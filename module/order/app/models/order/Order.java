@@ -1024,7 +1024,7 @@ public class Order extends Model {
                 eCoupon.autoVerify();  // 自动验证掉
             } else if (HuanleguUtil.SUPPLIER_DOMAIN_NAME.equals(orderItem.goods.getSupplier().domainName)) {
                 HuanleguMessage message = HuanleguUtil.confirmOrder(eCoupon, 1);
-                if (message.isOk()) {
+                if (message.isResponseOk()) {
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     Node voucher = message.selectNode("./Voucher");
                     eCoupon.supplierECouponId = StringUtils.trimToNull(XPath.selectText("./VoucherId", voucher));

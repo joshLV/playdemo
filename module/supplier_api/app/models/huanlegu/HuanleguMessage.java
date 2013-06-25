@@ -11,22 +11,30 @@ import java.util.List;
  *         Date: 13-6-19
  */
 public class HuanleguMessage {
+
     public String version;
     public String timeStamp;
-    public String statusCode;
     public String errorMsg;
     public String sequenceId;
     public String sign;
 
     public Node message;
 
+    //response 特有的head
+    public String statusCode;
+
+    //request 特有的head
+    public String distributorId;
+    public String clientId;
+
     /**
-     * 判断欢乐谷响应是否OK.
+     * 判断欢乐谷信息是否OK.
      */
-    public boolean isOk() {
-        if (statusCode != null){
-            return statusCode.equals("200");
-        }
+    public boolean isResponseOk() {
+        return "200".equals(statusCode) && message != null;
+    }
+
+    public boolean isRequestOk() {
         return message != null;
     }
 
