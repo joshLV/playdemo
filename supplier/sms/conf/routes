@@ -65,6 +65,9 @@ GET     /launch-qt                              QingtuanLauncher.index
 
 GET     /wubaThirdBillSequences                 DDGroupBuy.wubaThirdBillSequences
 
+# 欢乐谷
+*       /api/v1/huanlegu/voucher-consumed       HuanleguAPI.couponConsumed
+
 
 # 虚拟短信通道
 *      /vxsms                                   VxSmses.send

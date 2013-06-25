@@ -1,4 +1,2 @@
-<Body>
-    <SightId>${sightId}</SightId>
-    <SightName>${sightName}</SightName>
-</Body>
+<SightId>${sightId.raw()}</SightId>
+<SightName>${sightName.raw()}</SightName>
