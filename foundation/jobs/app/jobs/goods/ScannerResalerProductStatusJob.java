@@ -7,10 +7,6 @@ import models.resale.Resaler;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductStatus;
 import org.apache.commons.lang.StringUtils;
-<<<<<<< HEAD:foundation/jobs/app/jobs/goods/ScannerResalerProductStatusJob.java
-import play.jobs.Every;
-=======
->>>>>>> develop:foundation/jobs/app/jobs/goods/ScannerResalerProductStatusJob.java
 import play.jobs.On;
 import util.ws.WebServiceRequest;
 
