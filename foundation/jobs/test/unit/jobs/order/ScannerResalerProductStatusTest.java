@@ -2,7 +2,7 @@ package unit.jobs.order;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import jobs.order.ScannerResalerProductStatusJob;
+import jobs.goods.ScannerResalerProductStatusJob;
 import models.jobs.JobWithHistory;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
