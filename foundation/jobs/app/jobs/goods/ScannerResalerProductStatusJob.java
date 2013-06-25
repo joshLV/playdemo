@@ -1,4 +1,4 @@
-package jobs.order;
+package jobs.goods;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.jobs.JobWithHistory;
@@ -7,6 +7,8 @@ import models.resale.Resaler;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductStatus;
 import org.apache.commons.lang.StringUtils;
+import play.jobs.Every;
+import play.jobs.On;
 import util.ws.WebServiceRequest;
 
 import java.util.HashMap;
@@ -21,7 +23,7 @@ import java.util.regex.Pattern;
  * Date: 12-12-17
  * Time: 下午3:51
  */
-// @Every("1h")  因可能的连接数影响，先关掉这个job
+@On("0 0 1 * * ?")
 public class ScannerResalerProductStatusJob extends JobWithHistory {
 
     @Override

@@ -2,7 +2,7 @@ package unit.jobs.order;
 
 import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
-import jobs.order.PrepaymentNotice;
+import jobs.account.PrepaymentNotice;
 import models.jobs.JobWithHistory;
 import models.mail.MailMessage;
 import models.mail.MailUtil;

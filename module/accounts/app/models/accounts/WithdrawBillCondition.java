@@ -69,7 +69,7 @@ public class WithdrawBillCondition implements Serializable {
                         filter.append(" or applier in (select loginName from User u where u.loginName=:searchUser)");
                         filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.receiverMobile=:searchUser)");
                         filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.buyerMobile=:searchUser)");
-                        filter.append("or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =:searchUser)))");
+                        filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =:searchUser)))");
                         params.put("searchUser", searchUser);
                         break;
                 }
@@ -84,7 +84,7 @@ public class WithdrawBillCondition implements Serializable {
                 filter.append(" or applier in (select loginName from User u where u.loginName=:searchUser)");
                 filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.receiverMobile=:searchUser)");
                 filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.buyerMobile=:searchUser)");
-                filter.append("or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =:searchUser)))");
+                filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =:searchUser)))");
                 params.put("searchUser", searchUser);
             }
         }

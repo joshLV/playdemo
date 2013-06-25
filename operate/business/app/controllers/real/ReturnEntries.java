@@ -174,8 +174,7 @@ public class ReturnEntries extends Controller {
         if (StringUtils.isNotEmpty(page) && (page.contains("?x-http-method-override=PUT") || page.contains("x-http-method-override=PUT"))) {
             page = page.replace("x-http-method-override=PUT", "").replace("?", "");
         }
-        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        return pageNumber;
+        return StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
     }
 
 }
