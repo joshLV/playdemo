@@ -26,11 +26,7 @@ import java.util.regex.Pattern;
  * Date: 12-12-17
  * Time: 下午3:51
  */
-<<<<<<< HEAD:foundation/jobs/app/jobs/goods/ScannerResalerProductStatusJob.java
-@On("0 0 1 * * ?")
-=======
 @On("0 0 1 * * ?")  //每天凌晨执行
->>>>>>> develop:foundation/jobs/app/jobs/goods/ScannerResalerProductStatusJob.java
 public class ScannerResalerProductStatusJob extends JobWithHistory {
 
     @Override
