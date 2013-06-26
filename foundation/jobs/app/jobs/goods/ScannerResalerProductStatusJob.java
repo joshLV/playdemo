@@ -31,13 +31,12 @@ public class ScannerResalerProductStatusJob extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
         Map<OuterOrderPartner, Resaler> resalers = new HashMap<>();
-        resalers.put(OuterOrderPartner.YHD, Resaler.findOneByLoginName(Resaler.YHD_LOGIN_NAME));
-        resalers.put(OuterOrderPartner.WB, Resaler.findOneByLoginName(Resaler.WUBA_LOGIN_NAME));
-        resalers.put(OuterOrderPartner.TB, Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME));
-        resalers.put(OuterOrderPartner.JD, Resaler.findOneByLoginName(Resaler.JD_LOGIN_NAME));
+        resalers.put(OuterOrderPartner.YHD, Resaler.findApprovedByLoginName(Resaler.YHD_LOGIN_NAME));
+        resalers.put(OuterOrderPartner.WB, Resaler.findApprovedByLoginName(Resaler.WUBA_LOGIN_NAME));
+        resalers.put(OuterOrderPartner.TB, Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME));
+        resalers.put(OuterOrderPartner.JD, Resaler.findApprovedByLoginName(Resaler.JD_LOGIN_NAME));
 
         for (Map.Entry<OuterOrderPartner, Resaler> entry : resalers.entrySet()) {
-            Logger.info("ScannerResalerProductStatusJob resaler.id:%s",entry.getValue().id);
             if (entry.getValue() == null) {
                 continue;
             }
