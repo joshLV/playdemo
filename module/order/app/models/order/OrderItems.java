@@ -752,7 +752,11 @@ public class OrderItems extends Model {
             // 如果成交价小于分销商成本价（这种情况只有在一百券网站上才会发生），
             // 那么一百券就没有佣金，平台的佣金也变为成交价减成本价
             platformCommission = salePrice.subtract(originalPrice);
+        } else {
+            // 平台的佣金等于分销商成本价减成本价
+            platformCommission = resalerPrice.subtract(originalPrice);
         }
+
 
         if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
             // 给优惠券平台佣金
