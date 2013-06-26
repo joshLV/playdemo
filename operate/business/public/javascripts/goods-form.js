@@ -19,7 +19,7 @@ $(
             });
         });
 
-        $("#brand").change(function () {
+        $("#brands").change(function () {
             if ($("#goods_materialType_2").attr("checked")) {
                 $("#sku").load("/goods-skus/" + $("#goods_brand_id").val(), function (data) {
                 });

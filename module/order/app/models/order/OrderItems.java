@@ -714,7 +714,7 @@ public class OrderItems extends Model {
     }
 
     /**
-     * 独立核算商户帐号.
+     * 商户帐号.
      *
      * @return
      */
