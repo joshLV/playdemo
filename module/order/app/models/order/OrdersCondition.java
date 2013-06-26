@@ -68,12 +68,15 @@ public class OrdersCondition {
         if (shihuiSupplierId != null) {
             sql.append(" and o.id in (select oi.order.id from OrderItems oi where oi.goods.supplierId=:shihuiSupplierId " +
                     " and oi.goods.materialType=:materialType and oi.order.orderType=:orderType and oi" +
-                    ".order.status=:itemStatus and oi.createdAt<=:itemCreatedAt  )");
+                    ".order.status=:itemStatus and oi.createdAt<=:itemCreatedAt and oi.createdAt >=:realSoldStartDay   " +
+                    " )");
             paramsMap.put("shihuiSupplierId", Supplier.getShihui().id);
             paramsMap.put("materialType", materialType);
             paramsMap.put("orderType", orderType);
             paramsMap.put("itemStatus", itemStatus);
-            paramsMap.put("itemCreatedAt", itemCreatedAt);
+            paramsMap.put("itemCreatedAt", DateUtil.getEndOfDay(itemCreatedAt));
+            paramsMap.put("realSoldStartDay", DateUtil.stringToDate("2013-04-01 00:00:00","yyyy-MM-dd HH:mm:ss"));
+
         }
 
 
