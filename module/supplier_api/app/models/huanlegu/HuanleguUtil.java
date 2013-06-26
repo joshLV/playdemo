@@ -65,7 +65,7 @@ public class HuanleguUtil {
         params.put("name", "");
         params.put("mobile", coupon.orderItems.phone);
         params.put("quantity", quantity);
-        params.put("ticketId", coupon.goods.supplierGoodsId);
+        params.put("ticketId", coupon.goods.supplierGoodsNo);
         params.put("salePrice", coupon.salePrice.toString());
         params.put("isSendSms", 0);//下单时不发短信，下完单后会触发重发短信
         params.put("certificateType", "0");//不需要证件

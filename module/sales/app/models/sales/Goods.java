@@ -251,6 +251,9 @@ public class Goods extends Model {
     @Column(name = "supplier_goods_id")
     public Long supplierGoodsId;
 
+    @Column(name = "supplier_goods_no")
+    public String supplierGoodsNo;
+
     /**
      * 商品流水码（至少2位 可动态扩展）
      */
