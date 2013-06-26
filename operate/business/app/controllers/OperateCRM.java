@@ -22,6 +22,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -236,15 +237,17 @@ public class OperateCRM extends Controller {
      H=数据包类型及版本，ch=来电通道号，ph=来电号码，id=本次来电唯一标识，tm=来电时间YYMMDDHHMMSS，dm=用户按键信息。例如：H=t1v2,ch=2,ph=86307627,id=12157703713752,tm=080711175931,dm=0;
 
      */
-    public static void jumpIndex2(String ph, CRMCondition condition, Long userId, Long consultId, String calledNo, String agentName, String id, String callsheetId) {
+    public static void jumpIndex2(String ph, CRMCondition condition, Long userId, Long consultId, String calledNo, String agentName, String ch, String id, String dm) {
         String phone = ph;
         ConsultRecord consult = new ConsultRecord();
         consult.deleted = DeletedStatus.UN_DELETED;
         consult.callNo = phone;
         consult.calledNo = calledNo;
         consult.agentName = agentName;
-        consult.ivrkey = id;
-        consult.callsheetId = callsheetId;
+        consult.ivrkey = ch;
+        consult.callsheetId = id;
+        consult.pressedKey = dm;
+        consult.createdAt = new Date();
         consult.save();
         consultId = consult.id;
         index(phone, condition, userId, consultId, null);

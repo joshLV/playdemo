@@ -2,15 +2,21 @@ package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.AccountType;
-import models.order.ECoupon;
-import models.order.OrdersCondition;
 import play.data.validation.Email;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
@@ -86,6 +92,10 @@ public class ConsultRecord extends Model {
     public String province;
 
     public String city;
+
+
+    @Column(name="pressed_key")
+    public String pressedKey;
 
     @Column(name = "created_by")
     public String createdBy;
