@@ -88,8 +88,8 @@ public class OperateGoods extends Controller {
         renderArgs.put("brandList", brandList);
         String queryString = StringUtils.trimToEmpty(getQueryString());
 
-        List<Category> categoryList=Category.findByParent(0L);
-        render(goodsPage, supplierList, condition,categoryList, queryString, hasApproveGoodsPermission);
+        List<Category> categoryList = Category.findByParent(0L);
+        render(goodsPage, supplierList, condition, categoryList, queryString, hasApproveGoodsPermission);
     }
 
     private static String getQueryString() {
@@ -573,7 +573,8 @@ public class OperateGoods extends Controller {
     /**
      * 更新指定商品信息
      */
-    public static void update2(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath, String queryString, int page) {
+    public static void update2(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath,
+                               String queryString, int page) {
         Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
@@ -587,11 +588,14 @@ public class OperateGoods extends Controller {
         checkUseWeekDay(goods);
 
         if (Validation.hasErrors()) {
+            System.out.println("Validation.errors() = " + Validation.errors());
             renderArgs.put("imageLargePath", imageLargePath);
             renderInit(goods);
             boolean ktvSupplier = goods.isKtvSupplier();
+            boolean ktvProduct = goods.isKtvProduct();
             List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
-            render("OperateGoods/edit2.html", productList, ktvSupplier, goods, id, page, queryString, hasApproveGoodsPermission);
+            render("OperateGoods/edit2.html", productList, ktvSupplier, goods, id, page, queryString,
+                    hasApproveGoodsPermission, ktvProduct);
         }
 
         //添加商品处理
@@ -627,6 +631,11 @@ public class OperateGoods extends Controller {
 
         goodsItem.refresh();
 
+        if (!"1".equals(StringUtils.trimToEmpty(request.params.get("secondaryVerification")))) {
+            goodsItem.advancedDeposit = null;
+            goodsItem.save();
+        }
+        goodsItem.refresh();
         //设置或更新商品属性
         setGoodsProperties(goodsItem);
         String createdFrom = "Op";
@@ -645,6 +654,8 @@ public class OperateGoods extends Controller {
                 productGoods.save();
             }
         }
+
+
         redirectUrl(page, queryString);
     }
 

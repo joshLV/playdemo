@@ -64,7 +64,14 @@
     $(function () {
         ktvSupplier = $("#ktv_supplier").val();
         ktvProduct = $("input[name='goods.ktvProduct']:checked").val();
+
         action = $("#action").val();
+        if (action == "edit") {
+            ktvProduct = $("#ktv_product_val").val();
+            if (ktvProduct == 'false') {
+                ktvSupplier = false;
+            }
+        }
         if (ktvSupplier == 'false' || ktvSupplier == null) {
             $("#ktv_product").hide();
             $("#select_all_shops").show();
@@ -89,6 +96,9 @@
             $("#select_all_shops").hide();
             $("#ktv_supplier_shops").show();
             $("#shop").show();
+        }
+        if (ktvProduct == 'false') {
+            $("#ktv_products").hide();
         }
     });
 </script>
