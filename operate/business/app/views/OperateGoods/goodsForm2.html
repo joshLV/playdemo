@@ -83,8 +83,9 @@
 
     <div class="controls">
         #{if "edit".equals(action)}
-        <input type="text" name="goods.advancedDeposit" id="goods_advancedDeposit"
-               value="${goods?.advancedDeposit?:(goods.originalPrice.multiply(new java.math.BigDecimal(20)).divide(100))}">元
+            <input type="text" name="goods.advancedDeposit" id="goods_advancedDeposit"
+                   value="${goods?.advancedDeposit?:(goods.originalPrice.multiply(new java.math.BigDecimal(20))
+                   .divide(100,java.math.RoundingMode.HALF_UP))}">元
         #{/if}
         #{else}
             <input type="text" name="goods.advancedDeposit" id="goods_advancedDeposit"
@@ -266,6 +267,7 @@
     #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.getStatus()?:'OFFSALE'}"/>
     <input type="hidden" id="ktv_supplier" name="ktvSupplier" value="${ktvSupplier}"/>
+    <input type="hidden" id="ktv_product_val" name="ktvProduct" value="${ktvProduct}"/>
     <input type="hidden" id="hasSku" value="${hasSku}"/>
     <input type="hidden" id="action" name="action" value="${action}"/>
 
@@ -362,21 +364,45 @@ $(function () {
         #{/if}
     });
 
-    if ($("#goods_ktvProduct_2").attr("checked")) {
+
+    #{if !"edit".equals(action)}
+        if ($("#goods_ktvProduct_2").attr("checked")) {
+            $("#select_all_shops").show();
+            $("#ktv_supplier_shops").hide();
+            $("#shop").hide();
+            $("#ktv_products").hide();
+            $("#ktv_products_label").hide();
+            $("#ktv_product").hide();
+        }
+        if ($("#goods_ktvProduct_1").attr("checked")) {
+            $("#select_all_shops").hide();
+            $("#ktv_supplier_shops").show();
+            $("#shop").show();
+            $("#ktv_products").show();
+            $("#ktv_products_label").show();
+            $("#ktv_product").hide();
+        }
+        //Ktv产品
+        $("#goods_ktvProduct_1").click(function () {
+            $("#select_all_shops").hide();
+            $("#ktv_supplier_shops").show();
+            $("#shop").show();
+            $("#ktv_products").show();
+            $("#ktv_products_label").show();
+            ktvProduct = $("input[name='goods.ktvProduct']:checked").val();
+            supplierId = $("#supplierId").val();
+            $("#tableShop").load("/shops/" + supplierId + "/showGoodsShops?ktvProduct=" + ktvProduct, function (data) {
+                $("#selectAll").click();
+            });
+        });
+    #{/if}
+
+    if ($("#ktv_product_val").val() == 'false') {
         $("#select_all_shops").show();
         $("#ktv_supplier_shops").hide();
         $("#shop").hide();
         $("#ktv_products").hide();
         $("#ktv_products_label").hide();
-        $("#ktv_product").hide();
-    }
-
-    if ($("#goods_ktvProduct_1").attr("checked")) {
-        $("#select_all_shops").hide();
-        $("#ktv_supplier_shops").show();
-        $("#shop").show();
-        $("#ktv_products").show();
-        $("#ktv_products_label").show();
         $("#ktv_product").hide();
     }
 
@@ -391,20 +417,6 @@ $(function () {
         $("#shop").hide();
         $("#ktv_products").hide();
         $("#ktv_products_label").hide();
-        ktvProduct = $("input[name='goods.ktvProduct']:checked").val();
-        supplierId = $("#supplierId").val();
-        $("#tableShop").load("/shops/" + supplierId + "/showGoodsShops?ktvProduct=" + ktvProduct, function (data) {
-            $("#selectAll").click();
-        });
-    });
-
-    //Ktv产品
-    $("#goods_ktvProduct_1").click(function () {
-        $("#select_all_shops").hide();
-        $("#ktv_supplier_shops").show();
-        $("#shop").show();
-        $("#ktv_products").show();
-        $("#ktv_products_label").show();
         ktvProduct = $("input[name='goods.ktvProduct']:checked").val();
         supplierId = $("#supplierId").val();
         $("#tableShop").load("/shops/" + supplierId + "/showGoodsShops?ktvProduct=" + ktvProduct, function (data) {
@@ -493,8 +505,8 @@ $("#goods_materialType_2").click(function () {
     if ($("#id_supplierName").val() == 5 || $("#goods_supplierId").val() == 5) {
         $("#sku").show();
     }
-    $(this).attr("checked",true);
-    $("#goods_materialType_1").attr("checked",false);
+    $(this).attr("checked", true);
+    $("#goods_materialType_1").attr("checked", false);
 });
 
 $("#goods_materialType_1").click(function () {
@@ -503,8 +515,8 @@ $("#goods_materialType_1").click(function () {
     $("#goods_coupon_type").show();
     $("#sku").hide();
     $("input[id=freeShipping]").attr("checked", false);
-    $(this).attr("checked",true);
-    $("#goods_materialType_2").attr("checked",false);
+    $(this).attr("checked", true);
+    $("#goods_materialType_2").attr("checked", false);
 });
 
 $("#goods_secondary_verification").click(function () {

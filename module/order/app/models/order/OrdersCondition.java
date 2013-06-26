@@ -67,7 +67,8 @@ public class OrdersCondition {
         //根据订单出库(实物） 查看订单时
         if (shihuiSupplierId != null) {
             sql.append(" and o.id in (select oi.order.id from OrderItems oi where oi.goods.supplierId=:shihuiSupplierId " +
-                    " and oi.goods.materialType=:materialType and oi.order.orderType=:orderType and oi.status=:itemStatus and oi.createdAt<=:itemCreatedAt  )");
+                    " and oi.goods.materialType=:materialType and oi.order.orderType=:orderType and oi" +
+                    ".order.status=:itemStatus and oi.createdAt<=:itemCreatedAt  )");
             paramsMap.put("shihuiSupplierId", Supplier.getShihui().id);
             paramsMap.put("materialType", materialType);
             paramsMap.put("orderType", orderType);
