@@ -493,6 +493,8 @@ $("#goods_materialType_2").click(function () {
     if ($("#id_supplierName").val() == 5 || $("#goods_supplierId").val() == 5) {
         $("#sku").show();
     }
+    $(this).attr("checked",true);
+    $("#goods_materialType_1").attr("checked",false);
 });
 
 $("#goods_materialType_1").click(function () {
@@ -501,6 +503,8 @@ $("#goods_materialType_1").click(function () {
     $("#goods_coupon_type").show();
     $("#sku").hide();
     $("input[id=freeShipping]").attr("checked", false);
+    $(this).attr("checked",true);
+    $("#goods_materialType_2").attr("checked",false);
 });
 
 $("#goods_secondary_verification").click(function () {

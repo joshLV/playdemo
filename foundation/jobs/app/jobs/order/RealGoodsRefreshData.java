@@ -23,8 +23,8 @@ import java.util.List;
 public class RealGoodsRefreshData extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
-        List<OrderItems> orderItemsList = OrderItems.find("shippingInfo is not null and status<>? and createdAt >=?",
-                OrderStatus.PREPARED, DateUtil.firstDayOfMonth()).fetch();
+        List<OrderItems> orderItemsList = OrderItems.find("shippingInfo is not null and status<>? and createdAt >=? and createdAt<=?",
+                OrderStatus.PREPARED, DateUtil.firstDayOfMonth(),DateUtil.stringToDate("2013-06-25 23:59:59","yyyy-MM-dd HH:mm:ss")).fetch();
 
         Iterator<OrderItems> it = orderItemsList.iterator();
         OrderItems orderItems = null;
@@ -32,7 +32,7 @@ public class RealGoodsRefreshData extends JobWithHistory {
         while (it.hasNext()) {
             orderItems = it.next();
             orderItems.realGoodsPayCommission();
-            Logger.info("count=%d", count);
+            Logger.info("RealGoodsRefreshData 处理count=%d", count);
             count++;
         }
 
