@@ -23,7 +23,7 @@ import java.util.List;
  * Time: 下午2:31
  */
 @JobDefine(title="当当商品销量同步", description="每三小时更新同步当当的商品售出数量")
-@Every("3h")
+//@Every("3h")
 public class DDSyncSellGoodsCountJob extends JobWithHistory {
 
     @Override

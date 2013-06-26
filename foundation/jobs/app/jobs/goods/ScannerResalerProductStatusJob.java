@@ -2,11 +2,13 @@ package jobs.goods;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.jobs.JobWithHistory;
+import models.jobs.annotation.JobDefine;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductStatus;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.jobs.On;
 import util.ws.WebServiceRequest;
 
@@ -22,19 +24,20 @@ import java.util.regex.Pattern;
  * Date: 12-12-17
  * Time: 下午3:51
  */
+@JobDefine(title="渠道上下架报表", description="每小时查询各渠道商品的状态")
 @On("0 0 1 * * ?")  //每天凌晨执行
 public class ScannerResalerProductStatusJob extends JobWithHistory {
 
     @Override
     public void doJobWithHistory() {
         Map<OuterOrderPartner, Resaler> resalers = new HashMap<>();
-        resalers.put(OuterOrderPartner.DD, Resaler.findOneByLoginName(Resaler.DD_LOGIN_NAME));
         resalers.put(OuterOrderPartner.YHD, Resaler.findOneByLoginName(Resaler.YHD_LOGIN_NAME));
         resalers.put(OuterOrderPartner.WB, Resaler.findOneByLoginName(Resaler.WUBA_LOGIN_NAME));
         resalers.put(OuterOrderPartner.TB, Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME));
         resalers.put(OuterOrderPartner.JD, Resaler.findOneByLoginName(Resaler.JD_LOGIN_NAME));
 
         for (Map.Entry<OuterOrderPartner, Resaler> entry : resalers.entrySet()) {
+            Logger.info("ScannerResalerProductStatusJob resaler.id:%s",entry.getValue().id);
             if (entry.getValue() == null) {
                 continue;
             }
