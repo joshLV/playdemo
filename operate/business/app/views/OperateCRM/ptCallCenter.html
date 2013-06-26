@@ -1,0 +1,95 @@
+<html>
+<!-- 小灵呼来电弹屏-嵌入式对接
+1.使用此种嵌入对接模式，坐席不能在小灵呼界面登录
+2.同时必须将app_config.xml中integrateMode改为1,并做参数重载
+3.请将以下代码嵌入你软件页面的不刷新的那部分
+-->
+
+
+<script language="javascript">
+
+    //弹屏函数,函数名不能改
+    function popCustWin(req){
+        // alert("来电字符串="+req);  //可以注释本行，获取到的来电字串
+        // alert("可将刚才的来电字符串窗口改为 弹出您自己的程序窗口");
+        /*
+        req:  存放接收来电信息的字符串指针，由应用程序分配存储空间。
+        当sys_config.xml中弹屏格式popVer配置为t1v1或不配置时，来电信息一般为以下模式：
+        来电通道号，来电号码，备用字段，来电时间，用户按键信息
+        如：2,02586307627,1000,1208674344953,NA
+        注意：来电时间是当前时间和1970-01-01之间的时间差，毫秒为单位
+
+        当sys_config.xml中弹屏格式popVer配置为t1v2时，来电信息一般为以下模式：
+        H=数据包类型及版本，ch=来电通道号，ph=来电号码，id=本次来电唯一标识，tm=来电时间YYMMDDHHMMSS，dm=用户按键信息。例如：H=t1v2,ch=2,ph=86307627,id=12157703713752,tm=080711175931,dm=0;
+        详细格式说明参见LQ-Connect软件对接技术手册章节《来电字符串说明》。
+        */
+        var reqURI=req.replace(/#/g,"A"); //本行保留
+        reqURI=req.replace(/,/g,"&");
+//新打开的窗口,将以下http://www.baidu.com/s=小灵呼呼叫中心& 替换成你的URL
+//在你的URL，比如jsp中 reqeust.getParameter("xxx") 即可获取来电字串信息，可对其进行进一步的加工处理。
+        var winobj=open("http://business.${play.Play.configuration.getProperty("application.baseDomain")}/callcenter/phone/jump_index2?"+reqURI,
+                "_blank",'height=800, width=1280, top=0, left=20,toolbar=no,menubar=no,titlebar=no, location=no, status=no,scrollbars=yes,titlebar=no, resizable=yes'
+        );
+    }
+
+    //实时显示连接小灵呼后台的状态,函数名不能改
+    function connectStatus(status){
+//以下内容可以修改掉,以你自己的方式去显示
+        var messageTd = document.getElementById("messageTd");
+        var msg="";
+        if(status.indexOf('sendComplete7')!=-1)
+            msg="连接服务器成功"
+        else if(status.indexOf('reconnect')!=-1)
+            msg="重新连接服务器...";
+        else if(status=='6')
+            msg="连接服务器...";
+        else if(status=='9')
+            msg="连接服务器失败";
+        else
+            msg="连接服务器状态="+status+"";
+
+        if(messageTd!=null){
+            messageTd.innerHTML=msg;
+            messageTd.style.color="#0000CC";
+        }
+    }
+</script>
+
+
+<!--
+
+以下参数必须修改
+localhost 改成小灵呼服务器实际IP
+code_oper 改成当前登录坐席的工号分机
+
+
+其它参数保持缺省
+remotePort LQ的端口,不用改,此非管理7627端口
+注意以下CLASSID和CAB#version，5.0和4.0是不一样的
+-->
+<OBJECT ID="LCallClient"
+        CLASSID="CLSID:06C42126-4654-4639-A29D-C62F9B850239"
+        CODEBASE="http://192.168.18.196:7627/v/jsp/LCallClient.CAB#version=1,1,0,13" STANDBY="Loading.." alt="xx?">
+    <param name="remoteHost" value="192.168.18.196" />
+    <param name="remotePort" value="7628" />
+    <param name="code_oper" value="${currentUser.jobNumber}" />
+    <param name="ch" value="-1" />
+    <param name="reqExpiredTime" value="30" />
+    <param name="reqReconnectInterval" value="20" />
+    <param name="checkInterval" value="5" />
+    <param name="sysId" value="1215737414015" />
+<SPAN STYLE="color:red">LCallclient装载失败!
+-- 请检查浏览器安全设置或者LCallclient的版本.
+</SPAN>
+</OBJECT>
+<table width="80%" background="red">
+    <tr>
+        <td width="40%" align="left">&nbsp;<span id="messageTd" style="display:none2;background-color:#FFCCFF;height:20" ></span></td>  <td width="40%" rowspan="2" align="left">当前登录工号：${currentUser.jobNumber}, 用户名：${currentUser.userName}</td>
+    </tr>
+    <tr>
+        <td width="40%" align="left">&nbsp;<span id="messageTd" style="display:none2;background-color:#FFCCFF;height:20" ></span></td>  <td width="40%" rowspan="2" align="left">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="40%" align="left">&nbsp;<span id="messageTd" style="display:none2;background-color:#FFCCFF;height:20" ></span></td>  <td width="40%" rowspan="2" align="left">请保持此窗口打开，以接收来电弹窗。</td>
+    </tr>
+</table>

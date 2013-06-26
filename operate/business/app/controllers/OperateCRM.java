@@ -5,6 +5,7 @@ import models.accounts.WithdrawBill;
 import models.consumer.Address;
 import models.consumer.CRMCondition;
 import models.consumer.User;
+import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.Order;
 import models.sales.ConsultCondition;
@@ -231,8 +232,12 @@ public class OperateCRM extends Controller {
     datetime	popVer=t1v2时，代表已经转化后的时间YYMMDDHHMMSS
     dtmf	客户的按键信息
     id	popVer=t1v2时，代表本次来电的一个唯一标识号，这个标识号可以用在日后的查询录音等功能。
+
+     H=数据包类型及版本，ch=来电通道号，ph=来电号码，id=本次来电唯一标识，tm=来电时间YYMMDDHHMMSS，dm=用户按键信息。例如：H=t1v2,ch=2,ph=86307627,id=12157703713752,tm=080711175931,dm=0;
+
      */
-    public static void jumpIndex2(String phone, CRMCondition condition, Long userId, Long consultId, String calledNo, String agentName, String id, String callsheetId, String province, String city) {
+    public static void jumpIndex2(String ph, CRMCondition condition, Long userId, Long consultId, String calledNo, String agentName, String id, String callsheetId) {
+        String phone = ph;
         ConsultRecord consult = new ConsultRecord();
         consult.deleted = DeletedStatus.UN_DELETED;
         consult.callNo = phone;
@@ -240,8 +245,6 @@ public class OperateCRM extends Controller {
         consult.agentName = agentName;
         consult.ivrkey = id;
         consult.callsheetId = callsheetId;
-        consult.province = province;
-        consult.city = city;
         consult.save();
         consultId = consult.id;
         index(phone, condition, userId, consultId, null);
@@ -319,6 +322,11 @@ public class OperateCRM extends Controller {
         bind.loginName = user.loginName;
         bind.save();
         render();
+    }
+
+    public static void ptCallCenter() {
+        OperateUser currentUser = OperateRbac.currentUser();
+        render(currentUser);
     }
 }
 

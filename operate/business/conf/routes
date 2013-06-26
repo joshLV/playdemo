@@ -195,6 +195,8 @@ PUT     /crm/{id}                                                 OperateCRM.upd
 GET     /crm/bindCouponDetails                                    OperateCRM.bindCouponDetails
 GET     /crm/bind_search_user                                     OperateCRM.bindSearchUser
 GET     /callcenter/phone/consult_excel                           OperateCRM.consultExcelOut
+# 派通Call Center连接保持窗口
+GET     /callcenter/pt-window                                     OperateCRM.ptCallCenter
 
 
 

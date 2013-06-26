@@ -320,6 +320,7 @@
         <navigation key="crm_app" text="CRM" permissions="CONSUMERS">
             <navigation key="crm_app_consumers" action="OperateCRM.getPhone" text="话务管理" permissions="CONSUMERS"/>
             <navigation key="crm_search_consumers" action="OperateConsult.index" text="咨询查询" permissions="CONSUMERS"/>
+            <navigation key="crm_pt_window" action="OperateCRM.ptCallCenter" text="派通来电弹窗" permissions="CONSUMERS" />
         </navigation>
 
     </navigation>
