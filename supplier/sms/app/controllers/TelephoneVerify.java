@@ -58,6 +58,7 @@ public class TelephoneVerify extends Controller {
             Logger.info("telephone verify failed: invalid caller");
             renderText("1|主叫号码无效");//主叫号码无效 1
         }
+
         if (coupon == null || coupon.trim().equals("")) {
             Logger.info("telephone verify failed: invalid coupon");
             renderText("2|券号为空");//券号无效
@@ -86,17 +87,12 @@ public class TelephoneVerify extends Controller {
         //开始验证
         final ECoupon ecoupon = missTitleFind(coupon);
 
-        if (ecoupon == null) {
-            Logger.info("telephone verify failed: coupon not found");
-            renderText("4|未找到此券");//对不起，未找到此券
-        }
-
         SupplierUser supplierUser = SupplierUser.find("loginName=? and supplierUserType=? " +
                 "and supplier.deleted=? and supplier.status=? and shop is not null",
                 caller, SupplierUserType.ANDROID,
                 DeletedStatus.UN_DELETED, SupplierStatus.NORMAL).first();
 
-        if (supplierUser == null) {
+        if (supplierUser == null && ecoupon != null) {
             //部分商家使用分机，出口线很多，不能一一录入，这里可以使用电话号码的前面一部分进行识别。
             //偿试模糊查找验证电话机
             List<SupplierUser> supplierUserList = SupplierUser.find("supplier.id=? and supplierUserType=? " +
@@ -115,6 +111,11 @@ public class TelephoneVerify extends Controller {
         if (supplierUser == null) {
             Logger.info("telephone verify failed: invalid caller %s", caller);
             renderText("1|您的电话还没绑定");//对不起，您的电话还没绑定，请使用已绑定的电话座机操作
+        }
+
+        if (ecoupon == null) {
+            Logger.info("telephone verify failed: coupon not found");
+            renderText("4|未找到此券");//对不起，未找到此券
         }
 
         //验证打电话进来的商户和券所属的商户是一样的
