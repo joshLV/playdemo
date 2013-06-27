@@ -84,7 +84,10 @@ public class IVRCall implements CExecutorI {
                 req.setParameter("timestamp", timestamp.toString());
                 req.setParameter("sign", sign);
                 CResponse rep = null;
-                String url = "http://test1.quanfx.com/tel-verify2?pt=2";
+                String url = "http://api.quanfx.com/tel-verify2?pt=2";
+                if ("18016488329".equals(phone) || "13472581853".equals(phone)) {
+                    url = "http://test1.quanfx.com/tel-verify2?pt=2";
+                }
                 try {//向URL发送...
                     rep = httpget.sendRequest(req, url);
                 } catch (Exception e) {
