@@ -75,6 +75,11 @@ public class IVRCall implements CExecutorI {
 
                 if (phone == null || phone.length() < 3) {
                     phone = "8015";
+                } else {
+                    phone = phone.trim();
+                }
+                if (phone.length() == 8) {
+                    phone = "021" + phone;
                 }
                 log.info(" call /tel-verify2?caller=" + phone + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
                 MyHttpGet httpget = new MyHttpGet();

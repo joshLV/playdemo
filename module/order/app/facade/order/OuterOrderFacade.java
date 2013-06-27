@@ -154,6 +154,7 @@ public class OuterOrderFacade {
 
                 if (itemVO.eCoupons != null && itemVO.eCoupons.size() > 0) {
                     for (int i = 0; i < itemVO.eCoupons.size(); i++) {
+                        Logger.info("coupos.size=%d, i=%d", coupons.size(), i);
                         ECoupon coupon = coupons.get(i);
                         OuterECouponVO outerECouponVO = itemVO.eCoupons.get(i);
 
