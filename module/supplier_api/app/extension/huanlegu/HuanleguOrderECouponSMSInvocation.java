@@ -38,7 +38,12 @@ public class HuanleguOrderECouponSMSInvocation extends OrderECouponSMSInvocation
 
         context.needSendSMS = false; //不发短信.
 
+        Date now = new Date();
         for (ECoupon coupon : context.couponList) {
+            //创建后10分钟内的不予重发
+            if(DateUtils.addMinutes(coupon.createdAt, 10).after(now)){
+                continue;
+            }
             HuanleguMessage message = HuanleguUtil.resend(coupon);
         }
 

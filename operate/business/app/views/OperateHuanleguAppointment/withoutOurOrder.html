@@ -1,0 +1,73 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'欢乐谷/玛雅水世界预约' /}
+#{set 'moreScripts'}
+    <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+
+
+<div class="body">
+    #{if success}
+        <p>
+            ${success}
+        </p>
+    #{/if}
+    #{else}
+        #{if err}
+            <legend>${err}</legend>
+        #{/if}
+        #{else}
+            <legend>欢乐谷/玛雅水世界</legend>
+
+            <form class="form-horizontal" method="post" action="/huanlegu/appointment/withoutOurOrder">
+                <div class="control-group">
+                    <label class="control-label" for="inputPhone">分销商</label>
+                    <div class="controls">
+                        ${resaler.userName}
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">选择商品</label>
+                    <div class="controls">
+                        <select name="goods.id">
+                        ##{list items:goodsList, as:'g'}
+                            <option value="${g.id}" #{if goods?.id == g.id} selected="selected" #{/if}>${g.shortName}</option>
+                        #{/list}
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputPhone">手机号</label>
+                    <div class="controls">
+                        <input type="text" id="inputPhone" name="mobile" value="${mobile}">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputCoupon">第三方券号</label>
+                    <div class="controls">
+                        <textarea rows="5" name="couponSn" id="inputCoupon">${couponSn}</textarea>
+                        <label class="help-block">可一次输入多张券号，每行一个。多张券必须保证是同一商品的。单个手机号一天最多5张券</label>
+                        <label class="help-block">5张的限制不限于我们系统，比如在驴评网今天用此手机号买了5张，那么在我们这就不能再买了</label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputDate" >预约日期</label>
+                    <div class="controls">
+                        <input type="text" id="inputDate" name="appointmentDate" class="input-medium Wdate" onfocus="WdatePicker({readOnly:true})" value="${appointmentDate?.format()}">
+                        <label class="help-inline">不包括今天，30天内</label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <input type="hidden" name="resaler.id" value="${resaler.id}">
+                        <button type="submit" class="btn btn-primary">预约</button>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    1.预约成功后，系统将自动发送短信/彩信到用户手机<br/>
+                    2.用户只能在指定日期消费
+                </div>
+            </form>
+        #{/else}
+    #{/else}
+</div>

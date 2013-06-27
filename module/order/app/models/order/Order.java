@@ -1022,32 +1022,6 @@ public class Order extends Model {
                 eCoupon.save();
                 KangouUtil.setCardUseAndSend(eCoupon);
                 eCoupon.autoVerify();  // 自动验证掉
-            } else if (HuanleguUtil.SUPPLIER_DOMAIN_NAME.equals(orderItem.goods.getSupplier().domainName)) {
-                HuanleguMessage message = HuanleguUtil.confirmOrder(eCoupon, 1);
-                if (message.isResponseOk()) {
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    Node voucher = message.selectNode("./Voucher");
-                    eCoupon.supplierECouponId = StringUtils.trimToNull(XPath.selectText("./VoucherId", voucher));
-                    eCoupon.supplierECouponPwd = StringUtils.trimToNull(XPath.selectText("./VoucherValue", voucher));
-                    try {
-                        Date effectiveAt = format.parse(StringUtils.trimToNull(XPath.selectText("./StartUseDate", voucher)));
-                        Date expireAt = format.parse(StringUtils.trimToNull(XPath.selectText("./EndUseDate", voucher)));
-
-                        eCoupon.effectiveAt = DateUtils.ceiling(effectiveAt, Calendar.DATE);
-                        eCoupon.expireAt = DateUtils.ceiling(expireAt, Calendar.DATE);
-                    } catch (ParseException e) {
-                    }
-                    eCoupon.save();
-
-                    if (eCoupon.order.supplierOrderNumber == null) {
-                        eCoupon.order.supplierOrderNumber = message.selectTextTrim("./HvOrderId");
-                        eCoupon.order.save();
-                    }
-                }else {
-                    eCoupon.delete();
-                    throw new RuntimeException("can not generate a huanlegu goods. request failed: " + goods.getId());
-                }
-
             }
 
         }

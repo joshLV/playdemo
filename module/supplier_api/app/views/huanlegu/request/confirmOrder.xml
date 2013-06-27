@@ -8,3 +8,4 @@
 <IsSendSms>${isSendSms}</IsSendSms>
 <CertificateType>${certificateType}</CertificateType>
 <CertificateNum>${certificateNum}</CertificateNum>
+<AppointTripDate>${appointTripDate}</AppointTripDate>

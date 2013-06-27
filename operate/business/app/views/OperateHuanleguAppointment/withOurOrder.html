@@ -1,0 +1,81 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'欢乐谷/玛雅水世界预约' /}
+#{set 'moreScripts'}
+    <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+    <script>
+        $("#query,#appointment").click(function(){
+            $("#action").val($(this).attr('data-action'))
+            $("#form").submit();
+        });
+    </script>
+#{/set}
+
+
+<div class="body">
+    #{if success}
+        <p>${success}</p>
+    #{/if}
+    #{else}
+        #{if err}
+            <legend>${err}</legend>
+        #{/if}
+        #{else}
+            <legend>欢乐谷/玛雅水世界</legend>
+
+            <form class="form-horizontal" method="post" action="/huanlegu/appointment/withOurOrder" id="form">
+                <input type="hidden" name="action" id="action">
+                <div class="control-group">
+                    <label class="control-label" for="inputCoupon">一百券券号</label>
+                    <div class="controls">
+                        <input type="text" id="inputCoupon" name="couponStr" value="${couponStr}">
+                        <div class="btn btn-primary" id="query" data-action="query">查询</div>
+                        #{if couponList}
+                            <table class="table" style="width:auto">
+                                <tr>
+                                    <th>券号</th>
+                                    <th>手机号</th>
+                                    <th>状态</th>
+                                    <th>下单时间</th>
+                                </tr>
+                                #{list items:couponList, as:'coupon'}
+                                    <tr>
+                                        <td>${coupon.getMaskedEcouponSn()}</td>
+                                        <td>${coupon.orderItems.phone}</td>
+                                        <td>&{'coupon.' + coupon.status}</td>
+                                        <td>${coupon.createdAt.format()}</td>
+                                    </tr>
+                                #{/list}
+                            </table>
+                        #{/if}
+                        #{else}
+                        <label class="help-block">同一订单的多张券号只需在此输入其中一张</label>
+                        #{/else}
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputPhone">手机号</label>
+                    <div class="controls">
+                        <input type="text" id="inputPhone" name="mobile" value="${mobile}">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputDate" >预约日期</label>
+                    <div class="controls">
+                        <input type="text" id="inputDate" name="appointmentDate" class="input-medium Wdate" onfocus="WdatePicker({readOnly:true})" value="${appointmentDate?.format()}">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <div class="btn btn-primary" id="appointment" data-action="appointment">预约</div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    1.同一订单的将合并成为一个短信。同一订单超过5张券的，只随机取5张。剩余的请做退款处理<br/>
+                    2.预约成功后，系统将自动发送短信/彩信到用户手机<br/>
+                    3.用户只能在指定日期消费
+                </div>
+            </form>
+        #{/else}
+    #{/else}
+</div>

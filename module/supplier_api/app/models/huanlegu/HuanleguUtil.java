@@ -18,6 +18,7 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,7 +52,7 @@ public class HuanleguUtil {
         Map<String, Object> params = new HashMap<>();
         params.put("pageIndex", 1);
         params.put("pageSize", 1);
-        params.put("orderId", coupon.order.id);
+        params.put("orderId", coupon.order.orderNumber);
         params.put("hvOrderId", coupon.order.supplierOrderNumber);
         params.put("voucherId", coupon.supplierECouponId);
 
@@ -67,9 +68,28 @@ public class HuanleguUtil {
         params.put("quantity", quantity);
         params.put("ticketId", coupon.goods.supplierGoodsNo);
         params.put("salePrice", coupon.salePrice.toString());
-        params.put("isSendSms", 0);//下单时不发短信，下完单后会触发重发短信
+        params.put("isSendSms", 1);
         params.put("certificateType", "0");//不需要证件
         params.put("certificateNum", "");
+        params.put("appointTripDate", coupon.appointmentDate == null ? "" : new SimpleDateFormat("yyyy-MM-dd").format(coupon.appointmentDate));
+
+        return sendRequest("confirmOrder", params);
+    }
+
+    public static HuanleguMessage confirmOrder(String orderNumber, Date dealTime, String mobile, int quantity,
+               String ticketId, BigDecimal salePrice, Date appointmentDate) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("orderId", orderNumber);
+        params.put("dealTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dealTime));
+        params.put("name", "");
+        params.put("mobile", mobile);
+        params.put("quantity", quantity);
+        params.put("ticketId", ticketId);
+        params.put("salePrice", salePrice.toString());
+        params.put("isSendSms", 1);
+        params.put("certificateType", "0");//不需要证件
+        params.put("certificateNum", "");
+        params.put("appointTripDate", appointmentDate == null ? "" : new SimpleDateFormat("yyyy-MM-dd").format(appointmentDate));
 
         return sendRequest("confirmOrder", params);
     }

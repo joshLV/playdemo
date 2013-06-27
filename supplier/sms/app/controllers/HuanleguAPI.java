@@ -10,6 +10,8 @@ import models.supplier.Supplier;
 import play.Logger;
 import play.mvc.Controller;
 
+import java.util.List;
+
 /**
  * @author likang
  *         Date: 13-6-25
@@ -25,17 +27,14 @@ public class HuanleguAPI extends Controller {
          < ConsumeTimes>消费次数</ ConsumeTimes >
          < ConsumeDate>消费时间</ ConsumeDate >
          */
-        Long orderId = Long.parseLong(message.selectTextTrim("./OrderId"));
+        Long orderNumber = Long.parseLong(message.selectTextTrim("./OrderId"));
         Long supplierOrderId = Long.parseLong(message.selectTextTrim("./HvOrderId"));
         String supplierCoupon = message.selectTextTrim("./VoucherValue");
         Long consumeTimes = Long.parseLong(message.selectTextTrim("./ConsumeTimes"));
         String consumeDate = message.selectTextTrim("./ConsumeDate");
 
-        if (orderId == null || supplierCoupon == null) {
-
-        }
-
-        ECoupon coupon = ECoupon.find("order.id = ? and supplierECouponPwd = ?", orderId, supplierCoupon).first();
+        List<ECoupon> coupon = ECoupon.find("order.orderNumber = ? and supplierECouponPwd = ?", orderNumber, supplierCoupon).fetch();
+        /*
         if (coupon != null) {
             Supplier supplier = Supplier.findByDomainName(HuanleguUtil.SUPPLIER_DOMAIN_NAME);
             Shop shop = Shop.findShopBySupplier(supplier.id).get(0);
@@ -43,6 +42,7 @@ public class HuanleguAPI extends Controller {
             coupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);
             Logger.info("huanlegu coupon consumed success");
         }
+        */
 
     }
 }
