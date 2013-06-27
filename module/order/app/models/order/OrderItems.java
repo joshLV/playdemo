@@ -3,9 +3,11 @@ package models.order;
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.util.DateUtil;
+import controllers.OperateRbac;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.TradeBill;
+import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.consumer.User;
@@ -651,7 +653,7 @@ public class OrderItems extends Model {
      *
      * @param orderItems
      */
-    public static String handleRefund(OrderItems orderItems, Long returnedCount) {
+    public static String handleRealGoodsRefund(OrderItems orderItems, Long returnedCount) {
         String returnFlg = "";
 
         if (orderItems == null || orderItems.id == null || returnedCount == null || returnedCount <= 0L || returnedCount > orderItems.buyNumber) {
@@ -674,9 +676,9 @@ public class OrderItems extends Model {
         BigDecimal consumedAmount = BigDecimal.ZERO;
         Order order = orderItems.order;
         if (order.isWebsiteOrder()) {
-            consumedAmount = orderItems.salePrice.multiply(new BigDecimal(returnedCount));
+            consumedAmount = orderItems.salePrice;
         } else {
-            consumedAmount = orderItems.resalerPrice.multiply(new BigDecimal(returnedCount));
+            consumedAmount = orderItems.resalerPrice;
         }
 
         //最后我们来看看最终能退多少
@@ -686,20 +688,59 @@ public class OrderItems extends Model {
         Account account = orderItems.order.getBuyerAccount();
         Logger.info("account=" + account.id + ", refundCashAmount=" + consumedAmount + ", " +
                 "refundPromotionAmount=" + refundPromotionAmount);
-        TradeBill tradeBill = TradeUtil.refundTrade(order.operator)
-                .toAccount(account)
-                .balancePaymentAmount(consumedAmount)
-                .promotionPaymentAmount(refundPromotionAmount)
-                .orderId(orderItems.order.getId())
-                .make();
 
-        if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
-            returnFlg = "{\"error\":\"refound failed\"}";
+        //给分销商打款成功标识
+        boolean toResalerAccountSuc = true;
+        //从商户扣款成功标识
+        boolean fromSupplierAccountSuc = true;
+        //从平台收款账户打款给分销账户
+        for (int i = 0; i < returnedCount; i++) {
+            TradeBill tradeBill = TradeUtil.refundFromPlatFormIncomingTrade(order.operator)
+                    .toAccount(account)
+                    .balancePaymentAmount(consumedAmount)
+                    .promotionPaymentAmount(refundPromotionAmount)
+                    .orderId(orderItems.order.getId())
+                    .make();
+
+            if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
+                Logger.info("实物退款失败:从平台收款账户打款给分销账户toAccount=" + account.id + ",orderItem.id=" + orderItems.id);
+                toResalerAccountSuc = false;
+                break;
+            }
+        }
+        //如果给分销大款失败则回滚之前保存的数据
+        if (!toResalerAccountSuc) {
+            JPA.em().getTransaction().rollback();
+            returnFlg = "{\"error\":\"resaler refund failed\"}";
             return returnFlg;
         }
+        Account supplierAccount = orderItems.getSupplierAccount();
+        System.out.println("orderItems.status:" + orderItems.status);
+        //判断如果是已上传或已发货的商品，则给从商户帐号打钱给平台收款账户
+        if (orderItems.status == OrderStatus.UPLOADED || orderItems.status == OrderStatus.SENT || orderItems.status == OrderStatus.RETURNING) {
+            for (int i = 0; i < returnedCount; i++) {
+                TradeBill tradeBill = TradeUtil.refundToPlatFormIncomingTrade(order.operator)
+                        .fromAccount(supplierAccount)
+                        .balancePaymentAmount(orderItems.originalPrice)
+                        .promotionPaymentAmount(refundPromotionAmount)
+                        .orderId(orderItems.order.getId())
+                        .make();
 
+                if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
+                    Logger.info("实物退款失败:从商户帐号打钱给平台收款账户fromAccount=" + supplierAccount.id + ",orderItem.id=" + orderItems.id);
+                    fromSupplierAccountSuc = false;
+                    break;
+                }
+            }
+        }
+        //如果从商户扣款失败则回滚之前保存的数据
+        if (!fromSupplierAccountSuc) {
+            JPA.em().getTransaction().rollback();
+            returnFlg = "{\"error\":\"supplier refund failed\"}";
+            return returnFlg;
+        }
         // 更新已退款的活动金金额
-        order.refundedAmount = order.refundedAmount.add(consumedAmount).add(refundPromotionAmount);
+        order.refundedAmount = order.refundedAmount.add(consumedAmount.multiply(new BigDecimal(returnedCount))).add(refundPromotionAmount);
         order.save();
 
         orderItems.returnCount += returnedCount;

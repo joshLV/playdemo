@@ -16,7 +16,7 @@ import java.util.List;
  * Time: 上午11:56
  */
 @JobDefine(title="微博钱包券同步")
-@Every("1mn")
+//@Every("1mn")
 public class SinaECouponScanner extends JobWithHistory {
     @Override
     public void doJobWithHistory() {

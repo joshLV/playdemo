@@ -106,14 +106,28 @@ public class TradeUtil {
 
     /**
      * 创建退款交易记录.
+     * 付款方为平台收款账户.
      */
-    public static TradeBill refundTrade(Operator operator) {
+    public static TradeBill refundFromPlatFormIncomingTrade(Operator operator) {
         TradeBill bill = new TradeBill();
         bill.fromAccount = AccountUtil.getPlatformIncomingAccount(operator); //付款方为平台收款账户
         bill.tradeType = TradeType.REFUND;
         return bill;
     }
 
+    /**
+     * 创建退款交易记录.
+     * 收款方为平台收款账户
+     */
+    public static TradeBill refundToPlatFormIncomingTrade(Operator operator) {
+        TradeBill bill = new TradeBill();
+        bill.toAccount = AccountUtil.getPlatformIncomingAccount(operator); //收款方为平台收款账户
+        bill.tradeType = TradeType.REFUND;
+        return bill;
+    }
+    /**
+     * 创建商户
+     */
     /**
      * 创建转账交易
      */

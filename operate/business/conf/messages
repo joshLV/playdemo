@@ -425,6 +425,7 @@ trade_type.TRANSFER=转账
 
 platform.CONSUMER=一百券网站
 platform.RESALER=分销网
+platform.SHOP=商户门店
 platform.PLATFORM=运营平台
 platform.SUPPLIER=商户平台
 platform.null=

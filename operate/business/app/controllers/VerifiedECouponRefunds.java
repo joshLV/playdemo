@@ -163,8 +163,8 @@ public class VerifiedECouponRefunds extends Controller {
             refundCashAmount = refundAtMostCouponAmount.subtract(refundPromotionAmount);
             refundCashAmount = refundCashAmount.min(refundOrderTotalCashAmount);
         }
-//        System.out.println("===refundCashAmount" + refundCashAmount);
-//        System.out.println("===refundPromotionAmount" + refundPromotionAmount);
+        System.out.println("===refundCashAmount" + refundCashAmount);
+        System.out.println("===refundPromotionAmount" + refundPromotionAmount);
 
         TradeBill tradeBill = new TradeBill();
         tradeBill.fromAccount = eCoupon.getSupplierAccount(); //付款方为商户账户
@@ -181,7 +181,15 @@ public class VerifiedECouponRefunds extends Controller {
                 .add(tradeBill.uncashPaymentAmount)
                 .add(refundPromotionAmount);
 
-        tradeBill.save();
+//        tradeBill.save();
+
+        TradeBill tradeBill = TradeUtil.refundToPlatFormIncomingTrade(eCoupon.order.operator)
+                .fromAccount(eCoupon.getSupplierAccount())
+                .balancePaymentAmount(eCoupon.originalPrice)
+                .promotionPaymentAmount(refundPromotionAmount)
+                .orderId(eCoupon.order.id)
+                .coupon(eCoupon.eCouponSn)
+                .make();
 
         if (!TradeUtil.success(tradeBill,
                 "券" + eCoupon.getMaskedEcouponSn() + "因" + refundComment + "被" + OperateRbac.currentUser().userName + "操作退款")) {

@@ -95,7 +95,7 @@ public class ReturnEntries extends Controller {
         stockItem.price = entry.orderItems.goods.originalPrice;
         stockItem.create();
         //3、退款
-        OrderItems.handleRefund(entry.orderItems, entry.returnedCount);
+        OrderItems.handleRealGoodsRefund(entry.orderItems, entry.returnedCount);
 
         index(null);
 
@@ -118,8 +118,8 @@ public class ReturnEntries extends Controller {
         //2、填写退货单未收到货原因.
         entry.unreceivedReason = unreceivedReason;
         entry.save();
-        //3、退款
-        OrderItems.handleRefund(entry.orderItems, entry.returnedCount);
+        //TODO 3、暂时不退款，如需退款，线下操作
+//        OrderItems.handleRealGoodsRefund(entry.orderItems, entry.returnedCount);
 
         index(null);
     }
@@ -145,7 +145,7 @@ public class ReturnEntries extends Controller {
                 case PAID:
                     //todo 退款处理，有待测试
                     Logger.info("do PAID status");
-                    String result = OrderItems.handleRefund(orderItems, entry.returnedCount);
+                    String result = OrderItems.handleRealGoodsRefund(orderItems, entry.returnedCount);
 
                     if (!result.equals("")) {
                         renderJSON(result);

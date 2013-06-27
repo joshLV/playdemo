@@ -275,7 +275,8 @@
                 #{if orders.status == models.order.OrderStatus.PAID}
                     <a
                             href="javascript:void(0);"
-                            onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}')">退货</a>#{/if}#{else}
+                            onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}')">退款</a>#{/if}
+                #{else}
                     <a
                             href="javascript:void(0);"
                             onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}')">申请退货</a>
