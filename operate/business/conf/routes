@@ -322,6 +322,15 @@ GET     /coupon_info/{id}                       OperateCoupons.couponInfo
 GET     /coupon-appointment/{couponId}          OperateCoupons.showAppointment
 POST    /coupon-appointment                     OperateCoupons.appointment
 
+#欢乐谷/玛雅水世界预约
+GET     /huanlegu/appointment                   OperateHuanleguAppointment.index
+
+GET     /huanlegu/appointment/withOurOrder      OperateHuanleguAppointment.withOurOrder
+POST    /huanlegu/appointment/withOurOrder      OperateHuanleguAppointment.appointmentWithOurOrder
+
+GET     /huanlegu/appointment/withoutOurOrder   OperateHuanleguAppointment.withoutOurOrder
+POST    /huanlegu/appointment/withoutOurOrder   OperateHuanleguAppointment.appointmentWithoutOurOrder
+
 #批量冻结券号
 GET     /coupons/batchfreeze/index             BatchFreezeCoupons.index
 POST    /coupons/batchfreeze/import            BatchFreezeCoupons.importFreezeCoupons

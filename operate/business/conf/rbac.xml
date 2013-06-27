@@ -225,6 +225,10 @@
             <navigation key="download_track_no_for_resaler" action="real.DownloadTrackNos.index" text="下载渠道运单上报文件"
                         permissions="ORDERS"/>
         </navigation>
+
+        <navigation key="sight_appointment" text="旅游景点">
+            <navigation key="sight_appointment_huanlegu" text="欢乐谷/玛雅水世界" permissions="COUPONS" action="OperateHuanleguAppointment.index"/>
+        </navigation>
     </navigation>
 
     <navigation key="account_app" text="财务管理" action="OperateBusinessApplication.account" display-order="80">

@@ -1,0 +1,18 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'欢乐谷/玛雅水世界预约' /}
+
+
+<div class="body">
+    <h3>请选择销售渠道</h3>
+    <ul>
+        #{list items:outerPartners, as:'resaler'}
+        <li>
+            <a href="/huanlegu/appointment/withoutOurOrder?resalerId=${resaler.id}">${resaler.userName}</a>
+        </li>
+        #{/list}
+        <li>
+            <a href="/huanlegu/appointment/withOurOrder">淘宝 | 京东 | 58同城 | 当当 | 一号店</a>
+        </li>
+    </ul>
+</div>
