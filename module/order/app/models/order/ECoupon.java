@@ -964,7 +964,7 @@ public class ECoupon extends Model {
 
 
         // 创建退款交易
-        TradeBill tradeBill = TradeUtil.refundTrade(eCoupon.order.operator)
+        TradeBill tradeBill = TradeUtil.refundFromPlatFormIncomingTrade(eCoupon.order.operator)
                 .toAccount(account)
                 .balancePaymentAmount(refundCashAmount)
                 .promotionPaymentAmount(refundPromotionAmount)

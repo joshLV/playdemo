@@ -38,7 +38,7 @@ public class RefundTest extends UnitTest {
         assertEquals(0, balance.compareTo(AccountUtil.getPlatformIncomingAccount(Operator.defaultOperator()).amount));
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().amount));
 
-        TradeBill tradeBill = TradeUtil.refundTrade(Operator.defaultOperator())
+        TradeBill tradeBill = TradeUtil.refundFromPlatFormIncomingTrade(Operator.defaultOperator())
                 .toAccount(getConsumerAccount())
                 .balancePaymentAmount(refundAmount)
                 .orderId(1L)

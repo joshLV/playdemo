@@ -6,6 +6,7 @@ import models.jobs.annotation.JobDefine;
 import models.order.OrderItems;
 import models.order.OrderStatus;
 import play.Logger;
+import play.jobs.OnApplicationStart;
 
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +22,7 @@ public class RealGoodsRefreshData extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
         List<OrderItems> orderItemsList = OrderItems.find("shippingInfo is not null and status<>? and createdAt >=? and createdAt<=?",
-                OrderStatus.PREPARED, DateUtil.firstDayOfMonth(), DateUtil.stringToDate("2013-06-25 23:59:59", "yyyy-MM-dd HH:mm:ss")).fetch();
+                OrderStatus.PREPARED, DateUtil.firstDayOfMonth(), DateUtil.stringToDate("2013-05-25 23:59:59", "yyyy-MM-dd HH:mm:ss")).fetch();
 
         Iterator<OrderItems> it = orderItemsList.iterator();
         OrderItems orderItems = null;

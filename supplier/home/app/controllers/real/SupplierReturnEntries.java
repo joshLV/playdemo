@@ -59,7 +59,7 @@ public class SupplierReturnEntries extends Controller {
         entry.returnedBy = SupplierRbac.currentUser().userName;
         entry.save();
         //2、退款
-        String result = OrderItems.handleRefund(entry.orderItems, entry.returnedCount);
+        String result = OrderItems.handleRealGoodsRefund(entry.orderItems, entry.returnedCount);
         if (StringUtils.isNotBlank(result)) {
             error(result);
         }
