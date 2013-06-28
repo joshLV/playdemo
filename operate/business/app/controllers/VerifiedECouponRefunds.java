@@ -193,7 +193,7 @@ public class VerifiedECouponRefunds extends Controller {
         if (platformCommission.compareTo(BigDecimal.ZERO) > 0) {
             tradeBill = TradeUtil.refundToPlatFormIncomingTrade(eCoupon.order.operator)
                     .fromAccount(AccountUtil.getPlatformCommissionAccount(eCoupon.order.operator))
-                    .balancePaymentAmount(eCoupon.originalPrice)
+                    .balancePaymentAmount(platformCommission)
                     .promotionPaymentAmount(refundPromotionAmount)
                     .orderId(eCoupon.order.id)
                     .coupon(eCoupon.eCouponSn)
