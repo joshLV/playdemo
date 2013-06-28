@@ -18,12 +18,11 @@ import java.util.List;
  */
 @JobDefine(title = "实物洗数据", description = "实物洗数据，给商户打款")
 //@On("0 0 4 * * ?")
-@OnApplicationStart
 public class RealGoodsRefreshData extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
         List<OrderItems> orderItemsList = OrderItems.find("shippingInfo is not null and status<>? and createdAt >=? and createdAt<=?",
-                OrderStatus.PREPARED, DateUtil.firstDayOfMonth(), DateUtil.stringToDate("2013-06-25 23:59:59", "yyyy-MM-dd HH:mm:ss")).fetch();
+                OrderStatus.PREPARED, DateUtil.firstDayOfMonth(), DateUtil.stringToDate("2013-05-25 23:59:59", "yyyy-MM-dd HH:mm:ss")).fetch();
 
         Iterator<OrderItems> it = orderItemsList.iterator();
         OrderItems orderItems = null;

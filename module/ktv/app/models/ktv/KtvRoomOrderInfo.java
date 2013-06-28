@@ -50,7 +50,7 @@ public class KtvRoomOrderInfo extends Model {
      * 预定时间
      */
     @Column(name = "scheduled_time")
-    public int scheduledTime;
+    public Integer scheduledTime;
 
 
     /**

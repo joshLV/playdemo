@@ -118,7 +118,7 @@ public class InventoryStock extends Model {
      */
     @Column(name = "lock_version")
     @Version
-    public int lockVersion = 0;
+    public Integer lockVersion = 0;
 
     /**
      * 统计未出库实物订单的Sku出库数量.

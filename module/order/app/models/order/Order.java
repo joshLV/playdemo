@@ -216,7 +216,7 @@ public class Order extends Model {
 
     @Version
     @Column(name = "lock_version")
-    public int lockVersion;
+    public Integer lockVersion;
 
     @ManyToOne
     public Operator operator;
