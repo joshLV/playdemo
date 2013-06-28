@@ -166,23 +166,7 @@ public class VerifiedECouponRefunds extends Controller {
         System.out.println("===refundCashAmount" + refundCashAmount);
         System.out.println("===refundPromotionAmount" + refundPromotionAmount);
 
-        TradeBill tradeBill = new TradeBill();
-        tradeBill.fromAccount = eCoupon.getSupplierAccount(); //付款方为商户账户
-        tradeBill.toAccount = AccountUtil.getPlatformCommissionAccount(eCoupon.order.operator);                                  //收款方为指定账户
-        tradeBill.balancePaymentAmount = eCoupon.originalPrice;                                   //使用可提现余额来支付退款的金额
-        tradeBill.ebankPaymentAmount = BigDecimal.ZERO;                          //不使用网银支付
-        tradeBill.uncashPaymentAmount = BigDecimal.ZERO;                          //不使用不可提现余额支付
-        tradeBill.promotionPaymentAmount = refundPromotionAmount;                          //使用活动金余额来支付退款的金额
-        tradeBill.tradeType = TradeType.REFUND;                         //交易类型为退款
-        tradeBill.orderId = eCoupon.order.id;                                  //冗余订单ID
-        tradeBill.eCouponSn = eCoupon.eCouponSn;                                //冗余券编号
-        tradeBill.amount = tradeBill.balancePaymentAmount
-                .add(tradeBill.ebankPaymentAmount)
-                .add(tradeBill.uncashPaymentAmount)
-                .add(refundPromotionAmount);
-
-//        tradeBill.save();
-
+        //商户打钱给平台收款账户
         TradeBill tradeBill = TradeUtil.refundToPlatFormIncomingTrade(eCoupon.order.operator)
                 .fromAccount(eCoupon.getSupplierAccount())
                 .balancePaymentAmount(eCoupon.originalPrice)
@@ -190,14 +174,40 @@ public class VerifiedECouponRefunds extends Controller {
                 .orderId(eCoupon.order.id)
                 .coupon(eCoupon.eCouponSn)
                 .make();
-
         if (!TradeUtil.success(tradeBill,
                 "券" + eCoupon.getMaskedEcouponSn() + "因" + refundComment + "被" + OperateRbac.currentUser().userName + "操作退款")) {
             throw new RuntimeException("商户退款失败:" + eCoupon.eCouponSn);
         }
 
-        TradeBill rebateTrade = TradeUtil.transferTrade()
-                .fromAccount(AccountUtil.getPlatformCommissionAccount(eCoupon.order.operator))
+        BigDecimal platformCommission;
+
+        if (eCoupon.salePrice.compareTo(eCoupon.resalerPrice) < 0) {
+            // 如果成交价小于分销商成本价（这种情况只有在一百券网站上才会发生），
+            // 那么一百券就没有佣金，平台的佣金也变为成交价减成本价
+            platformCommission = eCoupon.salePrice.subtract(eCoupon.originalPrice);
+        } else {
+            // 平台的佣金等于分销商成本价减成本价
+            platformCommission = eCoupon.resalerPrice.subtract(eCoupon.originalPrice);
+        }
+        //佣金账户打钱给平台收款账户
+        if (platformCommission.compareTo(BigDecimal.ZERO) > 0) {
+            tradeBill = TradeUtil.refundToPlatFormIncomingTrade(eCoupon.order.operator)
+                    .fromAccount(AccountUtil.getPlatformCommissionAccount(eCoupon.order.operator))
+                    .balancePaymentAmount(eCoupon.originalPrice)
+                    .promotionPaymentAmount(refundPromotionAmount)
+                    .orderId(eCoupon.order.id)
+                    .coupon(eCoupon.eCouponSn)
+                    .make();
+
+            if (!TradeUtil.success(tradeBill,
+                    "券" + eCoupon.getMaskedEcouponSn() + "因" + refundComment + "被" + OperateRbac.currentUser().userName + "操作退款")) {
+                throw new RuntimeException("商户退款失败:" + eCoupon.eCouponSn);
+            }
+        }
+
+        //平台收款账户打钱给分销商
+        TradeBill rebateTrade = TradeUtil.refundTrade()
+                .fromAccount(AccountUtil.getPlatformIncomingAccount(eCoupon.order.operator))
                 .toAccount(userAccount)
                 .balancePaymentAmount(refundCashAmount)
                 .make();

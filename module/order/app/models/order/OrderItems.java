@@ -693,6 +693,71 @@ public class OrderItems extends Model {
         boolean toResalerAccountSuc = true;
         //从商户扣款成功标识
         boolean fromSupplierAccountSuc = true;
+        //从平台佣金账户扣款成功标识
+        boolean fromCommissionAccountSuc = true;
+
+        Account supplierAccount = orderItems.getSupplierAccount();
+        Account commissionAccount = AccountUtil.getPlatformCommissionAccount(orderItems.order.operator);
+        BigDecimal platformCommission;
+
+        if (orderItems.salePrice.compareTo(orderItems.resalerPrice) < 0) {
+            // 如果成交价小于分销商成本价（这种情况只有在一百券网站上才会发生），
+            // 那么一百券就没有佣金，平台的佣金也变为成交价减成本价
+            platformCommission = orderItems.salePrice.subtract(orderItems.originalPrice);
+        } else {
+            // 平台的佣金等于分销商成本价减成本价
+            platformCommission = orderItems.resalerPrice.subtract(orderItems.originalPrice);
+        }
+
+        //判断如果是已上传或已发货的商品，则给从商户帐号打钱给平台收款账户
+        if (orderItems.status == OrderStatus.UPLOADED || orderItems.status == OrderStatus.SENT || orderItems.status == OrderStatus.RETURNING) {
+            for (int i = 0; i < returnedCount; i++) {
+                TradeBill tradeBill = TradeUtil.refundToPlatFormIncomingTrade(order.operator)
+                        .fromAccount(supplierAccount)
+                        .balancePaymentAmount(orderItems.originalPrice)
+                        .promotionPaymentAmount(refundPromotionAmount)
+                        .orderId(orderItems.order.getId())
+                        .make();
+
+                if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
+                    Logger.info("实物退款失败:从商户帐号打钱给平台收款账户fromAccount=" + supplierAccount.id + ",orderItem.id=" + orderItems.id);
+                    fromSupplierAccountSuc = false;
+                    break;
+                }
+
+
+                //佣金账户打钱给平台收款账户
+                if (platformCommission.compareTo(BigDecimal.ZERO) > 0) {
+                    tradeBill = TradeUtil.refundToPlatFormIncomingTrade(orderItems.order.operator)
+                            .fromAccount(commissionAccount)
+                            .balancePaymentAmount(orderItems.originalPrice)
+                            .promotionPaymentAmount(refundPromotionAmount)
+                            .orderId(orderItems.order.id)
+                            .make();
+
+                    if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
+                        Logger.info("实物退款失败:从平台佣金帐号打钱给平台收款账户fromAccount=" + commissionAccount.id + ",orderItem.id=" + orderItems.id);
+                        fromCommissionAccountSuc = false;
+                        break;
+                    }
+                }
+            }
+
+            //如果从商户扣款失败则回滚之前保存的数据
+            if (!fromSupplierAccountSuc) {
+                JPA.em().getTransaction().rollback();
+                returnFlg = "{\"error\":\"supplier account refund failed\"}";
+                return returnFlg;
+            }
+
+            //如果从商户扣款失败则回滚之前保存的数据
+            if (!fromCommissionAccountSuc) {
+                JPA.em().getTransaction().rollback();
+                returnFlg = "{\"error\":\"platformCommission account refund failed\"}";
+                return returnFlg;
+            }
+        }
+
         //从平台收款账户打款给分销账户
         for (int i = 0; i < returnedCount; i++) {
             TradeBill tradeBill = TradeUtil.refundFromPlatFormIncomingTrade(order.operator)
@@ -711,32 +776,7 @@ public class OrderItems extends Model {
         //如果给分销大款失败则回滚之前保存的数据
         if (!toResalerAccountSuc) {
             JPA.em().getTransaction().rollback();
-            returnFlg = "{\"error\":\"resaler refund failed\"}";
-            return returnFlg;
-        }
-        Account supplierAccount = orderItems.getSupplierAccount();
-        System.out.println("orderItems.status:" + orderItems.status);
-        //判断如果是已上传或已发货的商品，则给从商户帐号打钱给平台收款账户
-        if (orderItems.status == OrderStatus.UPLOADED || orderItems.status == OrderStatus.SENT || orderItems.status == OrderStatus.RETURNING) {
-            for (int i = 0; i < returnedCount; i++) {
-                TradeBill tradeBill = TradeUtil.refundToPlatFormIncomingTrade(order.operator)
-                        .fromAccount(supplierAccount)
-                        .balancePaymentAmount(orderItems.originalPrice)
-                        .promotionPaymentAmount(refundPromotionAmount)
-                        .orderId(orderItems.order.getId())
-                        .make();
-
-                if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
-                    Logger.info("实物退款失败:从商户帐号打钱给平台收款账户fromAccount=" + supplierAccount.id + ",orderItem.id=" + orderItems.id);
-                    fromSupplierAccountSuc = false;
-                    break;
-                }
-            }
-        }
-        //如果从商户扣款失败则回滚之前保存的数据
-        if (!fromSupplierAccountSuc) {
-            JPA.em().getTransaction().rollback();
-            returnFlg = "{\"error\":\"supplier refund failed\"}";
+            returnFlg = "{\"error\":\"resaler account refund failed\"}";
             return returnFlg;
         }
         // 更新已退款的活动金金额
