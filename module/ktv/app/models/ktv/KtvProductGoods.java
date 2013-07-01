@@ -3,11 +3,19 @@ package models.ktv;
 import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Goods;
 import models.sales.Shop;
-import play.data.validation.Unique;
 import play.db.jpa.Model;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * @author likang
@@ -38,5 +46,8 @@ public class KtvProductGoods extends Model {
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "need_sync")
     public DeletedStatus needSync = DeletedStatus.UN_DELETED;
+
+    @Column(name = "created_at")
+    public Date createdAt;
 
 }
