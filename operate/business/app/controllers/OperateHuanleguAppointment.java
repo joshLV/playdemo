@@ -100,6 +100,11 @@ public class OperateHuanleguAppointment extends Controller {
             String err = "请填写手机号";
             render("OperateHuanleguAppointment/withOurOrder.html", err, couponStr, mobile, appointmentDate);
         }
+        if (appointmentDate == null || appointmentDate.before(DateUtils.ceiling(new Date(), Calendar.DATE))
+                || appointmentDate.after(DateUtils.ceiling(DateUtils.addDays(new Date(), 30), Calendar.DATE))) {
+            String err = "预约日期从明天开始，30天内";
+            render("OperateHuanleguAppointment/withoutOurOrder.html", err, couponStr, appointmentDate, mobile);
+        }
 
         int quantity = couponList.size() > 5 ? 5 : couponList.size();
 
