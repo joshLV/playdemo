@@ -238,6 +238,7 @@ public class KtvTaobaoProducts extends Controller {
             ktvProductGoods.goods = goods;
             ktvProductGoods.product = product;
             ktvProductGoods.shop = shop;
+            ktvProductGoods.createdAt = new Date();
             ktvProductGoods.save();
         }
 
