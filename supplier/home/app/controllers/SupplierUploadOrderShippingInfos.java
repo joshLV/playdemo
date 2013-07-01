@@ -18,10 +18,7 @@ import play.vfs.VirtualFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p/>
@@ -97,7 +94,11 @@ public class SupplierUploadOrderShippingInfos extends Controller {
             orderItems.shippingInfo.expressNumber = logistic.expressNumber;
             orderItems.shippingInfo.save();
             orderItems.status = OrderStatus.SENT;
+            orderItems.sendAt = new Date();
             orderItems.save();
+            //订单已发货，给商户打钱操作
+            orderItems.realGoodsPayCommission();
+
             uploadSuccessOrders.add(logistic.orderNumber);
         }
 
