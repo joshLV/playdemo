@@ -75,6 +75,7 @@
     <permission key="WEBSITES_REPORT" text="一百券佣金账户资金明细" roles="account"/>
     <permission key="PLATFORMS_REPORT" text="券平台佣金账户资金明细" roles="account"/>
     <permission key="INCOMINGS_REPORT" text="收款账户资金明细" roles="account"/>
+    <permission key="REAL_GOODS_ORDER_REPORT" text="实物订单报表" roles="account"/>
     <permission key="WITHDRAW_REPORT" text="提现账户资金明细" roles="account"/>
     <permission key="WITHDRAW_APPROVAL" text="审批提现申请" roles="customservice,sales,account"/>
     <permission key="FINANCING_INCOMING_NOTE" text="记录收款" roles="account"/>
@@ -270,6 +271,8 @@
                         text="券平台财务收款账户" permissions="FINANCING_ACCOUNT_REPORT"/>
             <navigation key="incomings_account_reports" action="OperateReports.showIncomingReport" text="收款账户资金明细"
                         permissions="INCOMINGS_REPORT"/>
+            <navigation key="real_goods_order_reports" action="RealGoodsReports.showOrderReport" text="实物订单报表"
+                        permissions="REAL_GOODS_ORDER_REPORT"/>
             <navigation key="resale_sales_reports" action="OperateResaleSalesReports.index" text="渠道销售汇总"
                         permissions="RESALE_SALES_REPORT"/>
         </navigation>
