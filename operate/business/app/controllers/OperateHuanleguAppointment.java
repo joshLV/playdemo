@@ -21,6 +21,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -179,7 +180,10 @@ public class OperateHuanleguAppointment extends Controller {
     private static String confirmOrderOnHuanlegu(int quantity, List<ECoupon> couponList, String mobile, Date appointmentDate) {
         ECoupon coupon = couponList.get(0);
 
-        HuanleguMessage message = HuanleguUtil.confirmOrder(coupon.order.orderNumber, coupon.createdAt, mobile,
+        String orderNumber = coupon.order.orderNumber
+                + "-" + new SimpleDateFormat("MMdd").format(new Date())
+                + "-" + mobile.substring(mobile.length()-4);
+        HuanleguMessage message = HuanleguUtil.confirmOrder(orderNumber, coupon.createdAt, mobile,
                 quantity, coupon.goods.supplierGoodsNo, coupon.salePrice, appointmentDate);
 
         if (!message.isResponseOk()) {
@@ -190,9 +194,6 @@ public class OperateHuanleguAppointment extends Controller {
         String supplierECouponPwd = StringUtils.trimToNull(XPath.selectText("./VoucherValue", voucher));
         String supplierECouponId = StringUtils.trimToNull(XPath.selectText("./VoucherId", voucher));//password字段存成 景点门票的ID
 
-        Date today = DateUtils.truncate(new Date(), Calendar.DATE);
-        Date tomorrow = DateUtils.ceiling(new Date(), Calendar.DATE);
-
         Supplier supplier = Supplier.findByDomainName(HuanleguUtil.SUPPLIER_DOMAIN_NAME);
         Shop shop = Shop.findShopBySupplier(supplier.id).get(0);
         SupplierUser supplierUser = SupplierUser.findBySupplier(supplier.id).get(0);
@@ -201,8 +202,6 @@ public class OperateHuanleguAppointment extends Controller {
             ECoupon c = couponList.get(i);
             c.supplierECouponPwd = supplierECouponPwd;
             c.supplierECouponId = supplierECouponId;
-            c.effectiveAt = today;
-            c.expireAt = tomorrow;
             c.save();
             c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);
         }

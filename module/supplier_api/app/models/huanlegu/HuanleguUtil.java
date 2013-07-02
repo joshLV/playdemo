@@ -94,6 +94,19 @@ public class HuanleguUtil {
         return sendRequest("confirmOrder", params);
     }
 
+    public static HuanleguMessage checkTicketBuy(String mobile, int quantity, String ticketId, BigDecimal retailPrice,
+             Date appointTripDate ) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("ticketId", ticketId);
+        params.put("quantity", quantity);
+        params.put("retailPrice", retailPrice);
+        params.put("appointTripDate", appointTripDate);
+        params.put("mobile", mobile);
+        params.put("certificateNum", "");
+
+        return sendRequest("checkTicketBuy", params);
+    }
+
     public static String encrypt(String content) {
         try {
             SecureRandom sr = new SecureRandom();
