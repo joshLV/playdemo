@@ -29,6 +29,8 @@ public class OperateCoupons extends Controller {
     public static void index(CouponsCondition condition) {
         Boolean hasEcouponRefundPermission = ContextedPermission.hasPermission("ECOUPON_REFUND");
         Boolean hasViewEcouponSnPermission = ContextedPermission.hasPermission("VIEW_ECOUPONSN");
+        Boolean hasViewVirtualVerifyEcouponSnPermission = ContextedPermission.hasPermission("VIRTUAL_VERIFY_COUPON");
+        renderArgs.put("hasViewVirtualVerifyEcouponSnPermission", hasViewVirtualVerifyEcouponSnPermission);
         condition = getOrdersCondition(condition);
 
         String page = request.params.get("page");
@@ -50,11 +52,13 @@ public class OperateCoupons extends Controller {
                 }
             }
         }
+
         List<Brand> brandList = Brand.findByOrder(null, operatorId, hasSeeAllSupplierPermission);
         renderArgs.put("brandList", brandList);
         BigDecimal amountSummary = ECoupon.summary(couponPage);
         //判断角色是否有解冻券号的权限
         boolean hasRight = ContextedPermission.hasPermission("COUPON_UNFREEZE");
+
         render(couponPage, condition, amountSummary, hasRight, hasEcouponRefundPermission, hasViewEcouponSnPermission);
     }
 
