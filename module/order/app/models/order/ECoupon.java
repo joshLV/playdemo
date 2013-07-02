@@ -280,6 +280,15 @@ public class ECoupon extends Model {
     @Transient
     public String outerOrderId;
 
+    /**
+     * 对于欢乐谷的券：
+     * 值为： 订单编号（异化的）;预约手机号;欢乐谷订单号;券捆绑数量;已使用数量
+     *
+     c.extra = orderNumber + ";" + mobile.trim() + ";" + hvOrderId + ";" + couponList.size();
+     */
+    @Column(name = "extra")
+    public String extra;
+
 
     /**
      * @return

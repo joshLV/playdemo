@@ -241,22 +241,22 @@ public class OperateHuanleguAppointment extends Controller {
         }
 
         Node voucher = message.selectNode("./Voucher");
+        String supplierECouponId = StringUtils.trimToNull(XPath.selectText("./VoucherId", voucher));
         String supplierECouponPwd = StringUtils.trimToNull(XPath.selectText("./VoucherValue", voucher));
-        String supplierECouponId = StringUtils.trimToNull(XPath.selectText("./VoucherId", voucher));//password字段存成 景点门票的ID
 
         Supplier supplier = Supplier.findByDomainName(HuanleguUtil.SUPPLIER_DOMAIN_NAME);
         Shop shop = Shop.findShopBySupplier(supplier.id).get(0);
         SupplierUser supplierUser = SupplierUser.findBySupplier(supplier.id).get(0);
 
+        String hvOrderId = message.selectTextTrim("./HvOrderId");
+
         for (ECoupon c : couponList) {
             c.supplierECouponPwd = supplierECouponPwd;
             c.supplierECouponId = supplierECouponId;
+            c.extra = orderNumber + ";" + mobile.trim() + ";" + hvOrderId + ";" + couponList.size();
             c.save();
             c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);
         }
-
-        coupon.order.supplierOrderNumber = message.selectTextTrim("./HvOrderId");
-        coupon.order.save();
 
         return null;
     }
@@ -282,8 +282,9 @@ public class OperateHuanleguAppointment extends Controller {
 
         List<ECoupon> couponList = ECoupon.find("byOrder", ybqOrder).fetch();
         for (int i = 0; i < couponStrList.size(); i ++) {
-            couponList.get(i).partnerCouponId = couponStrList.get(i);
-            couponList.get(i).save();
+            ECoupon c = couponList.get(i);
+            c.partnerCouponId = couponStrList.get(i);
+            c.save();
         }
 
         return ybqOrder;

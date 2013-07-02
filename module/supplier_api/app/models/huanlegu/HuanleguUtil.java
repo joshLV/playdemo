@@ -49,11 +49,18 @@ public class HuanleguUtil {
 
 
     public static HuanleguMessage resend(ECoupon coupon) {
+        /**
+         *
+         c.extra = orderNumber + ";" + mobile.trim() + ";" + hvOrderId;
+         */
+        String[] extras = coupon.extra.split(";");
+
         Map<String, Object> params = new HashMap<>();
+
         params.put("pageIndex", 1);
         params.put("pageSize", 1);
-        params.put("orderId", coupon.order.orderNumber);
-        params.put("hvOrderId", coupon.order.supplierOrderNumber);
+        params.put("orderId", extras[0]);
+        params.put("hvOrderId", extras[2]);
         params.put("voucherId", coupon.supplierECouponId);
 
         return sendRequest("resendVoucher", params);
@@ -76,6 +83,18 @@ public class HuanleguUtil {
         return sendRequest("confirmOrder", params);
     }
 
+    /**
+     * 下订单.
+     *
+     * @param orderNumber 一百券的订单号
+     * @param dealTime 交易时间
+     * @param mobile 手机号
+     * @param quantity 数量
+     * @param ticketId 欢乐谷商品ID
+     * @param salePrice 销售价
+     * @param appointmentDate  预约日期
+     * @return
+     */
     public static HuanleguMessage confirmOrder(String orderNumber, Date dealTime, String mobile, int quantity,
                String ticketId, BigDecimal salePrice, Date appointmentDate) {
         Map<String, Object> params = new HashMap<>();
@@ -94,6 +113,16 @@ public class HuanleguUtil {
         return sendRequest("confirmOrder", params);
     }
 
+    /**
+     * 检查能不能买
+     *
+     * @param mobile 手机号
+     * @param quantity 买几张
+     * @param ticketId 欢乐谷产品ID
+     * @param retailPrice 销售价
+     * @param appointTripDate 预约日期
+     * @return
+     */
     public static HuanleguMessage checkTicketBuy(String mobile, int quantity, String ticketId, BigDecimal retailPrice,
              Date appointTripDate ) {
         Map<String, Object> params = new HashMap<>();
@@ -105,6 +134,24 @@ public class HuanleguUtil {
         params.put("certificateNum", "");
 
         return sendRequest("checkTicketBuy", params);
+    }
+
+    /**
+     *
+     * @param orderId 我们的订单号
+     * @param hvOrderId 欢乐谷订单号
+     * @param voucherValue 欢乐谷券号
+     * @param voucherSum 券使用次数
+     * @return
+     */
+    public static HuanleguMessage orderRefund(String orderId, String hvOrderId, String voucherValue, int voucherSum){
+        Map<String, Object> params = new HashMap<>();
+        params.put("orderId", orderId);
+        params.put("hvOrderId", hvOrderId);
+        params.put("voucherValue", voucherValue);
+        params.put("voucherSum", voucherSum);
+
+        return sendRequest("orderRefund", params);
     }
 
     public static String encrypt(String content) {
