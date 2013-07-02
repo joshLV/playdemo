@@ -86,7 +86,8 @@ public class KtvDailySchedule extends Controller {
                     if (oldValue == null) {
                         oldValue = new ArrayList<>();
                     }
-                    oldValue.add(target.orderItem.phone);
+                    String shopName = target.shop.name;
+                    oldValue.add( shopName + ":" + target.orderItem.phone);
                     return oldValue;
                 }
             };
