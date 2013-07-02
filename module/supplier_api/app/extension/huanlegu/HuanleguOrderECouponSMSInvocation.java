@@ -45,6 +45,10 @@ public class HuanleguOrderECouponSMSInvocation extends OrderECouponSMSInvocation
                 continue;
             }
             HuanleguMessage message = HuanleguUtil.resend(coupon);
+            if (message.isResponseOk()){
+                coupon.smsSentCount += 1;
+                coupon.save();
+            }
         }
 
         return ExtensionResult.SUCCESS;
