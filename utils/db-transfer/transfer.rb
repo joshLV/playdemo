@@ -8,8 +8,8 @@ require 'data_mapper' # requires all the gems listed above
 # If you want the logs displayed you have to do this before the call to setup
 # DataMapper::Logger.new($stdout, :debug)
 
-DataMapper.setup(:default, 'mysql://root:seewidb@192.168.18.235/scott')
-DataMapper.setup(:target, 'mysql://root:seewidb@192.168.18.235/sales')
+DataMapper.setup(:default, 'mysql://root:seewidb@192.168.18.244/scott')
+DataMapper.setup(:target, 'mysql://root:seewidb@192.168.18.244/sales')
 
 # Uhuila
 class UhlUser
