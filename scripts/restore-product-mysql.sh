@@ -2,7 +2,7 @@
 # 用于恢复数据库的脚本.
 
 MYSQL_DUMP_FILE=/tmp/reeb.sql
-MYSQL_HOST=192.168.18.235
+MYSQL_HOST=192.168.18.244
 MYSQL_USER=root
 MYSQL_PASS=seewidb
 MYSQL_DB=reeb
