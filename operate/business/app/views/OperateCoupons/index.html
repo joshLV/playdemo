@@ -201,6 +201,9 @@
         <th width="30px">有效期</th>
         <th width="50px">付款时间</th>
         <th width="50px">消费时间</th>
+    #{if hasViewVirtualVerifyEcouponSnPermission}
+        <th width="50px">虚拟验证时间</th>
+    #{/if}
         <th width="30px">店员</th>
         <th width="60px">代理验证员</th>
         <th width="40px">验证方式</th>
@@ -274,6 +277,9 @@
         ${coupon?.expireAt?.format()}</td>
         <td>${coupon?.order?.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+        #{if hasViewVirtualVerifyEcouponSnPermission}
+            <td>${coupon?.virtualVerifyAt?.format()}</td>
+        #{/if}
         <td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}
             #{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}</td>
         <td>${coupon?.operateUserName}</td>

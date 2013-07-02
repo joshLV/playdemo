@@ -332,7 +332,7 @@ public class OperateGoods extends Controller {
         if ("1".equals(StringUtils.trimToEmpty(request.params.get("secondaryVerification")))) {
             if (goods.advancedDeposit == null || goods.advancedDeposit.compareTo(BigDecimal.ZERO) <= 0) {
                 Validation.addError("goods.advancedDeposit", "validation.required");
-            } else if (goods.advancedDeposit.compareTo(goods.originalPrice) > 0) {
+            } else if (goods.advancedDeposit.compareTo(goods.salePrice) > 0) {
                 Validation.addError("goods.advancedDeposit", "validation.moreThanSalePrice");
             }
         }
