@@ -37,7 +37,7 @@ public class HuanleguUtil {
     public static String CLIENT_ID = Play.configuration.getProperty("huanlegu.client_id", "HVC000000065");
     public static String GATEWAY_URL = Play.configuration.getProperty("huanlegu.gateway_url", "http://202.104.133.113:8060/api/send/");
 
-    public static final String SUPPLIER_DOMAIN_NAME = "huanlegu";
+    public static final String SUPPLIER_DOMAIN_NAME = "myssj";
 
     public static HuanleguMessage getSightInfo(String sightId, String sightName) {
         Map<String, Object> params = new HashMap<>();
