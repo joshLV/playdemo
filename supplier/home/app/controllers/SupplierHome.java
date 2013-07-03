@@ -21,7 +21,7 @@ public class SupplierHome extends Controller {
         // 有电子券销售
         if ("1".equals(supplierUser.supplier.getProperty(Supplier.SELL_ECOUPON))) {
             if (ContextedPermission.hasPermission("COUPON_MULTI_VERIFY")) {
-                redirect("/verify");
+                redirect("/coupons");
             }
 
             if (ContextedPermission.hasPermission("ACCOUNT_REPORT")) {

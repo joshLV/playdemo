@@ -23,7 +23,8 @@ public class RealGoodsRefreshData extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
         List<OrderItems> orderItemsList = OrderItems.find("shippingInfo is not null and status<>? and createdAt >=? and createdAt<=?",
-                OrderStatus.PREPARED, DateUtil.firstDayOfMonth(), DateUtil.stringToDate("2013-06-25 23:59:59", "yyyy-MM-dd HH:mm:ss")).fetch();
+                OrderStatus.PREPARED, DateUtil.stringToDate("2013-06-01 00:00:00", "yyyy-MM-dd HH:mm:ss"),
+                DateUtil.stringToDate("2013-06-25 23:59:59", "yyyy-MM-dd HH:mm:ss")).fetch();
 
         Iterator<OrderItems> it = orderItemsList.iterator();
         OrderItems orderItems = null;
