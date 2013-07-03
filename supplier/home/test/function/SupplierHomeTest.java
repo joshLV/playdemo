@@ -38,7 +38,7 @@ public class SupplierHomeTest extends FunctionalTest {
 
         Http.Response response = GET("/");
         assertStatus(302, response);
-        assertEquals("/verify", response.getHeader("Location"));
+        assertEquals("/coupons", response.getHeader("Location"));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class SupplierHomeTest extends FunctionalTest {
 
         Http.Response response = GET("/");
         assertStatus(302, response);
-        assertEquals("/verify", response.getHeader("Location"));
+        assertEquals("/coupons", response.getHeader("Location"));
     }
 
 

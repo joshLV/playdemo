@@ -66,7 +66,7 @@ public class OperateHuanleguAppointment extends Controller {
         if (coupon == null) {
             String err = "券号不存在";
             render("OperateHuanleguAppointment/withOurOrder.html", err, couponStr, mobile, appointmentDate);
-        }else if (coupon.status != ECouponStatus.UNCONSUMED) {
+        } else if (coupon.status != ECouponStatus.UNCONSUMED) {
             String err = "券号不是未消费状态";
             render("OperateHuanleguAppointment/withOurOrder.html", err, couponStr, mobile, appointmentDate);
         }
@@ -84,7 +84,7 @@ public class OperateHuanleguAppointment extends Controller {
         for (ECoupon c : couponList) {
             if (c.status == ECouponStatus.UNCONSUMED) {
                 tobeUsedCouponList.add(c);
-                if (tobeUsedCouponList.size() >=5) {
+                if (tobeUsedCouponList.size() >= 5) {
                     break;
                 }
             }
@@ -96,17 +96,17 @@ public class OperateHuanleguAppointment extends Controller {
 
 
         //处理查询
-        if (StringUtils.isBlank(action) ){
+        if (StringUtils.isBlank(action)) {
             String err = "无效的操作";
             render("OperateHuanleguAppointment/withOurOrder.html", err, couponStr, mobile, appointmentDate);
-        }else {
+        } else {
             if (action.equals("query")) {
                 if (mobile == null) {
                     mobile = coupon.orderItems.phone;
                 }
                 //查看
                 render("OperateHuanleguAppointment/withOurOrder.html", couponList, couponStr, mobile, appointmentDate);
-            }else if (!action.equals("appointment")) {
+            } else if (!action.equals("appointment")) {
                 String err = "无效的操作";
                 render("OperateHuanleguAppointment/withOurOrder.html", err, couponStr, mobile, appointmentDate);
             }
@@ -129,7 +129,7 @@ public class OperateHuanleguAppointment extends Controller {
         if (!message.isResponseOk()) {
             String err = message.errorMsg;
             render("OperateHuanleguAppointment/withOurOrder.html", err, couponStr, appointmentDate, mobile);
-        }else {
+        } else {
             String isAllowBuy = message.selectTextTrim("./IsAllowBuy");
             if ("0".equals(isAllowBuy)) {
                 String err = "无法购买：" + message.selectTextTrim("./Message");
@@ -147,7 +147,7 @@ public class OperateHuanleguAppointment extends Controller {
             }
             String success = "成功，请提醒用户注意查收短信/彩信。被使用的券号：" + usedCoupon.toString();
             render("OperateHuanleguAppointment/withOurOrder.html", success);
-        }else {
+        } else {
             String err = errorMsg;
             render("OperateHuanleguAppointment/withOurOrder.html", err, couponStr, mobile, appointmentDate);
         }
@@ -182,7 +182,7 @@ public class OperateHuanleguAppointment extends Controller {
         }
         String[] inputCoupons = StringUtils.trimToEmpty(couponSn).split("\\r?\\n");
         List<String> couponStrList = new ArrayList<>(inputCoupons.length);
-        for(String coupon : inputCoupons) {
+        for (String coupon : inputCoupons) {
             coupon = StringUtils.trimToEmpty(coupon);
             if (StringUtils.isNotBlank(coupon)) {
                 couponStrList.add(coupon);
@@ -195,12 +195,12 @@ public class OperateHuanleguAppointment extends Controller {
 
 
         //判断能不能买
-        HuanleguMessage message = HuanleguUtil.checkTicketBuy(mobile, (int)couponStrList.size(), goods.supplierGoodsNo,
+        HuanleguMessage message = HuanleguUtil.checkTicketBuy(mobile, (int) couponStrList.size(), goods.supplierGoodsNo,
                 goods.salePrice, appointmentDate);
         if (!message.isResponseOk()) {
             String err = message.errorMsg;
             render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
-        }else {
+        } else {
             String isAllowBuy = message.selectTextTrim("./IsAllowBuy");
             if ("0".equals(isAllowBuy)) {
                 String err = "无法购买：" + message.selectTextTrim("./Message");
@@ -218,7 +218,7 @@ public class OperateHuanleguAppointment extends Controller {
         if (errorMsg == null) {
             String success = "成功，请提醒用户注意查收短信/彩信";
             render("OperateHuanleguAppointment/withoutOurOrder.html", success);
-        }else {
+        } else {
             JPA.em().getTransaction().rollback();
             String err = errorMsg;
             render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
@@ -231,7 +231,7 @@ public class OperateHuanleguAppointment extends Controller {
 
         String orderNumber = coupon.order.orderNumber
                 + "-" + new SimpleDateFormat("MMdd").format(new Date())
-                + "-" + mobile.substring(mobile.length()-4);
+                + "-" + mobile.substring(mobile.length() - 4);
 
         HuanleguMessage message = HuanleguUtil.confirmOrder(orderNumber, coupon.createdAt, mobile,
                 couponList.size(), coupon.goods.supplierGoodsNo, coupon.salePrice, appointmentDate);
@@ -256,6 +256,8 @@ public class OperateHuanleguAppointment extends Controller {
             c.extra = orderNumber + ";" + mobile.trim() + ";" + hvOrderId + ";" + couponList.size();
             c.save();
             c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);
+            ECouponHistoryMessage.with(coupon).remark("玛雅水世界预约成功后自动验证")
+                    .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         }
 
         return null;
@@ -265,7 +267,7 @@ public class OperateHuanleguAppointment extends Controller {
         Order ybqOrder = Order.createResaleOrder(resaler);
         ybqOrder.save();
 
-        OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, (long)couponStrList.size(), mobile, salePrice, salePrice);
+        OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, (long) couponStrList.size(), mobile, salePrice, salePrice);
         uhuilaOrderItem.save();
         if (goods.materialType.equals(MaterialType.REAL)) {
             ybqOrder.deliveryType = DeliveryType.LOGISTICS;
@@ -281,7 +283,7 @@ public class OperateHuanleguAppointment extends Controller {
         ybqOrder.save();
 
         List<ECoupon> couponList = ECoupon.find("byOrder", ybqOrder).fetch();
-        for (int i = 0; i < couponStrList.size(); i ++) {
+        for (int i = 0; i < couponStrList.size(); i++) {
             ECoupon c = couponList.get(i);
             c.partnerCouponId = couponStrList.get(i);
             c.save();
