@@ -256,7 +256,7 @@ public class OperateHuanleguAppointment extends Controller {
             c.extra = orderNumber + ";" + mobile.trim() + ";" + hvOrderId + ";" + couponList.size();
             c.save();
             c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);
-            ECouponHistoryMessage.with(coupon).remark("玛雅水世界预约成功后自动验证")
+            ECouponHistoryMessage.with(c).remark("玛雅水世界预约成功后自动验证")
                     .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         }
 
