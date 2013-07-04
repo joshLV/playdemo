@@ -157,7 +157,7 @@ public class ResalerProducts extends Controller {
      * 录入分销商品的第三方ID和url
      */
     @ActiveNavigation("resale_partner_product")
-    public static void enter(Long productId, String partnerPid, String url, Date endSale) {
+    public static void enter(Long productId, String partnerPid, Date endSale, String partnerUrl) {
         ResalerProduct product = ResalerProduct.findById(productId);
         if (!StringUtils.isBlank(partnerPid)) {
             ResalerProduct t = ResalerProduct.find("byPartnerAndPartnerProductId", product.partner, partnerPid).first();
@@ -167,7 +167,7 @@ public class ResalerProducts extends Controller {
 
             product.partnerProductId = partnerPid;
         }
-        if (!StringUtils.isBlank(url)) product.url = url;
+        if (!StringUtils.isBlank(partnerUrl)) product.url = partnerUrl;
         if (endSale != null) {
             endSale = new Date(endSale.getTime() + 24 * 60 * 60 * 1000 - 1000);
             product.endSale = endSale;
