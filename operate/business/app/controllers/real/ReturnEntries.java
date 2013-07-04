@@ -52,7 +52,7 @@ public class ReturnEntries extends Controller {
         if (condition == null) {
             condition = new RealGoodsReturnEntryCondition(Supplier.getShihui().id, RealGoodsReturnStatus.RETURNING);
         }
-        condition.supplierId = Supplier.getShihui().id;
+//        condition.supplierId = Supplier.getShihui().id;
         final int page = getPage();
         JPAExtPaginator<RealGoodsReturnEntry> entryPage = RealGoodsReturnEntry.getPage(condition, page, PAGE_SIZE);
         render(entryPage, condition, hasHandleReturnGoodsPermission);
