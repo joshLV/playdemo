@@ -39,7 +39,7 @@ public class VerifiedECouponRefunds extends Controller {
         render(eCouponSn);
     }
 
-    public static void refund(String eCouponSn, String refundComment, String choice) {
+    public static void refund(String eCouponSn, String refundComment, String choice, boolean reverseOnTaobao) {
         String message = null;
         if (StringUtils.isBlank(eCouponSn)) {
             message = "券号不能为空";
@@ -83,7 +83,7 @@ public class VerifiedECouponRefunds extends Controller {
                 message = "看购网不支持取消验证状态:" + eCouponSn;
                 render(message);
             }
-            message = applyUnConsumed(ecoupon, refundComment);
+            message = applyUnConsumed(ecoupon, refundComment, reverseOnTaobao);
         } else {
             message = "请输入REFUND或UNCONSUME。";
         }
@@ -242,12 +242,12 @@ public class VerifiedECouponRefunds extends Controller {
      * @param refundComment
      * @return
      */
-    private static String applyUnConsumed(ECoupon eCoupon, String refundComment) {
+    private static String applyUnConsumed(ECoupon eCoupon, String refundComment, boolean reverseOnTaobao) {
         if (eCoupon.status != ECouponStatus.CONSUMED) {
             return "必须是已经消费的券";
         }
 
-        if (eCoupon.partner == ECouponPartner.TB) {
+        if (eCoupon.partner == ECouponPartner.TB && reverseOnTaobao) {
             if (!TaobaoCouponUtil.reverseOnTaobao(eCoupon)) {
                 return "在淘宝上撤销失败！";
             }
