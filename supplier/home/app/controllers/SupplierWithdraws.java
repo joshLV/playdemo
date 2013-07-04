@@ -77,7 +77,7 @@ public class SupplierWithdraws extends Controller {
         BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, withDrawEndDate);
         Logger.info("withdrawAmount=%s, supplierWithdrawAmount=%s, prepaymentBalance=%s", withdrawAmount.toString(),
                 supplierWithdrawAmount.toString(), prepaymentBalance.toString());
-        render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount);
+        render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount, withDrawEndDate, supplier);
     }
 
     @ActiveNavigation("account_withdraw")
@@ -144,6 +144,9 @@ public class SupplierWithdraws extends Controller {
             }else if (dayOfMonth >=15 && dayOfMonth <=24) {
                 calendar.set(Calendar.DAY_OF_MONTH, 5);
             }else {
+                if (dayOfMonth <= 4) {
+                    calendar.add(Calendar.MONTH, -1);
+                }
                 calendar.set(Calendar.DAY_OF_MONTH, 15);
             }
             return DateUtils.ceiling(calendar.getTime(), Calendar.DATE);
