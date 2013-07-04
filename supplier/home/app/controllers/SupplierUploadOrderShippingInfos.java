@@ -62,7 +62,7 @@ public class SupplierUploadOrderShippingInfos extends Controller {
         String msgInfo = "";
         if (orderShippingFile == null) {
             msgInfo = "请先选择文件！";
-            render("SupplierUploadOrderShippingInfos/index.html", msgInfo);
+            render("SupplierUploadOrderShippingInfos/index.html", msgInfo, expressList);
         }
         List<LogisticImportData> logistics = new ArrayList<>();
         try {
