@@ -129,7 +129,7 @@ public class HuanleguUtil {
         params.put("ticketId", ticketId);
         params.put("quantity", quantity);
         params.put("retailPrice", retailPrice);
-        params.put("appointTripDate", appointTripDate);
+        params.put("appointTripDate", new SimpleDateFormat("yyyy-MM-dd").format(appointTripDate));
         params.put("mobile", mobile);
         params.put("certificateNum", "");
 
