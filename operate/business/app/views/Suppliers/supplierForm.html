@@ -69,16 +69,21 @@ error:'supplier.operator'}
     sellECoupon=sellECoupon?:supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON)?:'0';
     canSaleReal=canSaleReal?:supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL)?:'0';
     ktvSupplier=ktvSupplier?:supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER)?:'0';
+    delayWithdraw=delayWithdraw?:supplier?.getProperty(models.supplier.Supplier.IS_WITHDRAW_DELAY)?:'0';
     }%
 #{/if}
     <div class="controls">
         <input type="checkbox" name="sellECoupon" id="supplier_sellECoupon"
-               value="${sellECoupon}"${"1".equals(sellECoupon)?'checked':''}/>&{'supplier.sellECoupon'}
+               value="1"${"1".equals(sellECoupon)?'checked':''}/>&{'supplier.sellECoupon'}
         &nbsp;&nbsp;
         <input type="checkbox" name="canSaleReal" id="supplier_canSaleReal"
-               value="${canSaleReal}" ${"1".equals(canSaleReal)?'checked':''}/> &{'supplier.canSaleReal'}&nbsp;&nbsp;
+               value="1" ${"1".equals(canSaleReal)?'checked':''}/> &{'supplier.canSaleReal'}&nbsp;&nbsp;
         <input type="checkbox" name="ktvSupplier" id="supplier_ktvSupplier"
-               value="${ktvSupplier}" ${"1".equals(ktvSupplier)?'checked':''}/>&{'supplier.ktvSupplier'}
+               value="1" ${"1".equals(ktvSupplier)?'checked':''}/>&{'supplier.ktvSupplier'}
+        <input type="checkbox" name="delayWithdraw" id="supplier_delayWithdraw"
+               value="1" ${"1".equals(delayWithdraw)?'checked':''}/>是否延期提现
+
+        <span class="help-block"> (每月分 5-14, 15-24, 25-4 三个阶段提现。分别提上月25号之前，本月5号之前，本月15号之前 的款) </span>
     </div>
 </div>
 *{<div class="control-group">}*
@@ -122,28 +127,3 @@ error:'supplier.operator'}
 
 </div>
 
-<script type="text/javascript">
-    $(function () {
-        $("#supplier_sellECoupon").click(function () {
-            if (this.checked) {
-                $("#supplier_sellECoupon").val("1")
-            } else {
-                $("#supplier_sellECoupon").val("0")
-            }
-        });
-        $("#supplier_canSaleReal").click(function () {
-            if (this.checked) {
-                $("#supplier_canSaleReal").val("1")
-            } else {
-                $("#supplier_canSaleReal").val("0")
-            }
-        });
-        $("#supplier_ktvSupplier").click(function () {
-            if (this.checked) {
-                $("#supplier_ktvSupplier").val("1")
-            } else {
-                $("#supplier_ktvSupplier").val("0")
-            }
-        });
-    });
-</script>

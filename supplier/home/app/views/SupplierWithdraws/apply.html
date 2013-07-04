@@ -54,6 +54,29 @@
             </table>
             #{error 'withdrawAccountId'/}
         </div>
+        #{if supplier.isWithdrawDelay()}
+        <div class="field-group">
+            <label>说明</label>
+            <table class="standard-table">
+                <tr>
+                    <th>日期范围</th>
+                    <th>提现截止日期</th>
+                </tr>
+                <tr>
+                    <td>5日 - 14日</td>
+                    <td>上月25日</td>
+                </tr>
+                <tr>
+                    <td>15日 - 24日</td>
+                    <td>本月5日</td>
+                </tr>
+                <tr>
+                    <td>25日 - 次月4日</td>
+                    <td>本月15日</td>
+                </tr>
+            </table>
+        </div>
+        #{/if}
         <div class="field-sect">
             <div class="field-group">
                 <label>账户余额</label>
@@ -74,7 +97,7 @@
                 <div class="control-value">
                 ${supplierWithdrawAmount?.formatCurrency('CNY')}
                     <input type="hidden" name="amount" value="${supplierWithdrawAmount}"/>
-                    (统计截止日期: ${com.uhuila.common.util.DateUtil.getYesterday().format('yyyy-MM-dd')})
+                    (统计截止日期: ${withDrawEndDate.format('yyyy-MM-dd')})
                 </div>
             </div>
             <div class="form-actions">
