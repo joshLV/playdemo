@@ -136,7 +136,7 @@ public class Suppliers extends Controller {
         supplier.setProperty(Supplier.SELL_ECOUPON, request.params.get(Supplier.SELL_ECOUPON));
         supplier.setProperty(Supplier.KTV_SUPPLIER, request.params.get(Supplier.KTV_SUPPLIER));
         supplier.setProperty(Supplier.KTV_SKU_PUSH_END_HOUR, request.params.get(Supplier.KTV_SKU_PUSH_END_HOUR));
-
+        supplier.setProperty(Supplier.IS_WITHDRAW_DELAY, request.params.get(Supplier.IS_WITHDRAW_DELAY));
     }
 
     private static void redirectUrl(int page) {

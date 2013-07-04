@@ -11,6 +11,7 @@ import models.order.Prepayment;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
 import play.Play;
 import play.data.validation.Validation;
@@ -19,9 +20,9 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-
-import static com.uhuila.common.util.DateUtil.getBeginOfDay;
 
 /**
  * 商户的提现管理.
@@ -69,9 +70,11 @@ public class SupplierWithdraws extends Controller {
                 WithdrawAccount.findByUser(supplier.getId(), AccountType.SUPPLIER);
         List<Prepayment> prepayments = Prepayment.findBySupplier(supplier);
 
-        BigDecimal withdrawAmount = account.getWithdrawAmount(getBeginOfDay());
+        Date withDrawEndDate = getSupplierWithdrawEndDate(supplier);
+
+        BigDecimal withdrawAmount = account.getWithdrawAmount(withDrawEndDate);
         //商户可提现金额
-        BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, getBeginOfDay());
+        BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, withDrawEndDate);
         Logger.info("withdrawAmount=%s, supplierWithdrawAmount=%s, prepaymentBalance=%s", withdrawAmount.toString(),
                 supplierWithdrawAmount.toString(), prepaymentBalance.toString());
         render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount);
@@ -130,4 +133,23 @@ public class SupplierWithdraws extends Controller {
         }
         render(bill);
     }
+
+    private static Date getSupplierWithdrawEndDate(Supplier supplier) {
+        if (supplier.isWithdrawDelay()) {
+            Calendar calendar = Calendar.getInstance();
+            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            if (dayOfMonth >=5 && dayOfMonth <=14) {
+                calendar.add(Calendar.MONTH, -1);
+                calendar.set(Calendar.DAY_OF_MONTH, 25);
+            }else if (dayOfMonth >=15 && dayOfMonth <=24) {
+                calendar.set(Calendar.DAY_OF_MONTH, 5);
+            }else {
+                calendar.set(Calendar.DAY_OF_MONTH, 15);
+            }
+            return DateUtils.ceiling(calendar.getTime(), Calendar.DATE);
+        } else {
+            return  DateUtils.truncate(new Date(), Calendar.DATE);
+        }
+    }
+
 }
