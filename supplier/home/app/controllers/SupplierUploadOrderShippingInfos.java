@@ -58,6 +58,7 @@ public class SupplierUploadOrderShippingInfos extends Controller {
      */
     @ActiveNavigation("upload_order_shipping_index")
     public static void upload(File orderShippingFile) {
+        List<ExpressCompany> expressList = ExpressCompany.findAll();
         String msgInfo = "";
         if (orderShippingFile == null) {
             msgInfo = "请先选择文件！";
@@ -160,7 +161,7 @@ public class SupplierUploadOrderShippingInfos extends Controller {
         }
         renderArgs.put("successSendOnTaobao", successSendOnTaobao);
         renderArgs.put("failSendOnTaobao", failSendOnTaobao);
-        render("SupplierUploadOrderShippingInfos/index.html");
+        render("SupplierUploadOrderShippingInfos/index.html", expressList);
     }
 
 
