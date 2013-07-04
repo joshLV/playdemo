@@ -271,7 +271,7 @@
                         text="券平台财务收款账户" permissions="FINANCING_ACCOUNT_REPORT"/>
             <navigation key="incomings_account_reports" action="OperateReports.showIncomingReport" text="收款账户资金明细"
                         permissions="INCOMINGS_REPORT"/>
-            <navigation key="real_goods_order_reports" action="RealGoodsReports.showOrderReport" text="实物订单报表"
+            <navigation key="real_goods_order_reports" action="real.RealGoodsSalesReports.index" text="实物订单报表"
                         permissions="REAL_GOODS_ORDER_REPORT"/>
             <navigation key="resale_sales_reports" action="OperateResaleSalesReports.index" text="渠道销售汇总"
                         permissions="RESALE_SALES_REPORT"/>
