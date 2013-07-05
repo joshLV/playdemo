@@ -5,7 +5,12 @@
     <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
     <script>
         $("#query,#appointment").click(function(){
-            $("#action").val($(this).attr('data-action'))
+            var action = $(this).attr('data-action')
+            $("#action").val(action)
+            if(action == 'appointment'){
+                $("#appointment").hide()
+                $("#doing").show()
+            }
             $("#form").submit();
         });
     </script>
@@ -69,6 +74,7 @@
                 <div class="control-group">
                     <div class="controls">
                         <div class="btn btn-primary" id="appointment" data-action="appointment">预约</div>
+                        <div style="display:none" id="doing">正在预约，请稍后....</div>
                     </div>
                 </div>
                 <div class="form-actions">

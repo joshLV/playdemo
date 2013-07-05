@@ -21,6 +21,7 @@ import play.libs.XPath;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class OperateHuanleguAppointment extends Controller {
 
     @ActiveNavigation("sight_appointment_huanlegu")
     public static void index() {
-        List<Resaler> outerPartners = new ArrayList();
+        List<Resaler> outerPartners = new ArrayList<>();
         for (String outerPartner : outerPartneLoginNamess) {
             Resaler resaler = Resaler.findOneByLoginName(outerPartner);
             if (resaler != null) {
@@ -225,6 +226,15 @@ public class OperateHuanleguAppointment extends Controller {
                 String err = "非周末券，但所选日期是周末";
                 render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
             }
+        }
+
+        Query query = JPA.em().createQuery("select count(c) from ECoupon c where c.order.userId = :userId and c.partnerCouponId in :couponList");
+        query.setParameter("userId", resaler.id);
+        query.setParameter("couponList", couponStrList);
+        long conflictCouponCount = (long)query.getSingleResult();
+        if (conflictCouponCount > 0) {
+            String err = "部分券已使用过，请检查";
+            render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
         }
 
 
