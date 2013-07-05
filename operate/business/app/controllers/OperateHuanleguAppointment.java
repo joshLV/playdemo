@@ -21,6 +21,7 @@ import play.libs.XPath;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -225,6 +226,15 @@ public class OperateHuanleguAppointment extends Controller {
                 String err = "非周末券，但所选日期是周末";
                 render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
             }
+        }
+
+        Query query = JPA.em().createQuery("select count(1) from ECoupon c where c.order.userId = :userId and c.partnerCouponId in :couponList");
+        query.setParameter("userId", resaler.id);
+        query.setParameter("couponList", couponStrList);
+        int conflictCouponCount = (int)query.getSingleResult();
+        if (conflictCouponCount > 0) {
+            String err = "部分券已使用过，请检查";
+            render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
         }
 
 
