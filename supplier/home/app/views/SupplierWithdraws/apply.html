@@ -12,8 +12,11 @@
 </script>
 #{/set}
 #{if withdrawAccounts?.size() == 0 }
-暂无收款账户,请联系管理员添加.
+    暂无收款账户,请联系管理员添加.
 #{/if}
+#{elseif err}
+    ${err}
+#{/elseif}
 #{else}
 <div class="bd">
     <h2>${title}</h2>
