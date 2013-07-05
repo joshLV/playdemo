@@ -228,8 +228,10 @@
         </navigation>
 
         <navigation key="sight_appointment" text="旅游景点">
-            <navigation key="sight_appointment_huanlegu" text="欢乐谷/玛雅水世界" permissions="COUPONS" action="OperateHuanleguAppointment.index"/>
-            <navigation key="sight_appointment_huanlegu_refund" text="欢乐谷/玛雅水世界退款" permissions="COUPONS" action="OperateHuanleguAppointment.showRefund"/>
+            <navigation key="sight_appointment_huanlegu" text="欢乐谷/玛雅水世界" permissions="COUPONS"
+                        action="OperateHuanleguAppointment.index"/>
+            <navigation key="sight_appointment_huanlegu_refund" text="欢乐谷/玛雅水世界退款" permissions="COUPONS"
+                        action="OperateHuanleguAppointment.showRefund"/>
         </navigation>
     </navigation>
 
@@ -272,7 +274,7 @@
                         text="券平台财务收款账户" permissions="FINANCING_ACCOUNT_REPORT"/>
             <navigation key="incomings_account_reports" action="OperateReports.showIncomingReport" text="收款账户资金明细"
                         permissions="INCOMINGS_REPORT"/>
-            <navigation key="real_goods_order_reports" action="real.RealGoodsSalesReports.index" text="实物订单报表"
+            <navigation key="real_goods_order_reports" action="real.RealGoodsSalesReports.index" text="实物销售报表"
                         permissions="REAL_GOODS_ORDER_REPORT"/>
             <navigation key="resale_sales_reports" action="OperateResaleSalesReports.index" text="渠道销售汇总"
                         permissions="RESALE_SALES_REPORT"/>
@@ -328,7 +330,7 @@
         <navigation key="crm_app" text="CRM" permissions="CONSUMERS">
             <navigation key="crm_app_consumers" action="OperateCRM.getPhone" text="话务管理" permissions="CONSUMERS"/>
             <navigation key="crm_search_consumers" action="OperateConsult.index" text="咨询查询" permissions="CONSUMERS"/>
-            <navigation key="crm_pt_window" action="OperateCRM.ptCallCenter" text="派通来电弹窗" permissions="CONSUMERS" />
+            <navigation key="crm_pt_window" action="OperateCRM.ptCallCenter" text="派通来电弹窗" permissions="CONSUMERS"/>
         </navigation>
 
     </navigation>
