@@ -333,6 +333,11 @@ POST    /huanlegu/appointment/withOurOrder      OperateHuanleguAppointment.appoi
 GET     /huanlegu/appointment/withoutOurOrder   OperateHuanleguAppointment.withoutOurOrder
 POST    /huanlegu/appointment/withoutOurOrder   OperateHuanleguAppointment.appointmentWithoutOurOrder
 
+# 欢乐谷/玛雅水世界退款
+GET     /huanlegu/refund                        OperateHuanleguAppointment.showRefund
+POST    /huanlegu/pre-refund                    OperateHuanleguAppointment.preRefund
+POST    /huanlegu/refund                        OperateHuanleguAppointment.refund
+
 #批量冻结券号
 GET     /coupons/batchfreeze/index             BatchFreezeCoupons.index
 POST    /coupons/batchfreeze/import            BatchFreezeCoupons.importFreezeCoupons

@@ -1,0 +1,57 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'欢乐谷/玛雅水世界退款' /}
+
+<div class="body">
+    <legend>欢乐谷退款</legend>
+
+    #{list items:orderInfo.entrySet(), as:'entry'}
+        <table class="table">
+            <tr>
+                <th>手机号</th>
+                <th>渠道</th>
+                <th>合作伙伴券号</th>
+                <th>欢乐谷凭证号</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            #{list items:entry.getValue(), as:'coupon'}
+                <tr>
+                    <td>${coupon.orderItems.phone}</td>
+                    <td></td>
+                    <td>${coupon.partnerCouponId}</td>
+                    <td>${coupon.supplierECouponPwd}</td>
+                    <td>&{'coupon.' + coupon.status}</td>
+                    <td>
+                        #{if coupon.status == models.order.ECouponStatus.CONSUMED}
+                            <form method="POST" action="/verified-ecoupon-refunds" style="display:inline" target="_blank">
+                                <input type="hidden" name="eCouponSn" value="${coupon.eCouponSn}">
+                                <button type="submit" class="btn btn-primary">退款</button>
+                            </form>
+                        #{/if}
+                    </td>
+                </tr>
+            #{/list}
+            <tr>
+                <td colspan="8" style="text-align:right">
+                    <form method="POST" action="/huanlegu/refund" style="display:inline">
+                        %{
+                            tmp = entry.getKey().split(";")
+                            orderId = tmp[0]
+                            hvOrderId = tmp[2]
+                            count = tmp[3]
+                            supplierCouponValue = entry.getValue().get(0).supplierECouponPwd
+                        }%
+                        <input type="hidden" name="orderId" value="${orderId}">
+                        <input type="hidden" name="hvOrderId" value="${hvOrderId}">
+                        <input type="hidden" name="count" value="${count}">
+                        <input type="hidden" name="supplierCouponValue" value="${supplierCouponValue}">
+                        <button class="btn btn-primary" type="submit">在欢乐谷退款</button>
+                    </form>
+                </td>
+            </tr>
+
+        </table>
+    #{/list}
+
+</div>
