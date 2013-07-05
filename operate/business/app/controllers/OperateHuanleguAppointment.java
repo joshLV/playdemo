@@ -39,7 +39,7 @@ public class OperateHuanleguAppointment extends Controller {
 
     @ActiveNavigation("sight_appointment_huanlegu")
     public static void index() {
-        List<Resaler> outerPartners = new ArrayList();
+        List<Resaler> outerPartners = new ArrayList<>();
         for (String outerPartner : outerPartneLoginNamess) {
             Resaler resaler = Resaler.findOneByLoginName(outerPartner);
             if (resaler != null) {
@@ -228,10 +228,10 @@ public class OperateHuanleguAppointment extends Controller {
             }
         }
 
-        Query query = JPA.em().createQuery("select count(1) from ECoupon c where c.order.userId = :userId and c.partnerCouponId in :couponList");
+        Query query = JPA.em().createQuery("select count(c) from ECoupon c where c.order.userId = :userId and c.partnerCouponId in :couponList");
         query.setParameter("userId", resaler.id);
         query.setParameter("couponList", couponStrList);
-        int conflictCouponCount = (int)query.getSingleResult();
+        long conflictCouponCount = (long)query.getSingleResult();
         if (conflictCouponCount > 0) {
             String err = "部分券已使用过，请检查";
             render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);

@@ -181,6 +181,12 @@ public class Resaler extends Model {
     @Column(name = "offsale_key")
     public String offSaleKey;
 
+    @Column(name = "resaler_name")
+    @Required
+    @MinSize(value = 1)
+    @MaxSize(value = 50)
+    public String resalerName;
+
     /**
      * 佣金比例
      */
