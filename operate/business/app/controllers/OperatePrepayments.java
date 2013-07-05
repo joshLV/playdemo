@@ -3,6 +3,7 @@ package controllers;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
+import models.accounts.AccountSequence;
 import models.accounts.AccountType;
 import models.accounts.ClearedAccount;
 import models.accounts.SettlementStatus;
@@ -112,47 +113,84 @@ public class OperatePrepayments extends Controller {
         index(null);
     }
 
+    /**
+     * 进入预付款结算界面
+     */
     public static void settle(Long id) {
         Prepayment prepayment = Prepayment.findById(id);
         Supplier supplier = Supplier.findById(prepayment.supplier.id);
         Account account = Account.find("uid = ? and accountType = ?", supplier.id, AccountType.SUPPLIER).first();
         BigDecimal amount = ClearedAccount.getClearedAmount(account, DateUtils.truncate(new Date(), Calendar.DATE));
-        BigDecimal prepaymentBalance = prepayment.amount;
-        Long prepaymentId = prepayment.id;
-        render(supplier, amount, prepaymentBalance, prepaymentId);
+        render(supplier, amount, prepayment);
     }
 
+
+    /**
+     * 确认结算预付款
+     */
     public static void confirmSettle(Long id, String remark) {
         Prepayment prepayment = Prepayment.findById(id);
         prepayment.settleRemark = remark;
         prepayment.save();
-        Date toDate = DateUtils.truncate(new Date(), Calendar.DATE);
-        Supplier supplier = Supplier.findById(prepayment.supplier.id);
-        Account account = Account.find("uid = ? and accountType = ?", supplier.id, AccountType.SUPPLIER).first();
-        BigDecimal amount = ClearedAccount.getClearedAmount(account, toDate);
-        BigDecimal prepaymentBalance = prepayment.amount;
-        BigDecimal settledAmount = amount.subtract(prepaymentBalance);
-        BigDecimal tempClearedAmount = BigDecimal.ZERO;
-        List<ClearedAccount> clearedAccountList = ClearedAccount.find(
-                "accountId=? and settlementStatus=? and date < ?",
-                account.id, SettlementStatus.UNCLEARED, toDate).fetch();
-        for (ClearedAccount clearedAccount : clearedAccountList) {
-            tempClearedAmount = tempClearedAmount.add(clearedAccount.amount);
-            clearedAccount.settlementStatus = SettlementStatus.CLEARED;
-            clearedAccount.save();
-            //若果结算金额超过预付款金额，则创建一条clearedAccount,记录两者差额
-            if (tempClearedAmount.compareTo(settledAmount) >= 0) {
-                ClearedAccount addClearedAccount = new ClearedAccount();
-                addClearedAccount.settlementStatus = SettlementStatus.UNCLEARED;
-                addClearedAccount.accountId = account.id;
-                addClearedAccount.amount = tempClearedAmount.subtract(settledAmount);
-                addClearedAccount.date = new Date();
-                addClearedAccount.save();
-                break;
-            }
-        }
+        //开始结算预付款并标记相应的ClearedAccount为Cleared
+        Prepayment.confirmSettle(prepayment);
         index(null);
     }
+
+    public static void refreshClearedAccountData() {
+        List<Account> accountList = Account.find("(accountType = ? or accountType = ?) and id=82646",
+                AccountType.SUPPLIER,
+                AccountType.SHOP).fetch();
+        ClearedAccount clearedAccount;
+        Date fromDate = DateUtil.stringToDate("2013-06-26 00:00:00", "yyyy-MM-dd HH:mm:ss");
+        Date toDate = DateUtil.stringToDate("2013-06-26 23:59:59", "yyyy-MM-dd HH:mm:ss");
+        System.out.println("accountList.size() = " + accountList.size());
+//        for (Account account : accountList) {
+//            List<AccountSequence> sequences = AccountSequence.find(
+//                    " account=?  and settlementStatus=? and createdAt <?",
+//                    account, SettlementStatus.UNCLEARED, toDate).fetch();
+//            for (AccountSequence sequence : sequences) {
+//                sequence.settlementStatus = SettlementStatus.CLEARED;
+//                sequence.save();
+//            }
+//            clearedAccount = new ClearedAccount();
+//            clearedAccount.date = toDate;
+//            clearedAccount.accountId = account.id;
+//            clearedAccount.amount = AccountSequence.getClearAmount(account, fromDate,
+//                    clearedAccount.date);
+//            System.out.println(" clearedAccount.amount = " + clearedAccount.amount);
+//            clearedAccount.accountSequences = sequences;
+//            clearedAccount.save();
+//        }
+
+//        for (int i = 0; i < 10; i++) {
+//            fromDate = DateUtils.truncate(DateUtils.addDays(new Date(), -1 - i), Calendar.DATE);
+//            toDate = DateUtils.truncate(DateUtils.addDays(new Date(), -i), Calendar.DATE);
+        fromDate = DateUtil.stringToDate("2013-06-27 00:00:00", "yyyy-MM-dd HH:mm:ss");
+        toDate = DateUtil.stringToDate("2013-06-27 23:59:59", "yyyy-MM-dd HH:mm:ss");
+        System.out.println("fromDate = " + fromDate);
+        System.out.println("toDate = " + toDate);
+        for (Account account : accountList) {
+            List<AccountSequence> sequences = AccountSequence.find(
+                    " account=?  and settlementStatus=? and createdAt >=? and createdAt <?  ",
+                    account, SettlementStatus.UNCLEARED, fromDate, toDate).fetch();
+
+            clearedAccount = new ClearedAccount();
+            clearedAccount.date = toDate;
+            clearedAccount.accountId = account.id;
+            clearedAccount.amount = AccountSequence.getClearAmount(account, fromDate,
+                    clearedAccount.date);
+            for (AccountSequence sequence : sequences) {
+                sequence.settlementStatus = SettlementStatus.CLEARED;
+                sequence.save();
+            }
+            System.out.println(" clearedAccount.amount = " + clearedAccount.amount);
+            clearedAccount.accountSequences = sequences;
+            clearedAccount.save();
+        }
+//        }
+    }
+
 
     public static void history(Long id) {
         List<PrepaymentHistory> historyList = PrepaymentHistory.find("prepaymentId=? order by id desc", id).fetch();

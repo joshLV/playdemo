@@ -42,7 +42,8 @@ public class ClearedAccount extends Model {
     public SettlementStatus settlementStatus = SettlementStatus.UNCLEARED;   //结算状态
 
 
-    public static BigDecimal getClearedAmount(Account account,Date toDate) {
+
+    public static BigDecimal getClearedAmount(Account account, Date toDate) {
         BigDecimal amount = (BigDecimal) find("select sum(amount) from ClearedAccount where" +
                 " accountId=? and settlementStatus=? and date < ?",
                 account.id, SettlementStatus.UNCLEARED, toDate).first();

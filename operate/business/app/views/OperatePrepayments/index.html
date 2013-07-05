@@ -38,6 +38,9 @@
 
             #{paginate.list items:prepaymentPage, as:'prepayment'}
             <tr>
+            %{ account = models.accounts.Account.find("uid = ? and accountType = ?",prepayment.supplier.id,
+                models.accounts.AccountType.SUPPLIER).first();
+                }%
                 <td align="center">${prepayment?.supplier?.otherName==null?prepayment?.supplier?.fullName:prepayment?.supplier?.otherName}</td>
                 <td>${prepayment.amount?.formatCurrency('CNY')}</td>
                 <td>${prepayment.withdrawAmount?.formatCurrency('CNY')}</td>
@@ -53,9 +56,9 @@
                     name:prepayment.supplier.otherName+'('+prepayment.amount+')'/} / #{/if}
                     <a href="@{OperatePrepayments.history(prepayment.id)}">查看历史</a>
                     /
-                    #{if prepayment?.amount <= prepayment?.getSalesAmountUntilNow()}
+                    #{if prepayment?.amount <= account?.amount}
                         <a href="@{OperatePrepayments.settle(prepayment.id)}">结算</a>
-               #{/if}
+                    #{/if}
 
             </tr>
             #{/paginate.list}

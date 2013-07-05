@@ -45,11 +45,14 @@
         <label class="control-label">预付款余额 </label>
 
         <p class="control-value">
-            #{if prepaymentId!=null}<a href="/prepayments/${prepaymentId}"
-                                       target="_blank">${prepaymentBalance.formatCurrency('CNY')}</a>#{/if}#{else}${prepaymentBalance.formatCurrency('CNY')}#{/else}
+            #{if prepayment!=null}
+                <a href="/prepayments/${prepayment?.id}"
+                   target="_blank">${prepayment?.amount?.formatCurrency('CNY') }</a>
+            #{/if}
+            #{else}${prepayment?.amount?.formatCurrency('CNY')}#{/else}
     </div>
 
-    #{if  amount?.compareTo(prepaymentBalance)>0}
+    #{if  amount?.compareTo(prepayment?.amount)>0}
         <div class="control-group">
             <label class="control-label">备注</label>
 

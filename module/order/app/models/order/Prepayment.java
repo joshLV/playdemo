@@ -4,10 +4,13 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
+import models.accounts.AccountType;
+import models.accounts.ClearedAccount;
 import models.accounts.SettlementStatus;
 import models.accounts.util.AccountUtil;
 import models.operator.Operator;
 import models.supplier.Supplier;
+import org.apache.commons.lang.time.DateUtils;
 import play.data.validation.Max;
 import play.data.validation.Min;
 import play.data.validation.Required;
@@ -23,6 +26,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -252,5 +256,32 @@ public class Prepayment extends Model {
     public BigDecimal getMaxCanSettleSalesAmount() {
         return BigDecimal.ZERO;
 
+    }
+
+    public static void confirmSettle(Prepayment prepayment) {
+        Date toDate = DateUtils.truncate(new Date(), Calendar.DATE);
+        Supplier supplier = Supplier.findById(prepayment.supplier.id);
+        Account account = Account.find("uid = ? and accountType = ?", supplier.id, AccountType.SUPPLIER).first();
+        BigDecimal amount = ClearedAccount.getClearedAmount(account, toDate);
+        BigDecimal settledAmount = amount.subtract(prepayment.amount);
+        BigDecimal tempClearedAmount = BigDecimal.ZERO;
+        List<ClearedAccount> clearedAccountList = ClearedAccount.find(
+                "accountId=? and settlementStatus=? and date < ?",
+                account.id, SettlementStatus.UNCLEARED, toDate).fetch();
+        for (ClearedAccount clearedAccount : clearedAccountList) {
+            tempClearedAmount = tempClearedAmount.add(clearedAccount.amount);
+            clearedAccount.settlementStatus = SettlementStatus.CLEARED;
+            clearedAccount.save();
+            //若果结算金额超过预付款金额，则创建一条clearedAccount,记录两者差额
+            if (tempClearedAmount.compareTo(settledAmount) >= 0) {
+                ClearedAccount addClearedAccount = new ClearedAccount();
+                addClearedAccount.settlementStatus = SettlementStatus.UNCLEARED;
+                addClearedAccount.accountId = account.id;
+                addClearedAccount.amount = tempClearedAmount.subtract(settledAmount);
+                addClearedAccount.date = new Date();
+                addClearedAccount.save();
+                break;
+            }
+        }
     }
 }
