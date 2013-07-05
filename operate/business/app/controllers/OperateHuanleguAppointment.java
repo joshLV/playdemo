@@ -198,7 +198,7 @@ public class OperateHuanleguAppointment extends Controller {
             String err = "预约日期从明天开始，30天内";
             render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
         }
-        String[] inputCoupons = StringUtils.trimToEmpty(couponSn).split("\\r?\\n");
+        String[] inputCoupons = StringUtils.trimToEmpty(couponSn).split("\\s+");
         List<String> couponStrList = new ArrayList<>(inputCoupons.length);
         for (String coupon : inputCoupons) {
             coupon = StringUtils.trimToEmpty(coupon);
