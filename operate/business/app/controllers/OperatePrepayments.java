@@ -14,6 +14,7 @@ import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -104,6 +105,19 @@ public class OperatePrepayments extends Controller {
 
         Prepayment.toHistoryData(id, loginName);
         index(null);
+    }
+
+    public static void settle(Long id) {
+        Prepayment prepayment = Prepayment.findById(id);
+        Supplier supplier = Supplier.findById(prepayment.id);
+        BigDecimal amount = prepayment.getSalesAmountUntilNow();
+        BigDecimal prepaymentBalance = prepayment.amount;
+        Long prepaymentId = prepayment.id;
+        render(supplier, amount, prepaymentBalance, prepaymentId);
+    }
+
+    public static void confirmSettle(Long id) {
+
     }
 
     public static void history(Long id) {

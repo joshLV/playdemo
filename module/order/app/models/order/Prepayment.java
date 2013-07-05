@@ -2,8 +2,11 @@ package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
+import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.SettlementStatus;
+import models.accounts.util.AccountUtil;
+import models.operator.Operator;
 import models.supplier.Supplier;
 import play.data.validation.Max;
 import play.data.validation.Min;
@@ -115,7 +118,7 @@ public class Prepayment extends Model {
      * 只有从未被结算过的预付款记录才允许修改和删除
      */
     public boolean canUpdate() {
-        return AccountSequence.countByPrepayment(id) <= 0l && this.settlementStatus==SettlementStatus.UNCLEARED;
+        return AccountSequence.countByPrepayment(id) <= 0l && this.settlementStatus == SettlementStatus.UNCLEARED;
     }
 
     public static Prepayment getLastUnclearedPrepayments(long uid) {
@@ -206,12 +209,12 @@ public class Prepayment extends Model {
                 supplier.id).fetch();
     }
 
-    public static void toHistoryData(Long id,String loginName) {
+    public static void toHistoryData(Long id, String loginName) {
         Prepayment prepayment = Prepayment.findById(id);
         PrepaymentHistory history = new PrepaymentHistory();
         history.amount = prepayment.amount;
         history.createdAt = new Date();
-        history.createdBy=loginName;
+        history.createdBy = loginName;
         history.prepaymentId = id;
         history.effectiveAt = prepayment.effectiveAt;
         history.expireAt = prepayment.expireAt;
@@ -220,6 +223,30 @@ public class Prepayment extends Model {
         history.withdrawAmount = prepayment.withdrawAmount;
         history.settlementStatus = prepayment.settlementStatus;
         history.save();
+
+    }
+
+    public BigDecimal getSalesAmountUntilNow() {
+        final Date endOfDay = DateUtil.getEndOfDay(new Date());
+        BigDecimal amount = BigDecimal.ZERO;   //可结算总额
+        //只能处理视惠的结算.
+        Account supplierAccount = AccountUtil.getSupplierAccount(this.supplier.id, Operator.defaultOperator());
+        if (this.expireAt == null || this.effectiveAt == null) {
+            return BigDecimal.ZERO;
+        }
+
+        if (endOfDay.compareTo(this.expireAt) < 0) {
+            amount = supplierAccount.getWithdrawAmount(endOfDay);
+        } else {
+            amount = supplierAccount.getWithdrawAmount(expireAt);
+        }
+        return amount;
+    }
+
+    /*
+        取得最大的可以结算的金额
+     */
+    public BigDecimal getMaxCanSettleSalesAmount() {
 
     }
 }

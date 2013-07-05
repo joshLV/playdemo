@@ -51,7 +51,11 @@
                 <td>#{if prepayment.canUpdate()}<a href="@{OperatePrepayments.edit(prepayment.id)}">修改</a>
                     / #{vx.deleteLink action:"prepayments", id:prepayment.id,
                     name:prepayment.supplier.otherName+'('+prepayment.amount+')'/} / #{/if}
-                     <a href="@{OperatePrepayments.history(prepayment.id)}">查看历史</a>
+                    <a href="@{OperatePrepayments.history(prepayment.id)}">查看历史</a>
+                    /
+                    #{if prepayment?.amount <= prepayment?.getSalesAmountUntilNow()}
+                        <a href="@{OperatePrepayments.settle(prepayment.id)}">结算</a>
+               #{/if}
 
             </tr>
             #{/paginate.list}

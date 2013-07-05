@@ -1,0 +1,58 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'预付款结算详情' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{set 'moreStyles'}
+<style type="text/css">
+    .control-label {
+        font-weight: bold;
+    }
+
+    .control-value {
+        line-height: 28px;
+        margin-left: 180px;
+    }
+
+    .form-horizontal .control-group {
+        margin-bottom: 4px;
+    }
+</style>
+#{/set}
+
+<div class="row-fluid">
+    <legend>${title}</legend>
+
+#{form @OperatePrepayments.confirmSettle(), class:'form-horizontal', id:'settleForm'}
+    #{if supplier!=null}
+        <div class="control-group">
+            <label class="control-label">商户名称</label>
+
+            <p class="control-value">${supplier?.fullName}
+                &nbsp;&nbsp; #{if supplier?.otherName!=null}&nbsp;--&nbsp;${supplier?.otherName}#{/if} &nbsp;&nbsp;
+                <a href="/reports/supplier?supplierName=${supplier?.name}&condition.accountUid=${supplierId}&condition.tradeType=PURCHASE_COSTING"
+                   target="_blank">账户资金明细</a>
+            </p>
+        </div>
+    #{/if}
+
+    <div class="control-group">
+        <label class="control-label">预付款余额 </label>
+
+        <p class="control-value">
+            #{if prepaymentId!=null}<a href="/prepayments/${prepaymentId}"
+                                       target="_blank">${prepaymentBalance.formatCurrency('CNY')}</a>#{/if}#{else}${prepaymentBalance.formatCurrency('CNY')}#{/else}
+    </div>
+    <div class="control-group">
+        <label class="control-label">预付款最大结算金额 </label>
+
+        <p class="control-value">${amount.formatCurrency('CNY')}</p>
+    </div>
+    <div>
+        结算截止日${}
+    </div>
+
+#{/form}
+
+</div>
