@@ -264,7 +264,7 @@ public class OperateHuanleguAppointment extends Controller {
             String success = "成功，请提醒用户注意查收短信/彩信;已消费券号：" + StringUtils.join(couponStrList, ",");
             render("OperateHuanleguAppointment/withoutOurOrder.html", success);
         } else {
-            JPA.em().getTransaction().rollback();
+            JPA.em().getTransaction().setRollbackOnly();
             String err = errorMsg;
             render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
         }
