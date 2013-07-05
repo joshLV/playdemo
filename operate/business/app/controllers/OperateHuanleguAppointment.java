@@ -24,10 +24,7 @@ import play.mvc.With;
 import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author likang
@@ -350,5 +347,66 @@ public class OperateHuanleguAppointment extends Controller {
 
         return ybqOrder;
 
+    }
+    @ActiveNavigation("sight_appointment_huanlegu_refund")
+    public static void showRefund() {
+        render();
+    }
+
+    @ActiveNavigation("sight_appointment_huanlegu_refund")
+    public static void preRefund(String mobile, String supplierCoupon) {
+        List<ECoupon> couponList;
+        if (StringUtils.isNotBlank(mobile)) {
+            Supplier supplier = Supplier.findByDomainName(HuanleguUtil.SUPPLIER_DOMAIN_NAME);
+            List<Goods> goodsList = Goods.findBySupplierId(supplier.id);
+            Query query = JPA.em().createQuery("select c from ECoupon c where c.orderItems.phone = :phone and c.orderItems.goods in :goodsList and c.extra is not null");
+            query.setParameter("phone", mobile);
+            query.setParameter("goodsList", goodsList);
+            couponList = query.getResultList();
+            System.out.println(couponList.size());
+        }else if (StringUtils.isNotBlank(supplierCoupon)) {
+            couponList = ECoupon.find("bySupplierECouponPwd", supplierCoupon).fetch();
+        }else {
+            error("请输入信息");
+            return;
+        }
+
+        Map<String, List<ECoupon>> orderInfo = new HashMap<>();
+
+        for (ECoupon coupon : couponList) {
+            List<ECoupon> coupons = orderInfo.get(coupon.extra);
+            if (coupons == null) {
+                coupons = new ArrayList<>();
+                orderInfo.put(coupon.extra, coupons);
+            }
+            coupons.add(coupon);
+        }
+        render(orderInfo);
+    }
+
+    @ActiveNavigation("sight_appointment_huanlegu_refund")
+    public static void refund(String orderId, String hvOrderId, String supplierCouponValue, int count) {
+        List<ECoupon> couponList = ECoupon.find("bySupplierECouponPwd", supplierCouponValue).fetch();
+        if (couponList.size() != count) {
+            error("订单内的券数量不一致");
+        }
+
+        boolean allRefunded = true;
+        for (ECoupon coupon : couponList) {
+            if (coupon.status != ECouponStatus.REFUND) {
+                allRefunded = false;
+            }
+        }
+        if (!allRefunded) {
+            error("该订单有未退款的券，请首先做已消费退款。");
+        }
+
+        HuanleguMessage huanleguMessage = HuanleguUtil.orderRefund(orderId, hvOrderId, supplierCouponValue, count);
+
+        String message = "取消预约成功";
+        if (!huanleguMessage.isResponseOk()) {
+            message = huanleguMessage.errorMsg;
+        }
+        render("OperateHuanleguAppointment/refundResult.html", message);
     }
 }

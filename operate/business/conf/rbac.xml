@@ -230,6 +230,8 @@
         <navigation key="sight_appointment" text="旅游景点">
             <navigation key="sight_appointment_huanlegu" text="欢乐谷/玛雅水世界" permissions="COUPONS"
                         action="OperateHuanleguAppointment.index"/>
+            <navigation key="sight_appointment_huanlegu_refund" text="欢乐谷/玛雅水世界退款" permissions="COUPONS"
+                        action="OperateHuanleguAppointment.showRefund"/>
         </navigation>
     </navigation>
 

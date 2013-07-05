@@ -1,0 +1,27 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'欢乐谷/玛雅水世界退款' /}
+
+<div class="body">
+    <legend>欢乐谷退款</legend>
+    <form class="form-horizontal" method="post" action="/huanlegu/pre-refund" id="form">
+        <input type="hidden" name="action" id="action">
+        <div class="control-group">
+            <label class="control-label" for="inputMobile">预订手机号</label>
+            <div class="controls">
+                <input type="text" id="inputMobile" name="mobile" value="${mobile}">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputCoupon" >欢乐谷凭证号</label>
+            <div class="controls">
+                <input type="text" id="inputCoupon" name="supplierCoupon" value="${supplierCoupon}">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary" >查询</button>
+            </div>
+        </div>
+    </form>
+</div>
