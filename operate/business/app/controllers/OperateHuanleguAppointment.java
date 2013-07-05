@@ -143,6 +143,7 @@ public class OperateHuanleguAppointment extends Controller {
         }
 
         //判断能不能买
+        /*
         HuanleguMessage message = HuanleguUtil.checkTicketBuy(mobile, tobeUsedCouponList.size(), coupon.goods.supplierGoodsNo,
                 coupon.goods.salePrice, appointmentDate);
         if (!message.isResponseOk()) {
@@ -155,6 +156,7 @@ public class OperateHuanleguAppointment extends Controller {
                 render("OperateHuanleguAppointment/withOurOrder.html", err, couponStr, appointmentDate, mobile);
             }
         }
+        */
 
         //生成欢乐谷订单
         String errorMsg = confirmOrderOnHuanlegu(tobeUsedCouponList, mobile, appointmentDate);
@@ -239,6 +241,7 @@ public class OperateHuanleguAppointment extends Controller {
 
 
         //判断能不能买
+        /*
         HuanleguMessage message = HuanleguUtil.checkTicketBuy(mobile, (int) couponStrList.size(), goods.supplierGoodsNo,
                 goods.salePrice, appointmentDate);
         if (!message.isResponseOk()) {
@@ -251,6 +254,7 @@ public class OperateHuanleguAppointment extends Controller {
                 render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
             }
         }
+        */
 
         //生成一百券订单
         Order ybqOrder = createYbqOrder(resaler, goods, couponStrList, mobile, goods.salePrice, OperateRbac.currentUser());
@@ -277,10 +281,23 @@ public class OperateHuanleguAppointment extends Controller {
                 + "-" + new SimpleDateFormat("MMdd").format(new Date())
                 + "-" + mobile.substring(mobile.length() - 4);
 
+        Supplier supplier = Supplier.findByDomainName(HuanleguUtil.SUPPLIER_DOMAIN_NAME);
+        Shop shop = Shop.findShopBySupplier(supplier.id).get(0);
+        SupplierUser supplierUser = SupplierUser.findBySupplier(supplier.id).get(0);
+
+
+        for (ECoupon c : couponList) {
+            if(!c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY)){
+                JPA.em().getTransaction().rollback();
+                return "券消费失败";
+            }
+        }
+
         HuanleguMessage message = HuanleguUtil.confirmOrder(orderNumber, coupon.createdAt, mobile,
                 couponList.size(), coupon.goods.supplierGoodsNo, coupon.salePrice, appointmentDate);
 
         if (!message.isResponseOk()) {
+            JPA.em().getTransaction().rollback();
             return message.errorMsg;
         }
 
@@ -288,20 +305,15 @@ public class OperateHuanleguAppointment extends Controller {
         String supplierECouponId = StringUtils.trimToNull(XPath.selectText("./VoucherId", voucher));
         String supplierECouponPwd = StringUtils.trimToNull(XPath.selectText("./VoucherValue", voucher));
 
-        Supplier supplier = Supplier.findByDomainName(HuanleguUtil.SUPPLIER_DOMAIN_NAME);
-        Shop shop = Shop.findShopBySupplier(supplier.id).get(0);
-        SupplierUser supplierUser = SupplierUser.findBySupplier(supplier.id).get(0);
-
         String hvOrderId = message.selectTextTrim("./HvOrderId");
 
         for (ECoupon c : couponList) {
+            ECouponHistoryMessage.with(c).remark("玛雅水世界预约成功后自动验证")
+                    .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
             c.supplierECouponPwd = supplierECouponPwd;
             c.supplierECouponId = supplierECouponId;
             c.extra = orderNumber + ";" + mobile.trim() + ";" + hvOrderId + ";" + couponList.size();
             c.save();
-            c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);
-            ECouponHistoryMessage.with(c).remark("玛雅水世界预约成功后自动验证")
-                    .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         }
 
         return null;
