@@ -80,6 +80,10 @@ public class AccountSequence extends Model {
 
     public String comment;                              //记录外部收款时的备注
 
+    @ManyToOne
+    @JoinColumn(name = "cleared_account_id")
+    public ClearedAccount clearedAccount;
+
     /**
      * 操作人
      */
@@ -232,6 +236,16 @@ public class AccountSequence extends Model {
         return amount.add(refundAmount);
     }
 
+    public static BigDecimal getClearAmount(Account account, Date fromDate, Date toDate) {
+        BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
+                " account=?  and settlementStatus=? and createdAt>=? and createdAt <?",
+                account, SettlementStatus.UNCLEARED, fromDate, toDate).first();
+        amount = (amount != null) ? amount : BigDecimal.ZERO;
+        Logger.info("getClearedAmount: amount:" + amount + ", fromDate = " + fromDate + "toDate=" + toDate);
+        return amount;
+    }
+
+
     /**
      * 查询所有出款项(除提现)且未结算的金额
      *
@@ -245,6 +259,7 @@ public class AccountSequence extends Model {
                 account, TradeType.WITHDRAW, AccountSequenceFlag.NOSTRO, SettlementStatus.UNCLEARED, toDate).first();
         return amount != null ? amount : BigDecimal.ZERO;
     }
+
 
     /**
      * 提现处理.

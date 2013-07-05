@@ -105,6 +105,7 @@ public class Account extends Model {
      */
     public BigDecimal getWithdrawAmount(Date toDate) {
         BigDecimal vostroAmount = AccountSequence.getVostroAmountTo(this, toDate);
+        System.out.println("111toDate = " + toDate);
         Logger.info("Account.getWithdrawAmount vostroAmount=" + vostroAmount + ", uncashAmount=" + uncashAmount);
         if (uncashAmount == null) {
             return vostroAmount == null ? BigDecimal.ZERO : vostroAmount;

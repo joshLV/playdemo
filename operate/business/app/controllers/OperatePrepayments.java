@@ -2,12 +2,16 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
+import models.accounts.Account;
+import models.accounts.AccountType;
+import models.accounts.ClearedAccount;
 import models.accounts.SettlementStatus;
 import models.order.Prepayment;
 import models.order.PrepaymentHistory;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.ModelPaginator;
@@ -15,6 +19,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -109,15 +114,44 @@ public class OperatePrepayments extends Controller {
 
     public static void settle(Long id) {
         Prepayment prepayment = Prepayment.findById(id);
-        Supplier supplier = Supplier.findById(prepayment.id);
-        BigDecimal amount = prepayment.getSalesAmountUntilNow();
+        Supplier supplier = Supplier.findById(prepayment.supplier.id);
+        Account account = Account.find("uid = ? and accountType = ?", supplier.id, AccountType.SUPPLIER).first();
+        BigDecimal amount = ClearedAccount.getClearedAmount(account, DateUtils.truncate(new Date(), Calendar.DATE));
         BigDecimal prepaymentBalance = prepayment.amount;
         Long prepaymentId = prepayment.id;
         render(supplier, amount, prepaymentBalance, prepaymentId);
     }
 
-    public static void confirmSettle(Long id) {
-
+    public static void confirmSettle(Long id, String remark) {
+        Prepayment prepayment = Prepayment.findById(id);
+        prepayment.settleRemark = remark;
+        prepayment.save();
+        Date toDate = DateUtils.truncate(new Date(), Calendar.DATE);
+        Supplier supplier = Supplier.findById(prepayment.supplier.id);
+        Account account = Account.find("uid = ? and accountType = ?", supplier.id, AccountType.SUPPLIER).first();
+        BigDecimal amount = ClearedAccount.getClearedAmount(account, toDate);
+        BigDecimal prepaymentBalance = prepayment.amount;
+        BigDecimal settledAmount = amount.subtract(prepaymentBalance);
+        BigDecimal tempClearedAmount = BigDecimal.ZERO;
+        List<ClearedAccount> clearedAccountList = ClearedAccount.find(
+                "accountId=? and settlementStatus=? and date < ?",
+                account.id, SettlementStatus.UNCLEARED, toDate).fetch();
+        for (ClearedAccount clearedAccount : clearedAccountList) {
+            tempClearedAmount = tempClearedAmount.add(clearedAccount.amount);
+            clearedAccount.settlementStatus = SettlementStatus.CLEARED;
+            clearedAccount.save();
+            //若果结算金额超过预付款金额，则创建一条clearedAccount,记录两者差额
+            if (tempClearedAmount.compareTo(settledAmount) >= 0) {
+                ClearedAccount addClearedAccount = new ClearedAccount();
+                addClearedAccount.settlementStatus = SettlementStatus.UNCLEARED;
+                addClearedAccount.accountId = account.id;
+                addClearedAccount.amount = tempClearedAmount.subtract(settledAmount);
+                addClearedAccount.date = new Date();
+                addClearedAccount.save();
+                break;
+            }
+        }
+        index(null);
     }
 
     public static void history(Long id) {

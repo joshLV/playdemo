@@ -36,7 +36,11 @@
             </p>
         </div>
     #{/if}
+    <div class="control-group">
+        <label class="control-label">可结算金额 </label>
 
+        <p class="control-value">${amount.formatCurrency('CNY')}</p>
+    </div>
     <div class="control-group">
         <label class="control-label">预付款余额 </label>
 
@@ -44,14 +48,28 @@
             #{if prepaymentId!=null}<a href="/prepayments/${prepaymentId}"
                                        target="_blank">${prepaymentBalance.formatCurrency('CNY')}</a>#{/if}#{else}${prepaymentBalance.formatCurrency('CNY')}#{/else}
     </div>
-    <div class="control-group">
-        <label class="control-label">预付款最大结算金额 </label>
 
-        <p class="control-value">${amount.formatCurrency('CNY')}</p>
-    </div>
-    <div>
-        结算截止日${}
-    </div>
+    #{if  amount?.compareTo(prepaymentBalance)>0}
+        <div class="control-group">
+            <label class="control-label">备注</label>
+
+            <div class="controls">
+                <textarea rows="3" class="input-xlarge" name="remark"></textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label"></label>
+
+            <p class="control-value">
+                <button class="btn btn-primary" id="settle"
+                        >结算
+                </button>
+            </p>
+        </div>
+    #{/if}
+    #{else}
+        <a href="/prepayments" class="btn btn-primary">返回</a>
+    #{/else}
 
 #{/form}
 

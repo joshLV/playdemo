@@ -57,6 +57,9 @@ public class Prepayment extends Model {
 
     public String remark;       //备注
 
+    @Column(name = "settle_remark")
+    public String settleRemark;  //结算备注
+
     @Column(name = "created_at")
     public Date createdAt;      //创建时间
 
@@ -247,6 +250,7 @@ public class Prepayment extends Model {
         取得最大的可以结算的金额
      */
     public BigDecimal getMaxCanSettleSalesAmount() {
+        return BigDecimal.ZERO;
 
     }
 }

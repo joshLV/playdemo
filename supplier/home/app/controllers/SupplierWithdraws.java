@@ -74,11 +74,13 @@ public class SupplierWithdraws extends Controller {
         List<Prepayment> prepayments = Prepayment.findBySupplier(supplier);
 
         Date withDrawEndDate = getSupplierWithdrawEndDate(supplier);
+        System.out.println("111withDrawEndDate = " + withDrawEndDate);
 
         BigDecimal withdrawAmount = account.getWithdrawAmount(withDrawEndDate);
+        System.out.println("222withDrawEndDate = " + withDrawEndDate);
         //商户可提现金额
         BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, withDrawEndDate);
-        Logger.info("withdrawAmount=%s, supplierWithdrawAmount=%s, prepaymentBalance=%s", withdrawAmount.toString(),
+        Logger.info("333withdrawAmount=%s, supplierWithdrawAmount=%s, prepaymentBalance=%s", withdrawAmount.toString(),
                 supplierWithdrawAmount.toString(), prepaymentBalance.toString());
         render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount, withDrawEndDate, supplier);
     }
