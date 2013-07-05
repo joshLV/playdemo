@@ -48,6 +48,7 @@ public class RegisterTest extends FunctionalTest {
         loginUserParams.put("resaler.status", ResalerStatus.PENDING.toString());
         loginUserParams.put("resaler.phone", "0213112121");
         loginUserParams.put("resaler.userName", "aa");
+        loginUserParams.put("resaler.resalerName", "aa");
         loginUserParams.put("resaler.identityNo", "341281198208268785");
         loginUserParams.put("resaler.postCode", "123456");
         loginUserParams.put("resaler.level", ResalerLevel.NORMAL.toString());
