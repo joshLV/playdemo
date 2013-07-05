@@ -227,9 +227,11 @@ public class OperateHuanleguAppointment extends Controller {
             }
         }
 
-        Query query = JPA.em().createQuery("select count(c) from ECoupon c where c.order.userId = :userId and c.partnerCouponId in :couponList");
+        Query query = JPA.em().createQuery("select count(c) from ECoupon c where c.order.userId = :userId and c.partnerCouponId in :couponList and status = :status");
         query.setParameter("userId", resaler.id);
         query.setParameter("couponList", couponStrList);
+        query.setParameter("status", ECouponStatus.CONSUMED);
+
         long conflictCouponCount = (long)query.getSingleResult();
         if (conflictCouponCount > 0) {
             String err = "部分券已使用过，请检查";
