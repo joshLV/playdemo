@@ -414,7 +414,7 @@ public class OperateHuanleguAppointment extends Controller {
     public static void resend(ECoupon coupon) {
         HuanleguMessage huanleguMessage = HuanleguUtil.resend(coupon);
 
-        String message = "取消预约成功";
+        String message = "重发成功";
         if (!huanleguMessage.isResponseOk()) {
             message = huanleguMessage.errorMsg;
         }
