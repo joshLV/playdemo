@@ -6,8 +6,6 @@ import models.jobs.annotation.JobDefine;
 import models.order.OrderItems;
 import models.order.OrderStatus;
 import play.Logger;
-import play.jobs.On;
-import play.jobs.OnApplicationStart;
 
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +16,7 @@ import java.util.List;
  * Time: 下午5:30
  */
 @JobDefine(title = "实物洗数据", description = "实物洗数据，给商户打款")
-@On("0 0 4 * * ?")
+//@On("0 0 4 * * ?")
 public class RealGoodsRefreshData extends JobWithHistory {
     @Override
     public void doJobWithHistory() {

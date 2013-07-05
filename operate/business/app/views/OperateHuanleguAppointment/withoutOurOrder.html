@@ -3,6 +3,14 @@
 #{set title:'欢乐谷/玛雅水世界预约' /}
 #{set 'moreScripts'}
     <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+    <script>
+        $("#appointment").click(function(){
+            $("#appointment").hide()
+            $("#doing").show()
+            $("#form").submit()
+        });
+
+    </script>
 #{/set}
 
 
@@ -20,7 +28,7 @@
         #{else}
             <legend>欢乐谷/玛雅水世界</legend>
 
-            <form class="form-horizontal" method="post" action="/huanlegu/appointment/withoutOurOrder">
+            <form class="form-horizontal" method="post" action="/huanlegu/appointment/withoutOurOrder" id="form">
                 <div class="control-group">
                     <label class="control-label" for="inputPhone">分销商</label>
                     <div class="controls">
@@ -61,7 +69,8 @@
                 <div class="control-group">
                     <div class="controls">
                         <input type="hidden" name="resaler.id" value="${resaler.id}">
-                        <button type="submit" class="btn btn-primary">预约</button>
+                        <button type="button" class="btn btn-primary" id="appointment">预约</button>
+                        <div style="display:none" id="doing">正在预约，请稍后....</div>
                     </div>
                 </div>
                 <div class="form-actions">
