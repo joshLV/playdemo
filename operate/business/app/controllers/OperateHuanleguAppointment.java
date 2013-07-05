@@ -285,7 +285,7 @@ public class OperateHuanleguAppointment extends Controller {
 
         for (ECoupon c : couponList) {
             if(!c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY)){
-                JPA.em().getTransaction().rollback();
+                JPA.em().getTransaction().setRollbackOnly();
                 return "券消费失败";
             }
         }
@@ -294,7 +294,7 @@ public class OperateHuanleguAppointment extends Controller {
                 couponList.size(), coupon.goods.supplierGoodsNo, coupon.salePrice, appointmentDate);
 
         if (!message.isResponseOk()) {
-            JPA.em().getTransaction().rollback();
+            JPA.em().getTransaction().setRollbackOnly();
             return message.errorMsg;
         }
 
@@ -402,6 +402,17 @@ public class OperateHuanleguAppointment extends Controller {
         }
 
         HuanleguMessage huanleguMessage = HuanleguUtil.orderRefund(orderId, hvOrderId, supplierCouponValue, count);
+
+        String message = "取消预约成功";
+        if (!huanleguMessage.isResponseOk()) {
+            message = huanleguMessage.errorMsg;
+        }
+        render("OperateHuanleguAppointment/refundResult.html", message);
+    }
+
+    @ActiveNavigation("sight_appointment_huanlegu_refund")
+    public static void resend(ECoupon coupon) {
+        HuanleguMessage huanleguMessage = HuanleguUtil.resend(coupon);
 
         String message = "取消预约成功";
         if (!huanleguMessage.isResponseOk()) {
