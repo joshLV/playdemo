@@ -1,6 +1,6 @@
 #{extends 'layout_operate/layout.html' /}
 #{include 'share/nav.html' /}
-#{set title:'欢乐谷/玛雅水世界退款' /}
+#{set title:'欢乐谷/玛雅 退款/重发' /}
 
 <div class="body">
     <legend>欢乐谷退款</legend>
@@ -34,19 +34,24 @@
             #{/list}
             <tr>
                 <td colspan="8" style="text-align:right">
+                    %{
+                        tmp = entry.getKey().split(";")
+                        orderId = tmp[0]
+                        hvOrderId = tmp[2]
+                        count = tmp[3]
+                        firstCoupon = entry.getValue().get(0)
+                        supplierCouponValue = firstCoupon.supplierECouponPwd
+                    }%
+                    <form method="POST" action="/huanlegu/resend" style="display:inline">
+                        <input type="hidden" name="coupon.id" value="${firstCoupon.id}">
+                        <button class="btn btn-primary" type="submit">重发彩信和短信</button>
+                    </form>
                     <form method="POST" action="/huanlegu/refund" style="display:inline">
-                        %{
-                            tmp = entry.getKey().split(";")
-                            orderId = tmp[0]
-                            hvOrderId = tmp[2]
-                            count = tmp[3]
-                            supplierCouponValue = entry.getValue().get(0).supplierECouponPwd
-                        }%
                         <input type="hidden" name="orderId" value="${orderId}">
                         <input type="hidden" name="hvOrderId" value="${hvOrderId}">
                         <input type="hidden" name="count" value="${count}">
                         <input type="hidden" name="supplierCouponValue" value="${supplierCouponValue}">
-                        <button class="btn btn-primary" type="submit">在欢乐谷退款</button>
+                        <button class="btn btn-danger" type="submit">在欢乐谷退款</button>
                     </form>
                 </td>
             </tr>
