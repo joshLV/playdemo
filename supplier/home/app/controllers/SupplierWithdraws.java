@@ -1,11 +1,7 @@
 package controllers;
 
 import controllers.supplier.SupplierInjector;
-import models.accounts.Account;
-import models.accounts.AccountType;
-import models.accounts.WithdrawAccount;
-import models.accounts.WithdrawBill;
-import models.accounts.WithdrawBillCondition;
+import models.accounts.*;
 import models.admin.SupplierUser;
 import models.order.Prepayment;
 import models.supplier.Supplier;
@@ -63,6 +59,13 @@ public class SupplierWithdraws extends Controller {
         Long supplierId = supplierUser.supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
         Account account = supplierUser.getSupplierAccount();
+
+        WithdrawBill withdraw =  WithdrawBill.find("byAccountAndStatus", account, WithdrawBillStatus.APPLIED).first();
+        if (withdraw != null) {
+            String err = "您有一笔待审批的提现申请，请等待审批完毕再申请提现";
+            render(err);
+        }
+
         BigDecimal prepaymentBalance = Prepayment.findAmountBySupplier(supplier);
 
         Logger.info("account.accountType:" + account.accountType);
@@ -86,6 +89,14 @@ public class SupplierWithdraws extends Controller {
         Long supplierId = supplierUser.supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
         Account account = supplierUser.getSupplierAccount();
+
+
+        WithdrawBill withdraw =  WithdrawBill.find("byAccountAndStatus", account, WithdrawBillStatus.APPLIED).first();
+        if (withdraw != null) {
+            error("您有一笔待审批的提现申请，请等待审批完毕再申请提现");
+        }
+
+
         WithdrawAccount withdrawAccount = account.accountType == AccountType.SHOP ?
                 WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierUser.shop.id, AccountType.SHOP) :
                 WithdrawAccount.findByIdAndUser(withdrawAccountId, supplier.getId(), AccountType.SUPPLIER);
@@ -99,7 +110,7 @@ public class SupplierWithdraws extends Controller {
             apply();
         }
 
-        WithdrawBill withdraw = new WithdrawBill();
+        withdraw = new WithdrawBill();
         withdraw.userName = withdrawAccount.userName;
         withdraw.account = account;
         withdraw.bankCity = withdrawAccount.bankCity;
