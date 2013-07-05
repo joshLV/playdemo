@@ -59,6 +59,7 @@ public class ResalerInfosTest extends FunctionalTest {
         params.put("resaler.phone", resaler.phone);
         params.put("resaler.email", resaler.email);
         params.put("resaler.userName", resaler.userName);
+        params.put("resaler.resalerName", resaler.userName);
         params.put("resaler.postCode", resaler.postCode);
         params.put("resaler.loginName", resaler.loginName);
         params.put("resaler.password", resaler.password);
