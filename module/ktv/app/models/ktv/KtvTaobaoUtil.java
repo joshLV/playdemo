@@ -62,7 +62,6 @@ public class KtvTaobaoUtil {
     private static final String ACTION_UPDATE_PRICE = "updatePrice";
     private static final String ACTION_UPDATE_QUANTITY = "updateQuantity";
     public static final int MAX_SKU_COUNT = 600;  //淘宝最大SKU数为600，不允许比600更大的值
-    public static final int MAX_DEPLOY_DATE_COUNT = 10;  //发布的预订天数
     public static final int PRE_ORDER_HOUR = 1;    //提前预订小时数，如11:00-13:00的包厢，只能提前1小时，即10:00前预订
 
     /**
@@ -246,7 +245,8 @@ public class KtvTaobaoUtil {
         Set<Date> uniqDates = new HashSet<>();//唯一日期
         Set<String> uniqTimeRanges = new HashSet<>();//唯一时间范围
 
-        int dateCount = MAX_DEPLOY_DATE_COUNT;//从startDay 开始，依次往后选择不超过14个不同的日期
+        //从startDay 开始，依次往后选择不超过dateCount个不同的日期
+        int dateCount = Integer.parseInt(product.supplier.getProperty(Supplier.KTV_MAX_DEPLOY_DATE, "7"));
 
         List<KtvRoomOrderInfo> roomOrderInfoList = new ArrayList<>();
         Date tenMinutesAgo = DateUtils.addMinutes(new Date(), - KtvRoomOrderInfo.LOCK_MINUTE);
