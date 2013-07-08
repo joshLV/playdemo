@@ -257,7 +257,7 @@ public class Prepayment extends Model {
 
     }
 
-    public static void confirmSettle(Prepayment prepayment) {
+    public static void confirmSettle(Prepayment prepayment, String updatedBy) {
         Date toDate = DateUtils.truncate(new Date(), Calendar.DATE);
         Supplier supplier = Supplier.findById(prepayment.supplier.id);
         Account account = Account.find("uid = ? and accountType = ?", supplier.id, AccountType.SUPPLIER).first();
@@ -272,6 +272,8 @@ public class Prepayment extends Model {
             tempClearedAmount = tempClearedAmount.add(clearedAccount.amount);
             clearedAccount.settlementStatus = SettlementStatus.CLEARED;
             clearedAccount.prepayment = prepayment;
+            clearedAccount.updatedBy = updatedBy;
+            clearedAccount.updatedAt = new Date();
             clearedAccount.save();
             //若果结算金额超过预付款金额，则创建一条clearedAccount,记录两者差额
             if (tempClearedAmount.compareTo(settledAmount) >= 0) {

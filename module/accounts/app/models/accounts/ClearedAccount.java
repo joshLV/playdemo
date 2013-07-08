@@ -2,6 +2,7 @@ package models.accounts;
 
 import models.order.Prepayment;
 import play.db.jpa.Model;
+import play.modules.solr.SolrField;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -46,6 +47,19 @@ public class ClearedAccount extends Model {
     @ManyToOne
     @JoinColumn(name = "withdraw_bill_id")
     public WithdrawBill withdrawBill;
+
+    /**
+     * 修改时间
+     */
+    @Column(name = "updated_at")
+    public Date updatedAt;
+
+    /**
+     * 修改人
+     */
+    @Column(name = "updated_by")
+    @SolrField
+    public String updatedBy;
 
     @ManyToOne
     public Prepayment prepayment;

@@ -6,6 +6,7 @@ import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
+import models.accounts.SettlementStatus;
 import models.admin.SupplierUser;
 import models.operator.OperateUser;
 import models.operator.Operator;
@@ -557,6 +558,11 @@ public class Supplier extends Model {
     public static List<Supplier> findUnDeletedAndKtvSupplier() {
         return find("deleted=? and id in (select supplier.id from SupplierProperty where name=? and value=? )  order by createdAt DESC", DeletedStatus.UN_DELETED, KTV_SUPPLIER, "1").fetch();
     }
+
+    public static List<Supplier> findUnDeletedWithPrepayment() {
+        return find("deleted=? and id in (select supplier.id from Prepayment where deleted=? and settlementStatus = ? )  order by createdAt DESC", DeletedStatus.UN_DELETED, DeletedStatus.UN_DELETED,SettlementStatus.UNCLEARED).fetch();
+    }
+
 
     public static void freeze(long id) {
         updateStatus(id, SupplierStatus.FREEZE);

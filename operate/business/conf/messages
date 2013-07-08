@@ -700,3 +700,4 @@ shippingInfo.expressNumber=快递单号
 freight.price=价格
 freight.supplier=商户
 freight.express=快递公司
+balance.amount=冲正金额

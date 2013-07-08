@@ -135,7 +135,7 @@ public class OperatePrepayments extends Controller {
         prepayment.settleRemark = remark;
         prepayment.save();
         //开始结算预付款并标记相应的ClearedAccount为Cleared
-        Prepayment.confirmSettle(prepayment);
+        Prepayment.confirmSettle(prepayment, OperateRbac.currentUser().loginName);
         index(null);
     }
 
@@ -206,5 +206,20 @@ public class OperatePrepayments extends Controller {
             prepayment.save();
         }
         index(null);
+    }
+
+    /**
+     * 冲正界面
+     */
+    public static void balanceBill() {
+        List<Supplier> supplierList = Supplier.findUnDeletedWithPrepayment();
+        render(supplierList);
+    }
+
+    /**
+     * 进行冲正
+     */
+    public static void confirmBalanceBill() {
+
     }
 }
