@@ -24,7 +24,7 @@
 <div class="row-fluid">
     <legend>${title}</legend>
 
-#{form @OperatePrepayments.confirmSettle(), class:'form-horizontal', id:'settleForm'}
+#{form @OperatePrepayments.confirmSettle(prepayment.id), class:'form-horizontal', id:'settleForm'}
     #{if supplier!=null}
         <div class="control-group">
             <label class="control-label">商户名称</label>

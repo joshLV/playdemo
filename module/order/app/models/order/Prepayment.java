@@ -3,7 +3,6 @@ package models.order;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
-import models.accounts.AccountSequence;
 import models.accounts.AccountType;
 import models.accounts.ClearedAccount;
 import models.accounts.SettlementStatus;
@@ -125,7 +124,7 @@ public class Prepayment extends Model {
      * 只有从未被结算过的预付款记录才允许修改和删除
      */
     public boolean canUpdate() {
-        return AccountSequence.countByPrepayment(id) <= 0l && this.settlementStatus == SettlementStatus.UNCLEARED;
+        return this.settlementStatus == SettlementStatus.UNCLEARED;
     }
 
     public static Prepayment getLastUnclearedPrepayments(long uid) {
@@ -268,9 +267,11 @@ public class Prepayment extends Model {
         List<ClearedAccount> clearedAccountList = ClearedAccount.find(
                 "accountId=? and settlementStatus=? and date < ?",
                 account.id, SettlementStatus.UNCLEARED, toDate).fetch();
+        System.out.println("clearedAccountList.size() = " + clearedAccountList.size());
         for (ClearedAccount clearedAccount : clearedAccountList) {
             tempClearedAmount = tempClearedAmount.add(clearedAccount.amount);
             clearedAccount.settlementStatus = SettlementStatus.CLEARED;
+            clearedAccount.prepayment = prepayment;
             clearedAccount.save();
             //若果结算金额超过预付款金额，则创建一条clearedAccount,记录两者差额
             if (tempClearedAmount.compareTo(settledAmount) >= 0) {
@@ -278,6 +279,8 @@ public class Prepayment extends Model {
                 addClearedAccount.settlementStatus = SettlementStatus.UNCLEARED;
                 addClearedAccount.accountId = account.id;
                 addClearedAccount.amount = tempClearedAmount.subtract(settledAmount);
+                System.out.println(" addClearedAccount.amount = " + addClearedAccount.amount);
+                addClearedAccount.prepayment = prepayment;
                 addClearedAccount.date = new Date();
                 addClearedAccount.save();
                 break;

@@ -1,5 +1,6 @@
 package models.accounts;
 
+import models.order.Prepayment;
 import play.db.jpa.Model;
 
 import javax.persistence.CascadeType;
@@ -9,6 +10,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.math.BigDecimal;
@@ -41,6 +43,12 @@ public class ClearedAccount extends Model {
     @Column(name = "settlement_status")
     public SettlementStatus settlementStatus = SettlementStatus.UNCLEARED;   //结算状态
 
+    @ManyToOne
+    @JoinColumn(name = "withdraw_bill_id")
+    public WithdrawBill withdrawBill;
+
+    @ManyToOne
+    public Prepayment prepayment;
 
 
     public static BigDecimal getClearedAmount(Account account, Date toDate) {

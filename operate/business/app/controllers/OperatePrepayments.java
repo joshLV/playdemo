@@ -130,6 +130,8 @@ public class OperatePrepayments extends Controller {
      */
     public static void confirmSettle(Long id, String remark) {
         Prepayment prepayment = Prepayment.findById(id);
+        prepayment.withdrawAmount = prepayment.amount;
+        prepayment.settlementStatus = SettlementStatus.CLEARED;
         prepayment.settleRemark = remark;
         prepayment.save();
         //开始结算预付款并标记相应的ClearedAccount为Cleared

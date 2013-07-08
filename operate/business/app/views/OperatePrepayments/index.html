@@ -29,6 +29,7 @@
                 <th width="80">&{'prepayment.createdBy'}</th>
                 <th width="90">&{'prepayment.updatedAt'}</th>
                 <th width="90">&{'prepayment.updatedBy'}</th>
+                <th>结算备注</th>
                 <th>&{'prepayment.remark'}</th>
                 <th width="80">操 作</th>
             </tr>
@@ -50,6 +51,7 @@
                 <td>${prepayment.createdBy}</td>
                 <td>${prepayment.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${prepayment.updatedBy}</td>
+                <td>${prepayment.settleRemark}</td>
                 <td>${prepayment.remark}</td>
                 <td>#{if prepayment.canUpdate()}<a href="@{OperatePrepayments.edit(prepayment.id)}">修改</a>
                     / #{vx.deleteLink action:"prepayments", id:prepayment.id,
