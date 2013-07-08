@@ -11,7 +11,11 @@ public enum TradeType {
     COMMISSION,         //佣金
     PURCHASE_COSTING,   //采购成本
     FREIGHT,            //运费
-    TRANSFER;           //转账
+    TRANSFER,           //转账
+    DEBT_COLLECTION,    //收账
+    PAY_DEBT,           //付账
+    BALANCE_BILL;       //冲正
+
 
     /**
      * 是否与订单相关的类型.
