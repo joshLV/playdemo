@@ -220,6 +220,6 @@ public class OperatePrepayments extends Controller {
      * 进行冲正
      */
     public static void confirmBalanceBill() {
-
+        index(null);
     }
 }
