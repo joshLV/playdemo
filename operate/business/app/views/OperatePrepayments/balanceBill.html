@@ -8,15 +8,13 @@
 
         $("#balance").click(function () {
             var result = true;
-            var reason = $("#reason").val();
+            var reason = $("#blance_reason").val();
             var amount = $("#balance_amount").val();
             if (amount == "") {
-                alert("请输入冲正金额");
                 $("#amount_error").html("请输入冲正金额");
                 result = false;
             }
             if (reason == "") {
-                alert("请输入冲正备注");
                 $("#reason_error").html("请输入冲正备注");
                 result = false;
             }
@@ -33,27 +31,34 @@
     <legend>${title}</legend>
 
 #{form @OperatePrepayments.confirmBalanceBill(), class:'form-horizontal', id:'balanceForm'}
-    <td width="30%"><span style="color: red;">*</span> 商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-        #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:supplierList/}
-    </td>
-    <br><br>
-    #{layout_operate.textField name:'balance.amount', value:balance?.amount,required:true/}
-    <span id="amount_error"></span>
+    <div class="control-group">
+        <label class="control-label"><span style="color: red;">*</span> 商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</label>
+
+        <div class="controls">
+            #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:supplierList/}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label"><span style="color: red;">*</span>冲正金额</label>
+
+        <div class="controls">
+            <input type="text" class="input-xlarge" name="balance.amount" id="balance_amount">
+            <span id="amount_error"></span>
+        </div>
+    </div>
 
     <div class="control-group">
         <label class="control-label"><span style="color: red;">*</span>备注</label>
 
         <div class="controls">
-            <textarea rows="3" class="input-xlarge" name="balance.reason" id="reason"></textarea>
+            <textarea rows="3" class="input-xlarge" name="balance.reason" id="blance_reason"></textarea>
             <span id="reason_error"></span>
         </div>
     </div>
+
     <div class="control-group">
         <label class="control-label"></label>
-
-        <a class="btn btn-primary" id="balance"
-                >冲正
-        </a>
+        <a class="btn btn-primary" id="balance">冲正 </a>
         <a href="/prepayments" class="btn btn-primary">返回</a>
 
     </div>

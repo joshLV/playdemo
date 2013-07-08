@@ -7,6 +7,11 @@ import models.accounts.AccountSequence;
 import models.accounts.AccountType;
 import models.accounts.ClearedAccount;
 import models.accounts.SettlementStatus;
+import models.accounts.TradeBill;
+import models.accounts.TradeType;
+import models.accounts.util.AccountUtil;
+import models.accounts.util.TradeUtil;
+import models.clearing.ClearingBalanceBill;
 import models.order.Prepayment;
 import models.order.PrepaymentHistory;
 import models.supplier.Supplier;
@@ -219,7 +224,26 @@ public class OperatePrepayments extends Controller {
     /**
      * 进行冲正
      */
-    public static void confirmBalanceBill() {
+    public static void confirmBalanceBill(Long supplierId, ClearingBalanceBill balance) {
+        ClearingBalanceBill balanceBill = new ClearingBalanceBill();
+        String createdBy = OperateRbac.currentUser().loginName;
+        Account supplierAccount = Account.find("uid = ? and accountType = ?", supplierId, AccountType.SUPPLIER).first();
+        balanceBill.fromAccount = AccountUtil.getPlatformCommissionAccount(supplierAccount.operator);
+        balanceBill.toAccount = supplierAccount;
+        balanceBill.amount = balance.amount;
+        balanceBill.reason = balance.reason;
+        balanceBill.createdAt = new Date();
+        balanceBill.createdBy = createdBy;
+        balanceBill.save();
+
+        //创建一条相应的TradeBill 和 2条AccountSequence
+        TradeBill balancedTradeBill = TradeUtil.balanceBill(AccountUtil.getPlatformCommissionAccount
+                (difference.account.operator),
+                difference.account, TradeType.BALANCE_BILL,
+                differentAmount.multiply(BigDecimal.valueOf(-1)), difference.ybqOrderId);
+        balancedTradeBill.save();
+        TradeUtil.success(balancedTradeBill, "冲正", null, createdBy);
+
         index(null);
     }
 }
