@@ -103,7 +103,7 @@ public class SupplierUploadOrderShippingInfos extends Controller {
                 continue;
             }
             //查询该商户下的订单信息，存在则更新物流信息
-            OrderItems orderItems = OrderItems.find("goods.sku is not null and goods.code=? and goods.supplierId=? and order.orderNumber=?", logistic.goodsCode, SupplierRbac.currentUser().supplier.id, logistic.orderNumber).first();
+            OrderItems orderItems = OrderItems.find("goods.code=? and goods.supplierId=? and order.orderNumber=?", logistic.goodsCode, SupplierRbac.currentUser().supplier.id, logistic.orderNumber).first();
             if (orderItems == null) {
                 unExistedOrders.add(logistic.orderNumber);
                 continue;
