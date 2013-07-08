@@ -59,7 +59,7 @@
                     name:prepayment.supplier.otherName+'('+prepayment.amount+')'/} / #{/if}
                     <a href="@{OperatePrepayments.history(prepayment.id)}">查看历史</a>
                     /
-                    #{if prepayment?.amount <= account?.amount}
+                    #{if prepayment?.amount <= account?.amount && prepayment.canUpdate()}
                         <a href="@{OperatePrepayments.settle(prepayment.id)}">结算</a>
                     #{/if}
 

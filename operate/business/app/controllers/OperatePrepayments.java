@@ -145,7 +145,7 @@ public class OperatePrepayments extends Controller {
     }
 
     public static void refreshClearedAccountData() {
-        List<Account> accountList = Account.find("(accountType = ? or accountType = ?) and id=82646",
+        List<Account> accountList = Account.find("(accountType = ? or accountType = ?) and id=51200",
                 AccountType.SUPPLIER,
                 AccountType.SHOP).fetch();
         ClearedAccount clearedAccount;
@@ -173,8 +173,8 @@ public class OperatePrepayments extends Controller {
 //        for (int i = 0; i < 10; i++) {
 //            fromDate = DateUtils.truncate(DateUtils.addDays(new Date(), -1 - i), Calendar.DATE);
 //            toDate = DateUtils.truncate(DateUtils.addDays(new Date(), -i), Calendar.DATE);
-        fromDate = DateUtil.stringToDate("2013-06-27 00:00:00", "yyyy-MM-dd HH:mm:ss");
-        toDate = DateUtil.stringToDate("2013-06-27 23:59:59", "yyyy-MM-dd HH:mm:ss");
+        fromDate = DateUtil.stringToDate("2013-07-07 00:00:00", "yyyy-MM-dd HH:mm:ss");
+        toDate = DateUtil.stringToDate("2013-07-07 23:59:59", "yyyy-MM-dd HH:mm:ss");
         System.out.println("fromDate = " + fromDate);
         System.out.println("toDate = " + toDate);
         for (Account account : accountList) {
@@ -228,7 +228,8 @@ public class OperatePrepayments extends Controller {
         ClearingBalanceBill balanceBill = new ClearingBalanceBill();
         String createdBy = OperateRbac.currentUser().loginName;
         Account supplierAccount = Account.find("uid = ? and accountType = ?", supplierId, AccountType.SUPPLIER).first();
-        balanceBill.fromAccount = AccountUtil.getPlatformCommissionAccount(supplierAccount.operator);
+        Account commissionAccount = AccountUtil.getPlatformCommissionAccount(supplierAccount.operator);
+        balanceBill.fromAccount = commissionAccount;
         balanceBill.toAccount = supplierAccount;
         balanceBill.amount = balance.amount;
         balanceBill.reason = balance.reason;
@@ -237,12 +238,11 @@ public class OperatePrepayments extends Controller {
         balanceBill.save();
 
         //创建一条相应的TradeBill 和 2条AccountSequence
-        TradeBill balancedTradeBill = TradeUtil.balanceBill(AccountUtil.getPlatformCommissionAccount
-                (difference.account.operator),
-                difference.account, TradeType.BALANCE_BILL,
-                differentAmount.multiply(BigDecimal.valueOf(-1)), difference.ybqOrderId);
+        TradeBill balancedTradeBill = TradeUtil.balanceBill(commissionAccount,
+                supplierAccount, TradeType.BALANCE_BILL,
+                balance.amount, null);
         balancedTradeBill.save();
-        TradeUtil.success(balancedTradeBill, "冲正", null, createdBy);
+        TradeUtil.success(balancedTradeBill, "预付款冲正", null, createdBy);
 
         index(null);
     }

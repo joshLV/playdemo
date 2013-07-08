@@ -134,7 +134,7 @@
     <div class="tab-content">
         <table class="table table-striped seq">
             <tr>
-                *{<th width="8%">流水号</th>}*
+            *{<th width="8%">流水号</th>}*
                 <th width="6%">时间</th>
                 <th width="15%">账号</th>
                 <th width="15%">公司名称</th>
@@ -147,7 +147,7 @@
             </tr>
             #{paginate.list items:accountSequencePage, as:'accountSequence'}
                 <tr>
-                    *{<td>${accountSequence.serialNumber}</td>}*
+                *{<td>${accountSequence.serialNumber}</td>}*
                     <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                     <td>${accountSequence.accountName}</td>
                     <td>${accountSequence.supplierName}</td>
@@ -158,8 +158,10 @@
                     <td>&{'trade_type.'+ accountSequence.tradeType}</td>
                     <td>${accountSequence.remark}
                         #{if accountSequence.tradeType?.isOrder()} <br/>
-                            订单号：<a href="/orders/${accountSequence.orderId}"
-                                   target="_blank">${accountSequence .orderNumber}</a>
+                            #{if accountSequence.orderId}
+                                订单号：<a href="/orders/${accountSequence.orderId}"
+                                       target="_blank">${accountSequence .orderNumber}</a>
+                            #{/if}
                         #{/if}
                     </td>
                     <td>
