@@ -35,15 +35,16 @@ public class refreshPreviousClearAccount extends JobWithHistory {
             List<AccountSequence> sequences = AccountSequence.find(
                     " account=?  and settlementStatus=? and createdAt <?",
                     account, SettlementStatus.UNCLEARED, toDate).fetch();
-            for (AccountSequence sequence : sequences) {
-                sequence.settlementStatus = SettlementStatus.CLEARED;
-                sequence.save();
-            }
+
             clearedAccount = new ClearedAccount();
             clearedAccount.date = toDate;
             clearedAccount.accountId = account.id;
             clearedAccount.amount = AccountSequence.getClearAmount(account,
                     toDate);
+            for (AccountSequence sequence : sequences) {
+                sequence.settlementStatus = SettlementStatus.CLEARED;
+                sequence.save();
+            }
             clearedAccount.accountSequences = sequences;
             clearedAccount.save();
         }

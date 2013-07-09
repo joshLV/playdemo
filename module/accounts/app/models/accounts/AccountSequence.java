@@ -251,7 +251,7 @@ public class AccountSequence extends Model {
                 " account=?  and settlementStatus=? and createdAt <?",
                 account, SettlementStatus.UNCLEARED, toDate).first();
         amount = (amount != null) ? amount : BigDecimal.ZERO;
-        Logger.info("getClearedAmount: amount:" + amount + "toDate=" + toDate);
+        Logger.info("getClearedAmount: amount:" + amount + "toDate=" + toDate + "accountId:" + account.id);
         return amount;
     }
 
