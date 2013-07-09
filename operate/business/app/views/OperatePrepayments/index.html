@@ -12,6 +12,7 @@
                 </td>
                 <td>
                     <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
+                    <a style="float: right;" href="/prepayments/balance-bill" class="btn btn-primary">冲正</a>
                 </td>
             </tr>
         </table>
@@ -29,6 +30,7 @@
                 <th width="80">&{'prepayment.createdBy'}</th>
                 <th width="90">&{'prepayment.updatedAt'}</th>
                 <th width="90">&{'prepayment.updatedBy'}</th>
+                <th>结算备注</th>
                 <th>&{'prepayment.remark'}</th>
                 <th width="80">操 作</th>
             </tr>
@@ -38,6 +40,9 @@
 
             #{paginate.list items:prepaymentPage, as:'prepayment'}
             <tr>
+            %{ account = models.accounts.Account.find("uid = ? and accountType = ?",prepayment.supplier.id,
+                models.accounts.AccountType.SUPPLIER).first();
+                }%
                 <td align="center">${prepayment?.supplier?.otherName==null?prepayment?.supplier?.fullName:prepayment?.supplier?.otherName}</td>
                 <td>${prepayment.amount?.formatCurrency('CNY')}</td>
                 <td>${prepayment.withdrawAmount?.formatCurrency('CNY')}</td>
@@ -47,11 +52,16 @@
                 <td>${prepayment.createdBy}</td>
                 <td>${prepayment.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${prepayment.updatedBy}</td>
+                <td>${prepayment.settleRemark}</td>
                 <td>${prepayment.remark}</td>
                 <td>#{if prepayment.canUpdate()}<a href="@{OperatePrepayments.edit(prepayment.id)}">修改</a>
                     / #{vx.deleteLink action:"prepayments", id:prepayment.id,
                     name:prepayment.supplier.otherName+'('+prepayment.amount+')'/} / #{/if}
-                     <a href="@{OperatePrepayments.history(prepayment.id)}">查看历史</a>
+                    <a href="@{OperatePrepayments.history(prepayment.id)}">查看历史</a>
+                    /
+                    #{if prepayment?.amount <= account?.amount && prepayment.canUpdate()}
+                        <a href="@{OperatePrepayments.settle(prepayment.id)}">结算</a>
+                    #{/if}
 
             </tr>
             #{/paginate.list}

@@ -5,7 +5,6 @@ import models.accounts.Account;
 import models.accounts.util.AccountSequenceUtil;
 import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
-import play.jobs.On;
 
 import java.util.Date;
 import java.util.List;
@@ -20,9 +19,10 @@ import static play.Logger.warn;
  * Date: 1/14/13
  * Time: 11:02 AM
  */
-@On("0 0 2 * * ?")  //每天凌晨四点执行
+//@On("0 0 2 * * ?")  //每天凌晨四点执行
+//@OnApplicationStart
 // @Every("1h")
-@JobDefine(title="财务核帐并修正", description="财务核帐并修正")
+@JobDefine(title = "财务核帐并修正", description = "财务核帐并修正")
 public class FinanceCheckJob extends JobWithHistory {
 
     @Override

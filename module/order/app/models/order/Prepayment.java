@@ -2,9 +2,18 @@ package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
+import models.accounts.Account;
 import models.accounts.AccountSequence;
+import models.accounts.AccountType;
+import models.accounts.ClearedAccount;
 import models.accounts.SettlementStatus;
+import models.accounts.TradeBill;
+import models.accounts.TradeType;
+import models.accounts.util.AccountUtil;
+import models.accounts.util.TradeUtil;
+import models.operator.Operator;
 import models.supplier.Supplier;
+import org.apache.commons.lang.time.DateUtils;
 import play.data.validation.Max;
 import play.data.validation.Min;
 import play.data.validation.Required;
@@ -20,6 +29,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -53,6 +63,9 @@ public class Prepayment extends Model {
     public Date expireAt;       //有效期结束时间
 
     public String remark;       //备注
+
+    @Column(name = "settle_remark")
+    public String settleRemark;  //结算备注
 
     @Column(name = "created_at")
     public Date createdAt;      //创建时间
@@ -115,7 +128,7 @@ public class Prepayment extends Model {
      * 只有从未被结算过的预付款记录才允许修改和删除
      */
     public boolean canUpdate() {
-        return AccountSequence.countByPrepayment(id) <= 0l && this.settlementStatus==SettlementStatus.UNCLEARED;
+        return this.settlementStatus == SettlementStatus.UNCLEARED;
     }
 
     public static Prepayment getLastUnclearedPrepayments(long uid) {
@@ -206,12 +219,12 @@ public class Prepayment extends Model {
                 supplier.id).fetch();
     }
 
-    public static void toHistoryData(Long id,String loginName) {
+    public static void toHistoryData(Long id, String loginName) {
         Prepayment prepayment = Prepayment.findById(id);
         PrepaymentHistory history = new PrepaymentHistory();
         history.amount = prepayment.amount;
         history.createdAt = new Date();
-        history.createdBy=loginName;
+        history.createdBy = loginName;
         history.prepaymentId = id;
         history.effectiveAt = prepayment.effectiveAt;
         history.expireAt = prepayment.expireAt;
@@ -221,5 +234,83 @@ public class Prepayment extends Model {
         history.settlementStatus = prepayment.settlementStatus;
         history.save();
 
+    }
+
+    public BigDecimal getSalesAmountUntilNow() {
+        final Date endOfDay = DateUtil.getEndOfDay(new Date());
+        BigDecimal amount = BigDecimal.ZERO;   //可结算总额
+        //只能处理视惠的结算.
+        Account supplierAccount = AccountUtil.getSupplierAccount(this.supplier.id, Operator.defaultOperator());
+        if (this.expireAt == null || this.effectiveAt == null) {
+            return BigDecimal.ZERO;
+        }
+
+        if (endOfDay.compareTo(this.expireAt) < 0) {
+            amount = supplierAccount.getWithdrawAmount(endOfDay);
+        } else {
+            amount = supplierAccount.getWithdrawAmount(expireAt);
+        }
+        return amount;
+    }
+
+    /*
+        取得最大的可以结算的金额
+     */
+    public BigDecimal getMaxCanSettleSalesAmount() {
+        return BigDecimal.ZERO;
+
+    }
+
+    /**
+     * 预付款结算
+     */
+    public static void confirmSettle(Prepayment prepayment, String updatedBy) {
+        Date toDate = DateUtils.truncate(new Date(), Calendar.DATE);
+        Supplier supplier = Supplier.findById(prepayment.supplier.id);
+        Account supplierAccount = Account.find("uid = ? and accountType = ?", supplier.id, AccountType.SUPPLIER).first();
+        System.out.println("&&&&&&&&&supplierAccount.id = " +supplierAccount.id);
+        BigDecimal tempClearedAmount = BigDecimal.ZERO;
+        List<ClearedAccount> clearedAccountList = ClearedAccount.find(
+                "accountId=? and settlementStatus=? and date < ? order by date",
+                supplierAccount.id, SettlementStatus.UNCLEARED, toDate).fetch();
+        for (ClearedAccount clearedAccount : clearedAccountList) {
+            //记录每次clearedAccount中金额的累加值
+            tempClearedAmount = tempClearedAmount.add(clearedAccount.amount);
+            clearedAccount.settlementStatus = SettlementStatus.CLEARED;
+            clearedAccount.prepayment = prepayment;
+            clearedAccount.updatedBy = updatedBy;
+            clearedAccount.updatedAt = new Date();
+            clearedAccount.save();
+            //如果累计结算金额超过预付款金额，则创建一条clearedAccount,记录两者差额
+            if (tempClearedAmount.compareTo(prepayment.amount) > 0) {
+                ClearedAccount addClearedAccount = new ClearedAccount();
+                addClearedAccount.settlementStatus = SettlementStatus.UNCLEARED;
+                addClearedAccount.accountId = supplierAccount.id;
+                addClearedAccount.amount = tempClearedAmount.subtract(prepayment.amount);
+                addClearedAccount.prepayment = prepayment;
+                addClearedAccount.date = clearedAccount.date;
+                addClearedAccount.save();
+                break;
+            }
+            if (tempClearedAmount.compareTo(prepayment.amount) == 0) {
+                break;
+            }
+
+        }
+
+        //创建相应的1条TradeBill和2条AccountSequence
+        TradeBill balancedTradeBill = TradeUtil.balanceBill(supplierAccount,
+                AccountUtil.getPlatformWithdrawAccount(supplierAccount.operator), TradeType.PREPAYMENT_SETTLED,
+                prepayment.amount, null);
+        balancedTradeBill.save();
+        TradeUtil.success(balancedTradeBill, "预付款结算", null, updatedBy);
+        List<AccountSequence> sequences = AccountSequence.find("tradeId = ? and tradeType = ?", balancedTradeBill.id,
+                TradeType.PREPAYMENT_SETTLED).fetch();
+        for (AccountSequence sequence : sequences) {
+            sequence.settlementStatus = SettlementStatus.CLEARED;
+            sequence.save();
+        }
+
+        Prepayment.toHistoryData(prepayment.id, updatedBy);
     }
 }

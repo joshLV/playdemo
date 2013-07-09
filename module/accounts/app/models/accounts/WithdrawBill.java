@@ -12,9 +12,18 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 提现流水
@@ -289,10 +298,38 @@ public class WithdrawBill extends Model {
         TradeBill tradeBill = TradeUtil.withdrawTrade(this.account, this.amount, id).make();
         TradeUtil.success(tradeBill, "提现成功", SettlementStatus.CLEARED);
 
-        if (account.accountType == AccountType.SUPPLIER || account.accountType == AccountType.SHOP) { //同意提现操作
-            //标记所有详细销售记录为已结算
-            return AccountSequence.withdraw(account, withdrawDate, this);
+
+        BigDecimal tempClearedAmount = BigDecimal.ZERO;
+        List<ClearedAccount> clearedAccountList = ClearedAccount.find(
+                "accountId=? and settlementStatus=? and date < ? order by date",
+                account.id, SettlementStatus.UNCLEARED, withdrawDate).fetch();
+        for (ClearedAccount clearedAccount : clearedAccountList) {
+            tempClearedAmount = tempClearedAmount.add(clearedAccount.amount);
+            clearedAccount.settlementStatus = SettlementStatus.CLEARED;
+            clearedAccount.withdrawBill = this;
+            clearedAccount.updatedBy = operator;
+            clearedAccount.updatedAt = new Date();
+            clearedAccount.save();
+            //如果累计可提现审批金额超过提现金额，则创建一条clearedAccount,记录两者差额
+            if (tempClearedAmount.compareTo(this.amount) > 0) {
+                ClearedAccount addClearedAccount = new ClearedAccount();
+                addClearedAccount.settlementStatus = SettlementStatus.UNCLEARED;
+                addClearedAccount.accountId = account.id;
+                addClearedAccount.amount = tempClearedAmount.subtract(this.amount);
+                addClearedAccount.withdrawBill = this;
+                addClearedAccount.date = clearedAccount.date;
+                addClearedAccount.save();
+                break;
+            }
+            if (tempClearedAmount.compareTo(this.amount) == 0) {
+                break;
+            }
         }
+
+//        if (account.accountType == AccountType.SUPPLIER || account.accountType == AccountType.SHOP) { //同意提现操作
+//            标记所有详细销售记录为已结算
+//            return AccountSequence.withdraw(account, withdrawDate, this);
+//        }
         return 0;
     }
 

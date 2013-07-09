@@ -9,14 +9,19 @@
 
     <table class="title-table">
         <tr>
-            <th width="80%">余额：${account?.amount?.add(account?.uncashAmount)}
-                元 = 可用余额：${account?.amount} 元 + 不可用余额：${account?.uncashAmount} 元
-                <a href="#" title="不可用余额：预付款状态为未结算、提现申请状态为待审批时均为不可用余额"><img
-                        src="#{asset.url href:"/images/m/ico-info.png" /}" style="vertical-align: middle;"></a>
-            </th>
-            <td width="20%"><a class="btn" href="/withdraws/apply">申请提现</a></td>
-        </tr>
+        <th width="80%">余额：${account?.amount?.add(account?.uncashAmount)}
+            元 = 可用余额：${account?.amount} 元 + 不可用余额：${account?.uncashAmount} 元
+            <a href="#" title="不可用余额：预付款状态为未结算、提现申请状态为待审批时均为不可用余额"><img
+                    src="#{asset.url href:"/images/m/ico-info.png" /}" style="vertical-align: middle;"></a>
+        </th>
+    #{if withdraw == null}
+        <td width="20%"><a class="btn" href="/withdraws/apply">申请提现</a></td>
+    #{/if}
+
     </table>
+#{if withdraw}
+   <span style="color:red;">您有一笔待审批的提现申请，请等待审批完毕再申请提现</span>
+#{/if}
 
     <table class="standard-table">
         <tr>

@@ -127,6 +127,21 @@ public class TradeUtil {
     }
 
     /**
+     * 创建冲正交易
+     */
+    public static TradeBill balanceBill(Account fromAccount, Account toAccount, TradeType tradeType,
+                                        BigDecimal amount, Long orderId) {
+        TradeBill bill = new TradeBill();
+        bill.fromAccount = fromAccount;
+        bill.toAccount = toAccount;
+        bill.tradeType = tradeType;
+        bill.amount = amount;
+        bill.balancePaymentAmount = amount;
+        bill.orderId = orderId;
+        return bill;
+    }
+
+    /**
      * 创建退款交易
      */
     public static TradeBill refundTrade() {

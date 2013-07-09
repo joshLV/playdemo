@@ -18,6 +18,8 @@ public class JobsRunHistoryConsumer extends RabbitMQConsumerWithTx<JobsMessage> 
         Logger.info("JobsRunHistoryConsumer: job run:" + jobsMessage.className);
         JobsDefine jobsDefine = jobsMessage.toJobsDefine().load();
 
+        jobsDefine.lastRunHistory = null;
+        jobsDefine.save();
         // 删除指定分钟数以前的记录
         JobsRunHistory.deleteBeforeItem(jobsDefine, jobsMessage.retainHistoryMinutes);
 

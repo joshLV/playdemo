@@ -88,7 +88,6 @@
                 <label class="control-label">预付款余额 </label>
                 <p class="control-value">#{if prepaymentId!=null}<a href="/prepayments/${prepaymentId}"
                                                                         target="_blank">${prepaymentBalance.formatCurrency('CNY')}</a>#{/if}#{else}${prepaymentBalance.formatCurrency('CNY')}#{/else}
-                </span>
             </div>
             #{if needPay?.compareTo(java.math.BigDecimal.ZERO)>0}
                 <div class="control-group">

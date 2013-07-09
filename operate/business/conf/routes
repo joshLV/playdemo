@@ -452,6 +452,7 @@ GET     /keywords                               OperateSearchHotKeywords.index
 
 # 预付款
 GET     /prepayments                            OperatePrepayments.index
+GET     /prepayments/balance-bill               OperatePrepayments.balanceBill
 POST    /prepayments                            OperatePrepayments.create
 GET     /prepayments/new                        OperatePrepayments.add
 GET     /prepayments/{id}                       OperatePrepayments.show

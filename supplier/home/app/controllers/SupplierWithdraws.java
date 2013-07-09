@@ -48,8 +48,9 @@ public class SupplierWithdraws extends Controller {
         condition.account = account;
         JPAExtPaginator<WithdrawBill> billPage = WithdrawBill.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
+        WithdrawBill withdraw = WithdrawBill.find("byAccountAndStatus", account, WithdrawBillStatus.APPLIED).first();
 
-        render(account, billPage, condition);
+        render(account, billPage, condition, withdraw);
     }
 
     @ActiveNavigation("account_withdraw")
@@ -60,7 +61,7 @@ public class SupplierWithdraws extends Controller {
         Supplier supplier = Supplier.findById(supplierId);
         Account account = supplierUser.getSupplierAccount();
 
-        WithdrawBill withdraw =  WithdrawBill.find("byAccountAndStatus", account, WithdrawBillStatus.APPLIED).first();
+        WithdrawBill withdraw = WithdrawBill.find("byAccountAndStatus", account, WithdrawBillStatus.APPLIED).first();
         if (withdraw != null) {
             String err = "您有一笔待审批的提现申请，请等待审批完毕再申请提现";
             render(err);
@@ -75,10 +76,11 @@ public class SupplierWithdraws extends Controller {
 
         Date withDrawEndDate = getSupplierWithdrawEndDate(supplier);
 
+//        BigDecimal withdrawAmount = account.getWithdrawAmount(withDrawEndDate);
         BigDecimal withdrawAmount = account.getWithdrawAmount(withDrawEndDate);
         //商户可提现金额
         BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, withDrawEndDate);
-        Logger.info("withdrawAmount=%s, supplierWithdrawAmount=%s, prepaymentBalance=%s", withdrawAmount.toString(),
+        Logger.info("333withdrawAmount=%s, supplierWithdrawAmount=%s, prepaymentBalance=%s", withdrawAmount.toString(),
                 supplierWithdrawAmount.toString(), prepaymentBalance.toString());
         render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount, withDrawEndDate, supplier);
     }
@@ -91,7 +93,7 @@ public class SupplierWithdraws extends Controller {
         Account account = supplierUser.getSupplierAccount();
 
 
-        WithdrawBill withdraw =  WithdrawBill.find("byAccountAndStatus", account, WithdrawBillStatus.APPLIED).first();
+        WithdrawBill withdraw = WithdrawBill.find("byAccountAndStatus", account, WithdrawBillStatus.APPLIED).first();
         if (withdraw != null) {
             error("您有一笔待审批的提现申请，请等待审批完毕再申请提现");
         }
@@ -149,12 +151,12 @@ public class SupplierWithdraws extends Controller {
         if (supplier.isWithdrawDelay()) {
             Calendar calendar = Calendar.getInstance();
             int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-            if (dayOfMonth >=5 && dayOfMonth <=14) {
+            if (dayOfMonth >= 5 && dayOfMonth <= 14) {
                 calendar.add(Calendar.MONTH, -1);
                 calendar.set(Calendar.DAY_OF_MONTH, 25);
-            }else if (dayOfMonth >=15 && dayOfMonth <=24) {
+            } else if (dayOfMonth >= 15 && dayOfMonth <= 24) {
                 calendar.set(Calendar.DAY_OF_MONTH, 5);
-            }else {
+            } else {
                 if (dayOfMonth <= 4) {
                     calendar.add(Calendar.MONTH, -1);
                 }
@@ -162,7 +164,7 @@ public class SupplierWithdraws extends Controller {
             }
             return DateUtils.ceiling(calendar.getTime(), Calendar.DATE);
         } else {
-            return  DateUtils.truncate(new Date(), Calendar.DATE);
+            return DateUtils.truncate(new Date(), Calendar.DATE);
         }
     }
 
