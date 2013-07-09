@@ -268,11 +268,11 @@ public class Prepayment extends Model {
         Date toDate = DateUtils.truncate(new Date(), Calendar.DATE);
         Supplier supplier = Supplier.findById(prepayment.supplier.id);
         Account supplierAccount = Account.find("uid = ? and accountType = ?", supplier.id, AccountType.SUPPLIER).first();
+        System.out.println("&&&&&&&&&supplierAccount.id = " +supplierAccount.id);
         BigDecimal tempClearedAmount = BigDecimal.ZERO;
         List<ClearedAccount> clearedAccountList = ClearedAccount.find(
                 "accountId=? and settlementStatus=? and date < ? order by date",
                 supplierAccount.id, SettlementStatus.UNCLEARED, toDate).fetch();
-        System.out.println("clearedAccountList.size() = " + clearedAccountList.size());
         for (ClearedAccount clearedAccount : clearedAccountList) {
             //记录每次clearedAccount中金额的累加值
             tempClearedAmount = tempClearedAmount.add(clearedAccount.amount);
@@ -282,23 +282,25 @@ public class Prepayment extends Model {
             clearedAccount.updatedAt = new Date();
             clearedAccount.save();
             //如果累计结算金额超过预付款金额，则创建一条clearedAccount,记录两者差额
-            if (tempClearedAmount.compareTo(prepayment.amount) >= 0) {
+            if (tempClearedAmount.compareTo(prepayment.amount) > 0) {
                 ClearedAccount addClearedAccount = new ClearedAccount();
                 addClearedAccount.settlementStatus = SettlementStatus.UNCLEARED;
                 addClearedAccount.accountId = supplierAccount.id;
                 addClearedAccount.amount = tempClearedAmount.subtract(prepayment.amount);
-                System.out.println(" addClearedAccount.amount = " + addClearedAccount.amount);
                 addClearedAccount.prepayment = prepayment;
                 addClearedAccount.date = clearedAccount.date;
                 addClearedAccount.save();
+                break;
+            }
+            if (tempClearedAmount.compareTo(prepayment.amount) == 0) {
                 break;
             }
 
         }
 
         //创建相应的1条TradeBill和2条AccountSequence
-        TradeBill balancedTradeBill = TradeUtil.balanceBill(AccountUtil.getPlatformWithdrawAccount(supplierAccount.operator),
-                supplierAccount, TradeType.PREPAYMENT_SETTLED,
+        TradeBill balancedTradeBill = TradeUtil.balanceBill(supplierAccount,
+                AccountUtil.getPlatformWithdrawAccount(supplierAccount.operator), TradeType.PREPAYMENT_SETTLED,
                 prepayment.amount, null);
         balancedTradeBill.save();
         TradeUtil.success(balancedTradeBill, "预付款结算", null, updatedBy);

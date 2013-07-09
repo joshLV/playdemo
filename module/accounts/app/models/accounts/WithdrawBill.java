@@ -311,18 +311,19 @@ public class WithdrawBill extends Model {
             clearedAccount.updatedAt = new Date();
             clearedAccount.save();
             //如果累计可提现审批金额超过提现金额，则创建一条clearedAccount,记录两者差额
-            if (tempClearedAmount.compareTo(this.amount) >= 0) {
+            if (tempClearedAmount.compareTo(this.amount) > 0) {
                 ClearedAccount addClearedAccount = new ClearedAccount();
                 addClearedAccount.settlementStatus = SettlementStatus.UNCLEARED;
                 addClearedAccount.accountId = account.id;
                 addClearedAccount.amount = tempClearedAmount.subtract(this.amount);
-                System.out.println(" addClearedAccount.amount = " + addClearedAccount.amount);
                 addClearedAccount.withdrawBill = this;
                 addClearedAccount.date = clearedAccount.date;
                 addClearedAccount.save();
                 break;
             }
-
+            if (tempClearedAmount.compareTo(this.amount) == 0) {
+                break;
+            }
         }
 
 //        if (account.accountType == AccountType.SUPPLIER || account.accountType == AccountType.SHOP) { //同意提现操作

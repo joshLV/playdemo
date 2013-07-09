@@ -124,7 +124,6 @@ public class Account extends Model {
 //        }
 //        return vostroAmount.subtract(uncashAmount);
 //    }
-
     public BigDecimal getWithdrawAmount(Date toDate) {
         BigDecimal vostroAmount = ClearedAccount.getClearedAmount(this, toDate);
         System.out.println("111toDate = " + toDate);
@@ -132,7 +131,7 @@ public class Account extends Model {
         if (uncashAmount == null) {
             return vostroAmount == null ? BigDecimal.ZERO : vostroAmount;
         }
-        System.out.println("888toDate = " +toDate);
+        System.out.println("888toDate = " + toDate);
         if (accountType == AccountType.SUPPLIER) {
             BigDecimal supplierUncashAmount = (BigDecimal) find("select sum(amount) from WithdrawBill where" +
                     " account=? and status = ? and appliedAt<=?",
@@ -158,7 +157,7 @@ public class Account extends Model {
      */
     public BigDecimal getSupplierWithdrawAmount(BigDecimal prepaymentBalance, Date date) {
         //本周期券消费金额  本周期可以提现的金额
-        BigDecimal withdrawAmount = getWithdrawAmount(date);
+        BigDecimal withdrawAmount = ClearedAccount.getClearedAmount(this, date);
         if (prepaymentBalance.compareTo(withdrawAmount) > 0) {
             return BigDecimal.ZERO;
         }

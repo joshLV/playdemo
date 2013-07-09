@@ -8,7 +8,9 @@ import models.accounts.SettlementStatus;
 import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import org.apache.commons.lang.time.DateUtils;
+import play.jobs.On;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
  * Date: 13-7-5
  * Time: 下午3:22
  */
-//@On("0 0 2 * * ?")  //每天凌晨四点执行
+@On("0 0 4 * * ?")  //每天凌晨四点执行
 @JobDefine(title = "定时结算前一天相应账户结算金额", description = "定时结算前一天相应账户结算金额")
 public class DailyClearAccount extends JobWithHistory {
     @Override
@@ -38,6 +40,9 @@ public class DailyClearAccount extends JobWithHistory {
             clearedAccount.accountId = account.id;
             clearedAccount.amount = AccountSequence.getClearAmount(account, fromDate,
                     clearedAccount.date);
+            if (clearedAccount.amount.compareTo(BigDecimal.ZERO) == 0) {
+                continue;
+            }
             for (AccountSequence sequence : sequences) {
                 sequence.settlementStatus = SettlementStatus.CLEARED;
                 sequence.save();

@@ -69,6 +69,7 @@ public class ClearedAccount extends Model {
         BigDecimal amount = (BigDecimal) find("select sum(amount) from ClearedAccount where" +
                 " accountId=? and settlementStatus=? and date < ?",
                 account.id, SettlementStatus.UNCLEARED, toDate).first();
+        System.out.println(" 999account.id = " + account.id);
         return amount != null ? amount : BigDecimal.ZERO;
     }
 
