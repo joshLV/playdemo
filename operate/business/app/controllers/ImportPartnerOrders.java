@@ -140,7 +140,6 @@ public class ImportPartnerOrders extends Controller {
         request.setStatus("WAIT_SELLER_SEND_GOODS");
         long page = 1L;
         long pageSize = 100L;
-        request.setPageNo(page);
         request.setUseHasNext(true);
         request.setPageSize(pageSize);
 
@@ -148,6 +147,7 @@ public class ImportPartnerOrders extends Controller {
 
         List<LogisticImportData> logisticImportDataList = new ArrayList<>();
         while (true) {
+            request.setPageNo(page);
             TradesSoldGetResponse response;
             try {
                 response = taobaoClient.execute(request, token.accessToken);
