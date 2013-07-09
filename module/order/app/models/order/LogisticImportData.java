@@ -238,7 +238,7 @@ public class LogisticImportData implements Cloneable {
     }
 
     public void setPhone(String phone) {
-        if (phone.indexOf("E") >= 0) {
+        if (StringUtils.isNotBlank(phone) && phone.indexOf("E") >= 0) {
             try {
                 Double p = Double.parseDouble(phone);
                 DecimalFormat df = new DecimalFormat("#");
