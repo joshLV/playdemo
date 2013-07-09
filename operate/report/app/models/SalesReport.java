@@ -173,7 +173,7 @@ public class SalesReport implements Comparable<SalesReport> {
 
     //--------人效报表_begin---------------------------//
     public SalesReport(OperateUser operateUser, Long buyNumber,
-                       BigDecimal totalAmount, BigDecimal grossMargin, BigDecimal profit, BigDecimal netSalesAmount, BigDecimal totalCost) {
+                       BigDecimal totalAmount, BigDecimal grossMargin, BigDecimal profit, BigDecimal netSalesAmount, BigDecimal totalCost, BigDecimal totalAmountCommissionAmount) {
         this.operateUser = operateUser;
         this.buyNumber = buyNumber;
         this.totalAmount = totalAmount;
@@ -182,6 +182,7 @@ public class SalesReport implements Comparable<SalesReport> {
         this.netSalesAmount = netSalesAmount;
         this.totalCost = totalCost;
         this.netCost = totalCost;
+        this.totalAmountCommissionAmount = totalAmountCommissionAmount;
     }
 
     public SalesReport(OperateUser operateUser) {
@@ -205,7 +206,9 @@ public class SalesReport implements Comparable<SalesReport> {
         this.totalAmountCommissionAmount = totalAmountCommissionAmount;
     }
 
-    public SalesReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal consumedAmount, BigDecimal consumedCost, BigDecimal profit, BigDecimal grossMargin, Long totalBuyNumber, BigDecimal netSalesAmount, BigDecimal netCost) {
+    public SalesReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal consumedAmount, BigDecimal consumedCost,
+                       BigDecimal profit, BigDecimal grossMargin, Long totalBuyNumber,
+                       BigDecimal netSalesAmount, BigDecimal netCost) {
         this.totalAmount = totalAmount;
         this.consumedAmount = consumedAmount;
         this.consumedCost = consumedCost;
@@ -226,11 +229,12 @@ public class SalesReport implements Comparable<SalesReport> {
     }
 
     //refund and consumed ecoupon
-    public SalesReport(OperateUser operateUser, BigDecimal amount, BigDecimal refundCost, ECouponStatus status) {
+    public SalesReport(OperateUser operateUser, BigDecimal amount, BigDecimal refundCost, ECouponStatus status, BigDecimal refundCommissionAmount) {
         this.operateUser = operateUser;
         if (status == ECouponStatus.REFUND) {
             this.refundAmount = amount;
             this.refundCost = refundCost;
+            this.refundCommissionAmount = refundCommissionAmount;
         } else if (status == ECouponStatus.CONSUMED) {
             this.consumedAmount = amount;
             this.consumedCost = refundCost;
@@ -245,11 +249,13 @@ public class SalesReport implements Comparable<SalesReport> {
     }
 
     //cheated order
-    public SalesReport(OperateUser operateUser, BigDecimal cheatedOrderAmount, Long cheatedOrderNum, BigDecimal cheatedOrderCost) {
+    public SalesReport(OperateUser operateUser, BigDecimal cheatedOrderAmount, Long cheatedOrderNum, BigDecimal cheatedOrderCost, BigDecimal cheatedOrderCommissionAmount) {
         this.operateUser = operateUser;
         this.cheatedOrderAmount = cheatedOrderAmount;
         this.cheatedOrderNum = cheatedOrderNum;
         this.cheatedOrderCost = cheatedOrderCost;
+        this.cheatedOrderCommissionAmount = cheatedOrderCommissionAmount;
+
     }
     //--------人效报表_end---------------------------//
 
@@ -1006,7 +1012,8 @@ public class SalesReport implements Comparable<SalesReport> {
                 ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.originalPrice*r.buyNumber))" +
+                ",sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.commission*r.buyNumber) )" +
                 " from OrderItems r,Supplier s,OperateUser o";
         String groupBy = " group by s.salesId";
         Query query = JPA.em()
@@ -1020,7 +1027,7 @@ public class SalesReport implements Comparable<SalesReport> {
         List<SalesReport> paidResultList = query.getResultList();
         //cheated order
         sql = "select new models.SalesReport(ou,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
-                " ,sum(r.originalPrice)) " +
+                " ,sum(r.originalPrice),sum(r.commission*r.buyNumber)) " +
                 " from OrderItems r, ECoupon e ,Supplier s,OperateUser ou";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterCheatedOrderOfPeopleEffect() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
@@ -1029,35 +1036,8 @@ public class SalesReport implements Comparable<SalesReport> {
         }
         List<SalesReport> cheatedOrderResultList = query.getResultList();
 
-        //cheated order from resaler
-        sql = "select new models.SalesReport(ou,sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100,b.commissionRatio)" +
-                " from OrderItems r,Order o,Resaler b, ECoupon e,Supplier s,OperateUser ou ";
-        groupBy = " group by s.salesId,b";
-        query = JPA.em()
-                .createQuery(sql + condition.getFilterCheatedOrderResalerOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
-
-
-        for (String param : condition.getParamMap1().keySet()) {
-            query.setParameter(param, condition.getParamMap1().get(param));
-        }
-
-        List<SalesReport> cheatedOrderResalerResultList = query.getResultList();
-        //paidAt from resaler
-        sql = "select new models.SalesReport(sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100,b.commissionRatio,ou)" +
-                " from OrderItems r,Order o,Resaler b,Supplier s,OperateUser ou";
-        groupBy = " group by s.salesId,b";
-        query = JPA.em()
-                .createQuery(sql + condition.getResalerFilterOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
-
-
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
-
-        List<SalesReport> paidResalerResultList = query.getResultList();
-
         //取得退款的数据 ecoupon
-        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(e.originalPrice),e.status) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
+        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(e.originalPrice),e.status,sum(r.commission)) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
@@ -1070,7 +1050,7 @@ public class SalesReport implements Comparable<SalesReport> {
         List<SalesReport> refundList = query.getResultList();
 
         //取得消费的数据 ecoupon
-        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(e.originalPrice),e.status) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
+        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(e.originalPrice),e.status,sum(r.commission)) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
@@ -1082,20 +1062,6 @@ public class SalesReport implements Comparable<SalesReport> {
         }
 
         List<SalesReport> consumedList = query.getResultList();
-
-        //refund from resaler
-        sql = "select new models.SalesReport(ou,sum(r),sum(e.salePrice)*b.commissionRatio/100,b.commissionRatio) " +
-                " from ECoupon e,OrderItems r,Resaler b ,Order o,Supplier s,OperateUser ou";
-        groupBy = " group by s.salesId,b";
-
-        query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResalerOfPeopleEffect() + groupBy + " order by sum(e.salePrice) desc");
-
-        for (String param : condition.getParamMap1().keySet()) {
-            query.setParameter(param, condition.getParamMap1().get(param));
-        }
-
-        List<SalesReport> refundResalerResultList = query.getResultList();
 
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
@@ -1116,7 +1082,8 @@ public class SalesReport implements Comparable<SalesReport> {
                     cheatedItem.grossMargin = (cheatedItem.netSalesAmount.subtract(cheatedItem.netCost)).divide(cheatedItem.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
-                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).add(cheatedItem.cheatedOrderCost)
+                        .add(item.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : item.cheatedOrderCommissionAmount);
                 map.put(getReportKeyOfPeopleEffect(cheatedItem), cheatedItem);
             } else {
                 item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
@@ -1130,7 +1097,9 @@ public class SalesReport implements Comparable<SalesReport> {
                 }
 
                 item.profit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
-                        .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
+                        .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost)
+                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
+                        .add(cheatedItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCommissionAmount);
             }
         }
         for (SalesReport refundItem : refundList) {
@@ -1140,15 +1109,20 @@ public class SalesReport implements Comparable<SalesReport> {
                 item.refundCost = refundItem.refundCost;
                 item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
                 item.netCost = (item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(item.refundCost).subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).setScale(2);
-
                 if (item.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
                     item.grossMargin = BigDecimal.ZERO;
                 } else {
                     item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
+                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).
+                        subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
+                        .subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).
+                                add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).
+                                add(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost
+                                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
+                                        .add(refundItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundItem.refundCommissionAmount));
 
             } else {
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
@@ -1159,7 +1133,9 @@ public class SalesReport implements Comparable<SalesReport> {
                     refundItem.grossMargin = (refundItem.netSalesAmount.subtract(refundItem.netCost)).divide(refundItem.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
-                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost);
+                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost)
+                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
+                        .add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount);
                 map.put(getReportKeyOfPeopleEffect(refundItem), refundItem);
             }
         }
@@ -1174,54 +1150,7 @@ public class SalesReport implements Comparable<SalesReport> {
             }
 
         }
-        BigDecimal totalCommission = BigDecimal.ZERO;
-        //merge from resaler if commissionRatio
-        for (SalesReport resalerItem : paidResalerResultList) {
-            SalesReport item = map.get(getReportKeyOfPeopleEffect(resalerItem));
-            if (item == null) {
-                map.put(getReportKeyOfPeopleEffect(resalerItem), resalerItem);
-            } else {
-                totalCommission = item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount;
-                totalCommission = totalCommission.add(resalerItem.totalAmountCommissionAmount == null ? BigDecimal.ZERO : resalerItem.totalAmountCommissionAmount);
-                item.totalAmountCommissionAmount = totalCommission;
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-            }
-        }
 
-        totalCommission = BigDecimal.ZERO;
-        for (SalesReport cheatedResalerItem : cheatedOrderResalerResultList) {
-            SalesReport item = map.get(getReportKeyOfPeopleEffect(cheatedResalerItem));
-            if (item == null) {
-                map.put(getReportKeyOfPeopleEffect(cheatedResalerItem), cheatedResalerItem);
-            } else {
-                totalCommission = item.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : item.cheatedOrderCommissionAmount;
-                totalCommission = totalCommission.add(cheatedResalerItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedResalerItem.cheatedOrderCommissionAmount);
-                item.cheatedOrderCommissionAmount = totalCommission;
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-            }
-        }
-        totalCommission = BigDecimal.ZERO;
-        for (SalesReport refundResalerItem : refundResalerResultList) {
-            SalesReport item = map.get(getReportKeyOfPeopleEffect(refundResalerItem));
-            if (item == null) {
-                map.put(getReportKeyOfPeopleEffect(refundResalerItem), refundResalerItem);
-            } else {
-                totalCommission = item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount;
-                totalCommission = totalCommission.add(refundResalerItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.refundCommissionAmount);
-                item.refundCommissionAmount = totalCommission;
-
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
-                        .add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost)
-                        .add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost)
-                        .add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-            }
-        }
         List resultList = new ArrayList();
         for (OperateUser key : map.keySet()) {
             resultList.add(map.get(key));

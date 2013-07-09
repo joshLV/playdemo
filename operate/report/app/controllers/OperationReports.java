@@ -287,7 +287,6 @@ public class OperationReports extends Controller {
 
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
-//        if (flagWithCondition) {
 
         List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition, hasSeeReportProfitRight);
 

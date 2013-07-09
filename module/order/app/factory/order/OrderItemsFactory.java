@@ -18,7 +18,7 @@ public class OrderItemsFactory extends ModelFactory<OrderItems> {
         Goods goods = FactoryBoy.lastOrCreate(Goods.class);
         User user = FactoryBoy.lastOrCreate(User.class);  //购买用户
         Order order = FactoryBoy.lastOrCreate(Order.class);
-        OrderItems orderItems = new OrderItems(order, goods, 1l, user.mobile, goods.salePrice, goods.salePrice);
+        OrderItems orderItems = new OrderItems(order, goods, 1l, user.mobile, goods.salePrice, goods.salePrice,BigDecimal.ZERO);
         orderItems.rebateValue = BigDecimal.ZERO;
         return orderItems;
     }

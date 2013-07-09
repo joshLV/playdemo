@@ -19,6 +19,8 @@ import models.supplier.Supplier;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import play.Logger;
+import play.data.validation.Max;
+import play.data.validation.Min;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.solr.Solr;
@@ -165,6 +167,14 @@ public class OrderItems extends Model {
     @Enumerated(EnumType.STRING)
     public OrderStatus status;
 
+    /**
+     * 佣金
+     */
+    @Column(name = "commission")
+    @Min(0)
+    @Max(100)
+    public BigDecimal commission = new BigDecimal(0);
+
     public static final String CACHEKEY = "ORDERITEM";
 
     @Override
@@ -221,7 +231,7 @@ public class OrderItems extends Model {
     public OrderItems() {
     }
 
-    public OrderItems(Order order, Goods goods, long buyNumber, String phone, BigDecimal salePrice, BigDecimal resalerPrice) {
+    public OrderItems(Order order, Goods goods, long buyNumber, String phone, BigDecimal salePrice, BigDecimal resalerPrice, BigDecimal commission) {
         this.order = order;
         this.goods = goods;
         this.goodsHistoryId = getLastHistoryId(goods.id);
@@ -233,6 +243,7 @@ public class OrderItems extends Model {
         this.buyNumber = buyNumber;
         this.phone = phone;
         this.status = OrderStatus.UNPAID;
+        this.commission = commission;
         this.createdAt = new Date();
     }
 

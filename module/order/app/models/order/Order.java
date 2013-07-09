@@ -24,13 +24,7 @@ import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.operator.Operator;
 import models.resale.Resaler;
-import models.sales.Goods;
-import models.sales.GoodsCouponType;
-import models.sales.GoodsStatistics;
-import models.sales.ImportedCoupon;
-import models.sales.ImportedCouponStatus;
-import models.sales.MaterialType;
-import models.sales.SecKillGoodsItem;
+import models.sales.*;
 import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
@@ -533,8 +527,17 @@ public class Order extends Model {
     public OrderItems addOrderItem(Goods goods, Long number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice,
                                    DiscountCode discountCode, boolean isPromoteFlag) {
         OrderItems orderItem = null;
+        BigDecimal commission = BigDecimal.ZERO;
         if (number > 0 && goods != null) {
-            orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice);
+            //取得渠道商品的佣金比例，如果没有则按渠道比例计算
+            GoodsResalerCommision resalerCommision = GoodsResalerCommision.find("goods=? and resaler=?", goods, resaler).first();
+            if (resalerCommision != null) {
+                commission = resalerCommision.commissionRatio.multiply(goods.salePrice);
+            } else {
+                commission = resaler.commissionRatio.multiply(goods.salePrice);
+            }
+
+            orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice, commission);
             orderItem = addOrderItem(orderItem, discountCode, isPromoteFlag);
         }
 
