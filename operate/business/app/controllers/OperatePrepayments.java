@@ -145,57 +145,57 @@ public class OperatePrepayments extends Controller {
     }
 
     public static void refreshClearedAccountData() {
-        List<Account> accountList = Account.find("(accountType = ? or accountType = ?) and id=51200",
+        List<Account> accountList = Account.find("(accountType = ? or accountType = ?) and id=82646",
                 AccountType.SUPPLIER,
                 AccountType.SHOP).fetch();
         ClearedAccount clearedAccount;
         Date fromDate = DateUtil.stringToDate("2013-06-26 00:00:00", "yyyy-MM-dd HH:mm:ss");
         Date toDate = DateUtil.stringToDate("2013-06-26 23:59:59", "yyyy-MM-dd HH:mm:ss");
         System.out.println("accountList.size() = " + accountList.size());
-//        for (Account account : accountList) {
-//            List<AccountSequence> sequences = AccountSequence.find(
-//                    " account=?  and settlementStatus=? and createdAt <?",
-//                    account, SettlementStatus.UNCLEARED, toDate).fetch();
-//            for (AccountSequence sequence : sequences) {
-//                sequence.settlementStatus = SettlementStatus.CLEARED;
-//                sequence.save();
-//            }
-//            clearedAccount = new ClearedAccount();
-//            clearedAccount.date = toDate;
-//            clearedAccount.accountId = account.id;
-//            clearedAccount.amount = AccountSequence.getClearAmount(account, fromDate,
-//                    clearedAccount.date);
-//            System.out.println(" clearedAccount.amount = " + clearedAccount.amount);
-//            clearedAccount.accountSequences = sequences;
-//            clearedAccount.save();
-//        }
-
-//        for (int i = 0; i < 10; i++) {
-//            fromDate = DateUtils.truncate(DateUtils.addDays(new Date(), -1 - i), Calendar.DATE);
-//            toDate = DateUtils.truncate(DateUtils.addDays(new Date(), -i), Calendar.DATE);
-        fromDate = DateUtil.stringToDate("2013-07-07 00:00:00", "yyyy-MM-dd HH:mm:ss");
-        toDate = DateUtil.stringToDate("2013-07-07 23:59:59", "yyyy-MM-dd HH:mm:ss");
-        System.out.println("fromDate = " + fromDate);
-        System.out.println("toDate = " + toDate);
         for (Account account : accountList) {
             List<AccountSequence> sequences = AccountSequence.find(
-                    " account=?  and settlementStatus=? and createdAt >=? and createdAt <?  ",
-                    account, SettlementStatus.UNCLEARED, fromDate, toDate).fetch();
-
+                    " account=?  and settlementStatus=? and createdAt <?",
+                    account, SettlementStatus.UNCLEARED, toDate).fetch();
+            for (AccountSequence sequence : sequences) {
+                sequence.settlementStatus = SettlementStatus.CLEARED;
+                sequence.save();
+            }
             clearedAccount = new ClearedAccount();
             clearedAccount.date = toDate;
             clearedAccount.accountId = account.id;
             clearedAccount.amount = AccountSequence.getClearAmount(account, fromDate,
                     clearedAccount.date);
-            for (AccountSequence sequence : sequences) {
-                sequence.settlementStatus = SettlementStatus.CLEARED;
-                sequence.save();
-            }
             System.out.println(" clearedAccount.amount = " + clearedAccount.amount);
             clearedAccount.accountSequences = sequences;
             clearedAccount.save();
         }
-//        }
+
+        for (int i = 0; i < 13; i++) {
+            fromDate = DateUtils.truncate(DateUtils.addDays(new Date(), -1 - i), Calendar.DATE);
+            toDate = DateUtils.truncate(DateUtils.addDays(new Date(), -i), Calendar.DATE);
+//        fromDate = DateUtil.stringToDate("2013-06-27 00:00:00", "yyyy-MM-dd HH:mm:ss");
+//        toDate = DateUtil.stringToDate("2013-06-27 23:59:59", "yyyy-MM-dd HH:mm:ss");
+            System.out.println("fromDate = " + fromDate);
+            System.out.println("toDate = " + toDate);
+            for (Account account : accountList) {
+                List<AccountSequence> sequences = AccountSequence.find(
+                        " account=?  and settlementStatus=? and createdAt >=? and createdAt <?  ",
+                        account, SettlementStatus.UNCLEARED, fromDate, toDate).fetch();
+
+                clearedAccount = new ClearedAccount();
+                clearedAccount.date = toDate;
+                clearedAccount.accountId = account.id;
+                clearedAccount.amount = AccountSequence.getClearAmount(account, fromDate,
+                        clearedAccount.date);
+                for (AccountSequence sequence : sequences) {
+                    sequence.settlementStatus = SettlementStatus.CLEARED;
+                    sequence.save();
+                }
+                System.out.println(" clearedAccount.amount = " + clearedAccount.amount);
+                clearedAccount.accountSequences = sequences;
+                clearedAccount.save();
+            }
+        }
     }
 
 

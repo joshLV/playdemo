@@ -33,15 +33,15 @@ public class DailyClearAccount extends JobWithHistory {
             List<AccountSequence> sequences = AccountSequence.find(
                     " account=?  and settlementStatus=? and createdAt>=? and createdAt <?",
                     account, SettlementStatus.UNCLEARED, fromDate, toDate).fetch();
-            for (AccountSequence sequence : sequences) {
-                sequence.settlementStatus = SettlementStatus.CLEARED;
-                sequence.save();
-            }
             clearedAccount = new ClearedAccount();
             clearedAccount.date = toDate;
             clearedAccount.accountId = account.id;
             clearedAccount.amount = AccountSequence.getClearAmount(account, fromDate,
                     clearedAccount.date);
+            for (AccountSequence sequence : sequences) {
+                sequence.settlementStatus = SettlementStatus.CLEARED;
+                sequence.save();
+            }
             clearedAccount.accountSequences = sequences;
             clearedAccount.save();
         }
