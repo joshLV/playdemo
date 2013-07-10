@@ -457,29 +457,27 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
             }
         }
 
-
-        ClearedAccount clearedAccount;
         Date toDate = DateUtils.ceiling(date, Calendar.DATE);
-        System.out.println(" toDate = " + toDate);
+        System.out.println(" 11111toDate = " + toDate);
         List<AccountSequence> sequences = AccountSequence.find(
                 " account=?  and settlementStatus=? and createdAt <?",
                 supplierAccount, SettlementStatus.UNCLEARED, toDate).fetch();
 
         clearedAccount = new ClearedAccount();
         clearedAccount.date = toDate;
-        clearedAccount.accountId = account.id;
-        clearedAccount.amount = AccountSequence.getClearAmount(account,
+        clearedAccount.accountId = supplierAccount.id;
+        clearedAccount.amount = AccountSequence.getClearAmount(supplierAccount,
                 toDate);
         System.out.println("clearedAccount.amount = " + clearedAccount.amount);
-        if (clearedAccount.amount.compareTo(BigDecimal.ZERO) == 0) {
-            continue;
+        if (clearedAccount.amount.compareTo(BigDecimal.ZERO) != 0) {
+            for (AccountSequence sequence : sequences) {
+                sequence.settlementStatus = SettlementStatus.CLEARED;
+                sequence.save();
+            }
+            clearedAccount.accountSequences = sequences;
+            clearedAccount.save();
         }
-        for (AccountSequence sequence : sequences) {
-            sequence.settlementStatus = SettlementStatus.CLEARED;
-            sequence.save();
-        }
-        clearedAccount.accountSequences = sequences;
-        clearedAccount.save();
+
 
     }
 }
