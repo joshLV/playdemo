@@ -5,6 +5,7 @@ import play.Logger;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +18,8 @@ import java.util.regex.Pattern;
 public class KtvTaobaoSku {
 
     private static Pattern taobaoOuterIdPattern = Pattern.compile("([A-Z]+)(\\d{8})(\\d+)");
+
+    private static String[] weekNames = {"日", "一", "二", "三", "四", "五", "六"};
 
     private KtvRoomType roomType;
     private Date date;
@@ -66,10 +69,13 @@ public class KtvTaobaoSku {
 
     public String getTaobaoProperties() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        String weekName = weekNames[calendar.get(Calendar.DAY_OF_WEEK) - 1];
+
         return roomType.getTaobaoId() +
                 ";$欢唱时间:" + humanTimeRange(startTime, startTime + duration) +
-                ";$日期:" + dateFormat.format(date);
-
+                ";$日期:" + dateFormat.format(date) + "(周" + weekName + ")";
     }
 
     public KtvRoomType getRoomType() {
@@ -82,20 +88,6 @@ public class KtvTaobaoSku {
         String startStr = start < 6 ? "凌晨" + start + "点" : start + "点";
         return startStr + "至" + endStr;
     }
-
-    /*
-    public static String buildProperties(String roomType, String timeRange, String date){
-        return StringUtils.defaultString(roomType) +
-                ";$欢唱时间:" + StringUtils.defaultString(timeRange) +
-                ";$日期:" + StringUtils.defaultString(date);
-    }
-    public static String buidPropertiesWithCodeAndDate(String roomType, Integer timeRangeCode, Date day) {
-        String timeRange = humanTimeRange(timeRangeCode/100, timeRangeCode%100);
-        return  StringUtils.defaultString(roomType) +
-                ";$欢唱时间:" + timeRange +
-                ";$日期:" + new SimpleDateFormat("M月d日").format(day);
-    }
-    */
 
     public void setDate(Date date) {
         this.date = date;
