@@ -6,6 +6,7 @@ import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountType;
+import models.accounts.ClearedAccount;
 import models.accounts.SettlementStatus;
 import models.accounts.TradeBill;
 import models.accounts.WithdrawAccount;
@@ -22,12 +23,14 @@ import models.order.OrderItems;
 import models.order.Prepayment;
 import models.sales.Goods;
 import models.supplier.Supplier;
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import play.Logger;
 import play.test.UnitTest;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +52,7 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
     WithdrawAccount withdrawAccount;
     OperateUser operateUser;
     Operator operator;
+    ClearedAccount clearedAccount;
 
     @Before
     public void setUp() {
@@ -452,5 +456,30 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
                 accountSequence.save();
             }
         }
+
+
+        ClearedAccount clearedAccount;
+        Date toDate = DateUtils.ceiling(date, Calendar.DATE);
+        System.out.println(" toDate = " + toDate);
+        List<AccountSequence> sequences = AccountSequence.find(
+                " account=?  and settlementStatus=? and createdAt <?",
+                supplierAccount, SettlementStatus.UNCLEARED, toDate).fetch();
+
+        clearedAccount = new ClearedAccount();
+        clearedAccount.date = toDate;
+        clearedAccount.accountId = account.id;
+        clearedAccount.amount = AccountSequence.getClearAmount(account,
+                toDate);
+        System.out.println("clearedAccount.amount = " + clearedAccount.amount);
+        if (clearedAccount.amount.compareTo(BigDecimal.ZERO) == 0) {
+            continue;
+        }
+        for (AccountSequence sequence : sequences) {
+            sequence.settlementStatus = SettlementStatus.CLEARED;
+            sequence.save();
+        }
+        clearedAccount.accountSequences = sequences;
+        clearedAccount.save();
+
     }
 }
