@@ -21,7 +21,7 @@ import java.util.List;
  * Date: 13-7-9
  * Time: 下午2:29
  */
-@On("0 0 4 * * ?")  //每天凌晨四点执行
+@On("0 0 14 * * ?")  //每天凌晨四点执行
 //@OnApplicationStart
 @JobDefine(title = "更新过去账户结算金额", description = "更新过去账户结算金额")
 public class refreshPreviousClearAccount extends JobWithHistory {
@@ -56,7 +56,7 @@ public class refreshPreviousClearAccount extends JobWithHistory {
             clearedAccount.save();
         }
 
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 16; i++) {
             Date fromDate = DateUtils.truncate(DateUtils.addDays(new Date(), -1 - i), Calendar.DATE);
             toDate = DateUtils.truncate(DateUtils.addDays(new Date(), -i), Calendar.DATE);
             System.out.println("fromDate = " + fromDate);
