@@ -13,9 +13,9 @@ import java.math.BigDecimal;
  * Date: 13-7-9
  * Time: 下午4:31
  */
-@Table(name = "goods_resaler_comminsions")
+@Table(name = "goods_resaler_commissions")
 @Entity
-public class GoodsResalerCommision extends Model {
+public class GoodsResalerCommission extends Model {
     @ManyToOne
     public Goods goods;
 
