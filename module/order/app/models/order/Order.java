@@ -523,11 +523,13 @@ public class Order extends Model {
         BigDecimal commission = BigDecimal.ZERO;
         if (number > 0 && goods != null) {
             //取得渠道商品的佣金比例，如果没有则按渠道比例计算
-            GoodsResalerCommission resalerCommision = GoodsResalerCommission.find("goods=? and resaler=?", goods, resaler).first();
-            if (resalerCommision != null) {
-                commission = resalerCommision.commissionRatio.multiply(goods.salePrice);
-            } else {
-                commission = resaler.commissionRatio.multiply(goods.salePrice);
+            if (resaler != null) {
+                GoodsResalerCommission resalerCommision = GoodsResalerCommission.find("goods=? and resaler=?", goods, resaler).first();
+                if (resalerCommision != null) {
+                    commission = resalerCommision.commissionRatio.multiply(goods.salePrice);
+                } else {
+                    commission = resaler.commissionRatio.multiply(goods.salePrice);
+                }
             }
 
             orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice, commission);
