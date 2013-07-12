@@ -1,9 +1,8 @@
-#{extends 'main2.html' /}
+#{extends 'WebsiteGiftCards/layout.html' /}
 #{set title:'一百券 - 礼品卡预约' /}
 #{set 'moreStyles'}
     #{asset.css src:['/home/121213/home.css'] /}
     <style type="text/css">
-        #topbar, #cart{display:none}
         .section {
             margin-bottom: 10px;
             padding: 10px 20px 15px;
@@ -35,11 +34,15 @@
             color: rgb(224, 224, 224);
             font-size: 30px;
         }
+        .wrapper {
+            padding-bottom:20px;
+        }
 
     </style>
 #{/set}
 <div class="wrapper">
-    <div id="content" style="padding:10px 0 20px 0">
+    <div id="content" >
+        <img src="/public/images/kyy_bg.jpg" alt="" width="960px" height="100px" border="0">
         <div class="section">
             <div id="title">
                 <h1>${giftCard.goods.title} </h1>
@@ -97,7 +100,7 @@
                 #{else}
 
                 <div class="field">
-                    <label class="label">暂无</label>
+                    <label class="label" style="width:200px;color:#468847">预约成功，请等待发货</label>
                 </div>
                 #{/else}
             </div>

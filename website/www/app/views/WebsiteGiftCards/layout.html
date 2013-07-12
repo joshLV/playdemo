@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>#{get 'title' /}</title>
+    #{get 'metaContent'/}
+    #{asset.css src:['/base/121123/base.css']/}
+        <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon"/>
+    #{get 'moreStyles' /}
+
+</head>
+<body>
+<div id="topbar">
+    <div id="topbar-bd">
+        <ul class="site-nav">
+        #{if t || giftCard}
+            <li><a href="/kyy">退出</a></li>
+        #{/if}
+        #{else}
+            <li class="first"><a class="login" id="login" href="/kyy">登录</a></li>
+        #{/else}
+        </ul>
+        <div class="hot-line">客服热线：<span>400-686-5151</span></div>
+    </div>
+</div>
+
+
+#{doLayout /}
+<div id="footer">
+    <div class="ft-nav">
+        <a href="${helper.Domain.getWWWHost(request)}/about" target="_blank">关于我们</a>
+        |
+        <a href="${helper.Domain.getWWWHost(request)}/contact" target="_blank">联系我们</a>
+        |
+        <a href="http://www.seewi.com.cn/?page_id=40" target="_blank">招商信息</a>
+        |
+        <a href="${helper.Domain.getWWWHost(request)}/help" target="_blank">常见问题</a>
+        |
+        <span class="">客服热线：400-686-5151</span>
+    </div>
+    <div class="copyright">${helper.Title.copyRightTitle().raw()}</div>
+</div>
+<!-- #footer -->
+#{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}
+#{get 'moreScripts' /}
+<div style="display:none">
+#{if !play.Play.runingInTestMode()}
+    <script src="http://s84.cnzz.com/stat.php?id=4205049&web_id=4205049" language="JavaScript"></script>
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', '${play.Play.configuration.getProperty("google.analytics.account")}']);
+        _gaq.push(['_setDomainName', '${baseDomain}']);
+        _gaq.push(['_setAllowLinker', true]);
+        _gaq.push(['_trackPageview']);
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') +
+                    '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+#{/if}
+</div>
+
+</body>
+</html>
