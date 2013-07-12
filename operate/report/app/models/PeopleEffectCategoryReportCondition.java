@@ -320,6 +320,18 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
         return true;
     }
 
+    public void sort1(List resultList) {
+        Collections.sort(resultList, new Comparator<PeopleEffectCategoryReport>() {
+            @Override
+            public int compare(PeopleEffectCategoryReport o1, PeopleEffectCategoryReport o2) {
+                Long o1_jobNumber = o1.operateUser.id;
+                Long o2_jobNumber = o2.operateUser.id;
+                return o2_jobNumber.intValue() - o1_jobNumber.intValue();
+
+            }
+        });
+    }
+
     public void sort(List resultList) {
         Collections.sort(resultList, new Comparator<PeopleEffectCategoryReport>() {
             @Override
@@ -350,7 +362,6 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
                         return o2_amount.compareTo(o1_amount);
                     }
                 } else if ("refundAmount".equals(orderBy)) {
-                    System.out.println("===inini>>");
                     BigDecimal o1_amount = o1.totalRefundPrice == null ? BigDecimal.ZERO : o1.totalRefundPrice;
                     BigDecimal o2_amount = o2.totalRefundPrice == null ? BigDecimal.ZERO : o2.totalRefundPrice;
                     if ("desc".equals(orderByType)) {

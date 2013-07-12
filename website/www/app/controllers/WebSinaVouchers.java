@@ -164,7 +164,7 @@ public class WebSinaVouchers extends Controller {
                 Long roomId = Long.valueOf(key.substring("roomId".length()));
 //                KtvRoom ktvRoom = KtvRoom.findById(roomId);
                 BigDecimal salePrice = BigDecimal.ZERO;
-                OrderItems orderItems = new OrderItems(order, goods, 1L, phone, salePrice, salePrice).save();
+                OrderItems orderItems = new OrderItems(order, goods, 1L, phone, salePrice, salePrice,BigDecimal.ZERO).save();
 
                 for (String scheduledTime : scheduledTimes) {
 //                    List<KtvRoomOrderInfo> scheduledRoomList = KtvRoomOrderInfo.findScheduledInfos(scheduledDay, shop, ktvRoom, scheduledTime);
