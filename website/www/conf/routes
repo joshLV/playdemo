@@ -143,7 +143,8 @@ POST    /ktv/roominfo/json-search                  KtvAPI.jsonRoom
 GET     /ktv/taobao/welcome                     KtvAuth.taobao
 
 GET     /kyy                                    WebsiteGiftCards.index
-POST    /kyy/login                              WebsiteGiftCards.login
+POST    /kyy                                    WebsiteGiftCards.login
+POST    /kyy/yuyue                              WebsiteGiftCards.appointment
 GET     /kyy/yuyue                              WebsiteGiftCards.showAppointment
 
 

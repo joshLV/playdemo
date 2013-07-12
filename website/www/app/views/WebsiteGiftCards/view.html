@@ -13,7 +13,7 @@
         .section h1 {
             font: 30px 'Microsoft Yahei','黑体',Verdana;
         }
-        #regist { width: 625px; margin: 0 auto; }
+        .likeform { width: 625px; margin: 0 auto; }
         .field { padding: 3px 0; }
         .label { display: inline-block; width: 80px; text-align: right; font-size:14px}
         .label i { color: #fc7410; padding-right: 3px; font-style: normal; font-family: sans-serif, \5b8b\4f53; }
@@ -31,6 +31,10 @@
             overflow: hidden;
             color: #c69324;
         }
+        .legend {
+            color: rgb(224, 224, 224);
+            font-size: 30px;
+        }
 
     </style>
 #{/set}
@@ -38,46 +42,65 @@
     <div id="content" style="padding:10px 0 20px 0">
         <div class="section">
             <div id="title">
-                <h1>${goods?.title} </h1>
+                <h1>${giftCard.goods.title} </h1>
             </div>
         </div>
         <div class="section">
-            <form id="regist" method="post" action="/kyy/yuyue">
+            %{
+                userInputs = new com.google.gson.JsonParser().parse(giftCard.userInput);
+                if(giftCard.supplierInput != null){
+                    supplierInputs = new com.google.gson.JsonParser().parse(giftCard.supplierInput);
+                }
+
+            }%
+            <h2 class="legend">预约信息</h2>
+
+            <div class="likeform" >
                 <div class="field">
-                    <label for="loginName" class="label"><i>*</i>姓名：</label>
-                    <input type="text" id="loginName" class="medium" maxlength="32" tabindex="1" name="username" value="">
-                </div>
-                <div class="field">
-                    <label for="mobile" class="label"><i>*</i>手机号：</label>
-                    <input type="text" id="mobile" class="medium" maxlength="20" tabindex="2" name="mobile" value="">
-                </div>
-                <div class="field">
-                    <label for="address" class="label"><i>*</i>地址：</label>
-                    <input type="text" id="address" class="medium" maxlength="20" tabindex="3" name="address" value="" style="width: 480px">
-                </div>
-                <div class="field">
-                    <label for="postcode" class="label"><i>*</i>邮编：</label>
-                    <input type="text" id="postcode" class="medium" maxlength="20" tabindex="4" name="postcode" value="">
+                    <label class="label">姓名：</label>
+                    <label> ${userInputs.get('username').getAsString()} </label>
                 </div>
                 <div class="field">
-                    <label for="date" class="label"><i>*</i>配送日期：</label>
-                    <input class="medium Wdate" type="text" name="date" id="date" tabindex="5" value="${date?.format('yyyy-MM-dd')}"
-                           value="${condition?.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/>
-                    <span>（尽量满足)</span>
+                    <label  class="label">手机号：</label>
+                    <label> ${userInputs.get('mobile').getAsString()} </label>
                 </div>
                 <div class="field">
-                    <label for="message" class="label">补充说明：</label>
-                    <input type="text" id="message" class="medium" maxlength="20" tabindex="6" name="message" value="" style="width: 480px">
+                    <label  class="label">地址：</label>
+                    <label> ${userInputs.get('address').getAsString()} </label>
                 </div>
-                <div style="margin:20px 0 20px 80px">
-                    <input type="hidden" name="t" value="${t}">
-                    <input type="hidden" name="goods.id" value="${goods?.id}">
-                    #{if err}
-                    <div class="error">${err}</div>
-                    #{/if}
-                    <button style="background-color:rgb(63, 179, 63); border:0; padding: 5px 10px; color:white; margin-top:5px;" >确定以上信息，预约</button>
+                <div class="field">
+                    <label class="label">邮编：</label>
+                    <label> ${userInputs.get('postcode').getAsString()} </label>
                 </div>
-            </form>
+                <div class="field">
+                    <label class="label">配送日期：</label>
+                    <label> ${userInputs.get('date').getAsString()} </label>
+                </div>
+                <div class="field">
+                    <label class="label">补充说明：</label>
+                    <label> ${userInputs.get('message').getAsString()} </label>
+                </div>
+            </div>
+            <hr style="border:1px dotted #eee; margin: 10px 0"/>
+            <h2 class="legend">发货信息</h2>
+            <div class="likeform">
+                #{if supplierInputs}
+                <div class="field">
+                    <label class="label">快递公司：</label>
+                    <label> ${userInputs.get('username').getAsString()} </label>
+                </div>
+                <div class="field">
+                    <label  class="label">快递单号：</label>
+                    <label> ${userInputs.get('mobile').getAsString()} </label>
+                </div>
+                #{/if}
+                #{else}
+
+                <div class="field">
+                    <label class="label">暂无</label>
+                </div>
+                #{/else}
+            </div>
         </div>
 
         <div style="margin-top: -15px; border: 1px solid #dcdcdc; padding: 20px; background-color: #f9f9f9">

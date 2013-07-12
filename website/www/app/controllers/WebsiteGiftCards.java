@@ -1,14 +1,20 @@
 package controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.uhuila.common.constants.DeletedStatus;
 import models.order.GiftCard;
 import models.sales.Goods;
+import models.sales.ImportedCouponStatus;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import play.cache.Cache;
 import play.libs.Codec;
 import play.mvc.Controller;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @author likang
@@ -45,18 +51,47 @@ public class WebsiteGiftCards extends Controller {
             render("WebsiteGiftCards/index.html", err, password, randomID);
         }
 
-        String t = Codec.UUID();
-        Cache.add(t, giftCard.id, "30mn");
+        if (giftCard.status == ImportedCouponStatus.UNUSED) {
+            String t = Codec.UUID();
+            Cache.add(t, giftCard.id, "30mn");
 
-        Goods goods = giftCard.goods;
+            Goods goods = giftCard.goods;
 
-        render("WebsiteGiftCards/appointment.html", t, goods);
+            render("WebsiteGiftCards/appointment.html", t, goods);
+        }else {
+            render("WebsiteGiftCards/view.html", giftCard);
+        }
     }
 
     public static void appointment(String username, String mobile, String address, String postcode,
                                    Date date, String message, String t) {
         Long gid = (Long)Cache.get(t);
         GiftCard giftCard = GiftCard.findById(gid);
+        if (giftCard == null) {
+            index();
+        }
+        Goods goods = giftCard.goods;
+        if (giftCard.status != ImportedCouponStatus.UNUSED) {
+            String err = "无效的券";
+            render("WebsiteGiftCards/appointment.html", err, t, goods, username, mobile, address, postcode, date, message);
+        }
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(mobile) || StringUtils.isBlank(address)
+                || StringUtils.isBlank(postcode)) {
+            String err = "请填写所有必要的信息";
+            render("WebsiteGiftCards/appointment.html", err, t, goods, username, mobile, address, postcode, date, message);
+        }
+        if (date.before(DateUtils.ceiling(new Date(), Calendar.DATE))) {
+            String err = "至少预约时间为明天";
+            render("WebsiteGiftCards/appointment.html", err, t, goods, username, mobile, address, postcode, date, message);
+        }
+        Map<String, String> userInputs = params.allSimple();
+        userInputs.remove("body");
+        userInputs.remove("t");
+        giftCard.status = ImportedCouponStatus.USED;
+        giftCard.userInput = new Gson().toJson(userInputs);
+        giftCard.save();
+
+        render("WebsiteGiftCards/view.html", giftCard);
 
     }
 
