@@ -1,0 +1,90 @@
+#{extends 'main2.html' /}
+#{set title:'一百券 - 礼品卡预约' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/home/121213/home.css'] /}
+    <style type="text/css">
+        #topbar, #cart{display:none}
+        .section {
+            margin-bottom: 10px;
+            padding: 10px 20px 15px;
+            border: 1px solid #dcdcdc;
+            background-color: #fff;
+        }
+        .section h1 {
+            font: 30px 'Microsoft Yahei','黑体',Verdana;
+        }
+        #regist { width: 625px; margin: 0 auto; }
+        .field { padding: 3px 0; }
+        .label { display: inline-block; width: 80px; text-align: right; font-size:14px}
+        .label i { color: #fc7410; padding-right: 3px; font-style: normal; font-family: sans-serif, \5b8b\4f53; }
+        .medium { width: 240px; height: 22px; padding: 0 2px; font-size: 14px;padding:3px; line-height: 22px; border: 1px solid #D1D1D1; }
+        .forget { color: #fc7410; padding-left: 5px; text-decoration: none; }
+        .error { display: block; width: 204px; height: 20px; padding-left: 85px; color: #f00; }
+        .regist { display: block; width: 197px; height: 39px; color: #FFF; margin-top: 20px; font-size: 14px; font-weight: 700; line-height: 39px; text-align: center; text-indent: -9999px; background: url(//img.uhcdn.com/images/y/register.png) no-repeat 0 -33px; }
+        #captchaImg { position: relative; top: 8px; }
+        #checkcode { width: 70px; }
+
+    </style>
+#{/set}
+<div class="wrapper">
+    <div id="content" style="padding:10px 0 20px 0">
+        <div class="section">
+            <div id="title">
+                <h1>${goods?.title} </h1>
+            </div>
+        </div>
+        <div class="section">
+            <form id="regist" method="post" action="">
+                <div class="field">
+                    <label for="loginName" class="label"><i>*</i>姓名：</label>
+                    <input type="text" id="loginName" class="medium" maxlength="32" tabindex="1" name="username" value="">
+                    <span id="username-error" class="error"></span>
+                </div>
+                <div class="field">
+                    <label for="mobile" class="label"><i>*</i>手机号：</label>
+                    <input type="text" id="mobile" class="medium" maxlength="20" tabindex="2" name="mobile" value="">
+                    <span id="password-error" class="error"></span>
+                </div>
+                <div class="field">
+                    <label for="address" class="label"><i>*</i>地址：</label>
+                    <input type="text" id="address" class="medium" maxlength="20" tabindex="3" name="address" value="" style="width: 480px">
+                    <span class="error"></span>
+                </div>
+                <div class="field">
+                    <label for="postcode" class="label"><i>*</i>邮编：</label>
+                    <input type="text" id="postcode" class="medium" maxlength="20" tabindex="4" name="postcode" value="">
+                    <span class="error"></span>
+                </div>
+                <div class="field">
+                    <label for="date" class="label"><i>*</i>配送日期：</label>
+                    <input type="text" id="date" class="medium" maxlength="20" tabindex="5" name="date" value="">
+                    <span>（尽量满足)</span>
+                    <span class="error"></span>
+                </div>
+                <div class="field">
+                    <label for="address" class="label"><i>*</i>补充说明：</label>
+                    <input type="text" id="message" class="medium" maxlength="20" tabindex="6" name="message" value="" style="width: 480px">
+                    <span class="error"></span>
+                </div>
+                <div style="margin:20px 0 20px 80px">
+                    <input type="hidden" name="t" value="${t}">
+                    <button style="background-color:rgb(63, 179, 63); border:0; padding: 5px 10px; color:white" >确定以上信息，预约</button>
+                </div>
+            </form>
+        </div>
+
+        <div style="margin-top: -15px; border: 1px solid #dcdcdc; padding: 20px; background-color: #f9f9f9">
+            <p>注意1</p>
+            <p>注意1</p>
+            <p>注意1</p>
+            <p>注意1</p>
+            <p>注意1</p>
+        </div>
+
+
+
+        <script src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript">
+        </script>
+    </div>
+</div>
