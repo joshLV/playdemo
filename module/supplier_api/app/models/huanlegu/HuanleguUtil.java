@@ -83,6 +83,19 @@ public class HuanleguUtil {
         return sendRequest("confirmOrder", params);
     }
 
+    public static HuanleguMessage queryOrderList(String mobile) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("pageIndex", 1);
+        params.put("pageSize", 100);
+        params.put("mobile", mobile);
+        params.put("dealTime", "");
+        params.put("orderId", "");
+        params.put("hvOrderId", "");
+        params.put("hvOrderStatus", "");
+
+        return sendRequest("queryOrderList", params);
+    }
+
     /**
      * 下订单.
      *
