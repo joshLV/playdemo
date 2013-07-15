@@ -81,7 +81,7 @@ public class BatchExportCoupons extends Controller {
         if (consumed == null) {
             consumed = BigDecimal.ZERO;
         }
-        if (user.isBatchExportCoupons() == true) {
+        if (user.isBatchExportCoupons()) {
             String page = params.get("page");
             int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
             GoodsCondition goodsCond = new GoodsCondition();

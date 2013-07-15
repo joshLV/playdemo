@@ -1005,7 +1005,19 @@ public class Order extends Model {
                 importedCoupon.status = ImportedCouponStatus.USED;
                 importedCoupon.save();
             }
-        } else {
+            //如果是百度的订单，则券从importCoupon中拉取创建
+        } else if (isBaiduResaler()){
+            ImportedCoupon importedCoupon = ImportedCoupon.find("byGoodsAndStatus", goods, ImportedCouponStatus.UNUSED).first();
+            if (importedCoupon == null) {
+                throw new RuntimeException("can not find an imported coupon of goods " + goods.getId());
+            } else {
+                eCoupon = new ECoupon(this, goods, orderItem, importedCoupon.coupon, importedCoupon.password).save();
+
+                importedCoupon.status = ImportedCouponStatus.USED;
+                importedCoupon.save();
+            }
+
+        }else{
             eCoupon = new ECoupon(this, goods, orderItem);
             eCoupon.save();
 
@@ -1052,6 +1064,10 @@ public class Order extends Model {
         return resaler;
     }
 
+    @Transient
+    public boolean isBaiduResaler(){
+        return Resaler.BAIDU_LOGIN_NAME.equals(getResaler().loginName);
+    }
 
     /**
      * 会员中心订单查询

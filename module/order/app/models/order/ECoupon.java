@@ -283,8 +283,8 @@ public class ECoupon extends Model {
     /**
      * 对于欢乐谷的券：
      * 值为： 订单编号（异化的）;预约手机号;欢乐谷订单号;券捆绑数量;已使用数量
-     *
-     c.extra = orderNumber + ";" + mobile.trim() + ";" + hvOrderId + ";" + couponList.size();
+     * <p/>
+     * c.extra = orderNumber + ";" + mobile.trim() + ";" + hvOrderId + ";" + couponList.size();
      */
     @Column(name = "extra")
     public String extra;
@@ -386,7 +386,9 @@ public class ECoupon extends Model {
             } else {
                 this.eCouponSn = couponSn;
             }
-            this.createType = ECouponCreateType.IMPORT;
+            if (!order.isBaiduResaler()) {
+                this.createType = ECouponCreateType.IMPORT;
+            }
         }
         this.orderItems = orderItems;
         this.smsSentCount = 0;
@@ -575,6 +577,12 @@ public class ECoupon extends Model {
                 Logger.info("ECoupon.consumeAndPayCommission eCouponSN:%s length < 10， 可能是需要预约，不能验证", this.eCouponSn);
                 return false;
             }
+            //百度验证场合，先保存门店信息,用于调用百度验证接口
+            if (this.partner == ECouponPartner.BD && shopId != null) {
+                this.shop = Shop.findById(shopId);
+                this.save();
+            }
+
             ExtensionResult result = verifyAndCheckOnPartnerResaler();
             if (result.code != 0) {
                 Logger.info("ECoupon.consumeAndPayCommission: SN: %s verifyAndCheckOnPartnerResaler result.code=%d return false", this.eCouponSn, result.code);

@@ -12,6 +12,7 @@ public class BaiduResponse {
     public String msg;
     public String code;
     public JsonObject res;
+    public JsonElement data;
 
     public boolean isOk() {
         if (code != null) {

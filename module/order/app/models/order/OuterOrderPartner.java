@@ -6,6 +6,7 @@ package models.order;
  */
 public enum OuterOrderPartner {
     DD("DD", "当当", "dangdang"),     // 当当
+    BD("BD", "百度", "baidu"),     // 百度
     YHD("YHD", "一号店", "yihaodian"),    // 一号店
     JD("JD", "京东", "jingdong"),     // 京东
     WB("WB", "58", "wuba"),     // 58

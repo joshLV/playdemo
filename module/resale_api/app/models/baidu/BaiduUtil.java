@@ -1,11 +1,20 @@
 package models.baidu;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import models.order.ECoupon;
+import models.order.ECouponPartner;
+import models.sales.ResalerProduct;
+import models.sales.Shop;
+import models.wuba.WubaResponse;
 import org.apache.commons.lang.StringEscapeUtils;
 import play.Logger;
 import play.Play;
+import util.extension.ExtensionResult;
 import util.ws.WebServiceRequest;
 
 import java.util.HashMap;
@@ -20,11 +29,14 @@ public class BaiduUtil {
     public static final String GATEWAY_URL = Play.configuration.getProperty("baidu.gateway_url");
     public static final String BAIDU_USER_NAME = Play.configuration.getProperty("baidu.user_name");
     public static final String BAIDU_TOKEN = Play.configuration.getProperty("baidu.token");
+    private static final String CACHE_KEY_CATEGORY = "BAIDU_CATEGORY_API";
+    private static final String CACHE_KEY_CITY = "BAIDU_CITY_API";
+
 
     /**
      * 请求
      */
-    public static BaiduResponse sendRequest(Map<String, Object> appParams, String method) {
+    public static BaiduResponse sendRequest(Map<String, String> appParams, String method) {
         // 系统级参数设置
         Map<String, Object> param = sysParams();
         Map<String, Object> params = new HashMap<>();
@@ -43,9 +55,31 @@ public class BaiduUtil {
 
         BaiduResponse result = parseResponse(json);
 
-        Logger.info("baidu response decrypted: \n%s", result.toString());
+        Logger.info("baidu response parser: \n%s", result.toString());
 
         return result;
+    }
+
+    /**
+     * 在百度上验证.
+     * 如果券是已经验证掉的，他们会直接返回成功.
+     *
+     * @param coupon 一百券自家券
+     * @return 是否验证成功
+     */
+    public static ExtensionResult verifyOnBaidu(ECoupon coupon, Shop shop) {
+        if (coupon.partner != ECouponPartner.BD) {
+            return ExtensionResult.INVALID_CALL;
+        }
+        Map<String, String> params = new HashMap<>();
+        params.put("tpid", "goodsLinkId");//goodsLinkId
+        params.put("coupon", coupon.id.toString());
+        params.put("poi_uid", shop.id.toString());
+        BaiduResponse response = sendRequest(params, "verifytoken.action");
+        if (response.isOk()) {
+            return ExtensionResult.SUCCESS;
+        }
+        return ExtensionResult.code(1).message("百度券验证接口调用失败");
     }
 
     /**
@@ -69,10 +103,10 @@ public class BaiduUtil {
                 response.msg = result.get("info").getAsString();
             }
         }
-
         if (response.isOk()) {
             if (result.has("res")) {
                 response.res = result.get("res").getAsJsonObject();
+                response.data = result.get("res").getAsJsonObject().get("data");
             }
         }
 
@@ -91,4 +125,35 @@ public class BaiduUtil {
         return paramMap;
     }
 
+    public static JsonArray allProductTypes() {
+        Map<String, String> paramMap = new HashMap<>();
+//        // 系统级参数设置（必须）
+//        paramMap.put("id", "1");
+//        paramMap.put("level","1");
+        BaiduResponse response = BaiduUtil.sendRequest(paramMap, "getcategory.action");
+        return response.data.getAsJsonArray();
+    }
+
+    public static String allProductTypesJsonCache() {
+        return CacheHelper.getCache(
+                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "ALL_BAIDU_PRODUCT_TYPES"),
+                new CacheCallBack<String>() {
+                    @Override
+                    public String loadData() {
+                        return allProductTypes().toString();
+                    }
+                });
+    }
+
+    public static String allCityJsonCache() {
+        return CacheHelper.getCache(
+                CacheHelper.getCacheKey(CACHE_KEY_CITY, "ALL_BAIDU_CITIES"),
+                new CacheCallBack<String>() {
+                    @Override
+                    public String loadData() {
+                        BaiduResponse response = BaiduUtil.sendRequest(null, "getCity.action");
+                        return response.data.getAsJsonArray().toString();
+                    }
+                });
+    }
 }
