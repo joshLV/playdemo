@@ -31,7 +31,7 @@
 
             <p class="control-value">${supplier?.fullName}
                 &nbsp;&nbsp; #{if supplier?.otherName!=null}&nbsp;--&nbsp;${supplier?.otherName}#{/if} &nbsp;&nbsp;
-                <a href="/reports/supplier?supplierName=${supplier?.name}&condition.accountUid=${supplierId}&condition.tradeType=PURCHASE_COSTING"
+                <a href="/reports/supplier?supplierName=${supplier?.name}&condition.accountUid=${supplier?.id}&condition.tradeType=PURCHASE_COSTING"
                    target="_blank">账户资金明细</a>
             </p>
         </div>
