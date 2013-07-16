@@ -317,6 +317,9 @@ public class Prepayment extends Model {
     public BigDecimal getClearedAmount() {
         Account account = Account.find("uid = ? and accountType = ?", this.supplier.id,
                 AccountType.SUPPLIER).first();
-        return ClearedAccount.getClearedAmount(account, DateUtils.truncate(new Date(), Calendar.DATE));
+        if (account != null) {
+            return ClearedAccount.getClearedAmount(account, DateUtils.truncate(new Date(), Calendar.DATE));
+        }
+        return BigDecimal.ZERO;
     }
 }
