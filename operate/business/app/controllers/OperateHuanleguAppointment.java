@@ -273,21 +273,66 @@ public class OperateHuanleguAppointment extends Controller {
     }
 
     @ActiveNavigation("sight_appointment_huanlegu")
-    public static void appointmentWithoutOurOrderV2() {
-        Order order = Order.findById(128642L);
-        List<ECoupon> couponList =  ECoupon.findByOrder(order);
-
+    public static void appointmentWithoutOurOrderV2(Goods goods, Date appointmentDate, String mobile, String couponSn, Resaler resaler) {
         Supplier supplier = Supplier.findByDomainName(HuanleguUtil.SUPPLIER_DOMAIN_NAME);
+        List<Goods> goodsList = Goods.findBySupplierId(supplier.id);
+        if (goods == null || !goods.supplierId.equals(supplier.id)) {
+            String err = "无效的商品";
+            render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
+        }
+        if (resaler == null) {
+            String err = "无效的分销商";
+            render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
+        }
+        String[] inputCoupons = StringUtils.trimToEmpty(couponSn).split("\\s+");
+        List<String> couponStrList = new ArrayList<>(inputCoupons.length);
+        for (String coupon : inputCoupons) {
+            coupon = StringUtils.trimToEmpty(coupon);
+            if (StringUtils.isNotBlank(coupon)) {
+                couponStrList.add(coupon);
+            }
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(appointmentDate);
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        if ("SH1991007001441".equals(goods.supplierGoodsNo)){
+            if (dayOfWeek != 1 && dayOfWeek != 7) {
+                String err = "周末券，但所选日期并非周末";
+                render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
+            }
+        }else if ("SH1991007001444".equals(goods.supplierGoodsNo)) {
+            //非周末
+            if (dayOfWeek == 1 || dayOfWeek == 7) {
+                String err = "非周末券，但所选日期是周末";
+                render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
+            }
+        }
+
+        Query query = JPA.em().createQuery("select count(c) from ECoupon c where c.order.userId = :userId and c.partnerCouponId in :couponList and status = :status");
+        query.setParameter("userId", resaler.id);
+        query.setParameter("couponList", couponStrList);
+        query.setParameter("status", ECouponStatus.CONSUMED);
+
+        long conflictCouponCount = (long)query.getSingleResult();
+        if (conflictCouponCount > 0) {
+            String err = "部分券已使用过，请检查";
+            render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
+        }
+
+        //生成一百券订单
+        Order ybqOrder = createYbqOrder(resaler, goods, couponStrList, mobile, goods.salePrice, OperateRbac.currentUser());
+
+        List<ECoupon> couponList = ECoupon.findByOrder(ybqOrder);
         Shop shop = Shop.findShopBySupplier(supplier.id).get(0);
         SupplierUser supplierUser = SupplierUser.findBySupplier(supplier.id).get(0);
-
         for (ECoupon c : couponList) {
             if(!c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY)){
                 JPA.em().getTransaction().setRollbackOnly();
             }
         }
 
-        String success = "成功，请提醒用户注意查收短信/彩信;";
+        String success = "成功，请提醒用户注意查收短信/彩信;已消费券号：" + StringUtils.join(couponStrList, ",");
         render("OperateHuanleguAppointment/withoutOurOrder.html", success);
     }
 
