@@ -243,7 +243,7 @@ public class OperatePrepayments extends Controller {
                 balance.amount, null);
         balancedTradeBill.save();
         TradeUtil.success(balancedTradeBill, "预付款冲正", null, createdBy);
-
-        index(null);
+        String msg = "冲正成功";
+        render("OperatePrepayments/balanceResult.html", msg);
     }
 }

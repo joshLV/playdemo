@@ -22,7 +22,14 @@ import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.operator.Operator;
 import models.resale.Resaler;
-import models.sales.*;
+import models.sales.Goods;
+import models.sales.GoodsCouponType;
+import models.sales.GoodsResalerCommission;
+import models.sales.GoodsStatistics;
+import models.sales.ImportedCoupon;
+import models.sales.ImportedCouponStatus;
+import models.sales.MaterialType;
+import models.sales.SecKillGoodsItem;
 import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
@@ -523,15 +530,18 @@ public class Order extends Model {
         BigDecimal commission = BigDecimal.ZERO;
         if (number > 0 && goods != null) {
             //取得渠道商品的佣金比例，如果没有则按渠道比例计算
-            if (resaler != null) {
-                GoodsResalerCommission resalerCommision = GoodsResalerCommission.find("goods=? and resaler=?", goods, resaler).first();
+            Resaler tempResaler = Resaler.findById(userId);
+            if (tempResaler != null) {
+                GoodsResalerCommission resalerCommision = GoodsResalerCommission.find("goods=? and resaler=?", goods, tempResaler).first();
                 if (resalerCommision != null) {
-                    commission = resalerCommision.commissionRatio.multiply(goods.salePrice);
+                    commission = resalerCommision.commissionRatio.multiply(goods.salePrice).multiply(new BigDecimal
+                            (0.01));
                 } else {
-                    commission = resaler.commissionRatio.multiply(goods.salePrice);
+                    commission = tempResaler.commissionRatio.multiply(goods.salePrice).multiply(new BigDecimal
+                            (0.01));
                 }
             }
-
+            System.out.println("order commission = " + commission);
             orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice, commission);
             orderItem = addOrderItem(orderItem, discountCode, isPromoteFlag);
         }
@@ -1044,6 +1054,9 @@ public class Order extends Model {
 
     @Transient
     public Resaler getResaler() {
+        System.out.println("here resaler = " + resaler);
+        System.out.println("here userId = " + userId);
+
         if (resaler == null && userId != null) {
             resaler = Resaler.findById(userId);
         }

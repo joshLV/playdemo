@@ -239,8 +239,8 @@ public class AccountSequence extends Model {
 
     public static BigDecimal getClearAmount(Account account, Date fromDate, Date toDate) {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
-                " account=?  and settlementStatus=? and createdAt>=? and createdAt <?",
-                account, SettlementStatus.UNCLEARED, fromDate, toDate).first();
+                " account=?  and settlementStatus=? and createdAt>=? and createdAt <? and tradeType !=?",
+                account, SettlementStatus.UNCLEARED, fromDate, toDate, TradeType.WITHDRAW).first();
         amount = (amount != null) ? amount : BigDecimal.ZERO;
         Logger.info("getClearedAmount: amount:" + amount + ", fromDate = " + fromDate + "toDate=" + toDate);
         return amount;
@@ -248,8 +248,8 @@ public class AccountSequence extends Model {
 
     public static BigDecimal getClearAmount(Account account, Date toDate) {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
-                " account=?  and settlementStatus=? and createdAt <?",
-                account, SettlementStatus.UNCLEARED, toDate).first();
+                " account=?  and settlementStatus=? and createdAt <? and tradeType !=?",
+                account, SettlementStatus.UNCLEARED, toDate, TradeType.WITHDRAW).first();
         amount = (amount != null) ? amount : BigDecimal.ZERO;
         Logger.info("getClearedAmount: amount:" + amount + "toDate=" + toDate + "accountId:" + account.id);
         return amount;
