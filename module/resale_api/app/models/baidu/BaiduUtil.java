@@ -36,18 +36,20 @@ public class BaiduUtil {
     /**
      * 请求
      */
-    public static BaiduResponse sendRequest(Map<String, String> appParams, String method) {
+    public static BaiduResponse sendRequest(Map<String, Object> appParams, String method) {
         // 系统级参数设置
         Map<String, Object> param = sysParams();
         Map<String, Object> params = new HashMap<>();
         String jsonAuth = new Gson().toJson(param);
         params.put("auth", jsonAuth);
-
         String jsonRequestData = new Gson().toJson(appParams);
+
+        Logger.info("wuba request.%s:\n%s", method, jsonRequestData);
+
         params.put("data", jsonRequestData);
         Logger.info("baidu request %s:\n%s", method, new Gson().toJson(params));
         WebServiceRequest paramRequest = WebServiceRequest.url(GATEWAY_URL + method)
-                .type("baidu_" + method).params(params).addKeyword("baidu");
+                .type("baidu_" + method).params(params).encoding("UTF-8").addKeyword("baidu");
 
         String json = paramRequest.postString();
 
@@ -71,7 +73,7 @@ public class BaiduUtil {
         if (coupon.partner != ECouponPartner.BD) {
             return ExtensionResult.INVALID_CALL;
         }
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("tpid", "goodsLinkId");//goodsLinkId
         params.put("coupon", coupon.id.toString());
         params.put("poi_uid", shop.id.toString());
@@ -126,7 +128,7 @@ public class BaiduUtil {
     }
 
     public static JsonArray allProductTypes() {
-        Map<String, String> paramMap = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
 //        // 系统级参数设置（必须）
 //        paramMap.put("id", "1");
 //        paramMap.put("level","1");
@@ -135,14 +137,15 @@ public class BaiduUtil {
     }
 
     public static String allProductTypesJsonCache() {
-        return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "ALL_BAIDU_PRODUCT_TYPES"),
-                new CacheCallBack<String>() {
-                    @Override
-                    public String loadData() {
-                        return allProductTypes().toString();
-                    }
-                });
+//        return CacheHelper.getCache(
+//                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "ALL_BAIDU_PRODUCT_TYPES"),
+//                new CacheCallBack<String>() {
+//                    @Override
+//                    public String loadData() {
+//                        return allProductTypes().toString();
+//                    }
+//                });
+        return allProductTypes().toString();
     }
 
     public static String allCityJsonCache() {
@@ -151,7 +154,10 @@ public class BaiduUtil {
                 new CacheCallBack<String>() {
                     @Override
                     public String loadData() {
-                        BaiduResponse response = BaiduUtil.sendRequest(null, "getCity.action");
+                        Map<String, Object> paramMap = new HashMap<>();
+                        // 系统级参数设置（必须）
+                        paramMap.put("province_id", "5");
+                        BaiduResponse response = BaiduUtil.sendRequest(paramMap, "getCity.action");
                         return response.data.getAsJsonArray().toString();
                     }
                 });

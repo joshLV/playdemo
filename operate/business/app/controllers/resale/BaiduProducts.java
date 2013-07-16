@@ -44,7 +44,6 @@ public class BaiduProducts extends Controller {
         Goods goods = Goods.findById(goodsId);
 
         String allCategoriesJson = BaiduUtil.allProductTypesJsonCache();
-
         Collection<Shop> shopList = goods.getShopList();
         Supplier supplier = Supplier.findById(goods.supplierId);
         String allCityJson = BaiduUtil.allCityJsonCache();
@@ -63,57 +62,69 @@ public class BaiduProducts extends Controller {
         Map<String, String> groupbuyInfoParams = params.allSimple();
         groupbuyInfoParams.remove("body");
         groupbuyInfoParams.remove("goodsId");
+        Map<String, Object> requestMap = new HashMap<>();
+        for (Map.Entry<String, String> entry : groupbuyInfoParams.entrySet()) {
+            requestMap.put(entry.getKey(), entry.getValue());
+        }
+
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.BAIDU_LOGIN_NAME);
         ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.BD, resaler, goods);
-        groupbuyInfoParams.put("brand", "一百券");
-        groupbuyInfoParams.put("tpid", String.valueOf(product.goodsLinkId));
-        groupbuyInfoParams.put("stock_model", "1");
-        groupbuyInfoParams.put("token_mode", "1");
-        groupbuyInfoParams.put("province_id", "5");
+        requestMap.put("brand", "一百券");
+        requestMap.put("tpid", String.valueOf(product.goodsLinkId));
+        requestMap.put("stock_model", 1);
+        requestMap.put("token_mode", 0);
+        requestMap.put("province_id", 5);
+        requestMap.put("city_id", 289);//上海
+        requestMap.put("pack", "asdas");//上海
+        requestMap.put("des", "asdas");//上海
         String beginTime = groupbuyInfoParams.get("begin_time");
         String endTime = groupbuyInfoParams.get("end_time");
         String validTime = groupbuyInfoParams.get("valid_time");
         Long time = getUinxTime(beginTime);
-        groupbuyInfoParams.put("begin_time", String.valueOf(time / 1000L));
+        requestMap.put("begin_time", time / 1000L);
         time = getUinxTime(endTime);
-        groupbuyInfoParams.put("end_time", String.valueOf(time / 1000L));
+        requestMap.put("end_time", time / 1000L);
         time = getUinxTime(validTime);
-        groupbuyInfoParams.put("valid_time", String.valueOf(time / 1000L));
+        requestMap.put("valid_time",time / 1000L);
+
+        Map<String, String> sp = new HashMap<>();
+        sp.put("service_no", "243534534");
+
+        requestMap.put("spinfo", sp);
         int maxSale = Integer.parseInt(groupbuyInfoParams.get("max_sale"));
-        List<String> couponList = new ArrayList();
-        for (int i = 0; i < maxSale; i++) {
-            String coupon = generateAvailableEcouponSn(11);
-            couponList.add(coupon);
-            new ImportedCouponTemp(goods, coupon);
-        }
-        groupbuyInfoParams.put("thirdparty_tokens", StringUtils.join(couponList, ","));
+//        List<String> couponList = new ArrayList();
+//        for (int i = 0; i < maxSale; i++) {
+//            String coupon = generateAvailableEcouponSn(11);
+//            couponList.add(coupon);
+//            new ImportedCouponTemp(goods, coupon);
+//        }
+//        requestMap.put("thirdparty_tokens", StringUtils.join(couponList, ","));
 
         //商家信息参数
-        List<Map<String, String>> partnerParams = new ArrayList<>();
+        List<Map<String, Object>> partnerParams = new ArrayList<>();
         //构建商家信息参数
         for (String id : shopIds) {
-            Map<String, String> partnerParam = new HashMap<>();
-            Map<String, String> locationMap = new HashMap();
+            Map<String, Object> partnerParam = new HashMap<>();
+            Map<String, Object> locationMap = new HashMap<>();
             for (String key : partnerKeys) {
                 if (key.equals("lat")) {
-                    locationMap.put("lat", groupbuyInfoParams.get(key + "_" + id));
+                    locationMap.put("lat", requestMap.get(key + "_" + id));
                 } else if (key.equals("lng")) {
-                    locationMap.put("lng", groupbuyInfoParams.get(key + "_" + id));
+                    locationMap.put("lng", requestMap.get(key + "_" + id));
                 }
-                partnerParam.put(key, groupbuyInfoParams.remove(key + "_" + id));
+                partnerParam.put(key, requestMap.remove(key + "_" + id));
                 partnerParam.remove("lng");
                 partnerParam.remove("lat");
             }
 
-            partnerParam.put("location", new Gson().toJson(locationMap));
+            partnerParam.put("location", locationMap);
             partnerParams.add(partnerParam);
         }
 
-        groupbuyInfoParams.remove("shopIds");
-        groupbuyInfoParams.put("poi_array", "{" + new Gson().toJson(partnerParams) + "}");
-        System.out.println(groupbuyInfoParams+"-------");
+        requestMap.remove("shopIds");
+        requestMap.put("poi_array", partnerParams);
         //发起请求
-        BaiduResponse response = BaiduUtil.sendRequest(groupbuyInfoParams, "createproduct.action");
+        BaiduResponse response = BaiduUtil.sendRequest(requestMap, "createproduct.action");
         //保存历史
         if (response.isOk()) {
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();

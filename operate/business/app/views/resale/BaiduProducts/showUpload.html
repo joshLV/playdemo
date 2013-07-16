@@ -28,7 +28,7 @@
                 </div>
                 <input name="first_catalog" id="prodType-value" type="hidden">
                 <input name="second_catalog" id="prodType-nodeChain" type="hidden">
-                <input name="third_catalog" id="prodType-nodeChain" type="hidden">
+                *{<input name="third_catalog" id="prodType-nodeChain" type="hidden">}*
             </div>
         </div>
         <div class="control-group">
@@ -78,15 +78,15 @@
         <div class="control-group">
             <label class="control-label" for="originalPrice">市场价 *</label>
             <div class="controls">
-                <input type="text" id="originalPrice" name="origin_price" value="${goods.faceValue}">
+                <input type="text" id="originalPrice" name="origin_price" value="${new java.math.BigDecimal(100).multiply(goods.faceValue).format("#")}">
                 <span class="help-inline">最多两位小数</span>
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="groupoonPrice">销售价 *</label>
+            <label class="control-label" for="grouponPrice">销售价 *</label>
             <div class="controls">
-                <input type="text" id="groupoonPrice" name="groupoon_price" value="${goods.salePrice}">
-                <span class="help-inline">不能大于市场价，最多两位小数</span>
+                <input type="text" id="grouponPrice" name="groupon_price" value="${new java.math.BigDecimal(100).multiply(goods.salePrice).format("#")}">
+                <span class="help-inline">不能大于市场价,以分为单位</span>
             </div>
         </div>
         <div class="control-group">
