@@ -176,7 +176,7 @@ public class SecKillOrders extends Controller {
 
         checkInventory(secKillGoodsItem, count);
         OrderItems orderItem = new OrderItems(order, secKillGoodsItem.secKillGoods.goods, count, receiverMobile,
-                secKillGoodsItem.secKillGoods.goods.salePrice, secKillGoodsItem.secKillGoods.goods.salePrice);
+                secKillGoodsItem.secKillGoods.goods.salePrice, secKillGoodsItem.secKillGoods.goods.salePrice, BigDecimal.ZERO);
         orderItem.secKillGoods = secKillGoodsItem.secKillGoods;
         orderItem.secKillGoodsItemId = secKillGoodsItem.id;
         orderItem.rebateValue = secKillGoodsItem.secKillGoods.goods.salePrice.subtract(secKillGoodsItem.salePrice).multiply(new BigDecimal(count));

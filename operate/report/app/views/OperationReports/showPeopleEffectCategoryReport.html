@@ -252,8 +252,10 @@ beginValue:condition?.beginAt?.format(), endValue:condition?.endAt?.format()/}
     *{#{layout_operate.sortField name:'退款实物数量/金额', descField:condition?.desc, desc:'000010000',asc:'000020000'/}}*
     #{layout_operate.sortField name:'消费券数量/金额', descField:condition?.desc, desc:'000200',asc:'000100'/}
     #{if hasSeeReportProfitRight == true}
-        #{layout_operate.sortField name:'毛利率', descField:condition?.desc, desc:'000020',asc:'000010'/}
-        #{layout_operate.sortField name:'净利润', descField:condition?.desc, desc:'000002',asc:'000001'/}
+    <th>毛利率</th>
+    <th>净利润</th>
+        *{#{layout_operate.sortField name:'毛利率', descField:condition?.desc, desc:'000020',asc:'000010'/}}*
+        *{#{layout_operate.sortField name:'净利润', descField:condition?.desc, desc:'000002',asc:'000001'/}}*
     #{/if}
     </thead>
 #{set i:0/}
@@ -266,6 +268,7 @@ beginValue:condition?.beginAt?.format(), endValue:condition?.endAt?.format()/}
 #{paginate.list items:reportPage, as:'report'}
 
     <tr>
+
         #{if report?.code != "999"}
             <td>${report?.operateUser?.jobNumber}</td>
             <td>${report?.operateUser?.userName}</td>

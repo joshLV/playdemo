@@ -220,7 +220,8 @@
                                     ">网站选项</a>
 
                     #{/if}/<a href="@{OperateGoods.copy(goods.id)}">复制</a>/
-
+                    /<a href="#" id="setPartnerComminssion_${goods.id}"
+                        onclick="setPartnerComminssion('${goods.id}')">设置渠道佣金比例</a>/
                     <a href="@{OperateGoods.showHistory(goods.id)}" target="_blank">查看历史记录</a>
                 </td>
             </tr>
@@ -252,7 +253,45 @@
         <a href="#" class="btn" data-dismiss="modal">取消</a>
     </div>
 </div>
+<div class="modal" id="setCommissionModal" style="display: none;">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
 
+        <h3>设置渠道佣金比例</h3>
+    </div>
+    <div class="modal-body">
+    #{form @OperateGoods.commissionRatio(), id:"setCommissionForm", name:"setCommissionForm",class:"form-horizontal",method:"PUT"}
+        *{#{if goods?.goodsResalerCommissionList}}*
+            *{#{list items:goods.goodsResalerCommissionList ,as:'goodsCommission'}}*
+                *{<div class="control-group">}*
+                    *{<label class="control-label">${goodsCommission?.resaler?.userName}</label>}*
+
+                    *{<div class="controls">}*
+                        *{<input type="text" name="resaler-${goodsCommission?.resaler?.id}"}*
+                               *{value="${goodsCommission?.commissionRatio?:goodsCommission?.resaler?.commissionRatio}">%}*
+                    *{</div>}*
+                *{</div>}*
+            *{#{/list}}*
+        *{#{/if}}*
+        *{#{else}}*
+            #{list items:resalerList ,as:'resaler'}
+                <div class="control-group">
+                    <label class="control-label">${resaler?.userName}</label>
+
+                    <div class="controls">
+                        <input type="text" name="resaler-${resaler.id}"
+                               value="${goodsCommission?.commissionRatio?:resaler.commissionRatio}">%
+                    </div>
+                </div>
+            #{/list}
+        *{#{/else}}*
+    #{/form}
+    </div>
+    <div class="modal-footer">
+        <button id="sureCommission" class="btn btn-primary" type="submit">确定</button>
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+    </div>
+</div>
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript">
@@ -262,7 +301,10 @@
         $("#goods_priority").val(priority);
         $("#goods_keywords").val(keywords);
     }
-
+    function setPartnerComminssion(id) {
+        $("#setCommissionForm").attr("action", "/goods/" + id + "/commissionRatio?x-http-method-override=PUT");
+        $('#setCommissionModal').modal('show');
+    }
     $(function () {
         $("#sure").click(function () {
             var result = true;
@@ -281,7 +323,9 @@
                 $("#setForm").submit();
             }
         });
-
+        $("#sureCommission").click(function () {
+            $("#setCommissionForm").submit();
+        });
         $("#priority").click(function () {
             if (this.checked) {
                 this.value = "1";

@@ -268,7 +268,7 @@ public class Prepayment extends Model {
         Date toDate = DateUtils.truncate(new Date(), Calendar.DATE);
         Supplier supplier = Supplier.findById(prepayment.supplier.id);
         Account supplierAccount = Account.find("uid = ? and accountType = ?", supplier.id, AccountType.SUPPLIER).first();
-        System.out.println("&&&&&&&&&supplierAccount.id = " +supplierAccount.id);
+        System.out.println("&&&&&&&&&supplierAccount.id = " + supplierAccount.id);
         BigDecimal tempClearedAmount = BigDecimal.ZERO;
         List<ClearedAccount> clearedAccountList = ClearedAccount.find(
                 "accountId=? and settlementStatus=? and date < ? order by date",
@@ -312,5 +312,11 @@ public class Prepayment extends Model {
         }
 
         Prepayment.toHistoryData(prepayment.id, updatedBy);
+    }
+
+    public BigDecimal getClearedAmount() {
+        Account account = Account.find("uid = ? and accountType = ?", this.supplier.id,
+                AccountType.SUPPLIER).first();
+        return ClearedAccount.getClearedAmount(account, DateUtils.truncate(new Date(), Calendar.DATE));
     }
 }
