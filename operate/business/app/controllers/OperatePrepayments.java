@@ -221,6 +221,16 @@ public class OperatePrepayments extends Controller {
         render(supplierList);
     }
 
+    public static void getClearedAmountAndPrepaymentDiffAmount(Long supplierId) {
+        Account supplierAccount = Account.find("uid = ? and accountType = ?", supplierId, AccountType.SUPPLIER).first();
+        BigDecimal clearedAmount = ClearedAccount.getClearedAmount(supplierAccount, DateUtils.addDays(new Date(), -1));
+        BigDecimal prepaymentAmount = Prepayment.find("select sum(amount) from Prepayment where " +
+                "supplier" +
+                ".id=? " +
+                "and settlementStatus=? group by supplier", supplierId, SettlementStatus.UNCLEARED).first();
+        renderJSON("{\"balanceAmount\":\"" + prepaymentAmount.subtract(clearedAmount) + "\"}");
+    }
+
     /**
      * 进行冲正
      */
