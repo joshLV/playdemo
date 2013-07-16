@@ -460,6 +460,7 @@ GET     /prepayments/{id}                       OperatePrepayments.show
 DELETE  /prepayments/{id}                       OperatePrepayments.delete
 GET     /prepayments/{id}/edit                  OperatePrepayments.edit
 PUT     /prepayments/{id}                       OperatePrepayments.update
+GET     /prepayments/{supplierId}/balance-amount        OperatePrepayments.getClearedAmountAndPrepaymentDiffAmount
 
 # 排期管理
 GET     /goods-schedule                         GoodsSchedules.index
