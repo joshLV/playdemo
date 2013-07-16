@@ -20,6 +20,7 @@ import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang.time.DateUtils;
 import play.Play;
 import play.data.binding.As;
 import play.data.validation.Required;
@@ -566,6 +567,7 @@ public class OperateGoods extends Controller {
      */
     public static void update2(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath,
                                String queryString, int page) {
+        goods.expireAt = DateUtils.addSeconds(DateUtils.addDays(goods.expireAt, 1), -1);
         Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
