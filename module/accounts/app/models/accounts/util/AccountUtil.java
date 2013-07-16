@@ -13,6 +13,7 @@ import models.accounts.SettlementStatus;
 import models.accounts.TradeType;
 import models.operator.Operator;
 import models.resale.Resaler;
+import models.resale.ResalerCreditable;
 import play.Logger;
 
 import java.math.BigDecimal;
@@ -111,6 +112,9 @@ public class AccountUtil {
 
 
     public static Account getResalerAccount(Resaler resaler) {
+        if (resaler.creditable == ResalerCreditable.YES) {
+            return getAccount(resaler.id, AccountType.RESALER, true, resaler.operator);
+        }
         return getAccount(resaler.id, AccountType.RESALER, false, resaler.operator);
     }
 
