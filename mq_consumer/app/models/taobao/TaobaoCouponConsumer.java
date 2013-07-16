@@ -256,6 +256,9 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             }
             switch (map[0]) {
                 case "日期":
+                    if (map[1].contains("(")){
+                        map[1] = map[1].substring(0, map[1].indexOf("("));
+                    }
                     matcher = skuDatePattern.matcher(map[1]);
                     if (matcher.matches()) {
                         calendar.setTime(new Date());
