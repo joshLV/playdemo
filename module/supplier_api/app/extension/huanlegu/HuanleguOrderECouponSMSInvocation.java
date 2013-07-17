@@ -2,25 +2,11 @@ package extension.huanlegu;
 
 import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
-import models.huanlegu.HuanleguMessage;
 import models.huanlegu.HuanleguUtil;
-import models.kangou.KangouCardStatus;
-import models.kangou.KangouUtil;
-import models.order.ECoupon;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
-import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
-import play.libs.XPath;
 import util.extension.ExtensionResult;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * User: tanglq
@@ -58,3 +44,4 @@ public class HuanleguOrderECouponSMSInvocation extends OrderECouponSMSInvocation
         return HuanleguUtil.SUPPLIER_DOMAIN_NAME.equals(context.getGoods().getSupplier().domainName);
     }
 }
+
