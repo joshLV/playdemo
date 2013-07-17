@@ -223,7 +223,7 @@ public class OperatePrepayments extends Controller {
 
     public static void getClearedAmountAndPrepaymentDiffAmount(Long supplierId) {
         Account supplierAccount = Account.find("uid = ? and accountType = ?", supplierId, AccountType.SUPPLIER).first();
-        BigDecimal clearedAmount = ClearedAccount.getClearedAmount(supplierAccount, DateUtils.addDays(new Date(), -1));
+        BigDecimal clearedAmount = ClearedAccount.getClearedAmount(supplierAccount, new Date());
         BigDecimal prepaymentAmount = Prepayment.find("select sum(amount) from Prepayment where " +
                 "supplier" +
                 ".id=? " +
@@ -253,6 +253,21 @@ public class OperatePrepayments extends Controller {
                 balance.amount, null);
         balancedTradeBill.save();
         TradeUtil.success(balancedTradeBill, "预付款冲正", null, createdBy);
+        balancedTradeBill.refresh();
+        List<AccountSequence> sequences = AccountSequence.find("tradeId = ?", balancedTradeBill.id).fetch();
+
+        //创建相应的ClearedAccount记录
+        ClearedAccount clearedAccount = new ClearedAccount();
+        clearedAccount.date = new Date();
+        clearedAccount.accountId = supplierAccount.id;
+        clearedAccount.amount = balance.amount;
+        for (AccountSequence sequence : sequences) {
+            sequence.settlementStatus = SettlementStatus.CLEARED;
+            sequence.save();
+        }
+        clearedAccount.accountSequences = sequences;
+        clearedAccount.save();
+
         String msg = "冲正成功";
         render("OperatePrepayments/balanceResult.html", msg);
     }
