@@ -34,14 +34,14 @@ public class refreshPreviousClearAccount extends JobWithHistory {
                 AccountType.SHOP).fetch();
         System.out.println("accountList = " + accountList);
         ClearedAccount clearedAccount;
-        Date toDate = DateUtil.stringToDate("2013-07-05 23:59:59", "yyyy-MM-dd HH:mm:ss");
+        Date toDate = DateUtil.stringToDate("2013-07-06 00:00:00", "yyyy-MM-dd HH:mm:ss");
         for (Account account : accountList) {
             List<AccountSequence> sequences = AccountSequence.find(
                     " account=?  and settlementStatus=? and createdAt <? and tradeType !=? ",
                     account, SettlementStatus.UNCLEARED, toDate, TradeType.WITHDRAW).fetch();
 
             clearedAccount = new ClearedAccount();
-            clearedAccount.date = toDate;
+            clearedAccount.date = DateUtil.stringToDate("2013-07-05 23:59:59", "yyyy-MM-dd HH:mm:ss");
             clearedAccount.accountId = account.id;
             clearedAccount.amount = AccountSequence.getClearAmount(account,
                     toDate);
