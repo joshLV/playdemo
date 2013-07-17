@@ -125,7 +125,7 @@ public class OperatePrepayments extends Controller {
         Prepayment prepayment = Prepayment.findById(id);
         Supplier supplier = Supplier.findById(prepayment.supplier.id);
         Account account = Account.find("uid = ? and accountType = ?", supplier.id, AccountType.SUPPLIER).first();
-        BigDecimal amount = ClearedAccount.getClearedAmount(account, DateUtils.truncate(new Date(), Calendar.DATE));
+        BigDecimal amount = ClearedAccount.getClearedAmount(account, new Date());
         render(supplier, amount, prepayment);
     }
 
