@@ -243,6 +243,20 @@ public class OperatePrepayments extends Controller {
                 balance.amount, null);
         balancedTradeBill.save();
         TradeUtil.success(balancedTradeBill, "预付款冲正", null, createdBy);
+        balancedTradeBill.refresh();
+        List<AccountSequence> sequences = AccountSequence.find("tradeId = ?", balancedTradeBill.id).fetch();
+
+        //创建相应的ClearedAccount记录
+        ClearedAccount clearedAccount = new ClearedAccount();
+        clearedAccount.date = new Date();
+        clearedAccount.accountId = supplierAccount.id;
+        clearedAccount.amount = balance.amount;
+        for (AccountSequence sequence : sequences) {
+            sequence.settlementStatus = SettlementStatus.CLEARED;
+            sequence.save();
+        }
+        clearedAccount.accountSequences = sequences;
+        clearedAccount.save();
 
         index(null);
     }

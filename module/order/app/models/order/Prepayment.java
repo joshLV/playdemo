@@ -4,7 +4,6 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
-import models.accounts.AccountType;
 import models.accounts.ClearedAccount;
 import models.accounts.SettlementStatus;
 import models.accounts.TradeBill;
@@ -253,6 +252,8 @@ public class Prepayment extends Model {
         return amount;
     }
 
+
+
     /*
         取得最大的可以结算的金额
      */
@@ -267,8 +268,7 @@ public class Prepayment extends Model {
     public static void confirmSettle(Prepayment prepayment, String updatedBy) {
         Date toDate = DateUtils.truncate(new Date(), Calendar.DATE);
         Supplier supplier = Supplier.findById(prepayment.supplier.id);
-        Account supplierAccount = Account.find("uid = ? and accountType = ?", supplier.id, AccountType.SUPPLIER).first();
-        System.out.println("&&&&&&&&&supplierAccount.id = " +supplierAccount.id);
+        Account supplierAccount = AccountUtil.getSupplierAccount(supplier.id, Operator.defaultOperator());
         BigDecimal tempClearedAmount = BigDecimal.ZERO;
         List<ClearedAccount> clearedAccountList = ClearedAccount.find(
                 "accountId=? and settlementStatus=? and date < ? order by date",
