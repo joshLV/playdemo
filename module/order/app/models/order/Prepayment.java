@@ -318,7 +318,7 @@ public class Prepayment extends Model {
         Account account = Account.find("uid = ? and accountType = ?", this.supplier.id,
                 AccountType.SUPPLIER).first();
         if (account != null) {
-            return ClearedAccount.getClearedAmount(account, DateUtils.truncate(new Date(), Calendar.DATE));
+            return ClearedAccount.getClearedAmount(account, new Date());
         }
         return BigDecimal.ZERO;
     }
