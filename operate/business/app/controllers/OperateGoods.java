@@ -50,7 +50,6 @@ public class OperateGoods extends Controller {
     public static int PAGE_SIZE = 15;
     public static String WWW_URL = Play.configuration.getProperty("www.url", "");
     public static String BASE_URL = Play.configuration.getProperty("application.baseUrl", "");
-    private static Goods goodsProperties;
 
     /**
      * 展示商品一览页面
