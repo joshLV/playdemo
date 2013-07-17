@@ -87,8 +87,10 @@ public class WebsiteGiftCards extends Controller {
         Map<String, String> userInputs = params.allSimple();
         userInputs.remove("body");
         userInputs.remove("t");
+        userInputs.remove("goods.id");
         giftCard.status = ImportedCouponStatus.USED;
         giftCard.userInput = new Gson().toJson(userInputs);
+        giftCard.appliedAt = new Date();
         giftCard.save();
 
         render("WebsiteGiftCards/view.html", giftCard);

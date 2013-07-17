@@ -137,6 +137,7 @@ public class Suppliers extends Controller {
         supplier.setProperty(Supplier.KTV_SUPPLIER, request.params.get(Supplier.KTV_SUPPLIER));
         supplier.setProperty(Supplier.KTV_SKU_PUSH_END_HOUR, request.params.get(Supplier.KTV_SKU_PUSH_END_HOUR));
         supplier.setProperty(Supplier.IS_WITHDRAW_DELAY, request.params.get(Supplier.IS_WITHDRAW_DELAY));
+        supplier.setProperty(Supplier.PROPERTY_GIFT_CARD, request.params.get(Supplier.PROPERTY_GIFT_CARD));
     }
 
     private static void redirectUrl(int page) {
@@ -310,10 +311,12 @@ public class Suppliers extends Controller {
         String canSaleReal = request.params.get(Supplier.CAN_SALE_REAL);
         String ktvSupplier = request.params.get(Supplier.KTV_SUPPLIER);
         String ktvSkuPushEndHour = request.params.get(Supplier.KTV_SKU_PUSH_END_HOUR);
+        String giftCard = request.params.get(Supplier.PROPERTY_GIFT_CARD);
         renderArgs.put("sellECoupon", sellECoupon);
         renderArgs.put("canSaleReal", canSaleReal);
         renderArgs.put("ktvSupplier", ktvSupplier);
         renderArgs.put("ktvSkuPushEndHour", ktvSkuPushEndHour);
+        renderArgs.put("giftCard", giftCard);
     }
 
     public static void updateCode(Long id, Long supplierCategoryId) {

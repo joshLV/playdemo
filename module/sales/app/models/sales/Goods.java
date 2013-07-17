@@ -108,6 +108,7 @@ public class Goods extends Model {
      * 二次验证商品属性
      */
     public static final String SECONDARY_VERIFICATION = "secondaryVerification";
+    public static final String PROPERTY_GIFT_CARD = "giftCard";
 
     //  ========= 不同的价格列表 =======
     /**
@@ -2423,6 +2424,7 @@ public class Goods extends Model {
     /**
      * 是否二次验证商品
      */
+    @Transient
     public boolean isSecondaryVerificationGoods() {
         return "1".equals(this.getProperties(Goods.SECONDARY_VERIFICATION, "0"));
     }

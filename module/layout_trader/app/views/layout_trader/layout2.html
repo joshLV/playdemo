@@ -57,6 +57,7 @@
             sellECoupon = currentUser?.supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON);
             canSaleReal = currentUser?.supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL);
             ktvSupplier = currentUser?.supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER);
+            giftCard = currentUser?.supplier?.getProperty(models.supplier.Supplier.PROPERTY_GIFT_CARD);
         }%
 
         #{if ("1".equals(sellECoupon)) }
@@ -98,6 +99,10 @@
                 <li><a #{if "ktv_promotion".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/promotion/new')}">促销活动</a></li>
                 }*
                 <li><a #{if "ktv_daily_schedule".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/daily-schedule')}">KTV每日预订</a></li>
+            #{/if}
+            #{if navigation.ContextedPermission.hasPermission("DOWNLOAD_ORDER_SHIPPING") && ("1".equals(giftCard))}
+            <li><a #{if "menu-gift-card".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/giftcard')}">礼品卡预约</a>
+            </li>
             #{/if}
         </ul>
         <div class="sbox">

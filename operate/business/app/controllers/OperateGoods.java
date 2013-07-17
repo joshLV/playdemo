@@ -187,7 +187,8 @@ public class OperateGoods extends Controller {
             warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
         }
 
-        renderArgs.put("secondaryVerification", goods.getProperties(Goods.SECONDARY_VERIFICATION, "0"));
+        renderArgs.put(Goods.SECONDARY_VERIFICATION, goods.getProperties(Goods.SECONDARY_VERIFICATION, "0"));
+        renderArgs.put(Goods.PROPERTY_GIFT_CARD, goods.getProperties(Goods.PROPERTY_GIFT_CARD, "0"));
 
         renderArgs.put("supplierList", supplierList);
         renderArgs.put("categoryList", categoryList);
@@ -850,10 +851,17 @@ public class OperateGoods extends Controller {
     }
 
     private static void setGoodsProperties(Goods goods) {
-        if (StringUtils.isBlank(request.params.get("secondaryVerification"))) {
+        if (StringUtils.isBlank(request.params.get(Goods.SECONDARY_VERIFICATION))) {
             goods.setProperties(Goods.SECONDARY_VERIFICATION, "0");
         } else {
-            goods.setProperties(Goods.SECONDARY_VERIFICATION, request.params.get("secondaryVerification"));
+            goods.setProperties(Goods.SECONDARY_VERIFICATION, request.params.get(Goods.SECONDARY_VERIFICATION));
         }
+
+        if (StringUtils.isBlank(request.params.get(Goods.PROPERTY_GIFT_CARD))) {
+            goods.setProperties(Goods.PROPERTY_GIFT_CARD, "0");
+        }else {
+            goods.setProperties(Goods.PROPERTY_GIFT_CARD, request.params.get(Goods.PROPERTY_GIFT_CARD));
+        }
+
     }
 }
