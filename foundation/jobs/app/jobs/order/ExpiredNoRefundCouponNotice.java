@@ -33,8 +33,8 @@ public class ExpiredNoRefundCouponNotice extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
         CouponsCondition condition = new CouponsCondition();
-        condition.expiredAtBegin = DateUtils.addDays(new Date(), -3);
-        condition.expiredAtEnd = DateUtils.addDays(new Date(), 3);
+        condition.expiredAtBegin = DateUtils.truncate(DateUtils.addDays(new Date(), 3), Calendar.DATE);
+        condition.expiredAtEnd = DateUtils.addSeconds(DateUtils.ceiling(DateUtils.addDays(new Date(), 3), Calendar.DATE), -1);
         List<ECoupon> resultList = ECoupon.findVirtualCoupons(condition);
         String subject = "虚拟验证券到期提醒";
         List<Map<String, String>> couponList = new ArrayList<>();
