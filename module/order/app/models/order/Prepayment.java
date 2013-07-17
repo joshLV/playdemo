@@ -4,6 +4,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
+import models.accounts.AccountType;
 import models.accounts.ClearedAccount;
 import models.accounts.SettlementStatus;
 import models.accounts.TradeBill;
@@ -253,7 +254,6 @@ public class Prepayment extends Model {
     }
 
 
-
     /*
         取得最大的可以结算的金额
      */
@@ -312,5 +312,14 @@ public class Prepayment extends Model {
         }
 
         Prepayment.toHistoryData(prepayment.id, updatedBy);
+    }
+
+    public BigDecimal getClearedAmount() {
+        Account account = Account.find("uid = ? and accountType = ?", this.supplier.id,
+                AccountType.SUPPLIER).first();
+        if (account != null) {
+            return ClearedAccount.getClearedAmount(account, DateUtils.truncate(new Date(), Calendar.DATE));
+        }
+        return BigDecimal.ZERO;
     }
 }
