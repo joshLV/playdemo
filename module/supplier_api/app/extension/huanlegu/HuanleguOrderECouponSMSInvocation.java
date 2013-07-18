@@ -2,23 +2,11 @@ package extension.huanlegu;
 
 import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
-import models.huanlegu.HuanleguMessage;
 import models.huanlegu.HuanleguUtil;
-import models.kangou.KangouCardStatus;
-import models.kangou.KangouUtil;
-import models.order.ECoupon;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
-import org.w3c.dom.Node;
+import org.apache.commons.lang.ArrayUtils;
 import play.Logger;
-import play.libs.XPath;
+import play.Play;
 import util.extension.ExtensionResult;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * User: tanglq
@@ -26,6 +14,9 @@ import java.util.List;
  * Time: 下午2:50
  */
 public class HuanleguOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
+    //淘宝、京东、58、一号店、一百券
+    public static String[] PARTNER_UIDS = Play.configuration.getProperty("auto_partners_uids", "13,10,14,7,22").split(",");
+
     /**
      * 基于context的内容，生成短信内容，并通过context.setSmsContent()方法把短信内容传出.
      *
@@ -36,20 +27,7 @@ public class HuanleguOrderECouponSMSInvocation extends OrderECouponSMSInvocation
     public ExtensionResult execute(OrderECouponSMSContext context) {
         Logger.info("HuanleguOrderECouponSMSInvocation(.id:");
 
-        context.needSendSMS = false; //不发短信.
-
-        Date now = new Date();
-        for (ECoupon coupon : context.couponList) {
-            //创建后10分钟内的不予重发
-            if(DateUtils.addMinutes(coupon.createdAt, 10).after(now)){
-                continue;
-            }
-            HuanleguMessage message = HuanleguUtil.resend(coupon);
-            if (message.isResponseOk()){
-                coupon.smsSentCount += 1;
-                coupon.save();
-            }
-        }
+        context.needSendSMS = ArrayUtils.contains(PARTNER_UIDS, String.valueOf(context.getOrder().userId));
 
         return ExtensionResult.SUCCESS;
     }
@@ -66,3 +44,4 @@ public class HuanleguOrderECouponSMSInvocation extends OrderECouponSMSInvocation
         return HuanleguUtil.SUPPLIER_DOMAIN_NAME.equals(context.getGoods().getSupplier().domainName);
     }
 }
+
