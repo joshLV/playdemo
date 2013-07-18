@@ -31,7 +31,7 @@ public class refreshPreviousClearAccount extends JobWithHistory {
         List<Account> accountList = Account.find("(accountType = ? or accountType = ?)",
                 AccountType.SUPPLIER,
                 AccountType.SHOP).fetch();
-        System.out.println("accountList = " + accountList);
+        System.out.println("accountList = " + accountList.size());
         ClearedAccount clearedAccount;
         Date toDate = DateUtil.stringToDate("2013-07-06 00:00:00", "yyyy-MM-dd HH:mm:ss");
         for (Account account : accountList) {
@@ -57,7 +57,7 @@ public class refreshPreviousClearAccount extends JobWithHistory {
                     "getClearAmount:" + clearedAccount.amount);
         }
 
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 13; i++) {
             Date fromDate = DateUtils.truncate(DateUtils.addDays(new Date(), -1 - i), Calendar.DATE);
             toDate = DateUtils.truncate(DateUtils.addDays(new Date(), -i), Calendar.DATE);
             for (Account account : accountList) {
