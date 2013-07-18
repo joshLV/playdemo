@@ -1,13 +1,10 @@
 #{extends 'WebsiteGiftCards/layout.html' /}
-#{set title:'一百券 - 礼品卡预约' /}
+#{set title:'礼品卡预约' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/home/121213/home.css'] /}
     <style type="text/css">
         .section {
             margin-bottom: 10px;
             padding: 10px 20px 15px;
-            border: 1px solid #dcdcdc;
-            background-color: #fff;
         }
         .section h1 {
             font: 30px 'Microsoft Yahei','黑体',Verdana;
@@ -36,8 +33,6 @@
 
     </style>
 #{/set}
-<div class="wrapper">
-    <div id="content">
         <img src="/public/images/kyy_bg.jpg" alt="" width="960px" height="100px" border="0">
         <div class="section">
             <div id="title">
@@ -91,11 +86,7 @@
             <p>注意1</p>
         </div>
 
-
-
-        <script src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
-        <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-        <script type="text/javascript">
-        </script>
-    </div>
-</div>
+#{set 'moreScripts'}
+    <script src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
+    <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}

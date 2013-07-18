@@ -4,45 +4,61 @@
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
     #{get 'metaContent'/}
-    #{asset.css src:['/base/121123/base.css']/}
-        <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon"/>
+    <style type="text/css">
+
+        body,h1,h2,h3,h4,h5,h6,hr,p,blockquote,dl,dt,dd,ul,ol,li,pre,form,fieldset,legend,button,input,textarea,th,td{margin:0;padding:0}
+        ul,ol{list-style:none}a{text-decoration:none}a:hover{text-decoration:underline}
+        body {
+        background-color: rgb(219, 224, 153);
+        font-size:12px;
+        }
+        .wrapper{
+            width:960px;
+            margin:0 auto;
+        }
+        .frame{
+        position:relative;
+        background-color:#F9F9F9;
+        -moz-box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.4);
+        box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.4);
+        margin-top:40px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        }
+    </style>
+    <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon"/>
     #{get 'moreStyles' /}
 
 </head>
 <body>
-<div id="topbar">
-    <div id="topbar-bd">
-        <ul class="site-nav">
-        #{if t || giftCard}
-            <li><a href="/kyy">退出</a></li>
-        #{/if}
-        #{else}
-            <li class="first"><a class="login" id="login" href="/kyy">登录</a></li>
-        #{/else}
-        </ul>
-        <div class="hot-line">客服热线：<span>400-686-5151</span></div>
+
+<div class="wrapper">
+    <div id="content">
+        <div class="frame">
+            <div style="height:30px;line-height:30px;padding:0 20px ">
+                <div style="float:left">
+                    #{if t || giftCard}
+                        <a href="/kyy">退出</a>
+                    #{/if}
+                    #{else}
+                        <a href="/kyy">登录</a>
+                    #{/else}
+                </div>
+                <div style="float:right">
+                    <span style="color:#a3a3a3">客服电话 <span style="color:green; font-weight:bold">400-686-5151</span></span>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+            #{doLayout /}
+        </div>
     </div>
 </div>
 
 
-#{doLayout /}
-<div id="footer">
-    <div class="ft-nav">
-        <a href="${helper.Domain.getWWWHost(request)}/about" target="_blank">关于我们</a>
-        |
-        <a href="${helper.Domain.getWWWHost(request)}/contact" target="_blank">联系我们</a>
-        |
-        <a href="http://www.seewi.com.cn/?page_id=40" target="_blank">招商信息</a>
-        |
-        <a href="${helper.Domain.getWWWHost(request)}/help" target="_blank">常见问题</a>
-        |
-        <span class="">客服热线：400-686-5151</span>
-    </div>
-    <div class="copyright">${helper.Title.copyRightTitle().raw()}</div>
-</div>
-<!-- #footer -->
+
 #{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}
 #{get 'moreScripts' /}
+
 <div style="display:none">
 #{if !play.Play.runingInTestMode()}
     <script src="http://s84.cnzz.com/stat.php?id=4205049&web_id=4205049" language="JavaScript"></script>
