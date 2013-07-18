@@ -333,6 +333,7 @@ POST    /huanlegu/appointment/withOurOrder      OperateHuanleguAppointment.appoi
 
 GET     /huanlegu/appointment/withoutOurOrder   OperateHuanleguAppointment.withoutOurOrder
 POST    /huanlegu/appointment/withoutOurOrder   OperateHuanleguAppointment.appointmentWithoutOurOrder
+POST    /huanlegu/appointment/withoutOurOrderV2 OperateHuanleguAppointment.appointmentWithoutOurOrderV2
 
 # 欢乐谷/玛雅水世界退款
 GET     /huanlegu/refund                        OperateHuanleguAppointment.showRefund
