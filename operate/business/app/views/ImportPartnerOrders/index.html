@@ -29,6 +29,7 @@
                 <br>#{/if}
         *{#{if notEnoughInventoryGoodsList}请先解决渠道商品ID：${notEnoughInventoryGoodsList?.join(",")}对应的一百券商品库存不足的问题！<br>#{/if}}*
             #{if existedOrderList}重复订单【${existedOrderList?.size()}】个：${existedOrderList?.join(",")}<br>#{/if}
+            #{if unSetSupplierCodeList}订单在淘宝上可能未发货，对应商品没有商家编码。请确认有【${unSetSupplierCodeList?.size()}】个：${unSetSupplierCodeList?.join(",")}<br>#{/if}
         </span>
         <span class="help-block" style="color: green;" id="success-info">
             #{if importSuccessOrderList}外部订单导入成功【${importSuccessOrderList.size()}
