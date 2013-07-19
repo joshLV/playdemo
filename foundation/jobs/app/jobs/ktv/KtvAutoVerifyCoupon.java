@@ -13,6 +13,7 @@ import models.order.VerifyCouponType;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.lang.time.DateUtils;
+import play.Play;
 import play.db.jpa.JPA;
 import play.jobs.Every;
 import play.jobs.On;
@@ -30,8 +31,13 @@ import java.util.List;
 @JobDefine(title = "自动验证KTV因预订时间过期而导致无效的券", description = "每天10分钟执行，自动验证KTV因预订时间过期而导致无效的券")
 @Every("10mn")
 public class KtvAutoVerifyCoupon extends JobWithHistory {
+    public static final boolean ON = Play.configuration.getProperty("taobao.job", "off").toLowerCase().equals("on");
+
     @Override
     public void doJobWithHistory() {
+        if (!ON && Play.runingInTestMode()) {
+            return;
+        }
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         Date today = DateUtils.truncate(new Date(), Calendar.DATE);
