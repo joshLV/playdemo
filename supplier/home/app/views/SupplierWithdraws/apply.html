@@ -12,10 +12,10 @@
 </script>
 #{/set}
 #{if withdrawAccounts?.size() == 0 }
-    暂无收款账户,请联系管理员添加.
+暂无收款账户,请联系管理员添加.
 #{/if}
 #{elseif err}
-    ${err}
+${err}
 #{/elseif}
 #{else}
 <div class="bd">
@@ -58,27 +58,27 @@
             #{error 'withdrawAccountId'/}
         </div>
         #{if supplier.isWithdrawDelay()}
-        <div class="field-group">
-            <label>说明</label>
-            <table class="standard-table">
-                <tr>
-                    <th>日期范围</th>
-                    <th>提现截止日期</th>
-                </tr>
-                <tr>
-                    <td>5日 - 14日</td>
-                    <td>上月25日</td>
-                </tr>
-                <tr>
-                    <td>15日 - 24日</td>
-                    <td>本月5日</td>
-                </tr>
-                <tr>
-                    <td>25日 - 次月4日</td>
-                    <td>本月15日</td>
-                </tr>
-            </table>
-        </div>
+            <div class="field-group">
+                <label>说明</label>
+                <table class="standard-table">
+                    <tr>
+                        <th>日期范围</th>
+                        <th>提现截止日期</th>
+                    </tr>
+                    <tr>
+                        <td>5日 - 14日</td>
+                        <td>上月25日</td>
+                    </tr>
+                    <tr>
+                        <td>15日 - 24日</td>
+                        <td>本月5日</td>
+                    </tr>
+                    <tr>
+                        <td>25日 - 次月4日</td>
+                        <td>本月15日</td>
+                    </tr>
+                </table>
+            </div>
         #{/if}
         <div class="field-sect">
             <div class="field-group">
@@ -88,8 +88,12 @@
                 </div>
             </div>
             <div class="field-group">
-                <label>预付款余额</label>
-
+                #{if currentUser?.supplier?.isFreezeAmount()}
+                    <label>冻结金额</label>
+                #{/if}
+                #{else}
+                    <label>预付款余额</label>
+                #{/else}
                 <div class="control-value">${prepaymentBalance?.formatCurrency('CNY')}
                     <a id="prepaymentDetail" class="link" href="#">查看明细</a>
                 </div>
