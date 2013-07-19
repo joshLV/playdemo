@@ -213,8 +213,10 @@ public class TaobaoCouponUtil {
                 if (beforeconsumeResponse.getRetCode() != 1) {
                     return ExtensionResult.INVALID_CALL;
                 }
-            } else if (beforeconsumeResponse.getSubCode().equals("isv.eticket-consume-error:code-not-available")) {
-                Logger.error("coupon was verified on taobao.coupon:%s:%s", beforeconsumeResponse.getSubMsg());
+            } else if (StringUtils.isNotBlank(beforeconsumeResponse.getSubCode()) &&
+                    beforeconsumeResponse.getSubCode().equals("isv.eticket-consume-error:code-not-available")) {
+                Logger.error("coupon was verified on taobao.coupon:%s:%s", coupon.eCouponSn,
+                        beforeconsumeResponse.getSubMsg());
                 return ExtensionResult.SUCCESS;
             } else {
                 Logger.error("tell taobao coupon verify response failed. %s", beforeconsumeResponse.getSubMsg());
