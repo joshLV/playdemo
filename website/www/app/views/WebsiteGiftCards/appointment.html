@@ -1,0 +1,92 @@
+#{extends 'WebsiteGiftCards/layout.html' /}
+#{set title:'礼品卡预约' /}
+#{set 'moreStyles'}
+    <style type="text/css">
+        .section {
+            margin-bottom: 10px;
+            padding: 10px 20px 15px;
+        }
+        .section h1 {
+            font: 30px 'Microsoft Yahei','黑体',Verdana;
+        }
+        #regist { width: 625px; margin: 0 auto; }
+        .field { padding: 3px 0; }
+        .label { display: inline-block; width: 80px; text-align: right; font-size:14px}
+        .label i { color: #fc7410; padding-right: 3px; font-style: normal; font-family: sans-serif, \5b8b\4f53; }
+        .medium { width: 240px; height: 22px; padding: 0 2px; font-size: 14px;padding:3px; line-height: 22px; border: 1px solid #D1D1D1; }
+        .forget { color: #fc7410; padding-left: 5px; text-decoration: none; }
+        .error { display: block; width: 204px; height: 20px; padding-left: 85px; color: #f00; }
+        #captchaImg { position: relative; top: 8px; }
+        #checkcode { width: 70px; }
+        .error{
+            padding: 3px 0 3px 9px;
+            width: 254px;
+            line-height: 18px;
+            border: 1px solid #eddead;
+            background-color: #fffce9;
+            overflow: hidden;
+            color: #c69324;
+        }
+        .wrapper {
+            padding-bottom:20px;
+        }
+
+    </style>
+#{/set}
+        <img src="/public/images/kyy_banner.jpg" alt="" width="960px" height="100px" border="0">
+        <div class="section">
+            <div id="title">
+                <h1>${goods?.title} </h1>
+            </div>
+        </div>
+        <div class="section">
+            <form id="regist" method="post" action="/kyy/yuyue">
+                <div class="field">
+                    <label for="loginName" class="label"><i>*</i>姓名：</label>
+                    <input type="text" id="loginName" class="medium" maxlength="32" tabindex="1" name="username" value="">
+                </div>
+                <div class="field">
+                    <label for="mobile" class="label"><i>*</i>手机号：</label>
+                    <input type="text" id="mobile" class="medium" maxlength="20" tabindex="2" name="mobile" value="">
+                </div>
+                <div class="field">
+                    <label for="address" class="label"><i>*</i>地址：</label>
+                    <input type="text" id="address" class="medium" maxlength="20" tabindex="3" name="address" value="" style="width: 480px">
+                </div>
+                <div class="field">
+                    <label for="postcode" class="label"><i>*</i>邮编：</label>
+                    <input type="text" id="postcode" class="medium" maxlength="20" tabindex="4" name="postcode" value="">
+                </div>
+                <div class="field">
+                    <label for="date" class="label"><i>*</i>配送日期：</label>
+                    <input class="medium Wdate" type="text" name="date" id="date" tabindex="5" value="${date?.format('yyyy-MM-dd')}"
+                           value="${condition?.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/>
+                    <span>（尽量满足)</span>
+                </div>
+                <div class="field">
+                    <label for="message" class="label">补充说明：</label>
+                    <input type="text" id="message" class="medium" maxlength="20" tabindex="6" name="message" value="" style="width: 480px">
+                </div>
+                <div style="margin:20px 0 20px 80px">
+                    <input type="hidden" name="t" value="${t}">
+                    <input type="hidden" name="goods.id" value="${goods?.id}">
+                    #{if err}
+                    <div class="error">${err}</div>
+                    #{/if}
+                    <button style="background-color:rgb(63, 179, 63); border:0; padding: 5px 10px; color:white; margin-top:5px;" >确定以上信息，预约</button>
+                </div>
+            </form>
+        </div>
+
+        <div style="margin-top: -15px; border: 1px solid #dcdcdc; padding: 20px; background-color: #f9f9f9">
+            <p>注意1</p>
+            <p>注意1</p>
+            <p>注意1</p>
+            <p>注意1</p>
+            <p>注意1</p>
+        </div>
+
+#{set 'moreScripts'}
+    <script src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
+    <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}

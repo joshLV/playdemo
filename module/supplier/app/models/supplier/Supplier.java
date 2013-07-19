@@ -75,6 +75,7 @@ public class Supplier extends Model {
     public static final String IS_WITHDRAW_DELAY = "delayWithdraw";//是否按照 5-15 16-25 26-31 三个日期段提款
     public static final String KTV_SKU_PUSH_END_HOUR = "ktvSkuPushEndHour";//ktv sku推送时间
     public static final String KTV_MAX_DEPLOY_DATE = "ktvMaxDeployDate"; //KTV 发布的预订天数
+    public static final String PROPERTY_GIFT_CARD = "giftCard"; //是否销售带预约的礼券
 
     private static Supplier SHIHUI = null;
     /**

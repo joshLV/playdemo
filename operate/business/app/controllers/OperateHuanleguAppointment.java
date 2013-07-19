@@ -429,7 +429,6 @@ public class OperateHuanleguAppointment extends Controller {
             query.setParameter("phone", mobile);
             query.setParameter("goodsList", goodsList);
             couponList = query.getResultList();
-            System.out.println(couponList.size());
         }else if (StringUtils.isNotBlank(supplierCoupon)) {
             couponList = ECoupon.find("bySupplierECouponPwd", supplierCoupon).fetch();
         }else {

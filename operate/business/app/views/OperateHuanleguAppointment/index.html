@@ -8,7 +8,7 @@
     <ul>
         #{list items:outerPartners, as:'resaler'}
         <li>
-            <a href="/huanlegu/appointment/withoutOurOrder?resalerId=${resaler.id}">${resaler.userName}</a>
+            <a href="/huanlegu/appointment/withoutOurOrder?resalerId=${resaler.id}">${resaler.resalerName}</a>
         </li>
         #{/list}
         <li>

@@ -109,6 +109,9 @@ GET    /ecoupon-compensation/consumed           ECouponCompensations.consumed
 GET    /weixin                                  SupplierWeixinBinds.index
 POST   /weixin/unbind                           SupplierWeixinBinds.unbind
 
+
+GET     /giftcard                               SupplierGiftCards.index
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

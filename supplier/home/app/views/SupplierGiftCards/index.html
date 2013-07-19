@@ -1,0 +1,59 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set menu:"menu-gift-card"/}
+#{set title:'礼品卡预约' /}
+<div class="bd">
+    <h2>${title}</h2>
+
+
+    <form name="form" action="@{SupplierGiftCards.index()}" method="GET">
+        <div class="field-sect">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td> 商品  </td>
+                    <td>
+                        <select style="width:auto">
+                            <option>全部</option>
+                            <option>你好</option>
+                        </select>
+                    </td>
+                    <td>预约状态</td>
+                    <td>
+                        <select style="width:auto">
+                            <option>全部</option>
+                            <option>已预约</option>
+                            <option>未预约</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn" type="submit">查询</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+    <br/>
+
+    <table class="standard-table">
+        <thead>
+        <tr>
+            <th >申请日期</th>
+            <th >商品</th>
+            <th >预约信息</th>
+            <th >操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        #{paginate.list items:giftCards, as:'giftCard'}
+        <tr>
+            <td>${giftCard.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>${giftCard.goods.title}</td>
+            <td style="text-align:left"> ${giftCard.userInput.raw()} </td>
+            <td>
+                发货
+            </td>
+        </tr>
+        #{/paginate.list}
+        </tbody>
+    </table>
+    #{paginate.controls items:giftCards /}
+</div>

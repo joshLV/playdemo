@@ -142,6 +142,11 @@ POST    /ktv/roominfo/json-search                  KtvAPI.jsonRoom
 # KTV预订系统回调页面
 GET     /ktv/taobao/welcome                     KtvAuth.taobao
 
+GET     /kyy                                    WebsiteGiftCards.index
+POST    /kyy                                    WebsiteGiftCards.login
+POST    /kyy/yuyue                              WebsiteGiftCards.appointment
+GET     /kyy/yuyue                              WebsiteGiftCards.showAppointment
+
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
