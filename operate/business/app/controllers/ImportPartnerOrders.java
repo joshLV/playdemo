@@ -31,6 +31,7 @@ import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReadStatus;
 import net.sf.jxls.reader.XLSReader;
 import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -144,7 +145,7 @@ public class ImportPartnerOrders extends Controller {
         request.setPageSize(pageSize);
 
         String errorInfo = "";
-
+        Set<String> unSetSupplierCodeList = new HashSet<>();
         List<LogisticImportData> logisticImportDataList = new ArrayList<>();
         while (true) {
             request.setPageNo(page);
@@ -181,6 +182,11 @@ public class ImportPartnerOrders extends Controller {
                             }
                             LogisticImportData logistic = new LogisticImportData();
                             logistic.setOuterOrderNo(String.valueOf(trade.getTid()));
+                            if (StringUtils.isBlank(order.getOuterIid())) {
+                                Logger.info("该商品在淘宝上没有发货，请确认一下!" + trade.getTid());
+                                unSetSupplierCodeList.add(String.valueOf(trade.getTid()));
+                                continue;
+                            }
                             logistic.setOuterGoodsNo(String.valueOf(order.getOuterIid()));
                             BigDecimal salePrice = new BigDecimal(order.getPayment()).divide(new BigDecimal(order.getNum()), RoundingMode.DOWN);
                             logistic.setSalePrice(salePrice);
@@ -214,7 +220,7 @@ public class ImportPartnerOrders extends Controller {
 
         OuterOrderPartner partner = OuterOrderPartner.TB;
         render("ImportPartnerOrders/index.html", partner, errorInfo, existedOrderList,
-                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
+                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList,unSetSupplierCodeList);
     }
 
     private static void processLogisticList(List<LogisticImportData> logistics, OuterOrderPartner partner,
