@@ -37,7 +37,7 @@ public abstract class WebServiceClient {
             log.statusCode = response.getStatus();
             log.success = Boolean.TRUE;
             if (StringUtils.isNotBlank(webServiceRequest.callType)) {
-                sendLogToMQ(log);
+//                sendLogToMQ(log);
             }
             return response;
         } catch (Exception e) {
@@ -49,7 +49,7 @@ public abstract class WebServiceClient {
                 log.exceptionText = e.getMessage();
                 log.statusCode = -1;
                 log.success = Boolean.FALSE;
-                sendLogToMQ(log);
+//                sendLogToMQ(log);
             }
 
             throw e;

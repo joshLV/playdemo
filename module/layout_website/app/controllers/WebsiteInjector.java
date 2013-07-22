@@ -239,9 +239,11 @@ public class WebsiteInjector extends Controller {
             // 为避免大量爬虫产生的记录，这里：
             // 如果没有保存过，尝试从Cache找一下，如果找到，让mq可以进行保存操作。        	
             uwi = (UserWebIdentification) Cache.get(UserWebIdentification.MQ_KEY + identificationValue);
+            /*
             if (uwi != null) {
                 uwi.notifyMQSave();
             }
+            */
         } else {
             uwi.user = user;
             uwi.save();
@@ -251,9 +253,11 @@ public class WebsiteInjector extends Controller {
             // 第一次产生标识对象
             uwi = createUserWebIdentification(user, identificationValue);
             uwi.sendToCacheOrSave();
+            /*
             if (!StringUtils.isEmpty(uwi.referer)) {
                 uwi.notifyMQSave();
             }
+            */
             return null; //避免缓存
         }
         return uwi;
