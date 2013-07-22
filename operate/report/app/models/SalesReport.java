@@ -1083,7 +1083,7 @@ public class SalesReport implements Comparable<SalesReport> {
                 }
 
                 cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).add(cheatedItem.cheatedOrderCost)
-                        .add(item.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : item.cheatedOrderCommissionAmount);
+                        .add(cheatedItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCommissionAmount);
                 map.put(getReportKeyOfPeopleEffect(cheatedItem), cheatedItem);
             } else {
                 item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
@@ -1134,8 +1134,8 @@ public class SalesReport implements Comparable<SalesReport> {
                 }
 
                 refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
-                        .add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount);
+//                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
+                        .add(refundItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundItem.refundCommissionAmount);
                 map.put(getReportKeyOfPeopleEffect(refundItem), refundItem);
             }
         }
