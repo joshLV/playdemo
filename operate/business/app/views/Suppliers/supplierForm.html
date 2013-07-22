@@ -71,6 +71,7 @@ error:'supplier.operator'}
     ktvSupplier=ktvSupplier?:supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER)?:'0';
     delayWithdraw=delayWithdraw?:supplier?.getProperty(models.supplier.Supplier.IS_WITHDRAW_DELAY)?:'0';
     giftCard=giftCard?:supplier?.getProperty(models.supplier.Supplier.PROPERTY_GIFT_CARD)?:'0';
+    freezeAmount = freezeAmount?:supplier?.getProperty(models.supplier.Supplier.FREEZE_AMOUNT)?:'0';
     }%
 #{/if}
     <div class="controls">
@@ -85,6 +86,8 @@ error:'supplier.operator'}
                value="1" ${"1".equals(giftCard)?'checked':''}/>是否销售需预约的礼品券
         <input type="checkbox" name="delayWithdraw" id="supplier_delayWithdraw"
                value="1" ${"1".equals(delayWithdraw)?'checked':''}/>是否延期提现
+        <input type="checkbox" name="freezeAmount" id="supplier_freezeAmount"
+               value="1" ${"1".equals(freezeAmount)?'checked':''}/>是否要冻结金额
         <span class="help-block"> (每月分 5-14, 15-24, 25-4 三个阶段提现。分别提上月25号之前，本月5号之前，本月15号之前 的款) </span>
 
     </div>

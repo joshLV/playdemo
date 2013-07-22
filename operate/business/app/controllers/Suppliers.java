@@ -138,6 +138,7 @@ public class Suppliers extends Controller {
         supplier.setProperty(Supplier.KTV_SKU_PUSH_END_HOUR, request.params.get(Supplier.KTV_SKU_PUSH_END_HOUR));
         supplier.setProperty(Supplier.IS_WITHDRAW_DELAY, request.params.get(Supplier.IS_WITHDRAW_DELAY));
         supplier.setProperty(Supplier.PROPERTY_GIFT_CARD, request.params.get(Supplier.PROPERTY_GIFT_CARD));
+        supplier.setProperty(Supplier.FREEZE_AMOUNT, request.params.get(Supplier.FREEZE_AMOUNT));
     }
 
     private static void redirectUrl(int page) {

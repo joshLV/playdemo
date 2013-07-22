@@ -18,7 +18,9 @@ import models.order.ECouponStatus;
 import models.order.OrderItems;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import play.Play;
 import play.test.UnitTest;
 
 import java.math.BigDecimal;
@@ -31,6 +33,7 @@ import java.util.List;
  * Date: 13-5-29
  * Time: 下午4:26
  */
+@Ignore
 public class KtvAutoVerifyCouponTest extends UnitTest {
     OrderItems orderItem;
     List<ECoupon> couponList;
