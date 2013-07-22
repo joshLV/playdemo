@@ -136,7 +136,7 @@ public class ImportPartnerOrders extends Controller {
 
         TradesSoldGetRequest request = new TradesSoldGetRequest();
         request.setFields("orders.outer_iid,tid,orders.payment,orders.num,pay_time,orders.price,shipping_type," +
-                "orders.logistics_company,receiver_mobile,receiver_name,receiver_state,receiver_city," +
+                "orders.logistics_company,receiver_mobile,receiver_phone,receiver_name,receiver_state,receiver_city," +
                 "receiver_district,receiver_address,receiver_zip,has_buyer_message");
         request.setStatus("WAIT_SELLER_SEND_GOODS");
         long page = 1L;
@@ -193,7 +193,12 @@ public class ImportPartnerOrders extends Controller {
                             logistic.setBuyNumber(order.getNum());
                             logistic.setPaidAt(trade.getPayTime());
                             logistic.setExpressInfo(order.getLogisticsCompany());
-                            logistic.setPhone(trade.getReceiverMobile());
+                            String receiverMobile = trade.getReceiverMobile();
+                            if (StringUtils.isBlank(receiverMobile)){
+                                logistic.setPhone(trade.getReceiverPhone());
+                            }else {
+                                logistic.setPhone(receiverMobile);
+                            }
                             logistic.setReceiver(trade.getReceiverName());
                             logistic.setZipCode(trade.getReceiverZip());
                             logistic.setRemarks(buyerMessage);
