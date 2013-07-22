@@ -12,6 +12,7 @@ import models.jobs.annotation.JobDefine;
 import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
 import play.jobs.On;
+import play.jobs.OnApplicationStart;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -23,7 +24,7 @@ import java.util.List;
  * Date: 13-7-9
  * Time: 下午2:29
  */
-//@On("0 0 2 * * ?")  //每天凌晨四点执行
+@On("0 0 2 * * ?")  //每天凌晨四点执行
 //@OnApplicationStart
 @JobDefine(title = "更新过去账户结算金额", description = "更新过去账户结算金额")
 public class refreshPreviousClearAccount extends JobWithHistory {
@@ -35,30 +36,30 @@ public class refreshPreviousClearAccount extends JobWithHistory {
         System.out.println("accountList = " + accountList.size());
         ClearedAccount clearedAccount;
         Date toDate = DateUtil.stringToDate("2013-07-06 00:00:00", "yyyy-MM-dd HH:mm:ss");
-        for (Account account : accountList) {
-            List<AccountSequence> sequences = AccountSequence.find(
-                    " account=?  and settlementStatus=? and createdAt <? and tradeType !=? ",
-                    account, SettlementStatus.UNCLEARED, toDate, TradeType.WITHDRAW).fetch();
+//        for (Account account : accountList) {
+//            List<AccountSequence> sequences = AccountSequence.find(
+//                    " account=?  and settlementStatus=? and createdAt <? and tradeType !=? ",
+//                    account, SettlementStatus.UNCLEARED, toDate, TradeType.WITHDRAW).fetch();
+//
+//            clearedAccount = new ClearedAccount();
+//            clearedAccount.date = DateUtil.stringToDate("2013-07-05 23:59:59", "yyyy-MM-dd HH:mm:ss");
+//            clearedAccount.accountId = account.id;
+//            clearedAccount.amount = AccountSequence.getClearAmount(account,
+//                    toDate);
+//            if (clearedAccount.amount.compareTo(BigDecimal.ZERO) == 0) {
+//                continue;
+//            }
+//            for (AccountSequence sequence : sequences) {
+//                sequence.settlementStatus = SettlementStatus.CLEARED;
+//                sequence.save();
+//            }
+//            clearedAccount.accountSequences = sequences;
+//            clearedAccount.save();
+//            Logger.info("account.id:" + account.id + "toDate:" + toDate + " " +
+//                    "getClearAmount:" + clearedAccount.amount);
+//        }
 
-            clearedAccount = new ClearedAccount();
-            clearedAccount.date = DateUtil.stringToDate("2013-07-05 23:59:59", "yyyy-MM-dd HH:mm:ss");
-            clearedAccount.accountId = account.id;
-            clearedAccount.amount = AccountSequence.getClearAmount(account,
-                    toDate);
-            if (clearedAccount.amount.compareTo(BigDecimal.ZERO) == 0) {
-                continue;
-            }
-            for (AccountSequence sequence : sequences) {
-                sequence.settlementStatus = SettlementStatus.CLEARED;
-                sequence.save();
-            }
-            clearedAccount.accountSequences = sequences;
-            clearedAccount.save();
-            Logger.info("account.id:" + account.id + "toDate:" + toDate + " " +
-                    "getClearAmount:" + clearedAccount.amount);
-        }
-
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 4; i++) {
             Date fromDate = DateUtils.truncate(DateUtils.addDays(new Date(), -1 - i), Calendar.DATE);
             toDate = DateUtils.truncate(DateUtils.addDays(new Date(), -i), Calendar.DATE);
             for (Account account : accountList) {
