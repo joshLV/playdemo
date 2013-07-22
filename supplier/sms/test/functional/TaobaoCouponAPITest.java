@@ -211,7 +211,7 @@ Resaler resaler;
 
         //测试submethod
         params.put("data", "{\"valid_start\":\"" + dateFormat.format(start) + "\", \"valid_ends\":\"" + dateFormat.format(end) + "\"}");
-        params.put("sub_method", "2");
+        params.put("sub_method", "3");
         resign(params);
 
         response = POST2("/api/v1/taobao/coupon", params);
