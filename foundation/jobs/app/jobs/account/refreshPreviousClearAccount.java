@@ -11,8 +11,6 @@ import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
-import play.jobs.On;
-import play.jobs.OnApplicationStart;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -24,7 +22,7 @@ import java.util.List;
  * Date: 13-7-9
  * Time: 下午2:29
  */
-@On("0 0 2 * * ?")  //每天凌晨四点执行
+//@On("0 0 2 * * ?")  //每天凌晨四点执行
 //@OnApplicationStart
 @JobDefine(title = "更新过去账户结算金额", description = "更新过去账户结算金额")
 public class refreshPreviousClearAccount extends JobWithHistory {
