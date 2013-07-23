@@ -92,6 +92,25 @@ error:'supplier.operator'}
 
     </div>
 </div>
+
+
+<div class="control-group">
+    <label class="control-label">验证渠道</label>
+#{if "edit".equals(action)}
+%{
+    meiTuan=meiTuan?:supplier?.getProperty(models.supplier.Supplier.MEI_TUAN)?:'0';
+    dianPing=dianPingl?:supplier?.getProperty(models.supplier.Supplier.DIAN_PING)?:'0';
+    }%
+#{/if}
+    <div class="controls">
+        <input type="checkbox" name="meiTuan" id="supplier_meiTuan"
+               value="1"${"1".equals(meiTuan)?'checked':''}/>美团
+        &nbsp;&nbsp;
+        <input type="checkbox" name="dianPing" id="supplier_dianPing"
+               value="1" ${"1".equals(dianPing)?'checked':''}/>点评&nbsp;&nbsp;
+    </div>
+</div>
+
 *{<div class="control-group">}*
 *{<label class="control-label">选择分销商</label>}*
 
