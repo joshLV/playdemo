@@ -66,7 +66,8 @@
     <tbody>
         #{list items:goodsList, as:'goods' }
         %{
-            ecouponRefundCount = models.order.ECoupon.count("goods.id=? and status=?", goods.id, models.order.ECouponStatus.REFUND);
+        ecouponRefundCount = models.order.ECoupon.count("goods.id=? and status=?", goods.id,
+        models.order.ECouponStatus.REFUND);
         }%
         <tr>
             <td>
@@ -77,7 +78,8 @@
             <td>${goods.cumulativeStocks}</td>
             <td>${goods.getRealSaleCount() + ecouponRefundCount}</td>
             <td>${ecouponRefundCount}</td>
-            <td>${goods.getRealStocks()}</td>
+        *{<td>${goods.getRealStocks()}</td>}*
+            <td>${goods.cumulativeStocks-goods.getRealSaleCount() - ecouponRefundCount}</td>
             <td></td>
         </tr>
         #{/list}

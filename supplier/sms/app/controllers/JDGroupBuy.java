@@ -86,7 +86,8 @@ public class JDGroupBuy extends Controller {
         OuterOrderVO outerOrderVO = OuterOrderVO.build(resaler)
                 .outerOrderId(jdOrderId)
                 .totalAmount(origin)   //总价
-                .mobile(mobile);
+                .mobile(mobile)
+                .message(restXml);
 
         OuterOrderItemVO outerOrderItemVO = OuterOrderItemVO.build()
                 .venderTeamId(venderTeamId)
