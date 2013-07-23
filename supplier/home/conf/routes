@@ -52,6 +52,9 @@ GET     /verify/refresh                         SupplierVerifyECoupons.refresh
 POST    /verify/{shopId}/{eCouponSn}            SupplierVerifyECoupons.singleQuery
 POST    /verify/verify                          SupplierVerifyECoupons.verify
 GET     /verify/verified-coupons                SupplierVerifyECoupons.showVerifiedCoupons
+
+#美团券验证
+POST     /coupon/verified                        SupplierVerifyECoupons.meituan
 #二次验证类商品预约
 GET     /coupon-appointment                      SupplierAppointments.index
 GET     /coupon-appointment/new                  SupplierAppointments.showAdd
