@@ -10,7 +10,9 @@ public enum OuterOrderPartner {
     JD("JD", "京东", "jingdong"),     // 京东
     WB("WB", "58", "wuba"),     // 58
     TB("TB", "淘宝", "taobao"),     // 淘宝电子凭证
-    SINA("SINA", "新浪", "sina");   //新浪卡券
+    SINA("SINA", "新浪", "sina"),   //新浪卡券
+    MT("MEITUAN", "美团", "meituan");  //美团
+
 
     private String code;// 代号
     private String name;// 中文名称
