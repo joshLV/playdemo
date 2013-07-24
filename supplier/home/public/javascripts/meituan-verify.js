@@ -23,9 +23,15 @@ jQuery(function ($) {
             snInput.focus();
             return false;
         }
-        var re = /[0-9]{10}/;   //判断字符串是否为数字
+
+        if (isNaN(snInput.val().replace(/ /g, ''))) {
+            alert('券号应为数字，请修正。');
+            snInput.focus();
+            return false;
+        }
+        var re = /[0-9]/;   //判断字符串是否为数字
         if (!re.test(snInput.val().replace(/ /g, ''))) {
-            alert('券号应为10位数字，请修正。');
+            alert('券号应为位数字，请修正。');
             snInput.focus();
             return false;
         }
@@ -41,12 +47,12 @@ jQuery(function ($) {
     var formatCopyECouponSn = function (eCouponInput, e) {
         if (e.ctrlKey) {//同时按下ctrl+v
             var value = eCouponInput.val().replace(/ /g, '');
-            if (value.length > 3) {
-                eCouponInput.val(value.substring(0, 3) + ' ' + value.substring(3, value.length));
+            if (value.length > 4) {
+                eCouponInput.val(value.substring(0, 4) + ' ' + value.substring(4, value.length));
                 value = eCouponInput.val();
             }
-            if (value.length > 7) {
-                eCouponInput.val(value.substring(0, 7) + ' ' + value.substring(7, value.length));
+            if (value.length > 8) {
+                eCouponInput.val(value.substring(0, 8) + ' ' + value.substring(9, value.length));
             }
         }
     };
@@ -69,132 +75,10 @@ jQuery(function ($) {
     enterCoupon.live('keypress', function () {
         var _this = $(this),
             value = _this.val();
-        if (value.length == 3) {
-            _this.val(value + ' ');
-        } else if (value.length == 7) {
-            _this.val(value + ' ');
-        }
-    });
-
-
-    /**
-     * ctrl+v格式券号
-     *
-     * @param eCouponInput
-     * @param e
-     */
-    var formatCopyMeituanECouponSn = function (eCouponInput, e) {
-        if (e.ctrlKey) {//同时按下ctrl+v
-            var value = eCouponInput.val().replace(/ /g, '');
-            if (value.length > 4) {
-                eCouponInput.val(value.substring(0, 4) + ' ' + value.substring(4, value.length));
-                value = eCouponInput.val();
-            }
-            if (value.length > 8) {
-                eCouponInput.val(value.substring(0, 8) + ' ' + value.substring(8, value.length));
-            }
-        }
-    };
-
-    var serial = 0, coupons = [], needClearList = false;
-
-    /**
-     * 批量验证的输入框
-     */
-    var entermeituanCoupon = $('#enter-meituan-coupon');
-
-    entermeituanCoupon.keyup("v", function (e) {
-        formatCopyMeituanECouponSn(entermeituanCoupon, e);
-    });
-
-    /**
-     * 格式化券号输入框中的数字
-     */
-    entermeituanCoupon.live('keypress', function () {
-        var _this = $(this),
-            value = _this.val();
-        console.log(value)
         if (value.length == 4) {
             _this.val(value + ' ');
         } else if (value.length == 9) {
             _this.val(value + ' ');
-        }
-    });
-
-    var addMultiVerifyCoupon = function () {
-        if (serial > 10) {
-            alert('一次最多只能验证10张券号，请分次验证。');
-            return false;
-        }
-
-        var value = enterCoupon.val();
-        if ($.inArray(value.replace(/ /g, ''), coupons) != -1) {
-            alert('请不要输入重复的券号。');
-            return false;
-        }
-
-        if (checkCouponSn(shopIdInput, enterCoupon)) {
-            addVerifyQueue();
-            if (needClearList) {
-                clearList();
-                needClearList = false;
-            }
-        }
-        enterCoupon.focus();
-    };
-
-    /**
-     * 增加待验证的券到列表中.
-     */
-    var addVerifyQueue = function () {
-        var value = enterCoupon.val();
-        var eCouponSn = value.replace(/ /g, '');
-
-        $.ajax({
-            type: 'POST',
-            url: '/verify/' + shopIdInput.val() + "/" + eCouponSn,
-            success: function (data) {
-                // 券号不能通过验证时，给出提示
-                if (data.errorInfo != null && data.errorInfo != "null") {
-                    alert(data.errorInfo);
-                    enterCoupon.focus();
-                    return;
-                }
-                coupons[serial++] = eCouponSn;
-                $("#eCouponSns").val(coupons.join(','));
-                // 券号能验证时，让用户确认验证
-                $('#coupons-table').append('<tr class="row-coupon' + (serial % 2 == 0 ? " odd" : "") + '">' +
-                    '<td class="serial">' + serial + '</td>' +
-                    '<td>' + value + '</td>' +
-                    '<td>' + data.goodsName + '</td>' +
-                    '<td>' + data.faceValue + '元</td>' +
-                    '<td>' + data.expireAt + '</td>' +
-                    '<td><a class="delete-coupon" href="javascript:void(0)">删除</a></td>' +
-                    '<td><div class="verify-result"></div></td>' +
-                    '</tr>');
-                enterCoupon.val('');
-                $('.batch-verify').removeClass("disabled");
-
-            },
-            error: function (data) {
-                window.location.href = '/verify';
-            }
-        });
-    };
-
-    var clearList = function () {
-        coupons = [];
-        $("#eCouponSns").val('');
-        serial = 0;
-        $('.row-coupon').remove();
-        $('.batch-verify').addClass("disabled");
-
-    };
-
-    $('#coupon-form').keypress(function (e) {
-        if (e.keyCode == 13) {
-            addMultiVerifyCoupon();
-            return false;
         }
     });
 
@@ -216,68 +100,69 @@ jQuery(function ($) {
                     $(this).text(i + 1);
                 });
             }
-            //批量验证的添加券号的按钮点击事件，点击后验证当前输入的券号.
-        } else if (_this.hasClass('add-coupon')) {
-            addMultiVerifyCoupon();
             // 批量验证
         } else if (_this.hasClass('batch-verify')) {
             if (_this.hasClass("disabled")) {
                 return;
             }
-            $("#verify-btn").text("正在验证......");
+            var eCouponSn = $("#enter-coupon").val().replace(/ /g, '');
+            $("#verify-btn").text("正在验证....");
             $("#verify-btn").addClass("disabled");
+            if (eCouponSn.length == 12) {
+                var partnerGoodsId = $("#partnerGoodsId").val();
+                var partnerShopId = $("#partnerShopId").val();
+                var goodsId = $("#goodsId").val();
 
-            $.ajax({
-                type: 'POST',
-                url: '/verify/verify',
-                data: {'shopId': shopIdInput.val(), 'eCouponSns': coupons},
-                success: function (data) {
-                    if (data != null) {
-                        $('.verify-result').each(function (i) {
-                            $(this).text(data[i]);
+                $('.add-meituan-coupon').addClass("disabled");
+                $.ajax({
+                    type: 'POST',
+                    data: {'goodsId': goodsId,'partnerGoodsId': partnerGoodsId, 'partnerShopId': partnerShopId, 'eCouponSn': eCouponSn},
+                    url: '/meituan-coupon/verified',
+                    success: function (data) {
+                        if (data != null) {
+                            $("#verify-info").text(data.message);
+                            $('.batch-verify').removeClass("disabled");
+                            $("#verify-btn").text("验证消费");
+                        }
 
-                            if (data[i] != null && data[i].indexOf("成功") >= 0) {
-                                $(this).addClass("success")
-                            } else {
-                                $(this).addClass("error")
-                            }
+                    }});
+            } else {
 
-                        });
-                        needClearList = true;
-                        $("#verify-btn").text("验证并消费");
-                        //刷新最近验证过的5张券的券号
-                        $("#verifiedCoupons").load('/verify/verified-coupons', function (data) {
-                            $(this).html(data.replace(/"|\[|\]/g, ""));
-                        });
+                $.ajax({
+                    type: 'POST',
+                    url: '/verify/' + shopIdInput.val() + "/" + eCouponSn,
+                    success: function (data) {
+                        // 券号不能通过验证时，给出提示
+                        if (data.errorInfo != null && data.errorInfo != "null") {
+                            alert(data.errorInfo);
+                            enterCoupon.focus();
+                            $('.batch-verify').removeClass("disabled");
+                            $("#verify-btn").text("验证消费");
+                        }
+                    },
+                    error: function (data) {
+                        window.location.href = '/verify';
                     }
-                },
-                error: function () {
-                    window.location.href = '/verify';
-                }
+                });
 
-            });
+                $.ajax({
+                    type: 'POST',
+                    url: '/verify/verify',
+                    data: {'shopId': shopIdInput.val(), 'eCouponSns': eCouponSn},
+                    success: function (data) {
+                        if (data != null) {
+                            $("#verify-info").text(data);
+                            $('.batch-verify').removeClass("disabled");
+                            $("#verify-btn").text("验证消费");
+                        }
+                    },
+                    error: function () {
+                        window.location.href = '/verify';
+                    }
+
+                });
+            }
         }
     });
 });
 
-
-$(function () {
-    $('.add-meituan-coupon').click(function () {
-        var partnerGoodsId = $("#partnerGoodsId").val();
-        var partnerShopId = $("#partnerShopId").val();
-        var couponIds = $("#enter-meituan-coupon").val();
-        $("#verify-info").text("正在验证......");
-        $('.add-meituan-coupon').addClass("disabled");
-        $.ajax({
-            type: 'POST',
-            data: {'partnerGoodsId': partnerGoodsId, 'partnerShopId': partnerShopId, 'couponIds': couponIds},
-            url: '/coupon/verified',
-            success: function (data) {
-                if (data != null) {
-                    $("#verify-info").text(data.message);
-                    $('.add-meituan-coupon').removeClass("disabled");
-                }
-
-            }});
-    });
-})
