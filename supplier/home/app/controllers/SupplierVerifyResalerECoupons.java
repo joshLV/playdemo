@@ -114,15 +114,13 @@ public class SupplierVerifyResalerECoupons extends Controller {
             System.out.println(header.name + ": " + header.value());
         }
         String body = response.getString();
-        System.out.println(body);
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("partnerGoodsId", partnerGoodsId);
         jsonMap.put("partnerShopId", partnerShopId);
         jsonMap.put("goodsId", goodsId);
-        body = "{\"status\":0,\"data\":[{\"result\":\"\u6d88\u8d39\u6210\u529f\",\"code\":\"201819625306\",\"errcode\":false}]}";
+//        body = "{\"status\":0,\"data\":[{\"result\":\"\u6d88\u8d39\u6210\u529f\",\"code\":\"201819625306\",\"errcode\":false}]}";
         JsonParser jsonParser = new JsonParser();
         JsonObject result = jsonParser.parse(body).getAsJsonObject();
-        System.out.println(result+"----");
         if (result.has("data")) {
             JsonArray dataResult = result.get("data").getAsJsonArray();
             System.out.println("data:"+dataResult);
@@ -130,16 +128,15 @@ public class SupplierVerifyResalerECoupons extends Controller {
                 JsonObject data = obj.getAsJsonObject();
                 String coupon = data.get("code").getAsString();
                 String errcode = data.get("errcode").getAsString();//成功为false 失败为1
-                System.out.println(errcode+"----");
                 message = data.get("result").getAsString();
                 if (!"1".equals(errcode)) {
 
-                    OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon, OuterOrderPartner.TB);
+                    OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon, OuterOrderPartner.MT);
                     if (outerOrder == null) {
                         outerOrder = new OuterOrder();
                         outerOrder.resaler = resaler;
                         outerOrder.status = OuterOrderStatus.ORDER_COPY;
-                        outerOrder.partner = OuterOrderPartner.TB;
+                        outerOrder.partner = OuterOrderPartner.MT;
                         outerOrder.orderId = coupon;
                         outerOrder.message = new Gson().toJson(jsonMap);
                         outerOrder.createdAt = new Date();
