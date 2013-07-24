@@ -74,6 +74,7 @@ GET     /wubaThirdBillSequences                 DDGroupBuy.wubaThirdBillSequence
 
 GET     /ktv/taobao/sku-diff                    TaobaoSkuInfo.diff
 GET     /ktv/taobao/sku-stats                   TaobaoSkuInfo.stats
+POST    /ktv/taobao/sku-diff                    TaobaoSkuInfo.diffV2
 
 GET   /mock-api                                 MockApiMain.index
 GET   /mock/jingdong/send-order                 mock.JingDongGroupByRequest.sendOrder
