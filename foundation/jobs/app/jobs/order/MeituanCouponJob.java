@@ -17,7 +17,6 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import play.Logger;
-import play.jobs.Every;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ import java.util.List;
  * Time: 上午9:43
  */
 @JobDefine(title = "美团券生成", description = "处理OuterOrder中未生成的订单，生成券不发送")
-@Every("1mn")
+//@Every("1mn")
 public class MeituanCouponJob extends JobWithHistory {
 
     @Override
@@ -73,7 +72,6 @@ public class MeituanCouponJob extends JobWithHistory {
         ybqOrder.payMethod = PaymentSource.getBalanceSource().code;
         ybqOrder.payAndSendECoupon();
         ybqOrder.save();
-        System.out.println("ybqOrder.id = " + ybqOrder.id);
 
         List<ECoupon> couponList = ECoupon.find("byOrder", ybqOrder).fetch();
         for (int i = 0; i < couponStrList.size(); i++) {
@@ -81,7 +79,7 @@ public class MeituanCouponJob extends JobWithHistory {
             c.partnerCouponId = couponStrList.get(i);
             c.status = ECouponStatus.CONSUMED;
             c.save();
-            System.out.println("coupon.id = " + c.id);
+            Logger.info("coupon.id = ", c.id);
             ECouponHistoryMessage.with(c).remark("系统定时自动生成美团订单,成功后自动验证")
                     .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         }

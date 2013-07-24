@@ -1,6 +1,10 @@
 package controllers;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import controllers.supplier.SupplierInjector;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
@@ -14,7 +18,6 @@ import models.sales.SupplierResalerShop;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-import play.data.binding.As;
 import play.libs.WS;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -123,14 +126,13 @@ public class SupplierVerifyResalerECoupons extends Controller {
         JsonObject result = jsonParser.parse(body).getAsJsonObject();
         if (result.has("data")) {
             JsonArray dataResult = result.get("data").getAsJsonArray();
-            System.out.println("data:"+dataResult);
+            System.out.println("data:" + dataResult);
             for (JsonElement obj : dataResult) {
                 JsonObject data = obj.getAsJsonObject();
                 String coupon = data.get("code").getAsString();
                 String errcode = data.get("errcode").getAsString();//成功为false 失败为1
                 message = data.get("result").getAsString();
                 if (!"1".equals(errcode)) {
-
                     OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon, OuterOrderPartner.MT);
                     if (outerOrder == null) {
                         outerOrder = new OuterOrder();
@@ -146,7 +148,6 @@ public class SupplierVerifyResalerECoupons extends Controller {
                 }
             }
         }
-
         renderJSON("{\"message\":\"" + message + "\"}");
     }
 }
