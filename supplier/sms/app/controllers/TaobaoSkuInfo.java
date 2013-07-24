@@ -23,6 +23,7 @@ import play.Logger;
 import play.libs.Crypto;
 import play.mvc.Controller;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -131,6 +132,72 @@ public class TaobaoSkuInfo extends Controller {
         ));
         result.put("numIid", partnerProductId);
 
+
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        renderJSON(gson.toJson(result));
+    }
+
+
+    public static void diffV2(String partnerProductId, String skuStrList) {
+        ResalerProduct resalerProduct = ResalerProduct.find("byPartnerAndPartnerProductId", OuterOrderPartner.TB, partnerProductId).first();
+        KtvProductGoods productGoods =  KtvProductGoods.find("byGoods", resalerProduct.goods).first();
+
+
+        //构建新的淘宝SKU列表
+        SortedMap<KtvRoomType, SortedMap<Date, SortedMap<Integer, KtvTaobaoSku>>> localSkuMap
+                = KtvTaobaoUtil.buildTaobaoSku(productGoods.shop, productGoods.product, true);
+
+        if (resalerProduct.resaler == null) {
+            Logger.info("reslaer is null");
+            error();
+        }
+        if (StringUtils.isBlank(resalerProduct.partnerProductId)) {
+            Logger.info("partner product is null");
+            error();
+        }
+
+        List<KtvTaobaoSku> remoteSkuList = new ArrayList<>();
+
+        String[] skuStrArray = skuStrList.split(";");
+        for (String skuStr : skuStrArray) {
+            String[] skuItems = skuStr.split(",");
+
+            KtvTaobaoSku s = new KtvTaobaoSku();
+            s.setTaobaoSkuId(Long.parseLong(skuItems[0]));
+            s.setQuantity(Integer.parseInt(skuItems[1]));
+            s.setPrice(new BigDecimal(skuItems[2]));
+            if ( s.parseTaobaoOuterId(skuItems[3]) == null){
+                Logger.error("parse taobao sku error: %s : %s", partnerProductId, skuItems[3]);
+                continue;
+            }
+            remoteSkuList.add(s);
+        }
+
+
+
+        Map<String, List<KtvTaobaoSku>> diffResult =  KtvTaobaoUtil.diffSkuBetweenLocalAndRemote(localSkuMap, remoteSkuList);
+
+        Map<String, Object> result = new HashMap<>();
+
+        for (Map.Entry<String, List<KtvTaobaoSku>> entry : diffResult.entrySet()) {
+            List<Map<String, Object>> skuList = new ArrayList<>();
+            for (KtvTaobaoSku sku : entry.getValue()) {
+                Map<String, Object> s = new HashMap<>();
+                s.put("roomType", sku.getRoomType());
+                s.put("date", sku.getDate());
+                s.put("startTime", sku.getStartTime());
+                s.put("duration", sku.getDuration());
+                s.put("timeRangeCode", sku.getTimeRangeCode());
+                s.put("price", sku.getPrice());
+                s.put("quantity", sku.getQuantity());
+                s.put("taobaoSkuId", sku.getTaobaoSkuId());
+                s.put("taobaoOuterIid", sku.getTaobaoOuterIid());
+                s.put("taobaoProperties", sku.getTaobaoProperties());
+                skuList.add(s);
+            }
+            result.put(entry.getKey(), skuList);
+        }
+        result.put("numIid", partnerProductId);
 
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         renderJSON(gson.toJson(result));
