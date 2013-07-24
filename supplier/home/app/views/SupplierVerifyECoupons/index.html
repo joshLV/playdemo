@@ -6,7 +6,7 @@
     #{asset.css src:['/m/verify.css'] /}
 #{/set}
 #{set 'moreScripts'}
-<script src="@{'/public/javascripts/meituan-verify.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/verify.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <div class="bd batch-verify">
     <h2>${title}</h2>
@@ -71,49 +71,3 @@
 </div>
 <iframe width=0 height=0 name="refresh-frame" src="/verify/refresh"></iframe>
 <script type="text/javascript">setInterval("window.frames['refresh-frame'].location.reload()", 10000)</script>
-%{
-meituan = currentUser?.supplier?.getProperty(models.supplier.Supplier.MEI_TUAN);
-}%
-#{if "1".equals(meituan)}
-<h2>美团券验证</h2>
-<form id="meituan-coupon-form" action="@{SupplierVerifyECoupons.meituan()}" method="post">
-    <div class="field-sect">
-        <div class="field-group">
-            <label>美团分店</label>
-            #{select 'partnerShopId', id:"partnerShopId", value:partnerShopId}
-                #{list items:resalerShopList, as:'shop'}
-                    #{option shop?.resalerPartnerShopId}${shop?.resalerPartnerShopName}#{/option}
-                #{/list}
-            #{/select}
-        </div>
-        <div class="field-group">
-            <label>美团项目</label>
-            #{select 'partnerGoodsId', id:"partnerGoodsId", value:partnerGoodsId}
-                #{option ''}--请选择--#{/option}
-                #{list items:resalerProductList, as:'resalerGoods'}
-                    #{option resalerGoods?.partnerGoodsId}${resalerGoods?.partnerGoodsName}#{/option}
-                #{/list}
-            #{/select}
-        </div>
-        <div class="field-group">
-            <label class="coupon-label" for="enter-coupon">输入券号</label>
-            <input type="text" size="32" maxlength="14" name="coupon" autofocus="true" id="enter-meituan-coupon"
-                   class="enter-coupon" value=""/>
-            <a class="btn add-meituan-coupon" href="javascript:void(0);" hidefocus="true">验证消费</a>
-            <span id="verify-info" style="color: red;display: block"></span>
-        </div>
-    *{<table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">}*
-    *{<tr>}*
-    *{<th width="30">序号</th>}*
-    *{<th width="110">输入的券号</th>}*
-    *{<th width="30" class="code">操作</th>}*
-    *{<th width="auto">验证消费提示</th>}*
-    *{</tr>}*
-    *{</table>}*
-    *{<div class="verify-sect">}*
-    *{<a id="verify-btn" class="btn batch-verify disabled" href="javascript:void(0);"}*
-    *{hidefocus="true">验证并消费</a>}*
-    *{</div>}*
-    </div>
-</form>
-#{/if}

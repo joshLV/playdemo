@@ -80,6 +80,10 @@ public class SupplierVerifyECoupons extends Controller {
      */
     public static void index() {
         Supplier supplier = SupplierRbac.currentUser().supplier;
+
+        if ("1".equals(supplier.getProperty(Supplier.MEI_TUAN)) || "1".equals(supplier.getProperty(Supplier.DIAN_PING))) {
+            redirect("/meituan-coupon/verified");
+        }
         Long supplierUserId = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
         List<Shop> shopList = Shop.findShopBySupplier(supplier.id);
@@ -88,13 +92,6 @@ public class SupplierVerifyECoupons extends Controller {
 
         if (shopList.size() == 0) {
             error("该商户没有添加门店信息！");
-        }
-
-        if ("1".equals(supplier.getProperty(Supplier.MEI_TUAN)) || "1".equals(supplier.getProperty(Supplier.DIAN_PING))) {
-            List<SupplierResalerShop> resalerShopList = SupplierResalerShop.find("supplier.id=? and resaler=?", supplier.id, Resaler.findApprovedByLoginName("meituan")).fetch();
-            renderArgs.put("resalerShopList", resalerShopList);
-            List<SupplierResalerProduct> resalerProductList = SupplierResalerProduct.find("supplier.id=? and resaler=?", supplier.id, Resaler.findApprovedByLoginName("meituan")).fetch();
-            renderArgs.put("resalerProductList", resalerProductList);
         }
 
         if (supplierUser.shop == null) {
@@ -163,7 +160,6 @@ public class SupplierVerifyECoupons extends Controller {
             }
         }
         sendVerifySMS(needSmsECoupons, shopId);
-
         renderJSON(eCouponResult);
     }
 
