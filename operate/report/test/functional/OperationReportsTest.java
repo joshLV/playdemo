@@ -248,7 +248,7 @@ public class OperationReportsTest extends FunctionalTest {
         Http.Response response = GET(Router.reverse("OperationReports.peopleEffectCategoryReportExcelOut").url);
         assertIsOk(response);
         assertEquals(2l, ((List<PeopleEffectCategoryReport>) renderArgs("peopleEffectReportList")).size());
-        assertEquals(BigDecimal.valueOf(10).setScale(2), ((List<PeopleEffectCategoryReport>) renderArgs("peopleEffectReportList")).get(0).totalAmount.setScale(2));
+//        assertEquals(BigDecimal.valueOf(10).setScale(2), ((List<PeopleEffectCategoryReport>) renderArgs("peopleEffectReportList")).get(0).totalAmount.setScale(2));
     }
 
     //ChannelCategoryReport

@@ -57,6 +57,7 @@
             sellECoupon = currentUser?.supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON);
             canSaleReal = currentUser?.supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL);
             ktvSupplier = currentUser?.supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER);
+            giftCard = currentUser?.supplier?.getProperty(models.supplier.Supplier.PROPERTY_GIFT_CARD);
         }%
 
         #{if ("1".equals(sellECoupon)) }
@@ -70,10 +71,6 @@
             #{/if}
             #{if navigation.ContextedPermission.hasPermission("COUPON_INDEX")}
                 <li><a #{if "coupons".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/coupons')}">券号列表</a></li>#{/if}
-            #{if navigation.ContextedPermission.hasPermission("ACCOUNT_REPORT")}
-                <li><a #{if "sequences".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/sequences')}">财务明细</a></li>#{/if}
-            #{if navigation.ContextedPermission.hasPermission("ACCOUNT_WITHDRAW")}
-                <li><a #{if "withdraws".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/withdraws')}">提现管理</a></li>#{/if}
             #{if navigation.ContextedPermission.hasPermission("REPORT")}
                 <li><a #{if "reports".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/reports')}">报表一览</a></li>#{/if}
             #{if navigation.ContextedPermission.hasPermission("SHOPS")}
@@ -81,6 +78,10 @@
             #{if navigation.ContextedPermission.hasPermission("USERS")}
                 <li><a #{if "users".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/users')}">帐号管理</a></li>#{/if}
         #{/if}
+        #{if navigation.ContextedPermission.hasPermission("ACCOUNT_WITHDRAW")}
+            <li><a #{if "withdraws".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/withdraws')}">提现管理</a></li>#{/if}
+        #{if navigation.ContextedPermission.hasPermission("ACCOUNT_REPORT")}
+            <li><a #{if "sequences".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/sequences')}">财务明细</a></li>#{/if}
         #{if navigation.ContextedPermission.hasPermission("DOWNLOAD_ORDER_SHIPPING") && ("1".equals(canSaleReal))}
             <li><a #{if "download-order-shipping".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/real/download-order-shipping')}">下载发货单</a>
             </li>
@@ -98,6 +99,10 @@
                 <li><a #{if "ktv_promotion".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/promotion/new')}">促销活动</a></li>
                 }*
                 <li><a #{if "ktv_daily_schedule".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getKtvLink('/ktv/daily-schedule')}">KTV每日预订</a></li>
+            #{/if}
+            #{if navigation.ContextedPermission.hasPermission("DOWNLOAD_ORDER_SHIPPING") && ("1".equals(giftCard))}
+            <li><a #{if "menu-gift-card".equals(menu)}class="curr"#{/if} href="${helper.SupplierLink.getHomeLink('/giftcard')}">礼品卡预约</a>
+            </li>
             #{/if}
         </ul>
         <div class="sbox">

@@ -31,6 +31,7 @@ import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReadStatus;
 import net.sf.jxls.reader.XLSReader;
 import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -135,7 +136,7 @@ public class ImportPartnerOrders extends Controller {
 
         TradesSoldGetRequest request = new TradesSoldGetRequest();
         request.setFields("orders.outer_iid,tid,orders.payment,orders.num,pay_time,orders.price,shipping_type," +
-                "orders.logistics_company,receiver_mobile,receiver_name,receiver_state,receiver_city," +
+                "orders.logistics_company,receiver_mobile,receiver_phone,receiver_name,receiver_state,receiver_city," +
                 "receiver_district,receiver_address,receiver_zip,has_buyer_message");
         request.setStatus("WAIT_SELLER_SEND_GOODS");
         long page = 1L;
@@ -144,7 +145,7 @@ public class ImportPartnerOrders extends Controller {
         request.setPageSize(pageSize);
 
         String errorInfo = "";
-
+        Set<String> unSetSupplierCodeList = new HashSet<>();
         List<LogisticImportData> logisticImportDataList = new ArrayList<>();
         while (true) {
             request.setPageNo(page);
@@ -181,13 +182,23 @@ public class ImportPartnerOrders extends Controller {
                             }
                             LogisticImportData logistic = new LogisticImportData();
                             logistic.setOuterOrderNo(String.valueOf(trade.getTid()));
+                            if (StringUtils.isBlank(order.getOuterIid())) {
+                                Logger.info("该商品在淘宝上没有发货，请确认一下!" + trade.getTid());
+                                unSetSupplierCodeList.add(String.valueOf(trade.getTid()));
+                                continue;
+                            }
                             logistic.setOuterGoodsNo(String.valueOf(order.getOuterIid()));
                             BigDecimal salePrice = new BigDecimal(order.getPayment()).divide(new BigDecimal(order.getNum()), RoundingMode.DOWN);
                             logistic.setSalePrice(salePrice);
                             logistic.setBuyNumber(order.getNum());
                             logistic.setPaidAt(trade.getPayTime());
                             logistic.setExpressInfo(order.getLogisticsCompany());
-                            logistic.setPhone(trade.getReceiverMobile());
+                            String receiverMobile = trade.getReceiverMobile();
+                            if (StringUtils.isBlank(receiverMobile)){
+                                logistic.setPhone(trade.getReceiverPhone());
+                            }else {
+                                logistic.setPhone(receiverMobile);
+                            }
                             logistic.setReceiver(trade.getReceiverName());
                             logistic.setZipCode(trade.getReceiverZip());
                             logistic.setRemarks(buyerMessage);
@@ -214,7 +225,7 @@ public class ImportPartnerOrders extends Controller {
 
         OuterOrderPartner partner = OuterOrderPartner.TB;
         render("ImportPartnerOrders/index.html", partner, errorInfo, existedOrderList,
-                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
+                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList,unSetSupplierCodeList);
     }
 
     private static void processLogisticList(List<LogisticImportData> logistics, OuterOrderPartner partner,

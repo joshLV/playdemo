@@ -1,5 +1,9 @@
 package controllers;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.uhuila.common.util.DateUtil;
 import controllers.supplier.SupplierInjector;
 import models.admin.SupplierUser;
@@ -8,24 +12,32 @@ import models.order.ECouponStatus;
 import models.order.OrderItemsFeeType;
 import models.order.SentAvailableECouponInfo;
 import models.order.VerifyCouponType;
+import models.resale.Resaler;
 import models.sales.Shop;
+import models.sales.SupplierResalerProduct;
+import models.sales.SupplierResalerShop;
 import models.sms.SMSMessage;
+import models.supplier.Supplier;
+import models.supplier.SupplierProperty;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
+import play.data.binding.As;
+import play.libs.WS;
 import play.mvc.Before;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.With;
 import util.transaction.RemoteRecallCheck;
 import util.transaction.TransactionCallback;
 import util.transaction.TransactionRetry;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 电子券验证.
@@ -38,6 +50,10 @@ import java.util.Map;
 @With({SupplierRbac.class, SupplierInjector.class})
 @ActiveNavigation("coupons_multi_index")
 public class SupplierVerifyECoupons extends Controller {
+    private static String MEITUAN_LOGIN_NAME = "MEITUAN_LOGIN_NAME";
+    private static String DIANPING_LOGIN_NAME = "DIANPING_LOGIN_NAME";
+    private static String headers;
+
     @Before(priority = 1000)
     public static void storeShopIp() {
         SupplierUser supplierUser = SupplierRbac.currentUser();
@@ -56,22 +72,28 @@ public class SupplierVerifyECoupons extends Controller {
         if (supplierUser.lastShopId != null) {
             renderArgs.put("shopId", supplierUser.lastShopId);
         }
+
     }
 
     /**
      * 券验证页面
      */
     public static void index() {
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Supplier supplier = SupplierRbac.currentUser().supplier;
+
+        if ("1".equals(supplier.getProperty(Supplier.MEI_TUAN)) || "1".equals(supplier.getProperty(Supplier.DIAN_PING))) {
+            redirect("/meituan-coupon/verified");
+        }
         Long supplierUserId = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
-        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        List<Shop> shopList = Shop.findShopBySupplier(supplier.id);
         List<String> verifiedCoupons = ECoupon.getRecentVerified(supplierUser, 5);
         renderArgs.put("verifiedCoupons", verifiedCoupons);
 
         if (shopList.size() == 0) {
             error("该商户没有添加门店信息！");
         }
+
         if (supplierUser.shop == null) {
             render(shopList, supplierUser);
         } else {
@@ -138,7 +160,6 @@ public class SupplierVerifyECoupons extends Controller {
             }
         }
         sendVerifySMS(needSmsECoupons, shopId);
-
         renderJSON(eCouponResult);
     }
 
@@ -210,4 +231,178 @@ public class SupplierVerifyECoupons extends Controller {
                     .send2();
         }
     }
+
+
+    public static void dianping() {
+
+        Map<String, String> headers = getHeaders("dianping");
+        headers.put("Content-Length", "33");
+
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("userName", "172079");
+        requestParams.put("password", "17248530");
+
+        WS.WSRequest wsRequest = WS.url("http://e.dianping.com/account/login");
+        wsRequest.headers(headers);
+        wsRequest.body(requestParams);
+        WS.HttpResponse wsResponse = wsRequest.post();
+        System.out.println(wsResponse.getStatus() + "====");
+        List<Http.Header> headList = wsResponse.getHeaders();
+        for (Http.Header header : headList) {
+            for (String s : header.values) {
+                System.out.println(header.name + "-----" + s);
+            }
+        }
+
+
+        String cookieValue;
+        //美团 http://e.meituan.com/account/login
+
+    }
+
+    public static void meituan(String partnerGoodsId, String partnerShopId, @As(",") List<String> couponIds) {
+        String message = "";
+        if (StringUtils.isBlank(partnerGoodsId)) {
+            message = "请选择美团项目！";
+            renderJSON("{\"message\":\"" + message + "\"}");
+        }
+        if (StringUtils.isBlank(partnerShopId)) {
+            message = "请选择门店！";
+            renderJSON("{\"message\":\"" + message + "\"}");
+        }
+        if (couponIds == null) {
+            message = "请输入券号！";
+            renderJSON("{\"message\":\"" + message + "\"}");
+        }
+        Resaler resaler = Resaler.findApprovedByLoginName("meituan");
+        Supplier supplier = SupplierRbac.currentUser().supplier;
+        SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("supplier=? and resaler=? and resalerPartnerShopId=?", supplier, resaler, partnerShopId).first();
+        String cookie = "";
+        if (supplierResalerShop != null) {
+            cookie = supplierResalerShop.cookieValue;
+        }
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Accept", "*/*");
+        headers.put("Accept-Encoding", "deflate,sdch");
+        headers.put("Accept-Language", "zh-CN,zh;q=0.8");
+        headers.put("Cache-Control", "max-age=0");
+        headers.put("Connection", "keep-alive");
+        headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        headers.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36");
+
+        headers.put("Host", "e.meituan.com");
+        headers.put("Origin", "http://e.meituan.com");
+        headers.put("Referer", "http://e.meituan.com/coupon/");
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        headers.put("Cookie", cookie);
+        Map<String, Object> params = new HashMap<>();
+        for (int i = 0; i < couponIds.size(); i++) {
+            params.put("codes[" + i + "]", couponIds.get(i));
+        }
+        params.put("dealid", partnerGoodsId);
+        params.put("bizloginid", partnerShopId);
+        WS.HttpResponse response = WS.url("http://e.meituan.com/coupon/batchconsume").params(params).headers(headers).followRedirects(false).post();
+        List<Http.Header> headerList = response.getHeaders();
+        for (Http.Header header : headerList) {
+            System.out.println(header.name + ": " + header.value());
+        }
+        String body = response.getString();
+        System.out.println(body);
+        JsonParser jsonParser = new JsonParser();
+        JsonObject result = jsonParser.parse(body).getAsJsonObject();
+        if (result.has("data")) {
+            JsonArray dataResult = result.get("data").getAsJsonArray();
+            for (JsonElement obj : dataResult) {
+                JsonObject data = obj.getAsJsonObject();
+//                String errcode = data.get("errcode").getAsString();//成功为false 失败为1
+                message = data.get("result").getAsString();
+            }
+        }
+
+        renderJSON("{\"message\":\"" + message + "\"}");
+    }
+
+    public static void meituan2() {
+        //第一次登录
+        Map<String, String> headers = getHeaders("meituan");
+
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("login", "shysdwyh");
+        requestParams.put("password", "270878");
+        requestParams.put("remember_username", "1");
+        requestParams.put("auto_login", "1");
+
+        WS.WSRequest wsRequest = WS.url("http://e.meituan.com/account/login");
+        wsRequest.followRedirects(true);
+        wsRequest.headers(headers);
+        wsRequest.params(requestParams);
+        WS.HttpResponse wsResponse = wsRequest.post();
+
+        List<Http.Header> headList = wsResponse.getHeaders();
+        List<String> cookieList = new ArrayList<>();
+        for (Http.Header header : headList) {
+            if ("Set-Cookie".equals(header.name)) {
+                for (String cookie : header.values) {
+                    cookieList.add(cookie.split(";")[0]);
+                }
+            }
+        }
+        /*
+        cookieList.add("em=Tjs");
+        cookieList.add("om=Tjs");
+        cookieList.add("xpiringdealnotitip=1");
+        cookieList.add("shangfuchunjienotitip=1");
+        cookieList.add("billschunjienotitip=1");
+        cookieList.add("sellapplyconfirmtip=1");
+        */
+//        cookieList.add("euserguide=1");
+
+        String cookie = StringUtils.join(cookieList, "; ");
+
+        Map<String, String> headers1 = getHeaders("meituan");
+        WS.WSRequest couponRequest = WS.url("http://e.meituan.com/coupon");
+        headers1.put("Cookie", cookie);
+//        headers.put("Cookie", "SID=6uicctq5ua52m4vo1d7vag45q7; eals=1; erus=1; elun=shysdwyh; ba=422331; elsu=shysdwyh; eal=Obiau7kogXZHVim6TMo_Zrx9vcsLWxbW; showdealconfirmnotitip=1; em=Tjs; om=Tjs; showexpiringdealnotitip=0; shangfuchunjienotitip=0; billschunjienotitip=0; sellapplyconfirmtip=0; __utma=1.489922958.1374483020.1374483020.1374483020.1; __utmb=1.1.10.1374483020; __utmc=1; __utmz=1.1374483020.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); uuid=b2ce3029490565b698b0.1374483019.0.0.0");
+        headers1.put("Content-Length", "19");
+
+        couponRequest.headers(headers1);
+        for (Map.Entry<String, String> entry : headers1.entrySet()) {
+            System.out.println("Header: " + entry.getKey() + ": " + entry.getValue());
+        }
+
+        Map<String, Object> couponRequestParams = new HashMap<>();
+        couponRequestParams.put("code", "1111 1111 1111");
+        WS.HttpResponse couponResponse = couponRequest.params(couponRequestParams).headers(headers).followRedirects(false).post();
+
+        String body = couponResponse.getString();
+        System.out.println("body: " + body);
+
+        for (Http.Header header : couponResponse.getHeaders()) {
+            System.out.println("header: " + header.name + ": " + header.value());
+        }
+    }
+
+    public static Map<String, String> getHeaders(String partner) {
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        headers.put("Accept-Encoding", "deflate,sdch");
+        headers.put("Accept-Language", "zh-CN,zh;q=0.8");
+        headers.put("Cache-Control", "max-age=0");
+        headers.put("Connection", "keep-alive");
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36");
+
+        if (partner.equals("meituan")) {
+            headers.put("Host", "e.meituan.com");
+            headers.put("Origin", "http://e.meituan.com");
+            headers.put("Referer", "http://e.meituan.com/coupon/");
+        } else {
+
+        }
+
+        return headers;
+    }
+
 }

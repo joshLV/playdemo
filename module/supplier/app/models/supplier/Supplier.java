@@ -75,6 +75,11 @@ public class Supplier extends Model {
     public static final String IS_WITHDRAW_DELAY = "delayWithdraw";//是否按照 5-15 16-25 26-31 三个日期段提款
     public static final String KTV_SKU_PUSH_END_HOUR = "ktvSkuPushEndHour";//ktv sku推送时间
     public static final String KTV_MAX_DEPLOY_DATE = "ktvMaxDeployDate"; //KTV 发布的预订天数
+    public static final String PROPERTY_GIFT_CARD = "giftCard"; //是否销售带预约的礼券
+    public static final String FREEZE_AMOUNT = "freezeAmount"; //是否要冻结金额
+    public static final String MEI_TUAN = "meiTuan"; //是否在美团上验证
+    public static final String DIAN_PING = "dianPing"; //是否在点评上验证
+
 
     private static Supplier SHIHUI = null;
     /**
@@ -359,6 +364,11 @@ public class Supplier extends Model {
 
     }
 
+    @Transient
+    public boolean isFreezeAmount() {
+        return "1".equals(this.getProperty(Supplier.FREEZE_AMOUNT));
+    }
+
     /**
      * 获取商户完整域名
      *
@@ -561,7 +571,7 @@ public class Supplier extends Model {
     }
 
     public static List<Supplier> findUnDeletedWithPrepayment() {
-        return find("deleted=? and id in (select supplier.id from Prepayment where deleted=? and settlementStatus = ? )  order by createdAt DESC", DeletedStatus.UN_DELETED, DeletedStatus.UN_DELETED,SettlementStatus.UNCLEARED).fetch();
+        return find("deleted=? and id in (select supplier.id from Prepayment where deleted=? and settlementStatus = ? )  order by createdAt DESC", DeletedStatus.UN_DELETED, DeletedStatus.UN_DELETED, SettlementStatus.UNCLEARED).fetch();
     }
 
 

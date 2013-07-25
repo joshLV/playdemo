@@ -10,6 +10,11 @@
     border-top-right-radius: 3px;
 }
 
+.field-section {
+    background: #F6F3EA;
+    padding: 15px 20px 5px;
+}
+
 /* 批量验证 {{{ */
 .batch-verify .field-group select {
     width: 600px;

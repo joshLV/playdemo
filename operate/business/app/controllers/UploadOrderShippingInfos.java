@@ -130,6 +130,9 @@ public class UploadOrderShippingInfos extends Controller {
                 continue;
             }
 
+            if (StringUtils.isNotBlank(orderItems.shippingInfo.expressNumber) || orderItems.shippingInfo.expressCompany != null) {
+                continue;
+            }
             orderItems.shippingInfo.expressCompany = expressCompany;
             orderItems.shippingInfo.expressNumber = logistic.expressNumber;
             orderItems.shippingInfo.freight = Freight.findFreight(orderItems.goods.getSupplier(), expressCompany,

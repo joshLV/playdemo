@@ -338,6 +338,8 @@ public class Orders extends Controller {
                         discountCode, isPromoteFlag
                 );
             }
+            System.out.println("orders commission = " + orderItem.commission);
+
             orderItem.save();
 
             // 保存商品折扣
@@ -391,7 +393,6 @@ public class Orders extends Controller {
                 }
             }
         }
-
         order.remark = remark;
 
         //确认订单

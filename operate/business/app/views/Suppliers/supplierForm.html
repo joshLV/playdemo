@@ -70,6 +70,8 @@ error:'supplier.operator'}
     canSaleReal=canSaleReal?:supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL)?:'0';
     ktvSupplier=ktvSupplier?:supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER)?:'0';
     delayWithdraw=delayWithdraw?:supplier?.getProperty(models.supplier.Supplier.IS_WITHDRAW_DELAY)?:'0';
+    giftCard=giftCard?:supplier?.getProperty(models.supplier.Supplier.PROPERTY_GIFT_CARD)?:'0';
+    freezeAmount = freezeAmount?:supplier?.getProperty(models.supplier.Supplier.FREEZE_AMOUNT)?:'0';
     }%
 #{/if}
     <div class="controls">
@@ -80,12 +82,35 @@ error:'supplier.operator'}
                value="1" ${"1".equals(canSaleReal)?'checked':''}/> &{'supplier.canSaleReal'}&nbsp;&nbsp;
         <input type="checkbox" name="ktvSupplier" id="supplier_ktvSupplier"
                value="1" ${"1".equals(ktvSupplier)?'checked':''}/>&{'supplier.ktvSupplier'}
+        <input type="checkbox" name="giftCard" id="supplier_giftCard"
+               value="1" ${"1".equals(giftCard)?'checked':''}/>是否销售需预约的礼品券
         <input type="checkbox" name="delayWithdraw" id="supplier_delayWithdraw"
                value="1" ${"1".equals(delayWithdraw)?'checked':''}/>是否延期提现
-
+        <input type="checkbox" name="freezeAmount" id="supplier_freezeAmount"
+               value="1" ${"1".equals(freezeAmount)?'checked':''}/>是否要冻结金额
         <span class="help-block"> (每月分 5-14, 15-24, 25-4 三个阶段提现。分别提上月25号之前，本月5号之前，本月15号之前 的款) </span>
+
     </div>
 </div>
+
+
+<div class="control-group">
+    <label class="control-label">验证渠道</label>
+#{if "edit".equals(action)}
+%{
+    meiTuan=meiTuan?:supplier?.getProperty(models.supplier.Supplier.MEI_TUAN)?:'0';
+    dianPing=dianPingl?:supplier?.getProperty(models.supplier.Supplier.DIAN_PING)?:'0';
+    }%
+#{/if}
+    <div class="controls">
+        <input type="checkbox" name="meiTuan" id="supplier_meiTuan"
+               value="1"${"1".equals(meiTuan)?'checked':''}/>美团
+        &nbsp;&nbsp;
+        <input type="checkbox" name="dianPing" id="supplier_dianPing"
+               value="1" ${"1".equals(dianPing)?'checked':''}/>点评&nbsp;&nbsp;
+    </div>
+</div>
+
 *{<div class="control-group">}*
 *{<label class="control-label">选择分销商</label>}*
 

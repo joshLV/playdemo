@@ -16,12 +16,14 @@ import java.util.List;
  * @author likang
  *         Date: 12-11-29
  */
-@JobDefine(title="淘宝券生成", description="处理OuterOrder中未生成的订单，生成券并发送")
+@JobDefine(title = "淘宝券生成", description = "处理OuterOrder中未生成的订单，生成券并发送")
 @Every("1mn")
 public class TaobaoCouponJob extends JobWithHistory {
+    public static final boolean ON = Play.configuration.getProperty("taobao.job", "off").toLowerCase().equals("on");
+
     @Override
     public void doJobWithHistory() {
-        if (Play.runingInTestMode()) {
+        if (!ON && Play.runingInTestMode()) {
             return;
         }
         Logger.info("start taobao coupon job");

@@ -2,10 +2,9 @@ package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.order.OuterOrderPartner;
+import models.resale.Resaler;
 import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
-
-import models.resale.Resaler;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -181,6 +180,7 @@ public class ResalerProduct extends Model {
     public static Goods getGoodsByOuterGoodsNo(Resaler resaler, String outerGoodsNo, OuterOrderPartner partner) {
         ResalerProduct product = ResalerProduct.find("goodsLinkId=? and partner=? and resaler=?",
                 Long.valueOf(outerGoodsNo), partner, resaler).first();
+
         return product == null ? null : product.goods;
     }
 }

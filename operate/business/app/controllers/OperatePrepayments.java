@@ -125,7 +125,7 @@ public class OperatePrepayments extends Controller {
         Prepayment prepayment = Prepayment.findById(id);
         Supplier supplier = Supplier.findById(prepayment.supplier.id);
         Account account = Account.find("uid = ? and accountType = ?", supplier.id, AccountType.SUPPLIER).first();
-        BigDecimal amount = ClearedAccount.getClearedAmount(account, DateUtils.truncate(new Date(), Calendar.DATE));
+        BigDecimal amount = ClearedAccount.getClearedAmount(account, new Date());
         render(supplier, amount, prepayment);
     }
 
@@ -221,6 +221,16 @@ public class OperatePrepayments extends Controller {
         render(supplierList);
     }
 
+    public static void getClearedAmountAndPrepaymentDiffAmount(Long supplierId) {
+        Account supplierAccount = Account.find("uid = ? and accountType = ?", supplierId, AccountType.SUPPLIER).first();
+        BigDecimal clearedAmount = ClearedAccount.getClearedAmount(supplierAccount, new Date());
+        BigDecimal prepaymentAmount = Prepayment.find("select sum(amount) from Prepayment where " +
+                "supplier" +
+                ".id=? " +
+                "and settlementStatus=? group by supplier", supplierId, SettlementStatus.UNCLEARED).first();
+        renderJSON("{\"balanceAmount\":\"" + prepaymentAmount.subtract(clearedAmount) + "\"}");
+    }
+
     /**
      * 进行冲正
      */
@@ -243,7 +253,22 @@ public class OperatePrepayments extends Controller {
                 balance.amount, null);
         balancedTradeBill.save();
         TradeUtil.success(balancedTradeBill, "预付款冲正", null, createdBy);
+        balancedTradeBill.refresh();
+        List<AccountSequence> sequences = AccountSequence.find("tradeId = ?", balancedTradeBill.id).fetch();
 
-        index(null);
+        //创建相应的ClearedAccount记录
+        ClearedAccount clearedAccount = new ClearedAccount();
+        clearedAccount.date = new Date();
+        clearedAccount.accountId = supplierAccount.id;
+        clearedAccount.amount = balance.amount;
+        for (AccountSequence sequence : sequences) {
+            sequence.settlementStatus = SettlementStatus.CLEARED;
+            sequence.save();
+        }
+        clearedAccount.accountSequences = sequences;
+        clearedAccount.save();
+
+        String msg = "冲正成功";
+        render("OperatePrepayments/balanceResult.html", msg);
     }
 }

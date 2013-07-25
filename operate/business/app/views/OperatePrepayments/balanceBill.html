@@ -10,6 +10,8 @@
             var result = true;
             var reason = $("#blance_reason").val();
             var amount = $("#balance_amount").val();
+            var diffAmount = $("#diff_amount_val").val();
+
             if (amount == "") {
                 $("#amount_error").html("请输入冲正金额");
                 result = false;
@@ -18,7 +20,13 @@
                 $("#reason_error").html("请输入冲正备注");
                 result = false;
             }
+            if (diffAmount < amount) {
+                $("#amount_error").html("冲正金额不能大于可冲正最大金额");
+                result = false;
+            }
             if (result) {
+                $("#balance").hide();
+                $("#processing").text("正在处理");
                 $("#balanceForm").submit();
             }
         });
@@ -39,30 +47,70 @@
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label"><span style="color: red;">*</span>冲正金额</label>
+        <label class="control-label">可冲正最大金额: </label>
 
-        <div class="controls">
-            <input type="text" class="input-xlarge" name="balance.amount" id="balance_amount">
-            <span id="amount_error"></span>
+        <div class="controls" id="diff_amount">
         </div>
     </div>
 
-    <div class="control-group">
-        <label class="control-label"><span style="color: red;">*</span>备注</label>
+    <div id="can_balance">
+        <div class="control-group">
+            <label class="control-label"><span style="color: red;">*</span>冲正金额</label>
 
-        <div class="controls">
-            <textarea rows="3" class="input-xlarge" name="balance.reason" id="blance_reason"></textarea>
-            <span id="reason_error"></span>
+            <div class="controls">
+                <input type="text" class="input-xlarge" name="balance.amount" id="balance_amount">
+                <span id="amount_error"></span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label"><span style="color: red;">*</span>备注</label>
+
+            <div class="controls">
+                <textarea rows="3" class="input-xlarge" name="balance.reason" id="blance_reason"></textarea>
+                <span id="reason_error"></span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label"></label>
+            <a class="btn btn-primary" id="balance">冲正 </a><span id="processing"></span>
+            <a href="/prepayments" class="btn btn-primary">返回</a>
         </div>
     </div>
-
-    <div class="control-group">
-        <label class="control-label"></label>
-        <a class="btn btn-primary" id="balance">冲正 </a>
-        <a href="/prepayments" class="btn btn-primary">返回</a>
-
-    </div>
+    <a href="/prepayments" class="btn btn-primary" id="return" style="display: hidden">返回</a>
+    <input type="hidden" id="diff_amount_val" name="diffAmount" value="${diffAmount}"></div>
 
 #{/form}
 
 </div>
+<script type="text/javascript">
+    $(function () {
+        $("#return").hide();
+        $("#supplierName").blur(function () {
+            var supplierId = $("#id_supplierName").val();
+            $.ajax({
+                type: 'GET',
+                url: '/prepayments/' + supplierId + '/balance-amount',
+                success: function (data) {
+                    if (data != null) {
+                        $("#diff_amount").text(data.balanceAmount + "(预付款和余额差额)");
+                        var balanceAmount = data.balanceAmount;
+                        $("#diff_amount_val").val(balanceAmount);
+                        if (balanceAmount <= 0) {
+                            $("#can_balance").hide();
+                            $("#return").show();
+                        }
+                        else {
+                            $("#can_balance").show();
+                            $("#return").hide();
+                        }
+                    }
+                    else {
+                        $("#diff_amount").text("请重新刷新页面")
+                    }
+                }});
+        })
+
+    });
+</script>

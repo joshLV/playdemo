@@ -213,6 +213,10 @@ public class TaobaoCouponAPI extends Controller {
                 }
                 renderJSON("{\"code\":200}");
                 break;
+            case "2":
+                //维权通知
+                renderJSON("{\"code\":200}");
+                break;
             default:
                 Logger.warn("taobao coupon order modify failed: unknown sub method: %s", subMethod);
                 renderJSON("{\"code\":506}");

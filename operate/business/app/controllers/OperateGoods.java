@@ -12,22 +12,15 @@ import models.ktv.KtvProductGoods;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.operator.OperateUser;
+import models.resale.Resaler;
 import models.resale.ResalerLevel;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.GoodsCondition;
-import models.sales.GoodsHistory;
-import models.sales.GoodsImages;
-import models.sales.GoodsStatus;
-import models.sales.GoodsUnPublishedPlatform;
-import models.sales.MaterialType;
-import models.sales.Shop;
-import models.sales.Sku;
+import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang.time.DateUtils;
 import play.Play;
 import play.data.binding.As;
 import play.data.validation.Required;
@@ -40,11 +33,7 @@ import play.mvc.With;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static play.Logger.warn;
 
@@ -61,7 +50,6 @@ public class OperateGoods extends Controller {
     public static int PAGE_SIZE = 15;
     public static String WWW_URL = Play.configuration.getProperty("www.url", "");
     public static String BASE_URL = Play.configuration.getProperty("application.baseUrl", "");
-    private static Goods goodsProperties;
 
     /**
      * 展示商品一览页面
@@ -89,6 +77,9 @@ public class OperateGoods extends Controller {
         String queryString = StringUtils.trimToEmpty(getQueryString());
 
         List<Category> categoryList = Category.findByParent(0L);
+
+        List<Resaler> resalerList = Resaler.findByStatus(null);
+        renderArgs.put("resalerList", resalerList);
         render(goodsPage, supplierList, condition, categoryList, queryString, hasApproveGoodsPermission);
     }
 
@@ -196,7 +187,8 @@ public class OperateGoods extends Controller {
             warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
         }
 
-        renderArgs.put("secondaryVerification", goods.getProperties(Goods.SECONDARY_VERIFICATION, "0"));
+        renderArgs.put(Goods.SECONDARY_VERIFICATION, goods.getProperties(Goods.SECONDARY_VERIFICATION, "0"));
+        renderArgs.put(Goods.PROPERTY_GIFT_CARD, goods.getProperties(Goods.PROPERTY_GIFT_CARD, "0"));
 
         renderArgs.put("supplierList", supplierList);
         renderArgs.put("categoryList", categoryList);
@@ -575,6 +567,7 @@ public class OperateGoods extends Controller {
      */
     public static void update2(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath,
                                String queryString, int page) {
+        goods.expireAt = DateUtils.addSeconds(DateUtils.addDays(goods.expireAt, 1), -1);
         Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
@@ -734,6 +727,41 @@ public class OperateGoods extends Controller {
     }
 
     /**
+     * 设置渠道佣金比例.
+     *
+     * @param id 商品ID
+     */
+    public static void commissionRatio(Long id) {
+        Goods goods = Goods.findById(id);
+        Map<String, String> allParams = params.allSimple();
+        for (Map.Entry<String, String> param : allParams.entrySet()) {
+            String key = param.getKey();
+            if (key.startsWith("resaler-")) {
+                String resalerId = key.substring(8);
+                String commissionRatio = param.getValue();
+                if (NumberUtils.isDigits(resalerId) && NumberUtils.isNumber(commissionRatio)) {
+                    Resaler resaler = Resaler.findById(Long.parseLong(resalerId));
+                    if (resaler == null) {
+                        continue;
+                    }
+                    GoodsResalerCommission resalerCommission = GoodsResalerCommission.find("goods=? and resaler=?", goods, resaler).first();
+                    if (resalerCommission != null) {
+                        resalerCommission.commissionRatio = new BigDecimal(commissionRatio);
+                        resalerCommission.save();
+                    } else {
+                        resalerCommission = new GoodsResalerCommission();
+                        resalerCommission.goods = goods;
+                        resalerCommission.resaler = resaler;
+                        resalerCommission.commissionRatio = new BigDecimal(commissionRatio);
+                        resalerCommission.save();
+                    }
+                }
+            }
+        }
+        index(null);
+    }
+
+    /**
      * 上下架指定商品
      *
      * @param status 商品状态
@@ -824,10 +852,17 @@ public class OperateGoods extends Controller {
     }
 
     private static void setGoodsProperties(Goods goods) {
-        if (StringUtils.isBlank(request.params.get("secondaryVerification"))) {
+        if (StringUtils.isBlank(request.params.get(Goods.SECONDARY_VERIFICATION))) {
             goods.setProperties(Goods.SECONDARY_VERIFICATION, "0");
         } else {
-            goods.setProperties(Goods.SECONDARY_VERIFICATION, request.params.get("secondaryVerification"));
+            goods.setProperties(Goods.SECONDARY_VERIFICATION, request.params.get(Goods.SECONDARY_VERIFICATION));
         }
+
+        if (StringUtils.isBlank(request.params.get(Goods.PROPERTY_GIFT_CARD))) {
+            goods.setProperties(Goods.PROPERTY_GIFT_CARD, "0");
+        }else {
+            goods.setProperties(Goods.PROPERTY_GIFT_CARD, request.params.get(Goods.PROPERTY_GIFT_CARD));
+        }
+
     }
 }

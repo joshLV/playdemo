@@ -57,6 +57,7 @@
         <th>商品</th>
         <th>券总量</th>
         <th>已销售</th>
+        <th>已退款</th>
         <th>剩余</th>
         <th>动作</th>
     </tr>
@@ -64,6 +65,10 @@
 
     <tbody>
         #{list items:goodsList, as:'goods' }
+        %{
+        ecouponRefundCount = models.order.ECoupon.count("goods.id=? and status=?", goods.id,
+        models.order.ECouponStatus.REFUND);
+        }%
         <tr>
             <td>
                 <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${goods.id}"
@@ -71,8 +76,10 @@
                 </a>
             </td>
             <td>${goods.cumulativeStocks}</td>
-            <td>${goods.getRealSaleCount()}</td>
-            <td>${goods.getRealStocks()}</td>
+            <td>${goods.getRealSaleCount() + ecouponRefundCount}</td>
+            <td>${ecouponRefundCount}</td>
+        *{<td>${goods.getRealStocks()}</td>}*
+            <td>${goods.cumulativeStocks-goods.getRealSaleCount() - ecouponRefundCount}</td>
             <td></td>
         </tr>
         #{/list}
