@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import models.order.ChannelAccountCheckingDetail;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import org.apache.commons.codec.binary.Base64;
@@ -19,10 +20,13 @@ import util.ws.WebServiceRequest;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -81,6 +85,75 @@ public class WubaUtil {
             }
         }
         return ExtensionResult.code(1).message("58同城接口调用失败");
+    }
+
+
+    public static List<ChannelAccountCheckingDetail> createWubaAccountCheckingDetail(String date) {
+        List<ChannelAccountCheckingDetail> thirdBills = new ArrayList<>();
+        ChannelAccountCheckingDetail thirdBillSequence;
+        //结算数据查询
+        Map<String, Object> params = new HashMap<>();
+        params.put("jiesuantime", date);
+        WubaResponse response = sendRequest(params, "emc.groupbuy.queryjiesuan", false, false, USE_GET_METHOD);
+        JsonObject jsonObject;
+        JsonArray jsonArray;
+        if (response.isOk()) {
+            jsonObject = response.data.getAsJsonObject();
+            jsonArray = jsonObject.get("jiesuanDetails").getAsJsonArray();
+
+            //用于本地测试  2013-05-09
+//        String jsonStr = "[{\"commission\":0.59,\"groupid3\":26851,\"groupid58\":70096088880131005,\"groupprice\":19.8,\"jiesuanmoney\":19.21,\"orderid3\":81870247,\"orderid58\":70187872236548005,\"paytime\":\"2013-04-05 15:23:23\",\"refundable\":0,\"ticketid58\":70187931446277005,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 13:46:55\"},{\"commission\":0.59,\"groupid3\":26851,\"groupid58\":70096088880131005,\"groupprice\":19.8,\"jiesuanmoney\":19.21,\"orderid3\":81870247,\"orderid58\":70187872236548005,\"paytime\":\"2013-04-05 15:23:23\",\"refundable\":0,\"ticketid58\":70187931598338005,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 13:47:13\"},{\"commission\":0.59,\"groupid3\":26851,\"groupid58\":70096088880131005,\"groupprice\":19.8,\"jiesuanmoney\":19.21,\"orderid3\":81870247,\"orderid58\":70187872236548005,\"paytime\":\"2013-04-05 15:23:23\",\"refundable\":0,\"ticketid58\":70187931616260005,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 13:47:30\"},{\"commission\":0.59,\"groupid3\":26851,\"groupid58\":70096088880131005,\"groupprice\":19.8,\"jiesuanmoney\":19.21,\"orderid3\":10453991,\"orderid58\":70244350536196005,\"paytime\":\"2013-04-06 22:01:26\",\"refundable\":0,\"ticketid58\":70244396211205005,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 09:34:22\"},{\"commission\":0.59,\"groupid3\":26851,\"groupid58\":70096088880131005,\"groupprice\":19.8,\"jiesuanmoney\":19.21,\"orderid3\":10453991,\"orderid58\":70244350536196005,\"paytime\":\"2013-04-06 22:01:26\",\"refundable\":0,\"ticketid58\":70244396218885005,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 09:34:06\"},{\"commission\":0.59,\"groupid3\":26851,\"groupid58\":70096088880131005,\"groupprice\":19.8,\"jiesuanmoney\":19.21,\"orderid3\":28625270,\"orderid58\":70271089696258005,\"paytime\":\"2013-04-07 12:31:28\",\"refundable\":0,\"ticketid58\":70271123972610005,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 09:19:46\"},{\"commission\":10.08,\"groupid3\":14151,\"groupid58\":65846321280517008,\"groupprice\":336,\"jiesuanmoney\":325.92,\"orderid3\":11694587,\"orderid58\":70601292751362008,\"paytime\":\"2013-04-14 23:41:35\",\"refundable\":0,\"ticketid58\":70601367787522008,\"type\":\"美发\",\"usetime\":\"2013-05-06 15:46:12\"},{\"commission\":2.34,\"groupid3\":26850,\"groupid58\":70096062316547009,\"groupprice\":78,\"jiesuanmoney\":75.66,\"orderid3\":54295771,\"orderid58\":70758358738947009,\"paytime\":\"2013-04-18 12:53:52\",\"refundable\":0,\"ticketid58\":70758416948227009,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 16:20:27\"},{\"commission\":1.74,\"groupid3\":16273,\"groupid58\":67576185662468009,\"groupprice\":58,\"jiesuanmoney\":56.26,\"orderid3\":56754464,\"orderid58\":70773039842818009,\"paytime\":\"2013-04-18 20:51:46\",\"refundable\":0,\"ticketid58\":70773097570818009,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 14:15:47\"},{\"commission\":0.59,\"groupid3\":26851,\"groupid58\":70096088880131005,\"groupprice\":19.8,\"jiesuanmoney\":19.21,\"orderid3\":37060337,\"orderid58\":71027729704450005,\"paytime\":\"2013-04-24 15:04:01\",\"refundable\":0,\"ticketid58\":71027835575301005,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 13:31:57\"},{\"commission\":1.65,\"groupid3\":16001,\"groupid58\":67090037884932006,\"groupprice\":55,\"jiesuanmoney\":53.35,\"orderid3\":56569401,\"orderid58\":71125570682370006,\"paytime\":\"2013-04-26 20:07:54\",\"refundable\":0,\"ticketid58\":71125644451333006,\"type\":\"其他美食\",\"usetime\":\"2013-05-06 09:59:36\"},{\"commission\":2.55,\"groupid3\":13921,\"groupid58\":65460328362500006,\"groupprice\":85,\"jiesuanmoney\":82.45,\"orderid3\":41131462,\"orderid58\":71418947241987006,\"paytime\":\"2013-05-03 11:16:33\",\"refundable\":0,\"ticketid58\":71418979205636006,\"type\":\"西餐\",\"usetime\":\"2013-05-06 12:36:28\"},{\"commission\":0.75,\"groupid3\":26142,\"groupid58\":69249590955011007,\"groupprice\":25,\"jiesuanmoney\":24.25,\"orderid3\":60685019,\"orderid58\":71511156164106007,\"paytime\":\"2013-05-05 13:18:08\",\"refundable\":0,\"ticketid58\":71511188008453007,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 19:37:39\"},{\"commission\":2.07,\"groupid3\":26379,\"groupid58\":69516595100675007,\"groupprice\":69,\"jiesuanmoney\":66.93,\"orderid3\":65696142,\"orderid58\":71515917758467007,\"paytime\":\"2013-05-05 15:53:18\",\"refundable\":0,\"ticketid58\":71515954411010007,\"type\":\"KTV\",\"usetime\":\"2013-05-06 18:07:06\"},{\"commission\":2.97,\"groupid3\":27085,\"groupid58\":70443880389634007,\"groupprice\":99,\"jiesuanmoney\":96.03,\"orderid3\":69113177,\"orderid58\":71516158514190007,\"paytime\":\"2013-05-05 16:01:54\",\"refundable\":0,\"ticketid58\":71516218660363007,\"type\":\"中餐\",\"usetime\":\"2013-05-06 18:02:36\"},{\"commission\":2.64,\"groupid3\":26776,\"groupid58\":70047768546820008,\"groupprice\":88,\"jiesuanmoney\":85.36,\"orderid3\":75720706,\"orderid58\":71546813478916008,\"paytime\":\"2013-05-06 08:39:44\",\"refundable\":0,\"ticketid58\":71546871772677008,\"type\":\"运动健身\",\"usetime\":\"2013-05-06 10:17:21\"},{\"commission\":2.64,\"groupid3\":26776,\"groupid58\":70047768546820008,\"groupprice\":88,\"jiesuanmoney\":85.36,\"orderid3\":75720706,\"orderid58\":71546813478916008,\"paytime\":\"2013-05-06 08:39:44\",\"refundable\":0,\"ticketid58\":71546871832580008,\"type\":\"运动健身\",\"usetime\":\"2013-05-06 10:17:14\"},{\"commission\":1.47,\"groupid3\":15629,\"groupid58\":66958463893509009,\"groupprice\":49,\"jiesuanmoney\":47.53,\"orderid3\":70536378,\"orderid58\":71549010774019009,\"paytime\":\"2013-05-06 09:50:06\",\"refundable\":0,\"ticketid58\":71549033893379009,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 16:18:03\"},{\"commission\":1.74,\"groupid3\":15800,\"groupid58\":67000077359619005,\"groupprice\":58,\"jiesuanmoney\":56.26,\"orderid3\":76562363,\"orderid58\":71550070262789005,\"paytime\":\"2013-05-06 10:25:06\",\"refundable\":0,\"ticketid58\":71550108910595005,\"type\":\"中餐\",\"usetime\":\"2013-05-06 11:40:40\"},{\"commission\":2.64,\"groupid3\":26776,\"groupid58\":70047768546820008,\"groupprice\":88,\"jiesuanmoney\":85.36,\"orderid3\":73444521,\"orderid58\":71553781765635008,\"paytime\":\"2013-05-06 12:26:47\",\"refundable\":0,\"ticketid58\":71553846893573008,\"type\":\"运动健身\",\"usetime\":\"2013-05-06 12:31:53\"},{\"commission\":13.44,\"groupid3\":27096,\"groupid58\":70445421404677008,\"groupprice\":448,\"jiesuanmoney\":434.56,\"orderid3\":79464324,\"orderid58\":71556528805378008,\"paytime\":\"2013-05-06 13:55:48\",\"refundable\":0,\"ticketid58\":71556581756931008,\"type\":\"体检保健\",\"usetime\":\"2013-05-06 14:15:07\"},{\"commission\":13.44,\"groupid3\":27096,\"groupid58\":70445421404677008,\"groupprice\":448,\"jiesuanmoney\":434.56,\"orderid3\":79464324,\"orderid58\":71556528805378008,\"paytime\":\"2013-05-06 13:55:48\",\"refundable\":0,\"ticketid58\":71556581790734008,\"type\":\"体检保健\",\"usetime\":\"2013-05-06 14:14:39\"},{\"commission\":13.44,\"groupid3\":27096,\"groupid58\":70445421404677008,\"groupprice\":448,\"jiesuanmoney\":434.56,\"orderid3\":79464324,\"orderid58\":71556528805378008,\"paytime\":\"2013-05-06 13:55:48\",\"refundable\":0,\"ticketid58\":71556581796356008,\"type\":\"体检保健\",\"usetime\":\"2013-05-06 14:14:26\"},{\"commission\":3.39,\"groupid3\":27621,\"groupid58\":70975979332613008,\"groupprice\":113,\"jiesuanmoney\":109.61,\"orderid3\":77476945,\"orderid58\":71560819025923008,\"paytime\":\"2013-05-06 16:19:40\",\"refundable\":0,\"ticketid58\":71561001436165008,\"type\":\"景点门票\",\"usetime\":\"2013-05-06 16:25:16\"},{\"commission\":3.39,\"groupid3\":27621,\"groupid58\":70975979332613008,\"groupprice\":113,\"jiesuanmoney\":109.61,\"orderid3\":77476945,\"orderid58\":71560819025923008,\"paytime\":\"2013-05-06 16:19:40\",\"refundable\":0,\"ticketid58\":71561001587714008,\"type\":\"景点门票\",\"usetime\":\"2013-05-06 16:25:16\"},{\"commission\":3.39,\"groupid3\":27621,\"groupid58\":70975979332613008,\"groupprice\":113,\"jiesuanmoney\":109.61,\"orderid3\":77476945,\"orderid58\":71560819025923008,\"paytime\":\"2013-05-06 16:19:40\",\"refundable\":0,\"ticketid58\":71561001608708008,\"type\":\"景点门票\",\"usetime\":\"2013-05-06 16:25:16\"},{\"commission\":5.97,\"groupid3\":15606,\"groupid58\":66955402637315007,\"groupprice\":199,\"jiesuanmoney\":193.03,\"orderid3\":77598428,\"orderid58\":71561340680201007,\"paytime\":\"2013-05-06 16:32:29\",\"refundable\":0,\"ticketid58\":71561394979337007,\"type\":\"东南亚菜\",\"usetime\":\"2013-05-06 19:36:47\"},{\"commission\":2.55,\"groupid3\":15935,\"groupid58\":67049784758274005,\"groupprice\":85,\"jiesuanmoney\":82.45,\"orderid3\":75673661,\"orderid58\":71565189551619005,\"paytime\":\"2013-05-06 18:42:21\",\"refundable\":1,\"ticketid58\":71565383989765005,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 18:48:21\"},{\"commission\":2.55,\"groupid3\":15935,\"groupid58\":67049784758274005,\"groupprice\":85,\"jiesuanmoney\":82.45,\"orderid3\":75673661,\"orderid58\":71565189551619005,\"paytime\":\"2013-05-06 18:42:21\",\"refundable\":1,\"ticketid58\":71565384196100005,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 18:48:21\"},{\"commission\":2.55,\"groupid3\":15935,\"groupid58\":67049784758274005,\"groupprice\":85,\"jiesuanmoney\":82.45,\"orderid3\":73502209,\"orderid58\":71572544667150005,\"paytime\":\"2013-05-06 22:38:26\",\"refundable\":1,\"ticketid58\":71572636976133005,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 22:44:04\"},{\"commission\":2.55,\"groupid3\":15935,\"groupid58\":67049784758274005,\"groupprice\":85,\"jiesuanmoney\":82.45,\"orderid3\":73502209,\"orderid58\":71572544667150005,\"paytime\":\"2013-05-06 22:38:26\",\"refundable\":1,\"ticketid58\":71572637239300005,\"type\":\"蛋糕甜品\",\"usetime\":\"2013-05-06 22:44:03\"}] ";
+//        JsonParser jsonParser = new JsonParser();
+//        JsonArray jsonArray = jsonParser.parse(jsonStr).getAsJsonArray();
+
+            for (JsonElement element : jsonArray) {
+                jsonObject = element.getAsJsonObject();
+                String accountedAtStr = jsonObject.get("usetime").getAsString();
+                String outerOrderNo = jsonObject.get("orderid58").getAsString();
+                BigDecimal businessAmount = jsonObject.get("groupprice").getAsBigDecimal();
+                BigDecimal commissionFee = jsonObject.get("commission").getAsBigDecimal();
+                BigDecimal settleAmount = jsonObject.get("jiesuanmoney").getAsBigDecimal();
+                thirdBillSequence = new ChannelAccountCheckingDetail();
+                thirdBillSequence.accountedAtStr = accountedAtStr;
+                thirdBillSequence.outerOrderNo = outerOrderNo;
+                thirdBillSequence.businessAmount = businessAmount;
+                thirdBillSequence.commissionFee = commissionFee;
+                thirdBillSequence.settleAmount = settleAmount;
+                thirdBills.add(thirdBillSequence);
+            }
+        }
+
+        //结算退款追回数据查询
+        params = new HashMap<>();
+        params.put("refundtime", date);
+        response = sendRequest(params, "emc.groupbuy.queryrefundjiesuan", false, false, USE_GET_METHOD);
+        if (response.isOk()) {
+            jsonObject = response.data.getAsJsonObject();
+            jsonArray = jsonObject.get("refundDetails").getAsJsonArray();
+            //用于本地测试  2013-05-09
+//            jsonStr = "[{\"commission\":0,\"groupid3\":16031,\"groupid58\":67271546111491009,\"groupprice\":90,\"jiesuanmoney\":90,\"orderid3\":61416174,\"orderid58\":68329269900805009,\"paytime\":\"2013-02-22 15:02:09\",\"refundmoney\":90,\"refundtime\":\"2013-05-09 15:24:05\",\"refundtype\":\"未使用退款\",\"ticketid58\":68329333739525009,\"type\":\"自助餐\",\"usetime\":null},{\"commission\":0,\"groupid3\":16031,\"groupid58\":67271546111491009,\"groupprice\":90,\"jiesuanmoney\":90,\"orderid3\":61416174,\"orderid58\":68329269900805009,\"paytime\":\"2013-02-22 15:02:09\",\"refundmoney\":90,\"refundtime\":\"2013-05-09 15:24:05\",\"refundtype\":\"未使用退款\",\"ticketid58\":68329333751301009,\"type\":\"自助餐\",\"usetime\":null}]";
+//            jsonParser = new JsonParser();
+//            jsonArray = jsonParser.parse(jsonStr).getAsJsonArray();
+            for (JsonElement element : jsonArray) {
+                jsonObject = element.getAsJsonObject();
+                if (jsonObject.get("refundtype").getAsString().contains("未使用退款")) {
+                    continue;
+                }
+                String accountedAtStr = jsonObject.get("refundtime").getAsString();
+                String outerOrderNo = jsonObject.get("orderid58").getAsString();
+                BigDecimal businessAmount = jsonObject.get("groupprice").getAsBigDecimal();
+                BigDecimal commissionFee = jsonObject.get("commission").getAsBigDecimal();
+                BigDecimal settleAmount = jsonObject.get("jiesuanmoney").getAsBigDecimal();
+                thirdBillSequence = new ChannelAccountCheckingDetail();
+                thirdBillSequence.accountedAtStr = accountedAtStr;
+                thirdBillSequence.outerOrderNo = outerOrderNo;
+                thirdBillSequence.businessAmount = BigDecimal.ZERO.subtract(businessAmount);
+                thirdBillSequence.commissionFee = BigDecimal.ZERO.subtract(commissionFee);
+                thirdBillSequence.settleAmount = BigDecimal.ZERO.subtract(settleAmount);
+                thirdBills.add(thirdBillSequence);
+            }
+        }
+        return thirdBills;
     }
 
     public static String consumedBill(String date) {

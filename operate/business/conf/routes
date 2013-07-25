@@ -410,6 +410,14 @@ POST    /financing_incoming                     FinancingIncomingNote.create
 GET     /finances                               OperateFinances.index
 GET    /finances/check                          OperateFinances.checkAccountSequence
 
+#导出58对账清单
+GET     /export-channel-account-checking        ExportChannelAccountChecking.index
+GET     /export-58-account-checking-excel       ExportChannelAccountChecking.wubaExcelOut
+
+
+
+
+
 # 提现管理
 GET     /withdraw                               WithdrawApproval.index
 GET     /withdraw/detail/{id}                   WithdrawApproval.detail
