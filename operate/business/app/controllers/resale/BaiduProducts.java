@@ -123,7 +123,7 @@ public class BaiduProducts extends Controller {
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
             String partnerProductId = response.data.getAsJsonObject().get("groupon_id").getAsString();
             product.partnerProduct(partnerProductId).save();
-//            product.url("http://t.58.com/"+ firstCity + "/"+ partnerProductId);
+            product.url("http://tuan.baidu.com/selftg/item/detail?city_id=3&item_id="+ partnerProductId);
             product.save();
 
             ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(groupbuyInfoParams),
