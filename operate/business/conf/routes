@@ -105,6 +105,9 @@ GET     /resaler-products/wb/refresh/{productId}        resale.WubaGroupBuyProdu
 # 百度
 GET     /resaler-products/bd/upload/{goodsId}           resale.BaiduProducts.showUpload
 POST    /resaler-products/bd/upload                     resale.BaiduProducts.upload
+GET     /resaler-products/bd/offsale/{productId}        resale.BaiduProducts.offsale
+GET     /resaler-products/bd/edit/{productId}           resale.BaiduProducts.showEdit
+POST    /resaler-products/bd/edit                       resale.BaiduProducts.edit
 
 # 当当
 GET     /resaler-products/dd/upload/{goodsId}           resale.DDGroupBuyProducts.showUpload
