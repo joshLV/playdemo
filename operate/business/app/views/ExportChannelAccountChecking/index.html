@@ -20,11 +20,17 @@
         <input class="input-small" id="endDay" name="bill.endDay" size="16" type="text"
                value="${bill?.endDay?.format()}">
         <span class="add-on"><i class="icon-th"></i></span>
+
+
+<span style="margin-left:50px;">
+    <button class="btn " id="export58">导出
+    </button>
+</span>
+
     </div>
         </span>
     </div>
 
-    <button class="btn " id="export58">导出</button>
 
 </form>
 <script type="text/javascript">
@@ -51,8 +57,7 @@
 //        }
 
 
-        $("#frmlist").attr("action", "@{ExportChannelAccountChecking.export58()}");
-        alert("inin")
+        $("#frmlist").attr("action", "@{ExportChannelAccountChecking.wubaExcelOut()}");
         $("#frmlist").submit();
     }
 
