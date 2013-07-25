@@ -20,8 +20,8 @@ import java.util.List;
 public class BaiduOrderJob extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
-        List<OuterOrder> orders = OuterOrder.find("partner = ? and ( status = ? or status = ?)",
-                OuterOrderPartner.BD, OuterOrderStatus.ORDER_COPY, OuterOrderStatus.ORDER_DONE).fetch();
+        List<OuterOrder> orders = OuterOrder.find("partner = ? and status = ? ",
+                OuterOrderPartner.BD, OuterOrderStatus.ORDER_COPY).fetch();
         for (OuterOrder order : orders) {
             BaiduOrderMessageUtil.send(order.orderId);
         }

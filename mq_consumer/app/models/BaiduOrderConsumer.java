@@ -1,5 +1,6 @@
 package models;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import models.accounts.PaymentSource;
 import models.baidu.BaiduResponse;
@@ -46,18 +47,14 @@ public class BaiduOrderConsumer extends RabbitMQConsumerWithTx<String> {
             Logger.info("baidu job consume failed: can not lock baidu order %s", outOrderId);
             return;
         }
-        if (outerOrder.status == OuterOrderStatus.ORDER_DONE) {
-            //TODO
-            outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
-            outerOrder.save();
-        } else if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
+        if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             //订单接收到，开始创建一百券订单
             Logger.info("start baidu order consumer,orderId:%s", outOrderId);
             if (outerOrder.ybqOrder != null) {
                 Logger.info("baidu our order already created");
             } else {
                 //首先刷新下百度最新订单
-                Map<String, String> params = new HashMap<>();
+                Map<String, Object> params = new HashMap<>();
                 params.put("order_id", outOrderId);
                 BaiduResponse response = BaiduUtil.sendRequest(params, "orderdetails.action");
                 if (!response.isOk()) {
@@ -71,14 +68,22 @@ public class BaiduOrderConsumer extends RabbitMQConsumerWithTx<String> {
                     Logger.info("baidu order status is %s,can't create ybqOrder,orderId:%s", outOrderId);
                     return;
                 }
-
                 //开始创建一百券订单
                 JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
                 String goodsLinkId = jsonObject.get("tpid").getAsString();
+                JsonArray couponArr = jsonObject.get("coupon").getAsJsonArray();
+                Long number = responseData.get("count").getAsLong();
+                if (number != couponArr.size()) {
+                    Logger.info("baidu order and coupon number is not equal ,orderId:%s", outOrderId);
+                    return;
+                }
+
                 Order ybqOrder = createYbqOrder(goodsLinkId, responseData);
                 if (ybqOrder != null) {
                     List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-                    for (ECoupon coupon : couponList) {
+                    for (int i = 0; i < couponList.size(); i++) {
+                        ECoupon coupon = couponList.get(i);
+                        coupon.eCouponSn = couponArr.get(i).getAsJsonObject().get("code").getAsString();
                         coupon.partner = ECouponPartner.BD;
                         coupon.save();
                     }
@@ -109,7 +114,6 @@ public class BaiduOrderConsumer extends RabbitMQConsumerWithTx<String> {
         }
 
         Long number = responseData.get("count").getAsLong();
-//        BigDecimal orderItemPayment = responseData.get("total_amount").getAsBigDecimal();
         BigDecimal salePrice = responseData.get("amount").getAsBigDecimal();
         String userPhone = responseData.get("phone").getAsString();
         //导入券库存检查
@@ -118,6 +122,7 @@ public class BaiduOrderConsumer extends RabbitMQConsumerWithTx<String> {
             JPA.em().getTransaction().rollback();
             return null;
         }
+
         OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, number,
                 userPhone, salePrice, salePrice);
         uhuilaOrderItem.save();

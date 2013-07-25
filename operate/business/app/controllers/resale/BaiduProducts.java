@@ -22,6 +22,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -43,7 +44,7 @@ public class BaiduProducts extends Controller {
     public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
 
-        String allCategoriesJson = BaiduUtil.allProductTypesJsonCache();
+        String allCategoriesJson = BaiduUtil.firstCategoryJsonCache();
         Collection<Shop> shopList = goods.getShopList();
         Supplier supplier = Supplier.findById(goods.supplierId);
         String allCityJson = BaiduUtil.allCityJsonCache();
@@ -69,14 +70,15 @@ public class BaiduProducts extends Controller {
 
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.BAIDU_LOGIN_NAME);
         ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.BD, resaler, goods);
-        requestMap.put("brand", "一百券");
+        requestMap.put("brand", goods.brand.name);
         requestMap.put("tpid", String.valueOf(product.goodsLinkId));
         requestMap.put("stock_model", 1);
         requestMap.put("token_mode", 0);
         requestMap.put("province_id", 5);
         requestMap.put("city_id", 289);//上海
         requestMap.put("pack", "asdas");//上海
-        requestMap.put("des", "asdas");//上海
+        requestMap.put("notice", "asdas");//上海
+        requestMap.put("ext", "asdas");//上海
         String beginTime = groupbuyInfoParams.get("begin_time");
         String endTime = groupbuyInfoParams.get("end_time");
         String validTime = groupbuyInfoParams.get("valid_time");
@@ -85,21 +87,12 @@ public class BaiduProducts extends Controller {
         time = getUinxTime(endTime);
         requestMap.put("end_time", time / 1000L);
         time = getUinxTime(validTime);
-        requestMap.put("valid_time",time / 1000L);
+        requestMap.put("valid_time", time / 1000L);
 
         Map<String, String> sp = new HashMap<>();
         sp.put("service_no", "243534534");
 
         requestMap.put("spinfo", sp);
-        int maxSale = Integer.parseInt(groupbuyInfoParams.get("max_sale"));
-//        List<String> couponList = new ArrayList();
-//        for (int i = 0; i < maxSale; i++) {
-//            String coupon = generateAvailableEcouponSn(11);
-//            couponList.add(coupon);
-//            new ImportedCouponTemp(goods, coupon);
-//        }
-//        requestMap.put("thirdparty_tokens", StringUtils.join(couponList, ","));
-
         //商家信息参数
         List<Map<String, Object>> partnerParams = new ArrayList<>();
         //构建商家信息参数
@@ -143,29 +136,12 @@ public class BaiduProducts extends Controller {
 
     private static Long getUinxTime(String beginTime) {
         try {
-            return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(beginTime).getTime();
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sd.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+            return sd.parse(beginTime).getTime();
         } catch (ParseException e) {
         }
         return 0L;
     }
 
-    /**
-     * 生成消费者唯一的券号.
-     */
-    private static String generateAvailableEcouponSn(int length) {
-        String randomNumber;
-        do {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                // do nothing.
-            }
-            randomNumber = RandomNumberUtil.generateSerialNumber(length);
-        } while (isNotUniqueEcouponSn(randomNumber));
-        return randomNumber;
-    }
-
-    private static boolean isNotUniqueEcouponSn(String randomNumber) {
-        return ImportedCoupon.find("from ImportedCoupon where coupon=?", randomNumber).fetch().size() > 0;
-    }
 }

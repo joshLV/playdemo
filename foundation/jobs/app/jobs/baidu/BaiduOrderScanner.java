@@ -62,11 +62,11 @@ public class BaiduOrderScanner extends JobWithHistory {
         calendar.add(Calendar.DAY_OF_MONTH, -14);
         Date start = calendar.getTime();
 
-        Map<String, String> params = new HashMap<>();
-        params.put("tpid", "goodsLinkId");//TODO
+        Map<String, Object> params = new HashMap<>();
+        params.put("status", "2");//已付款订单
         params.put("from", new SimpleDateFormat(ORDER_DATE).format(start));
         params.put("to", new SimpleDateFormat(ORDER_DATE).format(end));
-        BaiduResponse response = BaiduUtil.sendRequest(params, "getorder.action");
+        BaiduResponse response = BaiduUtil.sendRequest(params, "getOrderByTime.action");
         return response.data.getAsJsonArray();
     }
 }

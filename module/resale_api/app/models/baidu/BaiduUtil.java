@@ -127,27 +127,59 @@ public class BaiduUtil {
         return paramMap;
     }
 
-    public static JsonArray allProductTypes() {
-        Map<String, Object> paramMap = new HashMap<>();
-//        // 系统级参数设置（必须）
-//        paramMap.put("id", "1");
-//        paramMap.put("level","1");
-        BaiduResponse response = BaiduUtil.sendRequest(paramMap, "getcategory.action");
-        return response.data.getAsJsonArray();
+    /**
+     * 获取百度一级分类
+     */
+    public static String firstCategoryJsonCache() {
+        final Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", "1");
+        paramMap.put("level", "0");
+        return CacheHelper.getCache(
+                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "BAIDU_PRODUCT_TYPES"),
+                new CacheCallBack<String>() {
+                    @Override
+                    public String loadData() {
+                        BaiduResponse response = BaiduUtil.sendRequest(paramMap, "getcategory.action");
+                        return response.data.getAsJsonArray().toString();
+                    }
+                });
     }
 
-    public static String allProductTypesJsonCache() {
-//        return CacheHelper.getCache(
-//                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "ALL_BAIDU_PRODUCT_TYPES"),
-//                new CacheCallBack<String>() {
-//                    @Override
-//                    public String loadData() {
-//                        return allProductTypes().toString();
-//                    }
-//                });
-        return allProductTypes().toString();
+    /**
+     * 获取百度二级分类
+     */
+    public static String secondCategoryJsonCache() {
+        final Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", "1");
+        paramMap.put("level", "0");
+        return CacheHelper.getCache(
+                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "BAIDU_PRODUCT_TYPES"),
+                new CacheCallBack<String>() {
+                    @Override
+                    public String loadData() {
+                        BaiduResponse response = BaiduUtil.sendRequest(paramMap, "getcategory.action");
+                        return response.data.getAsJsonArray().toString();
+                    }
+                });
     }
 
+    /*
+    * 获取百度三级分类
+    */
+    public static String ThirdCategoryJsonCache() {
+        final Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", "1");
+        paramMap.put("level", "0");
+        return CacheHelper.getCache(
+                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "BAIDU_PRODUCT_TYPES"),
+                new CacheCallBack<String>() {
+                    @Override
+                    public String loadData() {
+                        BaiduResponse response = BaiduUtil.sendRequest(paramMap, "getcategory.action");
+                        return response.data.getAsJsonArray().toString();
+                    }
+                });
+    }
     public static String allCityJsonCache() {
         return CacheHelper.getCache(
                 CacheHelper.getCacheKey(CACHE_KEY_CITY, "ALL_BAIDU_CITIES"),

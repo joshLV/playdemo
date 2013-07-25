@@ -152,7 +152,7 @@ $(function(){
         expandSinglePathToRoot(prodTypeTree, zhongcanNode);
         $("#prodType-show").val('餐饮美食');
         $("#prodType-value").val('1');
-        $("#prodType-nodeChain").val('1');
+        $("#prodType-nodeChain").val('10101');
     }
 
     // 初始化所有分店的商圈树
