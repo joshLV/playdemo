@@ -36,7 +36,7 @@ public class ExportChannelAccountChecking extends Controller {
         int days = DateUtil.daysBetween(bill.startDay, bill.endDay) + 1;
         List<ChannelAccountCheckingDetail> thirdBills = new ArrayList<>();
         for (int i = 0; i < days; i++) {
-            String date = DateUtil.dateToString(DateHelper.afterDays(bill.startDay, 0),
+            String date = DateUtil.dateToString(DateHelper.afterDays(bill.startDay, i),
                     "yyyy-MM-dd");
             List<ChannelAccountCheckingDetail> tempThirdBills = WubaUtil.createWubaAccountCheckingDetail(date);
             thirdBills.addAll(tempThirdBills);
