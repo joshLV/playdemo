@@ -9,7 +9,7 @@
         <div class="field-sect">
             <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td> 商品  </td>
+                    <td> 商品</td>
                     <td>
                         <select style="width:auto">
                             <option>全部</option>
@@ -36,18 +36,18 @@
     <table class="standard-table">
         <thead>
         <tr>
-            <th >申请日期</th>
-            <th >商品</th>
-            <th >预约信息</th>
-            <th >操作</th>
+            <th>申请日期</th>
+            <th>商品</th>
+            <th>预约信息</th>
+            <th>操作</th>
         </tr>
         </thead>
         <tbody>
         #{paginate.list items:giftCards, as:'giftCard'}
         <tr>
-            <td>${giftCard.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>${giftCard?.appliedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>${giftCard.goods.title}</td>
-            <td style="text-align:left"> ${giftCard.userInput.raw()} </td>
+            <td style="text-align:left"> ${giftCard?.userInput?.raw()} </td>
             <td>
                 发货
             </td>
@@ -55,5 +55,5 @@
         #{/paginate.list}
         </tbody>
     </table>
-    #{paginate.controls items:giftCards /}
+#{paginate.controls items:giftCards /}
 </div>
