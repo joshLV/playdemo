@@ -124,13 +124,14 @@ public class SupplierVerifyResalerECoupons extends Controller {
 //        body = "{\"status\":0,\"data\":[{\"result\":\"\u6d88\u8d39\u6210\u529f\",\"code\":\"201819625306\",\"errcode\":false}]}";
         JsonParser jsonParser = new JsonParser();
         JsonObject result = jsonParser.parse(body).getAsJsonObject();
+        String errcode = "";
         if (result.has("data")) {
             JsonArray dataResult = result.get("data").getAsJsonArray();
             System.out.println("data:" + dataResult);
             for (JsonElement obj : dataResult) {
                 JsonObject data = obj.getAsJsonObject();
                 String coupon = data.get("code").getAsString();
-                String errcode = data.get("errcode").getAsString();//成功为false 失败为1
+                errcode = data.get("errcode").getAsString();//成功为false 失败为1
                 message = data.get("result").getAsString();
                 if (!"1".equals(errcode)) {
                     OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon, OuterOrderPartner.MT);
@@ -148,6 +149,6 @@ public class SupplierVerifyResalerECoupons extends Controller {
                 }
             }
         }
-        renderJSON("{\"message\":\"" + message + "\"}");
+        renderJSON("{\"errcode\":" + errcode + ",\"message\":\"" + message + "\"}");
     }
 }
