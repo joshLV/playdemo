@@ -251,6 +251,9 @@
         <navigation key="check_accounts" text="核帐" permissions="CHECK_ACCOUNTSEQUENCE">
             <navigation key="check_accountsequence" action="OperateFinances.index" text="核对资金明细"
                         permissions="CHECK_ACCOUNTSEQUENCE"/>
+            <navigation key="export_58_account_checking" action="ExportChannelAccountChecking.index" text="导出58对账清单"
+                        permissions="CHECK_ACCOUNTSEQUENCE"/>
+
         </navigation>
         <navigation key="report_app" text="财务报表">
             <navigation key="consumers_account_reports" action="OperateReports.showConsumerReport" text="消费者资金明细"
