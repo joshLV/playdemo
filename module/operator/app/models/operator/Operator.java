@@ -171,4 +171,8 @@ public class Operator extends Model {
     public static List<Operator> findUnDeleted() {
         return Operator.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
     }
+
+    public static List<Operator> findShihui() {
+        return Operator.find("deleted=? and code = ?", DeletedStatus.UN_DELETED, DEFAULT_OPERATOR_CODE).fetch();
+    }
 }
