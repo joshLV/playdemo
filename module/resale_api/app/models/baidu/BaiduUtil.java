@@ -3,20 +3,20 @@ package models.baidu;
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.uhuila.common.util.DateUtil;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
-import models.sales.ResalerProduct;
 import models.sales.Shop;
-import models.wuba.WubaResponse;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import play.Logger;
 import play.Play;
 import util.extension.ExtensionResult;
 import util.ws.WebServiceRequest;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,6 +83,8 @@ public class BaiduUtil {
         }
         return ExtensionResult.code(1).message("百度券验证接口调用失败");
     }
+
+
 
     /**
      * 解析百度的返回信息
@@ -180,6 +182,7 @@ public class BaiduUtil {
                     }
                 });
     }
+
     public static String allCityJsonCache() {
         return CacheHelper.getCache(
                 CacheHelper.getCacheKey(CACHE_KEY_CITY, "ALL_BAIDU_CITIES"),
@@ -193,5 +196,17 @@ public class BaiduUtil {
                         return response.data.getAsJsonArray().toString();
                     }
                 });
+    }
+
+    /**
+     * 获取加密签名
+     */
+    public static String sign() {
+        Date date = new Date();
+        String year = DateUtil.dateToString(date, "yyyy");
+        String month = DateUtil.dateToString(date, "M");
+        String day = DateUtil.dateToString(date, "d");
+        String hour = DateUtil.dateToString(date, "HH");
+        return DigestUtils.md5Hex(year + "_" + month + "_" + day + "_" + hour + "_Bootstrap");
     }
 }
