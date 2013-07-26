@@ -47,6 +47,7 @@ function buildCategoryDataStruct() {
     var categoryData = {};
     for (var i = 0; i< subCategoryData.length; i ++) {
         var cat = subCategoryData[i];
+        console.log(cat)
         //构造node
         var node = {};
         node.id = cat.prodTypeId;

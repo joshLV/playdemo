@@ -2,10 +2,8 @@ package models.baidu;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.uhuila.common.util.DateUtil;
+import com.google.gson.*;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.sales.Shop;
@@ -17,7 +15,9 @@ import util.extension.ExtensionResult;
 import util.ws.WebServiceRequest;
 
 import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,8 +43,6 @@ public class BaiduUtil {
         String jsonAuth = new Gson().toJson(param);
         params.put("auth", jsonAuth);
         String jsonRequestData = new Gson().toJson(appParams);
-
-        Logger.info("wuba request.%s:\n%s", method, jsonRequestData);
 
         params.put("data", jsonRequestData);
         Logger.info("baidu request %s:\n%s", method, new Gson().toJson(params));
@@ -83,7 +81,6 @@ public class BaiduUtil {
         }
         return ExtensionResult.code(1).message("百度券验证接口调用失败");
     }
-
 
 
     /**
@@ -130,55 +127,35 @@ public class BaiduUtil {
     }
 
     /**
-     * 获取百度一级分类
+     * 获取百度级分类
      */
-    public static String firstCategoryJsonCache() {
-        final Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", "1");
-        paramMap.put("level", "0");
+    public static String allCategoryJsonCache() {
         return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "BAIDU_PRODUCT_TYPES"),
+                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "BAIDU_CHILD_CATEGORY"),
                 new CacheCallBack<String>() {
                     @Override
                     public String loadData() {
-                        BaiduResponse response = BaiduUtil.sendRequest(paramMap, "getcategory.action");
-                        return response.data.getAsJsonArray().toString();
-                    }
-                });
-    }
-
-    /**
-     * 获取百度二级分类
-     */
-    public static String secondCategoryJsonCache() {
-        final Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", "1");
-        paramMap.put("level", "0");
-        return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "BAIDU_PRODUCT_TYPES"),
-                new CacheCallBack<String>() {
-                    @Override
-                    public String loadData() {
-                        BaiduResponse response = BaiduUtil.sendRequest(paramMap, "getcategory.action");
-                        return response.data.getAsJsonArray().toString();
-                    }
-                });
-    }
-
-    /*
-    * 获取百度三级分类
-    */
-    public static String ThirdCategoryJsonCache() {
-        final Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", "1");
-        paramMap.put("level", "0");
-        return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "BAIDU_PRODUCT_TYPES"),
-                new CacheCallBack<String>() {
-                    @Override
-                    public String loadData() {
-                        BaiduResponse response = BaiduUtil.sendRequest(paramMap, "getcategory.action");
-                        return response.data.getAsJsonArray().toString();
+                        List<Map<String, Object>> mapList = new ArrayList<>();
+                        BaiduResponse response = BaiduUtil.sendRequest(null, "getcategory.action");
+                        for (JsonElement element : response.data.getAsJsonArray()) {
+                            JsonObject obj = element.getAsJsonObject();
+                            Integer parentId = obj.get("id").getAsInt();
+                            Map<String, Object> paramMap = new HashMap<>();
+                            paramMap.put("id", parentId);
+                            paramMap.put("level", "1");
+                            BaiduResponse childResponse = BaiduUtil.sendRequest(paramMap, "getcategory.action");
+                            //读取二级分类
+                            for (JsonElement childElement : childResponse.data.getAsJsonArray()) {
+                                JsonObject childObj = childElement.getAsJsonObject();
+                                Map<String, Object> map = new HashMap<>();
+                                map.put("prodTypeId", childObj.get("id").getAsInt());
+                                map.put("name", childObj.get("name").getAsString());
+                                map.put("parentId", parentId);
+                                map.put("prodCategory", 0);
+                                mapList.add(map);
+                            }
+                        }
+                        return new Gson().toJson(mapList);
                     }
                 });
     }

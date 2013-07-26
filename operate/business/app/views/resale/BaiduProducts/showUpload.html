@@ -26,9 +26,8 @@
                 <div id="prodType-treeFrame" class="menuContent" style="display:none; position: absolute;">
                     <ul id="prodType-tree" class="ztree" style="width:210px"></ul>
                 </div>
-                <input name="first_catalog" id="prodType-value" type="hidden">
-                <input name="second_catalog" id="prodType-nodeChain" type="hidden">
-                *{<input name="third_catalog" id="prodType-nodeChain" type="hidden">}*
+                <input name="second_catalog" id="prodType-value" type="hidden">
+                <input name="first_catalog" id="prodType-nodeChain" type="hidden">
             </div>
         </div>
         <div class="control-group">
@@ -54,13 +53,6 @@
                 <img src="${goods.imageOriginalPath}" alt="" id="imgProdImg">
             </div>
         </div>
-        *{<div class="control-group">}*
-            *{<label class="control-label" for="brand">品牌 *</label>}*
-            *{<div class="controls">}*
-                *{<input type="text" id="brand" name="brand" class="input-xxlarge" value="" data-max-length="20">}*
-                *{<span class="help-inline">不超过20个字符<span id="inputTitle-monitor"></span></span>}*
-            *{</div>}*
-        *{</div>}*
         <div class="control-group">
             <label class="control-label" for="smsTitlee">短信标题 *</label>
             <div class="controls">
@@ -93,17 +85,17 @@
             <label class="control-label">团购开始时间 *</label>
             <div class="controls">
                 <input type="text" name="begin_time" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-                       class="Wdate" value="${goods.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                       class="Wdate" value="${goods.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}"> <span class="help-inline">(当前时间前2个月~1年后的当前时间)</span>
                 团购结束时间 *
                 <input type="text" name="end_time" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-                       class="Wdate" value="${goods.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                       class="Wdate" value="${goods.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}"> <span class="help-inline">(当前时间~1年后的当前时间)</span>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">券截止日期 *</label>
             <div class="controls">
                 <input type="text" name="valid_time" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-                       class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                       class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}"> <span class="help-inline">(当前时间~1年后的当前时间)</span>
             </div>
         </div>
         <div class="control-group">
@@ -120,23 +112,55 @@
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label">团购详情</label>
+            <label class="control-label"> 购买须知</label>
             <div class="controls">
-                <textarea rows="8" cols="100"  name="spinfo" id="spinfo" style="width:850px;height:550px;display:hidden;">
-                    ${goods.exhibition.raw()}
+                <textarea rows="8" cols="100"  name="notice" id="notice" style="width:850px;height:550px;display:hidden;">
                     <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                         <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
                     </p>
                     ${goods.prompt.raw()}
-                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
-                    </p>
-                    ${goods.details.raw()}
+                </textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">套餐介绍</label>
+            <div class="controls">
+                <textarea rows="8" cols="100"  name="notice" style="width:850px;height:550px;display:hidden;">
+                ${goods.exhibition.raw()}
+                </textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">团购套餐详情</label>
+            <div class="controls">
+                <textarea rows="8" cols="100"  name="ext" style="width:850px;height:550px;display:hidden;">
+                ${goods.details.raw()}
                     <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                         <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
                     </p>
-                    ${goods.supplierDes.raw()}
+                ${goods.supplierDes.raw()}
                 </textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">发布城市 *</label>
+            <div class="controls">
+                <input type="checkbox" city="北京" value="2" city-shortname="bj">北京
+                <input type="checkbox" city="上海" value="4" city-shortname="sh" checked>上海
+                <input type="checkbox" city="天津" value="5" city-shortname="tj">天津
+                <input type="checkbox" city="哈尔滨" value="10" city-shortname="hrb">哈尔滨
+                <input type="checkbox" city="苏州" value="21" city-shortname="su">苏州
+                <input type="checkbox" city="南京" value="29" city-shortname="nj">南京
+                <input type="checkbox" city="杭州" value="35" city-shortname="hz">杭州
+                <input type="checkbox" city="成都" value="36" city-shortname="cd">成都
+                <input type="checkbox" city="宁波" value="205" city-shortname="nb">宁波
+                <input type="checkbox" city="无锡" value="361" city-shortname="wx">无锡
+                <input type="checkbox" city="常州" value="64" city-shortname="cz">常州
+                <input type="checkbox" city="广州" value="7" city-shortname="gz">广州
+                <input type="checkbox" city="深圳" value="11" city-shortname="sz">深圳
+                <input type="checkbox" city="南通" value="208" city-shortname="nt">南通
+                <input type="hidden"  id="cityIds">
+                <input type="hidden"  id="firstCity">
             </div>
         </div>
 
@@ -159,7 +183,7 @@
                         <td>行政区 *</td>
                         <td><input type="text" name="area_name_${shop.id}" value="上海 徐汇区" class="input-xlarge"></td>
                         <td>营业时间 *</td>
-                        <td><input type="text" name="open_time_${shop.id}" value="${supplier?.shopEndHour} " class="input-xlarge"></td>
+                        <td><input type="text" name="open_time_${shop.id}" value="正常营业时间" class="input-xlarge"></td>
                     </tr>
                     <tr>
                         <td>商家名称 *</td>
@@ -168,7 +192,7 @@
                         <td><input type="text" name="telephone_${shop.id}" value="${shop.phone}" class="input-xlarge"></td>
                     </tr>
                     <tr>
-                        <td>交通信息 *</td>
+                        <td>交通信息 </td>
                         <td><input type="text" name="traffic_info_${shop.id}" class="input-xlarge"></td>
                     </tr>
                     <tr>

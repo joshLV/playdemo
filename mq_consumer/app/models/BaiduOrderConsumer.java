@@ -3,6 +3,7 @@ package models;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import models.accounts.PaymentSource;
+import models.baidu.BaiduOrderMessageUtil;
 import models.baidu.BaiduResponse;
 import models.baidu.BaiduUtil;
 import models.mq.RabbitMQConsumerWithTx;
@@ -150,6 +151,6 @@ public class BaiduOrderConsumer extends RabbitMQConsumerWithTx<String> {
 
     @Override
     protected String queue() {
-        return SinaVouchersMessageUtil.QUEUE_NAME;
+        return BaiduOrderMessageUtil.QUEUE_NAME;
     }
 }
