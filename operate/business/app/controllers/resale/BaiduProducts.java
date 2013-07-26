@@ -1,6 +1,8 @@
 package controllers.resale;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.RandomNumberUtil;
 import controllers.ImportCoupons;
@@ -44,7 +46,7 @@ public class BaiduProducts extends Controller {
     public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
 
-        String allCategoriesJson = BaiduUtil.firstCategoryJsonCache();
+        String allCategoriesJson = BaiduUtil.allCategoryJsonCache();
         Collection<Shop> shopList = goods.getShopList();
         Supplier supplier = Supplier.findById(goods.supplierId);
         String allCityJson = BaiduUtil.allCityJsonCache();
@@ -123,7 +125,7 @@ public class BaiduProducts extends Controller {
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
             String partnerProductId = response.data.getAsJsonObject().get("groupon_id").getAsString();
             product.partnerProduct(partnerProductId).save();
-            product.url("http://tuan.baidu.com/selftg/item/detail?city_id=3&item_id="+ partnerProductId);
+            product.url("http://tuan.baidu.com/selftg/item/detail?city_id=3&item_id=" + partnerProductId);
             product.save();
 
             ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(groupbuyInfoParams),

@@ -2,10 +2,7 @@ package models.baidu;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.sales.ResalerProduct;
@@ -17,7 +14,9 @@ import play.Play;
 import util.extension.ExtensionResult;
 import util.ws.WebServiceRequest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -126,60 +125,43 @@ public class BaiduUtil {
 
         return paramMap;
     }
-
+//[{"enName":"zhongcan","name":"中餐","parentId":29,"prodCategory":0,"prodTypeId":1},{"enName":"xican","name":"西餐","parentId":29,"prodCategory":0,"prodTypeId":55}]
     /**
-     * 获取百度一级分类
+     * 获取百度级分类
      */
-    public static String firstCategoryJsonCache() {
-        final Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", "1");
-        paramMap.put("level", "0");
+    public static String allCategoryJsonCache() {
         return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "BAIDU_PRODUCT_TYPES"),
+                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "BAIDU_CHILD_CATEGORY"),
                 new CacheCallBack<String>() {
                     @Override
                     public String loadData() {
-                        BaiduResponse response = BaiduUtil.sendRequest(paramMap, "getcategory.action");
-                        return response.data.getAsJsonArray().toString();
+                        List<Map<String, Object>> mapList = new ArrayList<>();
+                        BaiduResponse response = BaiduUtil.sendRequest(null, "getcategory.action");
+                        for (JsonElement element : response.data.getAsJsonArray()) {
+                            JsonObject obj = element.getAsJsonObject();
+                            String parentId = obj.get("id").getAsString();
+                            Map<String, Object> paramMap = new HashMap<>();
+                            paramMap.put("id", parentId);
+                            paramMap.put("level", "1");
+                            BaiduResponse childResponse = BaiduUtil.sendRequest(paramMap, "getcategory.action");
+                            //读取二级分类
+                            for (JsonElement childElement : childResponse.data.getAsJsonArray()) {
+                                JsonObject childObj = childElement.getAsJsonObject();
+                                Map<String, Object> map = new HashMap<>();
+                                map.put("prodTypeId", childObj.get("id").getAsString());
+                                map.put("name", childObj.get("name").getAsString());
+                                map.put("parentId", parentId);
+                                map.put("prodCategory", "0");
+                                mapList.add(map);
+                            }
+                        }
+                        System.out.println(">>"+new Gson().toJson(mapList)+"=sss==");
+                        return new Gson().toJson(mapList);
                     }
                 });
     }
 
-    /**
-     * 获取百度二级分类
-     */
-    public static String secondCategoryJsonCache() {
-        final Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", "1");
-        paramMap.put("level", "0");
-        return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "BAIDU_PRODUCT_TYPES"),
-                new CacheCallBack<String>() {
-                    @Override
-                    public String loadData() {
-                        BaiduResponse response = BaiduUtil.sendRequest(paramMap, "getcategory.action");
-                        return response.data.getAsJsonArray().toString();
-                    }
-                });
-    }
 
-    /*
-    * 获取百度三级分类
-    */
-    public static String ThirdCategoryJsonCache() {
-        final Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", "1");
-        paramMap.put("level", "0");
-        return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY_CATEGORY, "BAIDU_PRODUCT_TYPES"),
-                new CacheCallBack<String>() {
-                    @Override
-                    public String loadData() {
-                        BaiduResponse response = BaiduUtil.sendRequest(paramMap, "getcategory.action");
-                        return response.data.getAsJsonArray().toString();
-                    }
-                });
-    }
     public static String allCityJsonCache() {
         return CacheHelper.getCache(
                 CacheHelper.getCacheKey(CACHE_KEY_CITY, "ALL_BAIDU_CITIES"),
