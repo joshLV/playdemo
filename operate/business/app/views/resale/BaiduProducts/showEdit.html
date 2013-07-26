@@ -60,13 +60,6 @@ ${goods.shortName}</a>
         <img src="${goods.imageOriginalPath}" alt="" id="imgProdImg">
     </div>
 </div>
-*{<div class="control-group">}*
-*{<label class="control-label" for="brand">品牌 *</label>}*
-*{<div class="controls">}*
-
-*{<span class="help-inline">不超过20个字符<span id="inputTitle-monitor"></span></span>}*
-*{</div>}*
-*{</div>}*
 <div class="control-group">
     <label class="control-label" for="smsTitlee">短信标题 *</label>
 
@@ -76,11 +69,7 @@ ${goods.shortName}</a>
         <span class="help-inline">不超过30个字符<span id="inputListShortTitle-monitor"></span></span>
     </div>
 </div>
-<div class="control-group">
-    <label class="control-label">是否支持退款 *</label>
 
-
-</div>
 <div class="control-group">
     <label class="control-label" for="originalPrice">市场价 *</label>
 
@@ -90,10 +79,7 @@ ${goods.shortName}</a>
         <span class="help-inline">最多两位小数</span>
     </div>
 </div>
-<div class="control-group">
-    <label class="control-label" for="grouponPrice">销售价 *</label>
 
-</div>
 <div class="control-group">
     <label class="control-label">团购开始时间 *</label>
 
@@ -129,18 +115,31 @@ ${goods.shortName}</a>
     </div>
 </div>
 <div class="control-group">
-    <label class="control-label">团购详情</label>
+    <label class="control-label"> 购买须知</label>
 
     <div class="controls">
-        <textarea rows="8" cols="100" name="spinfo" id="spinfo" style="width:850px;height:550px;display:hidden;">
-        ${goods.exhibition.raw()}
+        <textarea rows="8" cols="100" name="notice" id="notice" style="width:850px;height:550px;display:hidden;">
             <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                 <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
             </p>
         ${goods.prompt.raw()}
-            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
-            </p>
+        </textarea>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">套餐介绍</label>
+
+    <div class="controls">
+        <textarea rows="8" cols="100" name="notice" style="width:850px;height:550px;display:hidden;">
+        ${goods.exhibition.raw()}
+        </textarea>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">团购套餐详情</label>
+
+    <div class="controls">
+        <textarea rows="8" cols="100" name="ext" style="width:850px;height:550px;display:hidden;">
         ${goods.details.raw()}
             <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                 <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
@@ -149,7 +148,27 @@ ${goods.shortName}</a>
         </textarea>
     </div>
 </div>
-
+<div class="control-group">
+    <label class="control-label">发布城市 *</label>
+    <div class="controls">
+        <input type="checkbox" city="北京" value="2" city-shortname="bj">北京
+        <input type="checkbox" city="上海" value="4" city-shortname="sh" checked>上海
+        <input type="checkbox" city="天津" value="5" city-shortname="tj">天津
+        <input type="checkbox" city="哈尔滨" value="10" city-shortname="hrb">哈尔滨
+        <input type="checkbox" city="苏州" value="21" city-shortname="su">苏州
+        <input type="checkbox" city="南京" value="29" city-shortname="nj">南京
+        <input type="checkbox" city="杭州" value="35" city-shortname="hz">杭州
+        <input type="checkbox" city="成都" value="36" city-shortname="cd">成都
+        <input type="checkbox" city="宁波" value="205" city-shortname="nb">宁波
+        <input type="checkbox" city="无锡" value="361" city-shortname="wx">无锡
+        <input type="checkbox" city="常州" value="64" city-shortname="cz">常州
+        <input type="checkbox" city="广州" value="7" city-shortname="gz">广州
+        <input type="checkbox" city="深圳" value="11" city-shortname="sz">深圳
+        <input type="checkbox" city="南通" value="208" city-shortname="nt">南通
+        <input type="hidden"  id="cityIds">
+        <input type="hidden"  id="firstCity">
+    </div>
+</div>
 %{shopIds=[]}%
 #{list items:shopList, as:'shop'}
     #{if shop.deleted != com.uhuila.common.constants.DeletedStatus.DELETED}
@@ -170,7 +189,7 @@ ${goods.shortName}</a>
                     <td>行政区 *</td>
                     <td><input type="text" name="area_name_${shop.id}" value="上海 徐汇区" class="input-xlarge"></td>
                     <td>营业时间 *</td>
-                    <td><input type="text" name="open_time_${shop.id}" value="${supplier?.shopEndHour} "
+                    <td><input type="text" name="open_time_${shop.id}" value="全天正常营业"
                                class="input-xlarge"></td>
                 </tr>
                 <tr>
@@ -182,7 +201,7 @@ ${goods.shortName}</a>
                     </td>
                 </tr>
                 <tr>
-                    <td>交通信息 *</td>
+                    <td>交通信息 </td>
                     <td><input type="text" name="traffic_info_${shop.id}" class="input-xlarge"></td>
                 </tr>
                 <tr>
@@ -233,7 +252,7 @@ ${goods.shortName}</a>
 
 <div class="form-actions">
     <input type="hidden" name="goodsId" value="${goods.id}">
-    <input type="hidden" name="productId" value="${product.id}" >
+    <input type="hidden" name="productId" value="${product.id}">
     <button type="submit" id="submit" class="btn btn-primary">修改团购信息</button>
 </div>
 </form>

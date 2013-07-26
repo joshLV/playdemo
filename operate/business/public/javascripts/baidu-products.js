@@ -35,7 +35,7 @@ function buildCategoryDataStruct() {
         var cat = subCategoryData[i];
         console.log(cat)
         var node = {};
-        node.id = cat.parentId;
+        node.id = cat.prodTypeId;
         node.name = cat.name;
         if (cat.parentId in categoryData) {
             categoryData[cat.parentId].children.push(node);
@@ -151,8 +151,8 @@ $(function(){
         prodTypeTree.selectNode(zhongcanNode);
         expandSinglePathToRoot(prodTypeTree, zhongcanNode);
         $("#prodType-show").val('西餐');
-        $("#prodType-value").val('1');
-        $("#prodType-nodeChain").val('10101');
+        $("#prodType-value").val('10101');
+        $("#prodType-nodeChain").val('1,10101');
     }
 
     // 初始化所有分店的商圈树

@@ -43,8 +43,6 @@ public class BaiduUtil {
         params.put("auth", jsonAuth);
         String jsonRequestData = new Gson().toJson(appParams);
 
-        Logger.info("wuba request.%s:\n%s", method, jsonRequestData);
-
         params.put("data", jsonRequestData);
         Logger.info("baidu request %s:\n%s", method, new Gson().toJson(params));
         WebServiceRequest paramRequest = WebServiceRequest.url(GATEWAY_URL + method)
@@ -125,7 +123,7 @@ public class BaiduUtil {
 
         return paramMap;
     }
-//[{"enName":"zhongcan","name":"中餐","parentId":29,"prodCategory":0,"prodTypeId":1},{"enName":"xican","name":"西餐","parentId":29,"prodCategory":0,"prodTypeId":55}]
+
     /**
      * 获取百度级分类
      */
@@ -139,7 +137,7 @@ public class BaiduUtil {
                         BaiduResponse response = BaiduUtil.sendRequest(null, "getcategory.action");
                         for (JsonElement element : response.data.getAsJsonArray()) {
                             JsonObject obj = element.getAsJsonObject();
-                            String parentId = obj.get("id").getAsString();
+                            Integer parentId = obj.get("id").getAsInt();
                             Map<String, Object> paramMap = new HashMap<>();
                             paramMap.put("id", parentId);
                             paramMap.put("level", "1");
@@ -148,20 +146,22 @@ public class BaiduUtil {
                             for (JsonElement childElement : childResponse.data.getAsJsonArray()) {
                                 JsonObject childObj = childElement.getAsJsonObject();
                                 Map<String, Object> map = new HashMap<>();
-                                map.put("prodTypeId", childObj.get("id").getAsString());
+                                map.put("prodTypeId", childObj.get("id").getAsInt());
                                 map.put("name", childObj.get("name").getAsString());
                                 map.put("parentId", parentId);
-                                map.put("prodCategory", "0");
+                                map.put("prodCategory", 0);
                                 mapList.add(map);
                             }
                         }
-                        System.out.println(">>"+new Gson().toJson(mapList)+"=sss==");
                         return new Gson().toJson(mapList);
                     }
                 });
     }
 
 
+    /**
+     * 获取城市信息
+     */
     public static String allCityJsonCache() {
         return CacheHelper.getCache(
                 CacheHelper.getCacheKey(CACHE_KEY_CITY, "ALL_BAIDU_CITIES"),
