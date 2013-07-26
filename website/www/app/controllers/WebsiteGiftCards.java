@@ -36,9 +36,7 @@ public class WebsiteGiftCards extends Controller {
             err = "请填写验证码";
         }
 
-        password = password.toUpperCase();
-
-        GiftCard giftCard = GiftCard.find("byPasswordAndDisabled", password, DeletedStatus.UN_DELETED).first();
+        GiftCard giftCard = GiftCard.find("byPasswordAndDisabled", password.toUpperCase(), DeletedStatus.UN_DELETED).first();
         if (giftCard == null) {
             err = "对不起，券号无效";
         }
