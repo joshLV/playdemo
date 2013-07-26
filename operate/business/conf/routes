@@ -105,6 +105,9 @@ GET     /resaler-products/wb/refresh/{productId}        resale.WubaGroupBuyProdu
 # 百度
 GET     /resaler-products/bd/upload/{goodsId}           resale.BaiduProducts.showUpload
 POST    /resaler-products/bd/upload                     resale.BaiduProducts.upload
+GET     /resaler-products/bd/offsale/{productId}        resale.BaiduProducts.offsale
+GET     /resaler-products/bd/edit/{productId}           resale.BaiduProducts.showEdit
+POST    /resaler-products/bd/edit                       resale.BaiduProducts.edit
 
 # 当当
 GET     /resaler-products/dd/upload/{goodsId}           resale.DDGroupBuyProducts.showUpload
@@ -413,6 +416,14 @@ POST    /financing_incoming                     FinancingIncomingNote.create
 # 核帐
 GET     /finances                               OperateFinances.index
 GET    /finances/check                          OperateFinances.checkAccountSequence
+
+#导出58对账清单
+GET     /export-channel-account-checking        ExportChannelAccountChecking.index
+GET     /export-58-account-checking-excel       ExportChannelAccountChecking.wubaExcelOut
+
+
+
+
 
 # 提现管理
 GET     /withdraw                               WithdrawApproval.index

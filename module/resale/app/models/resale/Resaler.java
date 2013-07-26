@@ -377,4 +377,13 @@ public class Resaler extends Model {
         }
         return _sina;
     }
+
+    public static List<Resaler> findByChannelClearingBill(Long operatorId) {
+        if (operatorId == null || operatorId == 0) {
+            return null;
+        } else {
+            //JD,YHD,WB
+            return Resaler.find("id in (?,?,?)", 10l, 7l, 14l).fetch();
+        }
+    }
 }

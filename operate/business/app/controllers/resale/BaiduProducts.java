@@ -1,11 +1,6 @@
 package controllers.resale;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.RandomNumberUtil;
-import controllers.ImportCoupons;
 import controllers.OperateRbac;
 import models.baidu.BaiduResponse;
 import models.baidu.BaiduUtil;
@@ -14,11 +9,7 @@ import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.*;
 import models.supplier.Supplier;
-import models.wuba.WubaResponse;
-import models.wuba.WubaUtil;
 import operate.rbac.annotations.ActiveNavigation;
-import org.apache.commons.lang.StringUtils;
-import org.h2.util.DateTimeUtils;
 import play.data.binding.As;
 import play.mvc.Controller;
 import play.mvc.With;
