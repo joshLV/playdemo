@@ -205,8 +205,8 @@ jQuery(function ($) {
                     data: {'shopId': shopIdInput.val(), 'eCouponSns': couponIds},
                     success: function (data) {
                         if (data != null) {
-                            $("#verify-info").text(data);
-                            $("#verify-btn").text("验证消费");
+                            $("#verify-msg").text(data);
+                            $("#verify-btn").text("验证消费").removeClass("disabled");
                         }
                     },
                     error: function () {
