@@ -107,6 +107,9 @@ public class SupplierVerifyResalerECoupons extends Controller {
         headers.put("Cookie", cookie);
         Map<String, Object> params = new HashMap<>();
         for (int i = 0; i < couponIds.size(); i++) {
+            if (couponIds.get(i).length() != 12) {
+                continue;
+            }
             params.put("codes[" + i + "]", couponIds.get(i));
         }
         params.put("dealid", partnerGoodsId);
