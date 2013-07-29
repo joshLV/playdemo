@@ -45,10 +45,11 @@ jQuery(function ($) {
     couponIds = [];
     $(".enter-coupon").each(function () {
         var ele = $(this);
+        $("#verify-msg").text("");
         $(ele).change(function () {
             var index = ele.attr("coupon-index");
-            $("#verify-info-" + index).text("");
-            $("#verify-msg").text("");
+            $('#verify-info-' + index).text("");
+            $('#verify-msg').text("");
             var eCouponSn = ele.val().replace(/ /g, '');
             if (eCouponSn == '') {
                 $("#verify-info-" + index).text("请输入券号。");
@@ -59,9 +60,18 @@ jQuery(function ($) {
                 return;
             }
 
-
             if (eCouponSn.length == 10) {
                 ybqCouponCnt++;
+            }
+            if (eCouponSn.length == 12) {
+                mtCouponCnt++;
+            }
+            if (ybqCouponCnt > 0 && mtCouponCnt > 0) {
+                $("#verify-msg").text("请确认输入的券号全部是10位或全部是12位！");
+                return false;
+            }
+
+            if (eCouponSn.length == 10) {
                 $.ajax({
                     type: 'POST',
                     url: '/verify/' + shopIdInput.val() + "/" + eCouponSn,
@@ -70,8 +80,7 @@ jQuery(function ($) {
                         if (data.errorInfo != null && data.errorInfo != "null") {
                             enterCoupon.focus();
                             $("#verify-info-" + index).text(data.errorInfo);
-                            $("#verify-btn").text("验证消费");
-                            $("#verify-btn").removeClass("disabled");
+                            $("#verify-btn").text("验证消费").removeClass("disabled");
                         }
                     },
                     error: function (data) {
@@ -79,21 +88,15 @@ jQuery(function ($) {
                     }
                 });
             }
-            if (eCouponSn.length == 12) {
-                mtCouponCnt++;
-            }
+
             var i = $.inArray(eCouponSn, couponIds);
             if (i >= 0) {
                 $("#verify-info-" + index).text("券号输入的有重复，请检查！");
                 return false;
             }
-            couponIds.push(eCouponSn);
+//            couponIds.push(eCouponSn);
         });
 
-        if (ybqCouponCnt > 0 && mtCouponCnt > 0) {
-            $("#verify-msg").text("请确认输入的券号全部是10位或全部是12位！");
-            return false;
-        }
     });
 
     var verifyCoupon = function () {
@@ -101,6 +104,8 @@ jQuery(function ($) {
         if (_this.hasClass("disabled")) {
             return false;
         }
+        $('#verify-msg').text("");
+
         var success = true;
         $(".enter-coupon").each(function () {
             var ele = $(this);
@@ -108,17 +113,25 @@ jQuery(function ($) {
             var eCouponSn = ele.val().replace(/ /g, '');
 
             $(ele).change(function () {
-                $("#verify-info-" + index).text("");
-                $("#verify-msg").text("");
-
+                $('#verify-info-' + index).text("");
                 if (eCouponSn.length != 10 && eCouponSn.length != 12) {
                     $("#verify-info-" + index).text("券号应为10位数字或12位数字，请修正。");
                     success = false;
                     return;
                 }
-
                 if (eCouponSn.length == 10) {
                     ybqCouponCnt++;
+                }
+                if (eCouponSn.length == 12) {
+                    mtCouponCnt++;
+                }
+                if (ybqCouponCnt > 0 && mtCouponCnt > 0) {
+                    $("#verify-msg").text("请确认输入的券号全部是10位或全部是12位！");
+                    return false;
+                } else {
+                    $("#verify-msg").text("");
+                }
+                if (eCouponSn.length == 10) {
                     $.ajax({
                         type: 'POST',
                         url: '/verify/' + shopIdInput.val() + "/" + eCouponSn,
@@ -127,8 +140,7 @@ jQuery(function ($) {
                             if (data.errorInfo != null && data.errorInfo != "null") {
                                 enterCoupon.focus();
                                 $("#verify-info-" + index).text(data.errorInfo);
-                                $("#verify-btn").text("验证消费");
-                                $("#verify-btn").removeClass("disabled");
+                                $("#verify-btn").text("验证消费").removeClass("disabled");
                                 success = false;
                             }
                         },
@@ -138,9 +150,7 @@ jQuery(function ($) {
                     });
                 }
             });
-            if (eCouponSn.length == 12) {
-                mtCouponCnt++;
-            }
+
 //            console.log(eCouponSn+">>>"+couponIds)
 //            var i = $.inArray(eCouponSn, couponIds);
 //            if (i >= 0) {
@@ -149,21 +159,19 @@ jQuery(function ($) {
 //                return false;
 //            }
 //
-//            couponIds.push(eCouponSn);
+            if (eCouponSn != '') {
+                couponIds.push(eCouponSn);
+            }
 
         });
 
-        if (ybqCouponCnt > 0 && mtCouponCnt > 0) {
-            $("#verify-msg").text("请确认输入的券号全部是10位或全部是12位！");
-            return false;
-        }
+
         if (couponIds.length == 0) {
             $("#verify-msg").text("请输入券号！");
             return false;
         }
         if (success) {
-            $("#verify-btn").text("正在验证....");
-            $("#verify-btn").addClass("disabled");
+            $("#verify-btn").text("正在验证....").addClass("disabled");
             if (couponIds[0].length == 12) {
                 var partnerGoodsId = $("#partnerGoodsId").val();
                 var partnerShopId = $("#partnerShopId").val();
@@ -181,8 +189,7 @@ jQuery(function ($) {
                                     item.message = "上海野生动物园135套餐周末票 " + item.result;
                                 } else {
                                     $("#verify-info-" + i).text(item.result);
-                                    $("#verify-btn").text("验证消费");
-                                    $("#verify-btn").removeClass("disabled");
+                                    $("#verify-btn").text("验证消费").removeClass("disabled");
                                 }
 
                             })
