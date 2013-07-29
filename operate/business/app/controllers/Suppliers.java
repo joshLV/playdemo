@@ -139,6 +139,7 @@ public class Suppliers extends Controller {
         supplier.setProperty(Supplier.IS_WITHDRAW_DELAY, request.params.get(Supplier.IS_WITHDRAW_DELAY));
         supplier.setProperty(Supplier.PROPERTY_GIFT_CARD, request.params.get(Supplier.PROPERTY_GIFT_CARD));
         supplier.setProperty(Supplier.FREEZE_AMOUNT, request.params.get(Supplier.FREEZE_AMOUNT));
+        supplier.setProperty(Supplier.SET_WITHDRAW_AMOUNT, request.params.get(Supplier.SET_WITHDRAW_AMOUNT));
         supplier.setProperty(Supplier.MEI_TUAN, request.params.get(Supplier.MEI_TUAN));
         supplier.setProperty(Supplier.DIAN_PING, request.params.get(Supplier.DIAN_PING));
     }

@@ -77,6 +77,7 @@ public class Supplier extends Model {
     public static final String KTV_MAX_DEPLOY_DATE = "ktvMaxDeployDate"; //KTV 发布的预订天数
     public static final String PROPERTY_GIFT_CARD = "giftCard"; //是否销售带预约的礼券
     public static final String FREEZE_AMOUNT = "freezeAmount"; //是否要冻结金额
+    public static final String SET_WITHDRAW_AMOUNT = "setWithdrawAmount"; //是否由销售设置提现金额
     public static final String MEI_TUAN = "meiTuan"; //是否在美团上验证
     public static final String DIAN_PING = "dianPing"; //是否在点评上验证
 
