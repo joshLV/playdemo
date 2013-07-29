@@ -68,6 +68,8 @@ GET     /wubaThirdBillSequences                 DDGroupBuy.wubaThirdBillSequence
 # 欢乐谷
 *       /api/v1/huanlegu/voucher-consumed       HuanleguAPI.couponConsumed
 
+#百度
+GET     /getSellCount                           BaiduGroupBuy.getSellCount
 
 # 虚拟短信通道
 *      /vxsms                                   VxSmses.send

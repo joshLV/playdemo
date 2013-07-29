@@ -10,6 +10,7 @@ import models.accounts.TradeType;
 import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import org.apache.commons.lang.time.DateUtils;
+import play.jobs.On;
 import play.Logger;
 
 import java.math.BigDecimal;
@@ -23,7 +24,6 @@ import java.util.List;
  * Time: 下午2:29
  */
 //@On("0 0 2 * * ?")  //每天凌晨四点执行
-//@OnApplicationStart
 @JobDefine(title = "更新过去账户结算金额", description = "更新过去账户结算金额")
 public class refreshPreviousClearAccount extends JobWithHistory {
     @Override

@@ -63,7 +63,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -715,17 +717,14 @@ public class Order extends Model {
             }
             Long baseSale = orderItem.goods.getRealStocks();
             if (orderItem.goods.couponType == GoodsCouponType.IMPORT && (baseSale == 10 || baseSale == 0)) {
-                //发送提醒邮件
-                MailMessage mailMessage = new MailMessage();
-                mailMessage.addRecipient(EMAIL_RECEIVER);
-                mailMessage.setSubject(Play.mode.isProd() ? "库存不足，商品即将下架" : "商品下架【测试】");
+                Map<String, Object> params = new HashMap<>();
                 Supplier supplier = Supplier.findById(orderItem.goods.supplierId);
-                mailMessage.putParam("supplierName", supplier.fullName);
-                mailMessage.putParam("goodsName", orderItem.goods.name);
-                mailMessage.putParam("faceValue", orderItem.goods.faceValue);
-                mailMessage.putParam("baseSales", baseSale);
-                mailMessage.putParam("offSalesFlag", "noInventory");
-                MailUtil.sendGoodsOffSalesMail(mailMessage);
+                params.put("supplierName", supplier.fullName);
+                params.put("goodsName", orderItem.goods.name);
+                params.put("faceValue", orderItem.goods.faceValue);
+                params.put("supplierName", baseSale);
+                params.put("offSalesFlag", "noInventory");
+                sendInventoryNotEnoughMail(params);
             }
         }
 
@@ -733,6 +732,17 @@ public class Order extends Model {
             addFreight();
             save();
         }
+    }
+
+    public static void sendInventoryNotEnoughMail(Map<String, Object> paramsMap) {
+        //发送提醒邮件
+        MailMessage mailMessage = new MailMessage();
+        mailMessage.addRecipient(EMAIL_RECEIVER);
+        mailMessage.setSubject(Play.mode.isProd() ? "库存不足，商品即将下架" : "商品下架【测试】");
+        for (Map.Entry<String, Object> entry : paramsMap.entrySet()) {
+            mailMessage.putParam(entry.getKey(), entry.getValue());
+        }
+        MailUtil.sendGoodsOffSalesMail(mailMessage);
     }
 
     public void payAndSendECoupon() {
@@ -1063,6 +1073,10 @@ public class Order extends Model {
         return resaler;
     }
 
+    @Transient
+    public boolean isBaiduResaler() {
+        return Resaler.BAIDU_LOGIN_NAME.equals(getResaler().loginName);
+    }
 
     /**
      * 会员中心订单查询

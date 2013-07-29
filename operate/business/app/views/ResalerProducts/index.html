@@ -65,7 +65,7 @@
                             <a href="/resaler-products/${partner}/upload/${goods.id}${resalerLoginName}"
                                class="btn btn-mini" rel="tooltip"
                                title="再次上传"><i class="icon-share-alt"></i></a>
-                            #{if partner == 'jd' || partner == 'wb' || partner == 'sina'}
+                            #{if partner == 'jd' || partner == 'wb' || partner == 'sina' || partner =='bd'}
                                 <a href="/resaler-products/${partner}/edit/${pd.get(0).id}" class="btn btn-mini"
                                    rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
                             #{/if}
@@ -77,7 +77,8 @@
                             <a href="/resaler-products/${partner}/upload/${goods.id}${resalerLoginName}"
                                class="btn btn-mini" rel="tooltip"
                                title="再次上传"><i class="icon-share-alt"></i></a>
-                            <a href="/resaler-products/products/${partner}/${goods.id}${resalerLoginName}" class="btn btn-mini"
+                            <a href="/resaler-products/products/${partner}/${goods.id}${resalerLoginName}"
+                               class="btn btn-mini"
                                rel="tooltip" title="历史详情"><i class="icon-th-list"></i></a>
                         #{/if}
                     </div>

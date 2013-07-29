@@ -1,5 +1,7 @@
 package models.sales;
 
+import com.uhuila.common.util.RandomNumberUtil;
+import models.accounts.AccountType;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
@@ -50,5 +52,24 @@ public class ImportedCouponTemp extends Model {
         this.password = password;
     }
 
+    /**
+     * 生成消费者唯一的券号.
+     */
+    private String generateAvailableEcouponSn(int length) {
+        String randomNumber;
+        do {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                // do nothing.
+            }
+            randomNumber = RandomNumberUtil.generateSerialNumber(length);
+        } while (isNotUniqueEcouponSn(randomNumber));
+        return randomNumber;
+    }
+
+    private boolean isNotUniqueEcouponSn(String randomNumber) {
+        return ImportedCoupon.find("from ImportedCoupon where coupon=?", randomNumber).fetch().size() > 0;
+    }
 
 }

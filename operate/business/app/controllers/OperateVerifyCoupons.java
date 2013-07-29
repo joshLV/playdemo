@@ -166,6 +166,9 @@ public class OperateVerifyCoupons extends Controller {
                 if (ecoupon.partner != null) {
                     Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！");
                 }
+                //主要是针对百度验证失败时，删除门店信息，其他渠道无影响
+                ecoupon.shop = null;
+                ecoupon.save();
             }
             if (Validation.hasErrors()) {
                 return Boolean.FALSE;

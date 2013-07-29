@@ -87,14 +87,17 @@
                 <a href="/resaler-products/${partner}/edit/${product.id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
             #{/if}
 
-            #{if partner == 'wb'}
-                #{if product.status != models.sales.ResalerProductStatus.ONSALE}
+            #{if (partner == 'wb' || partner=='bd')}
+                #{if product.status != models.sales.ResalerProductStatus.ONSALE && partner == 'wb'}
                     <a href="/resaler-products/${partner}/onsale/${product.id}" class="btn btn-mini" rel="tooltip" title="上架"><i class="icon-upload"></i></a>
                 #{/if}
                 #{if product.status != models.sales.ResalerProductStatus.OFFSALE}
                     <a href="/resaler-products/${partner}/offsale/${product.id}" class="btn btn-mini" rel="tooltip" title="下架"><i class="icon-download"></i></a>
                 #{/if}
-                <a href="/resaler-products/${partner}/refresh/${product.id}" class="btn btn-mini" rel="tooltip" title="刷新状态"><i class="icon-refresh"></i></a>
+                #{if (partner == 'wb')}
+                    <a href="/resaler-products/${partner}/refresh/${product.id}" class="btn btn-mini" rel="tooltip"
+                       title="刷新状态"><i class="icon-refresh"></i></a>
+                #{/if}
             #{/if}
         #{/if}
 

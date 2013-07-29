@@ -10,7 +10,6 @@ import models.sales.MaterialType;
 import models.sales.ResalerProduct;
 import play.Logger;
 import play.Play;
-import play.jobs.Every;
 
 import java.util.Date;
 import java.util.List;
@@ -34,13 +33,18 @@ public class DDSyncSellGoodsCountJob extends JobWithHistory {
         Logger.info("\n--------------Start dangdang syncSellCount job----");
 
         //取得dangdang分销商商品库中在售的商品（不包含抽奖商品）
-        List<ResalerProduct> products = ResalerProduct.find("partner=? and goods.materialType = ? and " +
-                "goods.deleted=? and goods.status=? and goods.expireAt >=? and goods.isLottery = false order by createdAt DESC",
-                OuterOrderPartner.DD , MaterialType.ELECTRONIC, DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).fetch();
+        List<ResalerProduct> products = getResalerProducts();
         for (ResalerProduct product : products) {
             DDGroupBuyUtil.syncSellCount(product);
         }
 
         Logger.info("\n--------------End dangdang syncSellCount job.");
+    }
+
+    private List<ResalerProduct> getResalerProducts() {
+        return ResalerProduct.find("partner=? and goods.materialType = ? and " +
+                    "goods.deleted=? and goods.status=? and goods.expireAt >=? and goods.isLottery = false order by createdAt DESC",
+                    OuterOrderPartner.DD , MaterialType.ELECTRONIC, DeletedStatus.UN_DELETED, GoodsStatus.ONSALE,
+                new Date()).fetch();
     }
 }

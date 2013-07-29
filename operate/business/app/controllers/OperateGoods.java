@@ -14,7 +14,18 @@ import models.mail.MailUtil;
 import models.operator.OperateUser;
 import models.resale.Resaler;
 import models.resale.ResalerLevel;
-import models.sales.*;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.GoodsCondition;
+import models.sales.GoodsHistory;
+import models.sales.GoodsImages;
+import models.sales.GoodsResalerCommission;
+import models.sales.GoodsStatus;
+import models.sales.GoodsUnPublishedPlatform;
+import models.sales.MaterialType;
+import models.sales.Shop;
+import models.sales.Sku;
 import models.supplier.Supplier;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
@@ -33,7 +44,12 @@ import play.mvc.With;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 import static play.Logger.warn;
 
@@ -65,7 +81,7 @@ public class OperateGoods extends Controller {
 
         condition.setDescFields();
 
-        JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
+        JPAExtPaginator<Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
         List<Supplier> supplierList = Supplier.findUnDeleted();
@@ -860,7 +876,7 @@ public class OperateGoods extends Controller {
 
         if (StringUtils.isBlank(request.params.get(Goods.PROPERTY_GIFT_CARD))) {
             goods.setProperties(Goods.PROPERTY_GIFT_CARD, "0");
-        }else {
+        } else {
             goods.setProperties(Goods.PROPERTY_GIFT_CARD, request.params.get(Goods.PROPERTY_GIFT_CARD));
         }
 
