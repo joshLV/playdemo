@@ -67,7 +67,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
         }
     }
 
-    public static void meituan(String goodsId, String partnerGoodsId, String partnerShopId, String eCouponSn) {
+    public static void meituan(String goodsId, String partnerGoodsId, String partnerShopId, List<String> couponIds) {
 
         String message = "";
         if (StringUtils.isBlank(partnerGoodsId)) {
@@ -78,7 +78,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
             message = "请选择门店！";
             renderJSON("{\"message\":\"" + message + "\"}");
         }
-        if (eCouponSn == null) {
+        if (couponIds == null) {
             message = "请输入券号！";
             renderJSON("{\"message\":\"" + message + "\"}");
         }
@@ -106,9 +106,9 @@ public class SupplierVerifyResalerECoupons extends Controller {
 
         headers.put("Cookie", cookie);
         Map<String, Object> params = new HashMap<>();
-//        for (int i = 0; i < eCouponSns.length; i++) {
-        params.put("codes[0]", eCouponSn);
-//        }
+        for (int i = 0; i < couponIds.size(); i++) {
+            params.put("codes[" + i + "]", couponIds.get(i));
+        }
         params.put("dealid", partnerGoodsId);
         params.put("bizloginid", partnerShopId);
         WS.HttpResponse response = WS.url("http://e.meituan.com/coupon/batchconsume").params(params).headers(headers).followRedirects(false).post();
@@ -132,7 +132,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
                 JsonObject data = obj.getAsJsonObject();
                 String coupon = data.get("code").getAsString();
                 errcode = data.get("errcode").getAsString();//成功为false 失败为1
-                message = data.get("result").getAsString();
+//                message = data.get("result").getAsString();
                 if (!"1".equals(errcode)) {
                     OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon, OuterOrderPartner.MT);
                     if (outerOrder == null) {
@@ -148,7 +148,8 @@ public class SupplierVerifyResalerECoupons extends Controller {
 
                 }
             }
+            renderJSON(dataResult.toString());
         }
-        renderJSON("{\"errcode\":" + errcode + ",\"message\":\"" + message + "\"}");
+
     }
 }

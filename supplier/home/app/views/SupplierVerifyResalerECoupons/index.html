@@ -36,60 +36,41 @@
 
             <div class="field-group">
                 <label>美团分店</label>
-                ${resalerShopList?.get(0)?.resalerPartnerShopName}
+            ${resalerShopList?.get(0)?.resalerPartnerShopName}
             *{#{select 'partnerShopId', id:"partnerShopId", value:partnerShopId}}*
-                *{#{list items:resalerShopList, as:'shop'}}*
-                    *{#{option shop?.resalerPartnerShopId}${shop?.resalerPartnerShopName}#{/option}}*
-                *{#{/list}}*
+            *{#{list items:resalerShopList, as:'shop'}}*
+            *{#{option shop?.resalerPartnerShopId}${shop?.resalerPartnerShopName}#{/option}}*
+            *{#{/list}}*
             *{#{/select}}*
             </div>
-            <input type="hidden" name="partnerShopId" id="partnerShopId" value="${resalerShopList?.get(0)?.resalerPartnerShopId}"/>
-            <input type="hidden" name="partnerGoodsId" id="partnerGoodsId" value="${resalerProductList?.get(0)?.partnerGoodsId}"/>
+            <input type="hidden" name="partnerShopId" id="partnerShopId"
+                   value="${resalerShopList?.get(0)?.resalerPartnerShopId}"/>
+            <input type="hidden" name="partnerGoodsId" id="partnerGoodsId"
+                   value="${resalerProductList?.get(0)?.partnerGoodsId}"/>
             <input type="hidden" name="goodsId" id="goodsId" value="${resalerProductList?.get(0)?.goods?.id}"/>
-            *{<div class="field-group">}*
-                *{<label>美团项目</label>}*
-            *{#{select 'partnerGoodsId', id:"partnerGoodsId", value:partnerGoodsId}}*
-                *{#{option ''}--请选择--#{/option}}*
-                *{#{list items:resalerProductList, as:'resalerGoods'}}*
-                    *{#{option resalerGoods?.partnerGoodsId}${resalerGoods?.partnerGoodsName}#{/option}}*
-                *{#{/list}}*
-            *{#{/select}}*
-            *{</div>}*
+        *{<div class="field-group">}*
+        *{<label>美团项目</label>}*
+        *{#{select 'partnerGoodsId', id:"partnerGoodsId", value:partnerGoodsId}}*
+        *{#{option ''}--请选择--#{/option}}*
+        *{#{list items:resalerProductList, as:'resalerGoods'}}*
+        *{#{option resalerGoods?.partnerGoodsId}${resalerGoods?.partnerGoodsName}#{/option}}*
+        *{#{/list}}*
+        *{#{/select}}*
+        *{</div>}*
             <h2>输入券号</h2>
+
             <div class="field-group">
-                <label class="coupon-label" for="enter-coupon">输入券号</label>
-                <input type="text" size="12" maxlength="14" name="coupon" autofocus="true" id="enter-coupon"
-                       class="enter-coupon" value=""/>
+            *{<label class="coupon-label" for="enter-coupon">输入券号</label>}*
+            #{list items:0..4, as:'index'}
+                <input type="text" size="32" maxlength="14" name="coupon" autofocus="true" id="enter-coupon" coupon-index="${index}"
+                       class="enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px" />
+                <span id="verify-info-${index}" style="color: red;display: block"></span>
+            #{/list}
                 <a id="verify-btn" class="btn batch-verify " href="javascript:void(0);"
                    hidefocus="true">验证消费</a>
-                <span id="verify-info" style="color: red;display: block"></span>
-                *{<a class="btn add-coupon" href="javascript:void(0);" hidefocus="true">添加</a>}*
-                *{<span style="font-size:12px;line-height: 36px;"><strong>可批量验证，每次最多可添加10张</strong></span>}*
+                <span id="verify-msg" style="color: red;display: block"></span>
             </div>
         </div>
-        *{<table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">}*
-            *{<tr>}*
-                *{<th width="30">序号</th>}*
-                *{<th width="110">输入的券号</th>}*
-                *{<th width="100">商品名称</th>}*
-                *{<th width="70">面值</th>}*
-                *{<th width="85">有效期</th>}*
-                *{<th width="30" class="code">操作</th>}*
-                *{<th width="auto">验证消费提示</th>}*
-            *{</tr>}*
-        *{</table>}*
-        *{<div class="verify-sect">}*
-            *{<a id="verify-btn" class="btn batch-verify disabled" href="javascript:void(0);"}*
-               *{hidefocus="true">验证并消费</a>}*
-        *{</div>}*
     </form>
-    *{<div class="tip">}*
-        *{<h5>怎样验证券？</h5>}*
-        *{<ul>}*
-            *{<li>输入券号后回车或者点击<strong>【添加】</strong>即可将券号添加到列表中</li>}*
-            *{<li>每次最多可以添加10张券，可点击<strong>【删除】</strong>，删除不想要的券号</li>}*
-            *{<li>点击<strong>【验证并消费】</strong>后，将会验证列表中的所有券号</li>}*
-            *{<li>完成验证后，再次输入券号并点击<strong>【添加】</strong>将自动清空上一批验证的券号</li>}*
-        *{</ul>}*
-    *{</div>}*
+
 </div>
