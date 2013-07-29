@@ -27,11 +27,12 @@ public class YHDUtil {
     public static String ERP_VERSION = "1.0";
     public static String FORMAT = "xml";
     public static String VERSION = "1.0";
-    public static YHDResponse sendRequest(Map<String,String> appParams, String method, String dataElementName){
+
+    public static YHDResponse sendRequest(Map<String, String> appParams, String method, String dataElementName) {
         return sendRequestWithFiles(appParams, method, dataElementName, null);
     }
 
-    public static YHDResponse sendRequestWithFiles(Map<String,String> appParams, String method, String dataElementName, File [] files){
+    public static YHDResponse sendRequestWithFiles(Map<String, String> appParams, String method, String dataElementName, File[] files) {
         // 系统级参数设置
         Map<String, String> params = sysParams();
         params.put("method", method);
@@ -44,7 +45,7 @@ public class YHDUtil {
 
 
         Map<String, Object> requestParams = new HashMap<>();
-        for(Map.Entry<String, String> entry : params.entrySet()) {
+        for (Map.Entry<String, String> entry : params.entrySet()) {
             requestParams.put(entry.getKey(), entry.getValue());
         }
 
@@ -71,11 +72,11 @@ public class YHDUtil {
         if (response.errorCount > 0) {
             response.errors = XPath.selectNodes("/response/errInfoList/errDetailInfo", document);
         }
-        response.data = XPath.selectNode("/response/" + dataElementName , document);
+        response.data = XPath.selectNode("/response/" + dataElementName, document);
         return response;
     }
 
-    private static Map<String, String> sysParams(){
+    private static Map<String, String> sysParams() {
         Map<String, String> paramMap = new HashMap<>();
         // 系统级参数设置（必须）
         paramMap.put("checkCode", CHECK_CODE);
@@ -112,6 +113,7 @@ public class YHDUtil {
         }
         return result;
     }
+
     /**
      * 二进制转字符串
      */
@@ -128,33 +130,33 @@ public class YHDUtil {
         return hs.toString();
     }
 
-    public static TreeMap<String, String> filterPlayParams(Map<String, String> params){
+    public static TreeMap<String, String> filterPlayParams(Map<String, String> params) {
         TreeMap<String, String> r = new TreeMap<>(params);
         r.remove("body");
         return r;
     }
 
-    public static List<YHDErrorInfo> checkParam(TreeMap<String, String> params, String... keys){
+    public static List<YHDErrorInfo> checkParam(TreeMap<String, String> params, String... keys) {
         List<YHDErrorInfo> errorInfoList = new ArrayList<>();
-        for (String key : keys){
-            if(StringUtils.isBlank(params.get(key))){
+        for (String key : keys) {
+            if (StringUtils.isBlank(params.get(key))) {
                 errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_missing",
-                        "参数 " + key +  " 不能为空", null));
+                        "参数 " + key + " 不能为空", null));
             }
         }
-        if(errorInfoList.size() > 0){
+        if (errorInfoList.size() > 0) {
             return errorInfoList;
         }
 
         String sign = params.remove("sign");
         //检查参数签名
         String mySign = md5Signature(params, YHDUtil.SECRET_KEY);
-        if(!mySign.equals(sign)){
+        if (!mySign.equals(sign)) {
             errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "sign不匹配", null));
         }
         params.put("sign", sign);//将sign重新塞回去以供保存
         //对一号店的参数进行trim
-        for(Map.Entry<String, String> entry : params.entrySet()){
+        for (Map.Entry<String, String> entry : params.entrySet()) {
             params.put(entry.getKey(), entry.getValue().trim());
         }
         return errorInfoList;

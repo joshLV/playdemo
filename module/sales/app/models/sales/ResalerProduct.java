@@ -4,17 +4,21 @@ import com.uhuila.common.constants.DeletedStatus;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import org.hibernate.annotations.Index;
+import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
+import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 发布到第三方产品的信息
@@ -182,5 +186,21 @@ public class ResalerProduct extends Model {
                 Long.valueOf(outerGoodsNo), partner, resaler).first();
 
         return product == null ? null : product.goods;
+    }
+
+    public static List<ResalerProduct> getResalerImportedProducts(List<OuterOrderPartner> partners) {
+        EntityManager em = JPA.em();
+        Query query = em.createQuery("select p from ResalerProduct p where partner in (:partners) and " +
+                " goods.materialType =:materialType and goods.deleted=:deleted " +
+                " and goods.status=:status" +
+                " and goods.couponType =:couponType and goods.expireAt >=:expireAt " +
+                " and goods.isLottery = false order by createdAt DESC");
+        query.setParameter("partners", partners);
+        query.setParameter("materialType", MaterialType.ELECTRONIC);
+        query.setParameter("deleted", DeletedStatus.UN_DELETED);
+        query.setParameter("status", GoodsStatus.ONSALE);
+        query.setParameter("couponType", GoodsCouponType.IMPORT);
+        query.setParameter("expireAt", new Date());
+        return query.getResultList();
     }
 }
