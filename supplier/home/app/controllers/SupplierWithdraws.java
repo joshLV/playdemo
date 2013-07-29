@@ -105,7 +105,7 @@ public class SupplierWithdraws extends Controller {
         if (withdrawAccount == null) {
             error("invalid withdraw account");
         }
-        if (amount == null || amount.compareTo(account.amount) > 0 || amount.compareTo(new BigDecimal("10")) < 0) {
+        if (amount == null || amount.compareTo(account.amount) > 0 || amount.compareTo(BigDecimal.TEN) < 0) {
             Validation.addError("amount", "提现金额不能小于10元,且不能大于余额！！");
             params.flash();
             Validation.keep();
