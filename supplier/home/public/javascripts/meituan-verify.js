@@ -45,12 +45,12 @@ jQuery(function ($) {
     couponIds = [];
     $(".enter-coupon").each(function () {
         var ele = $(this);
-        $("#verify-msg").text("");
-        $(ele).change(function () {
+        ele.change(function () {
             var index = ele.attr("coupon-index");
             $('#verify-info-' + index).text("");
-            $('#verify-msg').text("");
+
             var eCouponSn = ele.val().replace(/ /g, '');
+            $('#verify-msg').text("");
             if (eCouponSn == '') {
                 $("#verify-info-" + index).text("请输入券号。");
                 return;
@@ -59,17 +59,16 @@ jQuery(function ($) {
                 $("#verify-info-" + index).text("券号应为10位数字或12位数字，请修正。");
                 return;
             }
-
             if (eCouponSn.length == 10) {
                 ybqCouponCnt++;
             }
             if (eCouponSn.length == 12) {
                 mtCouponCnt++;
             }
-            if (ybqCouponCnt > 0 && mtCouponCnt > 0) {
-                $("#verify-msg").text("请确认输入的券号全部是10位或全部是12位！");
-                return false;
-            }
+//            if (ybqCouponCnt > 0 && mtCouponCnt > 0) {
+//                $("#verify-msg").text("请确认输入的券号全部是10位或全部是12位！");
+//                return false;
+//            }
 
             if (eCouponSn.length == 10) {
                 $.ajax({
@@ -89,11 +88,11 @@ jQuery(function ($) {
                 });
             }
 
-            var i = $.inArray(eCouponSn, couponIds);
-            if (i >= 0) {
-                $("#verify-info-" + index).text("券号输入的有重复，请检查！");
-                return false;
-            }
+//            var i = $.inArray(eCouponSn, couponIds);
+//            if (i >= 0) {
+//                $("#verify-info-" + index).text("券号输入的有重复，请检查！");
+//                return false;
+//            }
 //            couponIds.push(eCouponSn);
         });
 
@@ -125,12 +124,12 @@ jQuery(function ($) {
                 if (eCouponSn.length == 12) {
                     mtCouponCnt++;
                 }
-                if (ybqCouponCnt > 0 && mtCouponCnt > 0) {
-                    $("#verify-msg").text("请确认输入的券号全部是10位或全部是12位！");
-                    return false;
-                } else {
-                    $("#verify-msg").text("");
-                }
+//                if (ybqCouponCnt > 0 && mtCouponCnt > 0) {
+//                    $("#verify-msg").text("请确认输入的券号全部是10位或全部是12位！");
+//                    return false;
+//                } else {
+//                    $("#verify-msg").text("");
+//                }
                 if (eCouponSn.length == 10) {
                     $.ajax({
                         type: 'POST',
@@ -186,7 +185,7 @@ jQuery(function ($) {
                             var msg = [];
                             $.each(eval(data), function (i, item) {
                                 if (item.errcode != 1) {
-                                    item.message = "上海野生动物园135套餐周末票 " + item.result;
+                                    $("#verify-info-" + i).text("上海野生动物园135套餐周末票 " + item.result);
                                 } else {
                                     $("#verify-info-" + i).text(item.result);
                                     $("#verify-btn").text("验证消费").removeClass("disabled");
@@ -205,8 +204,10 @@ jQuery(function ($) {
                     data: {'shopId': shopIdInput.val(), 'eCouponSns': couponIds},
                     success: function (data) {
                         if (data != null) {
-                            $("#verify-msg").text(data);
-                            $("#verify-btn").text("验证消费").removeClass("disabled");
+                            for (var i=0;i<data.length;i++){
+                                $("#verify-info-" + i).text(data[i]);
+                                $("#verify-btn").text("验证消费").removeClass("disabled");
+                            }
                         }
                     },
                     error: function () {
@@ -223,6 +224,7 @@ jQuery(function ($) {
      * FORM的点击事件
      */
     $('#coupon-form').delegate('a', 'click', function () {
+        couponIds = [];
         verifyCoupon();
     });
 
@@ -231,6 +233,7 @@ jQuery(function ($) {
      */
     $('#coupon-form').keypress(function (e) {
         if (e.keyCode == 13) {
+            couponIds = []
             verifyCoupon();
             return false;
         }
