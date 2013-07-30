@@ -45,7 +45,9 @@
                     #{/else}
                 </div>
                 <div style="float:right">
-                    <span style="color:#a3a3a3">客服电话 <span style="color:green; font-weight:bold">400-686-5151</span></span>
+                    <span style="color:#a3a3a3">客服电话
+                        <span style="color:green; font-weight:bold">021-64260176,  021-64033977</span>
+                    </span>
                 </div>
                 <div style="clear:both"></div>
             </div>
@@ -58,28 +60,6 @@
 
 #{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}
 #{get 'moreScripts' /}
-
-<div style="display:none">
-#{if !play.Play.runingInTestMode()}
-    <script src="http://s84.cnzz.com/stat.php?id=4205049&web_id=4205049" language="JavaScript"></script>
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', '${play.Play.configuration.getProperty("google.analytics.account")}']);
-        _gaq.push(['_setDomainName', '${baseDomain}']);
-        _gaq.push(['_setAllowLinker', true]);
-        _gaq.push(['_trackPageview']);
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') +
-                    '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-#{/if}
-</div>
 
 </body>
 </html>

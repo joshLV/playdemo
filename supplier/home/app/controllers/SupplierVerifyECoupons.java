@@ -179,7 +179,7 @@ public class SupplierVerifyECoupons extends Controller {
             }
 
             needSmsECoupons.add(ecoupon);
-            return "消费成功.";
+            return eCouponSn+":消费成功.";
         }
         return "此券状态" + ecoupon.status + "非法！请联系客服";
     }
