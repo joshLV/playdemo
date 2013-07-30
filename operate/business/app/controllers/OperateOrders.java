@@ -140,8 +140,8 @@ public class OperateOrders extends Controller {
         condition = getOrdersCondition(condition);
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-//        request.format = "xls";
-//        renderArgs.put("__FILE_NAME__", "订单_" + System.currentTimeMillis() + ".xls");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "订单_" + System.currentTimeMillis() + ".xls");
         condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         condition.operatorId = OperateRbac.currentUser().id;
         JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
