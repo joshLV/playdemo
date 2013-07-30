@@ -103,7 +103,12 @@
                     /
                 #{/layout_operate.checkPermissionField}
 
-                *{SALES_SET_SUPPLIER_WITHDRAW_AMOUNT}*
+                #{layout_operate.checkPermissionField value:["SALES_SET_SUPPLIER_WITHDRAW_AMOUNT"]}
+                    *{#{if operatorId == supplier?.salesId}}*
+                        <a href="/suppliers/${supplier.id}/set-withdraw-amount?page=${page?:1}">设置提现金额</a>
+                        /
+                    *{#{/if}}*
+                #{/layout_operate.checkPermissionField}
 
                 #{layout_operate.checkPermissionField value:["SUPPLIERS"]}
                     <a href="javascript:openW('@{Suppliers.exportMaterial(supplier.id,supplier.domainName)}')"

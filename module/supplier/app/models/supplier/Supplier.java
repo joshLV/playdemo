@@ -206,6 +206,16 @@ public class Supplier extends Model {
     @Column(name = "can_sale_real")
     public Boolean canSaleReal = false;
 
+    /**
+     * 变动资金，应为大于0的正数.
+     */
+    @Column(name = "withdraw_amount")
+    public BigDecimal withdrawAmount;
+
+    /**
+     * 原因.
+     */
+    public String reason;
 
     /**
      * TODO 待废弃
@@ -330,6 +340,12 @@ public class Supplier extends Model {
     public boolean isKtvSupplier() {
         return "1".equals(this.getProperty(Supplier.KTV_SUPPLIER));
     }
+
+    @Transient
+    public boolean isSetWithdrawAmount() {
+        return "1".equals(this.getProperty(Supplier.SET_WITHDRAW_AMOUNT));
+    }
+
 
     @Transient
     public boolean isWithdrawDelay() {

@@ -17,6 +17,10 @@
 #{elseif err}
 ${err}
 #{/elseif}
+#{elseif canNotWithdraw}
+您暂时无法申请提现，请联系业务员设置提现金额<br>
+业务员：${salesName} <br>联系电话:${salesPhone}
+#{/elseif}
 #{else}
 <div class="bd">
     <h2>${title}</h2>
@@ -100,19 +104,26 @@ ${err}
             </div>
             <div class="field-group">
                 <label>可提现金额</label>
-
-                <div class="control-value">
-                ${supplierWithdrawAmount?.formatCurrency('CNY')}
-                    <input type="hidden" name="amount" value="${supplierWithdrawAmount}"/>
-                    (统计截止日期: ${withDrawEndDate.format('yyyy-MM-dd')})
-                    <span class="error" style="margin-left:20px;" id="error-amount">#{error 'amount'/}</span>
-                </div>
+                #{if !canNotWithdraw && canNotWithdraw!=null}
+                ${supplier?.withdrawAmount?.formatCurrency('CNY')}
+                    ( 此金额由业务员${salesName}设置,如有疑问请致电:${salesPhone})
+                    <input type="hidden" name="setAmount" value="${supplier?.withdrawAmount}"/>
+                #{/if}
+                #{else}
+                    <div class="control-value">
+                    ${supplierWithdrawAmount?.formatCurrency('CNY')}
+                        <input type="hidden" name="amount" value="${supplierWithdrawAmount}"/>
+                        (统计截止日期: ${withDrawEndDate.format('yyyy-MM-dd')})
+                        <span class="error" style="margin-left:20px;" id="error-amount">#{error 'amount'/}</span>
+                    </div>
+                #{/else}
             </div>
             <div class="form-actions">
                 #{if account?.getSupplierWithdrawAmount(prepaymentBalance,
                 withDrawEndDate)?.compareTo(BigDecimal.ZERO)>0}
                     <button type="submit" class="btn btn-primary">提交申请</button>
                 #{/if}
+                <input type="hidden" name="canNotWithdraw" value="${canNotWithdraw}"/>
                 <a class="btn" href="/withdraws">取消</a>
             </div>
         </div>

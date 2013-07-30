@@ -1,8 +1,14 @@
 package controllers;
 
 import controllers.supplier.SupplierInjector;
-import models.accounts.*;
+import models.accounts.Account;
+import models.accounts.AccountType;
+import models.accounts.WithdrawAccount;
+import models.accounts.WithdrawBill;
+import models.accounts.WithdrawBillCondition;
+import models.accounts.WithdrawBillStatus;
 import models.admin.SupplierUser;
+import models.operator.OperateUser;
 import models.order.Prepayment;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
@@ -82,16 +88,31 @@ public class SupplierWithdraws extends Controller {
         BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, withDrawEndDate);
         Logger.info("333withdrawAmount=%s, supplierWithdrawAmount=%s, prepaymentBalance=%s", withdrawAmount.toString(),
                 supplierWithdrawAmount.toString(), prepaymentBalance.toString());
-        render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount, withDrawEndDate, supplier);
+        Boolean canNotWithdraw = null;
+        String salesName = "";
+        String salesPhone = "";
+        if (supplier.isSetWithdrawAmount() && supplier.withdrawAmount == null) {
+            canNotWithdraw = Boolean.TRUE;
+        } else if (supplier.isSetWithdrawAmount() && supplier.withdrawAmount != null) {
+            canNotWithdraw = Boolean.FALSE;
+        }
+        OperateUser operateUser = OperateUser.findById(supplier.salesId);
+        salesName = operateUser.userName;
+        salesPhone = operateUser.mobile;
+        render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount,
+                withDrawEndDate, supplier, canNotWithdraw, salesName, salesPhone);
     }
 
     @ActiveNavigation("account_withdraw")
-    public static void create(Long withdrawAccountId, BigDecimal amount) {
+    public static void create(Long withdrawAccountId, BigDecimal amount, BigDecimal setAmount, Boolean canNotWithdraw) {
         SupplierUser supplierUser = SupplierRbac.currentUser();
         Long supplierId = supplierUser.supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
         Account account = supplierUser.getSupplierAccount();
-
+        //销售设置商户的提现金额
+        if (canNotWithdraw == Boolean.FALSE) {
+            amount = setAmount;
+        }
 
         WithdrawBill withdraw = WithdrawBill.find("byAccountAndStatus", account, WithdrawBillStatus.APPLIED).first();
         if (withdraw != null) {
@@ -105,7 +126,8 @@ public class SupplierWithdraws extends Controller {
         if (withdrawAccount == null) {
             error("invalid withdraw account");
         }
-        if (amount == null || amount.compareTo(account.amount) > 0 || amount.compareTo(BigDecimal.TEN) < 0) {
+        if (Boolean.TRUE.compareTo(canNotWithdraw) != 1 && (amount == null || amount.compareTo(account.amount) > 0
+                || amount.compareTo(BigDecimal.TEN) < 0)) {
             Validation.addError("amount", "提现金额不能小于10元,且不能大于余额！！");
             params.flash();
             Validation.keep();
