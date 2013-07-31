@@ -254,6 +254,7 @@ GET     /suppliers/new                          Suppliers.add
 POST    /suppliers                              Suppliers.create
 GET     /suppliers/export-material              Suppliers.exportMaterial
 GET     /suppliers/{id}/edit                    Suppliers.edit
+GET     /suppliers/{id}/set-withdraw-amount     Suppliers.setWithdrawAmount
 PUT     /suppliers/{id}                         Suppliers.update
 PUT     /suppliers/{id}/freeze                  Suppliers.freeze
 PUT     /suppliers/{id}/unfreeze                Suppliers.unfreeze

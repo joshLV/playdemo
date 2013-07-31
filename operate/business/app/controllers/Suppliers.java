@@ -1,6 +1,7 @@
 package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
+import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.WithdrawAccount;
 import models.accounts.util.AccountUtil;
@@ -9,6 +10,7 @@ import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
 import models.operator.OperateUser;
 import models.operator.Operator;
+import models.order.Prepayment;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Shop;
@@ -19,6 +21,7 @@ import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -28,8 +31,11 @@ import play.mvc.With;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,9 +58,9 @@ public class Suppliers extends Controller {
 
 //        String otherName = request.params.get("otherName");
 //        String code = request.params.get("code");
-
+        Long operatorId = OperateRbac.currentUser().id;
         List<Supplier> suppliers = Supplier.findByCondition(supplierId, code, domainName, keyword);
-        render(suppliers, page, supplierId, code, domainName, keyword);
+        render(suppliers, page, supplierId, code, domainName, keyword, operatorId);
     }
 
     @ActiveNavigation("suppliers_add")
@@ -139,6 +145,7 @@ public class Suppliers extends Controller {
         supplier.setProperty(Supplier.IS_WITHDRAW_DELAY, request.params.get(Supplier.IS_WITHDRAW_DELAY));
         supplier.setProperty(Supplier.PROPERTY_GIFT_CARD, request.params.get(Supplier.PROPERTY_GIFT_CARD));
         supplier.setProperty(Supplier.FREEZE_AMOUNT, request.params.get(Supplier.FREEZE_AMOUNT));
+        supplier.setProperty(Supplier.SET_WITHDRAW_AMOUNT, request.params.get(Supplier.SET_WITHDRAW_AMOUNT));
         supplier.setProperty(Supplier.MEI_TUAN, request.params.get(Supplier.MEI_TUAN));
         supplier.setProperty(Supplier.DIAN_PING, request.params.get(Supplier.DIAN_PING));
     }
@@ -243,6 +250,26 @@ public class Suppliers extends Controller {
 //        renderArgs.put("resalerIds", resalerIds);
 
         render(supplier, supplierCategoryList, independentShopList, hasSupplierCodeEditPermission, admin, id, withdrawAccounts, operateUserList, page);
+    }
+
+    @Right("SALES_SET_SUPPLIER_WITHDRAW_AMOUNT")
+    @ActiveNavigation("suppliers_index")
+    public static void setWithdrawAmount(long id) {
+        Supplier supplier = Supplier.findById(id);
+        Account account = Account.find("uid = ? and accountType = ?", id, AccountType.SUPPLIER).first();
+        Date date = DateUtils.truncate(new Date(), Calendar.DATE);
+        //余额
+        BigDecimal withdrawAmount = account.getWithdrawAmount(date);
+        //可提现余额
+        BigDecimal prepaymentBalance = Prepayment.findAmountBySupplier(supplier);
+        BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, date);
+        render(supplier, withdrawAmount, supplierWithdrawAmount);
+    }
+
+
+    public static void confirmSetWithdrawAmount(Supplier supplier) {
+        supplier.save();
+        index(null, null, null, null);
     }
 
     private static List<Long> getResalerIds(List<Resaler> resalers) {

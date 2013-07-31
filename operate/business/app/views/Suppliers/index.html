@@ -102,6 +102,14 @@
                         / #{vx.operateLink text:"解冻", url:"/suppliers/"+supplier.id+"/unfreeze?page="+(page?:1), method:"PUT",confirm:true/}#{/if}
                     /
                 #{/layout_operate.checkPermissionField}
+
+                #{layout_operate.checkPermissionField value:["SALES_SET_SUPPLIER_WITHDRAW_AMOUNT"]}
+                    #{if operatorId == supplier?.salesId}
+                        <a href="/suppliers/${supplier.id}/set-withdraw-amount?page=${page?:1}">设置提现金额</a>
+                        /
+                    #{/if}
+                #{/layout_operate.checkPermissionField}
+
                 #{layout_operate.checkPermissionField value:["SUPPLIERS"]}
                     <a href="javascript:openW('@{Suppliers.exportMaterial(supplier.id,supplier.domainName)}')"
                        onClick="return confirmExportMaterial();">导出培训教材</a>
