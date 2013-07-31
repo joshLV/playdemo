@@ -179,6 +179,7 @@
         </div>
     </div>
     <input type="hidden" id="J_rank" name="desc"/>
+    <input type="hidden" name="condition.resalerId" value="${condition?.resalerId}"/>
 </form>
 <div style="color:#0082CA;padding-bottom: 15px"> 总计：${orderList.size()}
     条记录&nbsp;&nbsp;&nbsp;总金额：${amountSummary?.formatCurrency('CNY')}</div>

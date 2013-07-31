@@ -151,6 +151,8 @@ public class ReturnEntries extends Controller {
                         renderJSON(result);
                     }
 
+                    entry.returnedAt = new Date();
+                    entry.returnedBy = OperateRbac.currentUser().userName;
                     entry.status = RealGoodsReturnStatus.RETURNED;
                     break;
                 case PREPARED:

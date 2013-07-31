@@ -46,7 +46,7 @@ public class OrdersCondition {
     public Date itemCreatedAt;
     public OrderStatus itemStatus;
     public Long shihuiSupplierId;
-
+    public Long resalerId;
 
     /**
      * 查询条件hql.
@@ -75,7 +75,7 @@ public class OrdersCondition {
             paramsMap.put("orderType", orderType);
             paramsMap.put("itemStatus", itemStatus);
             paramsMap.put("itemCreatedAt", DateUtil.getEndOfDay(itemCreatedAt));
-            paramsMap.put("realSoldStartDay", DateUtil.stringToDate("2013-04-01 00:00:00","yyyy-MM-dd HH:mm:ss"));
+            paramsMap.put("realSoldStartDay", DateUtil.stringToDate("2013-04-01 00:00:00", "yyyy-MM-dd HH:mm:ss"));
 
         }
 
@@ -206,7 +206,10 @@ public class OrdersCondition {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.phone =:phone)");
             paramsMap.put("phone", searchItems);
         }
-
+        if (resalerId != null) {
+            sql.append(" and o.userId = :user");
+            paramsMap.put("user", resalerId);
+        }
         return sql.toString();
     }
 

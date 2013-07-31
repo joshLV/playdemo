@@ -16,7 +16,7 @@ import java.util.List;
  * Time: 下午9:54
  */
 @JobDefine(title = "百度订单扫描", description = "处理OuterOrder中未生成的订单，生成券并发送")
-@Every("1mn")
+//@Every("1mn")
 public class BaiduOrderJob extends JobWithHistory {
     @Override
     public void doJobWithHistory() {

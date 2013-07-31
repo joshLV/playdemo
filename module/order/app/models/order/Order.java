@@ -254,11 +254,10 @@ public class Order extends Model {
     @Column(name = "refunded_amount")
     public BigDecimal refundedAmount;
 
-    /**
-     * 支付方式名称
-     */
     @Transient
-    public String payMethodName;
+    public String orderItemStatus;
+    @Transient
+    public String returnedAt;
     /**
      * 记录是消费者还是分销商的帐号,导出报表用
      */
@@ -669,7 +668,7 @@ public class Order extends Model {
             orderItem.goods.refreshSaleCount();
 
             //更新在搜索服务器中goods的销量
-            Solr.save(orderItem.goods);
+//            Solr.save(orderItem.goods);
 
             //如果是秒杀商品，做回库处理
             cancelSecKillOrder(orderItem);
@@ -708,7 +707,7 @@ public class Order extends Model {
             orderItem.save();
 
             //FIXME: “更新搜索服务器中的商品库存”- 不应该通过保存商品的方式更新搜索服务
-            Solr.save(orderItem.goods);
+//            Solr.save(orderItem.goods);
 
 //            orderItem.goods.save();
 
@@ -1064,9 +1063,6 @@ public class Order extends Model {
 
     @Transient
     public Resaler getResaler() {
-        System.out.println("here resaler = " + resaler);
-        System.out.println("here userId = " + userId);
-
         if (resaler == null && userId != null) {
             resaler = Resaler.findById(userId);
         }

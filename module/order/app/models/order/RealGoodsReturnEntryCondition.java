@@ -58,6 +58,7 @@ public class RealGoodsReturnEntryCondition implements Serializable {
      * 退货时间结束时间.
      */
     public Date returnedAtEnd;
+    public Long resalerId;
 
     private Map<String, Object> paramsMap = new HashMap<>();
 
@@ -111,7 +112,10 @@ public class RealGoodsReturnEntryCondition implements Serializable {
             sqlCond.append(" and r.createdAt<=:createdAtEnd");
             paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
-        System.out.println(sqlCond.toString()+createdAtBegin);
+        if (resalerId != null) {
+            sqlCond.append(" and r.orderItems.order.userId =:userId");
+            paramsMap.put("userId", resalerId);
+        }
         return sqlCond.toString();
     }
 

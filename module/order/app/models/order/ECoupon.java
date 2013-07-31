@@ -1048,7 +1048,7 @@ public class ECoupon extends Model {
         }
 
         // 更改搜索服务中的库存
-        Solr.save(eCoupon.goods);
+//        Solr.save(eCoupon.goods);
 
         return returnFlg;
     }
