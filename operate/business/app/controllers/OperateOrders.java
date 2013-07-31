@@ -158,6 +158,8 @@ public class OperateOrders extends Controller {
                     } else if (orderItem.status == OrderStatus.SENT) {
                         order.orderItemStatus = "已发货";
                     } else if (orderItem.status == OrderStatus.PREPARED) {
+                        order.orderItemStatus = "待打包";
+                    } else if (orderItem.status == OrderStatus.UPLOADED) {
                         order.orderItemStatus = "已上传";
                     }
                 }
