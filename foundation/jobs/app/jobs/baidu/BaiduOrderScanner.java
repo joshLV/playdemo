@@ -24,7 +24,7 @@ import java.util.*;
  * Time: 下午8:52
  */
 @JobDefine(title = "百度订单记录", description = "拉取新的订单，与本地比较，若从未记录，则记录下来")
-@Every("1mn")
+//@Every("1mn")
 public class BaiduOrderScanner extends JobWithHistory {
     private static String ORDER_DATE = "yyyy-MM-dd HH:mm:ss";
 
