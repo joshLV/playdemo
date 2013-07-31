@@ -95,7 +95,7 @@ public class SupplierVerifyECouponsTest extends FunctionalTest {
         assertEquals(ECouponStatus.UNCONSUMED, coupon.status);
         Http.Response response = POST("/verify/verify", params);
 
-        assertEquals("[\"消费成功.\"]", getContent(response));
+        assertEquals("[\"" + coupon.eCouponSn + ":消费成功.\"]", getContent(response));
 
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS2_QUEUE);
         assertSMSContentMatch("已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006865151",
