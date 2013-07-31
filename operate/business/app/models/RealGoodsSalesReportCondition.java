@@ -78,7 +78,7 @@ public class RealGoodsSalesReportCondition {
             condBuilder.append(" and rr.returnedAt <= :refundAtEnd");
             paramMap.put("refundAtEnd", DateUtil.getEndOfDay(endAt));
         }
-
+        System.out.println(condBuilder.toString());
         return condBuilder.toString();
 
     }

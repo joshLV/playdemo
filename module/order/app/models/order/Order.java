@@ -1064,9 +1064,6 @@ public class Order extends Model {
 
     @Transient
     public Resaler getResaler() {
-        System.out.println("here resaler = " + resaler);
-        System.out.println("here userId = " + userId);
-
         if (resaler == null && userId != null) {
             resaler = Resaler.findById(userId);
         }

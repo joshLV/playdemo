@@ -408,6 +408,8 @@ GET     /reports/withdraw                       OperateReports.showWithdrawRepor
 GET     /reports/financing_incoming             OperateReports.showFinancingIncomingReport
 GET     /reports/promotion                      OperateReports.showPromotionReport
 GET     /reports/real-goods/orders              real.RealGoodsSalesReports.index
+GET     /reports/real-goods/channel             real.RealGoodsSalesReports.channelRealSaleReport
+
 #分销销售报表
 GET     /reports/resale_sales                   OperateResaleSalesReports.index
 GET     /financing_incoming_add                 FinancingIncomingNote.add
