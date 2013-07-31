@@ -203,11 +203,28 @@ public class RealGoodsSalesReport {
         for (RealGoodsSalesReport item : realGoodsOrderList) {
             totalAmount = totalAmount.add(item.salesAmount == null ? BigDecimal.ZERO : item.salesAmount);
             refundAmount = refundAmount.add(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
-            netSalesAmount = netSalesAmount.add(totalAmount.subtract(refundAmount));
         }
+        netSalesAmount = netSalesAmount.add(totalAmount.subtract(refundAmount));
         return new RealGoodsSalesReport(totalAmount, refundAmount, netSalesAmount);
     }
 
+    /**
+     * 渠道实物销售统计
+     */
+    public static RealGoodsSalesReport getChannelNetSummary(List<RealGoodsSalesReport> realGoodsOrderList) {
+        if (realGoodsOrderList.size() == 0) {
+            return new RealGoodsSalesReport(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+        }
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        BigDecimal refundAmount = BigDecimal.ZERO;
+        BigDecimal netSalesAmount = BigDecimal.ZERO;
+        for (RealGoodsSalesReport item : realGoodsOrderList) {
+            totalAmount = totalAmount.add(item.salesAmount == null ? BigDecimal.ZERO : item.salesAmount);
+            refundAmount = refundAmount.add(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
+        }
+        netSalesAmount = netSalesAmount.add(totalAmount.subtract(refundAmount));
+        return new RealGoodsSalesReport(totalAmount, refundAmount, netSalesAmount);
+    }
     public static List<RealGoodsSalesReport> findChannleSales(RealGoodsSalesReportCondition condition) {
         //售出
         String sql = "select new models.RealGoodsSalesReport(r.order,r.goods,r.goods.salePrice,r.goods.originalPrice,sum(r.buyNumber),'1')" +

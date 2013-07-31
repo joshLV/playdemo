@@ -55,7 +55,7 @@ public class RealGoodsSalesReports extends Controller {
         List<RealGoodsSalesReport> realGoodsOrderList = RealGoodsSalesReport.findChannleSales(condition);
         // 分页
         ValuePaginator<RealGoodsSalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(realGoodsOrderList, pageNumber, PAGE_SIZE);
-        RealGoodsSalesReport summary = RealGoodsSalesReport.getNetSummary(realGoodsOrderList);
+        RealGoodsSalesReport summary = RealGoodsSalesReport.getChannelNetSummary(realGoodsOrderList);
         render(reportPage, summary, condition);
     }
 }

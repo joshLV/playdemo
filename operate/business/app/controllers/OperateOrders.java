@@ -1,12 +1,7 @@
 package controllers;
 
 import models.consumer.User;
-import models.order.ExpressCompany;
-import models.order.Order;
-import models.order.OrderItems;
-import models.order.OrderShippingInfo;
-import models.order.OrdersCondition;
-import models.order.OuterOrder;
+import models.order.*;
 import models.resale.Resaler;
 import models.sales.Brand;
 import operate.rbac.ContextedPermission;
@@ -18,6 +13,7 @@ import play.mvc.With;
 import util.DateHelper;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -140,11 +136,10 @@ public class OperateOrders extends Controller {
         condition = getOrdersCondition(condition);
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-//        request.format = "xls";
-//        renderArgs.put("__FILE_NAME__", "订单_" + System.currentTimeMillis() + ".xls");
         condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         condition.operatorId = OperateRbac.currentUser().id;
-        JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
+        List<Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
+        String resalerId = params.get("condition.resalerId");
         for (Order order : orderList) {
             OuterOrder outerOrder = OuterOrder.getOuterOrder(order);
             if (outerOrder != null) {
@@ -152,12 +147,31 @@ public class OperateOrders extends Controller {
             } else {
                 order.outerOrderNumber = "";
             }
+            if (StringUtils.isNotBlank(resalerId)) {
+                for (OrderItems orderItem : order.orderItems) {
+                    if (orderItem.status == OrderStatus.RETURNING) {
+                        order.orderItemStatus = "退货中";
+                    } else if (orderItem.status == OrderStatus.RETURNED) {
+                        order.orderItemStatus = "已退货";
+                    } else if (orderItem.status == OrderStatus.PAID) {
+                        order.orderItemStatus = "已付款";
+                    } else if (orderItem.status == OrderStatus.SENT) {
+                        order.orderItemStatus = "已发货";
+                    } else if (orderItem.status == OrderStatus.PREPARED) {
+                        order.orderItemStatus = "已上传";
+                    }
+                }
 
+            }
             if (order.isWebsiteOrder()) {
                 order.accountEmail = order.getUser().loginName;
             } else {
-                order.accountEmail = order.getResaler().loginName;
+                order.accountEmail = order.getResaler().loginName + "-" + order.getResaler().userName;
             }
+        }
+
+        if (StringUtils.isNotBlank(resalerId)) {
+            render("OperateOrders/realOrderExcelOut.xls", orderList);
         }
         render(orderList);
 

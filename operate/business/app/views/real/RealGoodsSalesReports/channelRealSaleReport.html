@@ -187,14 +187,18 @@
             #{if report?.code != "999"}
                 #{if report?.salesAmount}
                     <a target="_blank"
-                       href="/orders?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.deliveryType=LOGISTICS&condition.searchKey=GOODS_NAME&condition.searchItems=${report?.goods?.shortName}">${report?.salesAmount?.formatCurrency('CNY')}</a>
+                       href="/orders?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}
+                       &condition.deliveryType=LOGISTICS&condition.searchKey=GOODS_NAME&condition.searchItems=${report?.goods?.shortName}
+                       &condition.resalerId=${report?.resalerId}">${report?.salesAmount?.formatCurrency('CNY')}</a>
                 #{/if}
                 #{else} 0.00 #{/else}
             #{/if}
             #{else}
                 #{if report?.xjAmount}
                     <a target="_blank"
-                       href="/orders?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.deliveryType=LOGISTICS&condition.resalerId=${report?.resalerId}">${report?.xjAmount?.formatCurrency('CNY')}</a>
+                       href="/orders?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}
+                       &condition.deliveryType=LOGISTICS&condition.resalerId=${report?.resalerId}">
+                    ${report?.xjAmount?.formatCurrency('CNY')}</a>
                 #{/if}
                 #{else} 0.00 #{/else}
             #{/else}
@@ -219,14 +223,18 @@
             #{if report?.code != "999"}
                 #{if report?.refundAmount}
                     <a target="_blank"
-                       href="/real/return-entries?condition.goodsName=${report?.goods?.shortName}&condition.returnedAtBegin=${beginAt}&condition.returnedAtEnd=${endAt}&condition.searchKey=LOGIN_NAME&condition.searchItems=${report?.resalerId}">${report?.refundAmount?.formatCurrency('CNY')}</a>
+                       href="/real/return-entries?condition.goodsName=${report?.goods?.shortName}
+                       &condition.returnedAtBegin=${beginAt}&condition.returnedAtEnd=${endAt}
+                       &condition.resalerId=${report?.resalerId}">${report?.refundAmount?.formatCurrency('CNY')}</a>
                 #{/if}
                 #{else} 0.00 #{/else}
             #{/if}
             #{else}
                 #{if report?.xjRefundPrice}
                     <a target="_blank"
-                       href="/goods?condition.shortName=${report?.goods?.shortName}">${report?.xjRefundPrice?.formatCurrency('CNY')}</a>
+                       href="/real/return-entries?condition.goodsName=${report?.goods?.shortName}
+                       &condition.returnedAtBegin=${beginAt}&condition.returnedAtEnd=${endAt}
+                       &condition.resalerId=${report?.resalerId}">${report?.xjRefundPrice?.formatCurrency('CNY')}</a>
                 #{/if}
                 #{else} 0.00 #{/else}
             #{/else}
