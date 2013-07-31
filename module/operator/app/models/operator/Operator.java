@@ -1,10 +1,9 @@
 package models.operator;
 
 import com.uhuila.common.constants.DeletedStatus;
-import factory.FactoryBoy;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import play.Play;
+import org.apache.commons.lang.StringUtils;
 import play.data.validation.Match;
 import play.data.validation.MaxSize;
 import play.data.validation.MinSize;
@@ -142,7 +141,7 @@ public class Operator extends Model {
      */
     public static Operator defaultOperator() {
         if (Play.runingInTestMode()) {
-            return FactoryBoy.lastOrCreate(Operator.class);
+            _defaultOperator = null;
         }
         if (_defaultOperator == null) {
 
