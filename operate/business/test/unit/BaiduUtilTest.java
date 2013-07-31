@@ -1,19 +1,13 @@
 package unit;
 
-import com.google.gson.Gson;
 import models.baidu.BaiduResponse;
 import models.baidu.BaiduUtil;
-import models.wuba.WubaUtil;
+import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
-import play.Logger;
 import play.Play;
-import play.libs.WS;
 import play.test.UnitTest;
-import util.ws.PlayWebServiceClient;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
-import util.ws.WebServiceRequest;
+import util.mq.MockMQ;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +17,13 @@ import java.util.Map;
  * Date: 13-7-11
  * Time: 下午5:04
  */
+//@Ignore
 public class BaiduUtilTest extends UnitTest {
+
+    @After
+    public void tearDown() {
+        Play.id = "test";
+    }
 
     @Test
     public void testParseResult_Success() {
