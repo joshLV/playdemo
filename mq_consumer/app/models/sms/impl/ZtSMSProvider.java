@@ -31,6 +31,8 @@ public class ZtSMSProvider implements SMSProvider {
             .getProperty("ztsms.http.username");
     private final String PASSWORD = Play.configuration
             .getProperty("ztsms.http.password");
+    private final String PRODUCT_ID = Play.configuration
+            .getProperty("ztsms.product_id");
 
     private final Pattern RESULTCODE_PATTERN = Pattern.compile("^1,");
 
@@ -61,7 +63,7 @@ public class ZtSMSProvider implements SMSProvider {
         }
 
         qparams.add(new BasicNameValuePair("xh", xh));
-        qparams.add(new BasicNameValuePair("productid", "887361"));
+        qparams.add(new BasicNameValuePair("productid", PRODUCT_ID));
 
         qparams.add(new BasicNameValuePair("content", message.getContent()));
         qparams.add(new BasicNameValuePair("mobile", phoneArgs));
