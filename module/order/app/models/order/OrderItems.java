@@ -167,6 +167,13 @@ public class OrderItems extends Model {
     @Enumerated(EnumType.STRING)
     public OrderStatus status;
 
+    @Column(name = "refund_price")
+    public BigDecimal refundPrice;
+
+    @Column(name = "refund_type")
+    @Enumerated(EnumType.STRING)
+    public RefundType refundType;
+
     /**
      * 佣金
      */
