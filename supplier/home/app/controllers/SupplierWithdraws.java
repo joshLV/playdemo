@@ -146,6 +146,9 @@ public class SupplierWithdraws extends Controller {
         String accountName = account.accountType == AccountType.SHOP ? supplier.otherName + ":" + supplierUser.shop.name : supplier.otherName;
         if (withdraw.apply(SupplierRbac.currentUser().loginName, account, accountName)) {
             // 不再通知 sendNotification(withdraw);
+            supplier.withdrawAmount = null;
+            supplier.reason = null;
+            supplier.save();
             index(null);
         } else {
             error("申请失败");
