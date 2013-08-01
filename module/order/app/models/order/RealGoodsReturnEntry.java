@@ -12,8 +12,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 实物商品退货单.
@@ -25,15 +25,29 @@ import java.util.List;
 @Entity
 @Table(name = "real_goods_return_entry")
 public class RealGoodsReturnEntry extends Model {
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_id")
     public OrderItems orderItems;
+
+
     /**
      * 退货数量
      */
-    @Required
     @Column(name = "returned_count")
     public Long returnedCount;
+
+    /**
+     * 部分退款数量
+     */
+    @Column(name = "partial_refund_price")
+    public BigDecimal partialRefundPrice;
+
+    /**
+     * 入库数量
+     */
+    @Column(name = "stock_in_count")
+    public Long stockInCount;
+
 
     /**
      * 退货原因
@@ -102,8 +116,8 @@ public class RealGoodsReturnEntry extends Model {
     /**
      * 查询指定商户处理中的退货单数量.
      *
-     * @param supplierId   商户标识
-     * @return  退货单数量
+     * @param supplierId 商户标识
+     * @return 退货单数量
      */
     public static long countHandling(Long supplierId) {
         Long count = count("status=? and orderItems.goods.supplierId=?", RealGoodsReturnStatus.RETURNING, supplierId);
@@ -113,20 +127,20 @@ public class RealGoodsReturnEntry extends Model {
     /**
      * 查询指定商户处理中的退货单数量.
      *
-     * @return  退货单数量
+     * @return 退货单数量
      */
     public static RealGoodsReturnEntry findHandling(String orderNumber, String goodsCode) {
-        return find("status=? and orderItems.order.orderNumber=? and orderItems.goods.code=?", RealGoodsReturnStatus.RETURNING,orderNumber,goodsCode).first();
+        return find("status=? and orderItems.order.orderNumber=? and orderItems.goods.code=?", RealGoodsReturnStatus.RETURNING, orderNumber, goodsCode).first();
     }
 
     /**
      * 查询指定商户处理中的退货单列表.
      *
      * @param condition
-     * @return  退货单列表
+     * @return 退货单列表
      */
     public static JPAExtPaginator<RealGoodsReturnEntry> getPage(RealGoodsReturnEntryCondition condition, int pageNumber, int pageSize) {
-        JPAExtPaginator<RealGoodsReturnEntry> page = new JPAExtPaginator<>("RealGoodsReturnEntry r","r",RealGoodsReturnEntry.class, condition.getFilter(),
+        JPAExtPaginator<RealGoodsReturnEntry> page = new JPAExtPaginator<>("RealGoodsReturnEntry r", "r", RealGoodsReturnEntry.class, condition.getFilter(),
                 condition.getParams()).orderBy("r.createdAt desc");
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);

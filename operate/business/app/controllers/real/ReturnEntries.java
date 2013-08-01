@@ -65,38 +65,64 @@ public class ReturnEntries extends Controller {
      */
     @ActiveNavigation("return_entries_index")
     @Right("INVENTORY")
-    public static void received(Long id) {
+    public static void received(Long id, Long stockInCount) {
         //1、修改退货单状态.
         RealGoodsReturnEntry entry = RealGoodsReturnEntry.findById(id);
-        entry.status = RealGoodsReturnStatus.RETURNED;
-        entry.returnedAt = new Date();
-        entry.returnedBy = OperateRbac.currentUser().userName;
-        entry.save();
-        //2、产生入库单.
-        InventoryStock inventoryStock = new InventoryStock();
-        inventoryStock.supplier = Supplier.getShihui();
-        inventoryStock.actionType = StockActionType.RETURN;
-        inventoryStock.createdBy = OperateRbac.currentUser().userName;
-        inventoryStock.storekeeper = OperateRbac.currentUser().userName;
-        inventoryStock.create();
-        InventoryStockItem stockItem = new InventoryStockItem(inventoryStock);
-        //Todo: stock -> item  1:n  orderitems --> takeoutitem 1:n   used by  for (TakeoutItem i : entry.orderItems.takeOutItems) {}
+        OrderItems orderItems = entry.orderItems;
+        Supplier supplier = Supplier.findById(orderItems.goods.supplierId);
+        //只有视惠发货的才有入库
+        if (supplier.equals(Supplier.getShihui())) {
+            entry.stockInCount = stockInCount;
+            entry.status = RealGoodsReturnStatus.RETURNED;
+            entry.returnedAt = new Date();
+            entry.returnedBy = OperateRbac.currentUser().userName;
+            entry.save();
+            //2、产生入库单.
+            InventoryStock inventoryStock = new InventoryStock();
+            inventoryStock.supplier = Supplier.getShihui();
+            inventoryStock.actionType = StockActionType.RETURN;
+            inventoryStock.createdBy = OperateRbac.currentUser().userName;
+            inventoryStock.storekeeper = OperateRbac.currentUser().userName;
+            inventoryStock.create();
+            InventoryStockItem stockItem = new InventoryStockItem(inventoryStock);
+            //Todo: stock -> item  1:n  orderitems --> takeoutitem 1:n   used by  for (TakeoutItem i : entry.orderItems.takeOutItems) {}
 //        GoodsHistory goodsHistory =GoodsHistory.findById(entry.orderItems.goodsHistoryId);
 //        Goods temporalGoods = Goods.findById(goodsHistory.goodsId);
 //        stockItem.sku = temporalGoods.sku;
 //        stockItem.changeCount = entry.returnedCount * temporalGoods.skuCount;
 //        stockItem.remainCount = stockItem.changeCount;
-        stockItem.sku = entry.orderItems.takeOutItems.get(0).sku;
-        stockItem.changeCount = entry.orderItems.takeOutItems.get(0).count;
-        stockItem.remainCount = stockItem.changeCount;
+            stockItem.sku = entry.orderItems.takeOutItems.get(0).sku;
+//            stockItem.changeCount = entry.orderItems.takeOutItems.get(0).count;
+//            stockItem.remainCount = stockItem.changeCount;
+            stockItem.changeCount = stockInCount;
+            stockItem.remainCount = stockItem.changeCount;
 
-        stockItem.effectiveAt = entry.orderItems.goods.effectiveAt;
-        stockItem.expireAt = entry.orderItems.goods.expireAt;
-        stockItem.price = entry.orderItems.goods.originalPrice;
-        stockItem.create();
-        //3、退款
-        OrderItems.handleRealGoodsRefund(entry.orderItems, entry.returnedCount);
-
+            stockItem.effectiveAt = entry.orderItems.goods.effectiveAt;
+            stockItem.expireAt = entry.orderItems.goods.expireAt;
+            stockItem.price = entry.orderItems.goods.originalPrice;
+            stockItem.create();
+            //3、退款
+            //按数量退款
+            if (entry.partialRefundPrice == null && entry.returnedCount != null) {
+                OrderItems.handleRealGoodsRefund(entry.orderItems, entry.returnedCount);
+            }  //部分退款
+            else if (entry.partialRefundPrice != null && entry.returnedCount == null) {
+                OrderItems.handleRealGoodsRefundByPartialRefundPrice(entry.orderItems, entry.partialRefundPrice);
+            }
+        } else {
+            entry.status = RealGoodsReturnStatus.RETURNED;
+            entry.returnedAt = new Date();
+            entry.returnedBy = OperateRbac.currentUser().userName;
+            entry.save();
+            //第三方发货 退款
+            //按数量退款
+            if (entry.partialRefundPrice == null && entry.returnedCount != null) {
+                OrderItems.handleRealGoodsRefund(entry.orderItems, entry.returnedCount);
+            }  //部分退款
+            else if (entry.partialRefundPrice != null && entry.returnedCount == null) {
+                OrderItems.handleRealGoodsRefundByPartialRefundPrice(entry.orderItems, entry.partialRefundPrice);
+            }
+        }
         index(null);
 
     }
@@ -120,7 +146,14 @@ public class ReturnEntries extends Controller {
         entry.save();
         //TODO 3、暂时不退款，如需退款，线下操作
 //        OrderItems.handleRealGoodsRefund(entry.orderItems, entry.returnedCount);
-
+        //部分退款
+        //按数量退款
+        if (entry.partialRefundPrice == null && entry.returnedCount != null) {
+            OrderItems.handleRealGoodsRefund(entry.orderItems, entry.returnedCount);
+        }  //部分退款
+        else if (entry.partialRefundPrice != null && entry.returnedCount == null) {
+            OrderItems.handleRealGoodsRefundByPartialRefundPrice(entry.orderItems, entry.partialRefundPrice);
+        }
         index(null);
     }
 
