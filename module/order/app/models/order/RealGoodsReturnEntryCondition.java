@@ -85,10 +85,10 @@ public class RealGoodsReturnEntryCondition implements Serializable {
             sqlCond.append(" and r.orderItems.goods.id=:goodsId");
             paramsMap.put("goodsId", goodsId);
         }
-        if (supplierId != null && supplierId > 0L) {
-            sqlCond.append(" and r.orderItems.goods.supplierId=:supplierId");
-            paramsMap.put("supplierId", supplierId);
-        }
+//        if (supplierId != null && supplierId > 0L) {
+//            sqlCond.append(" and r.orderItems.goods.supplierId=:supplierId");
+//            paramsMap.put("supplierId", supplierId);
+//        }
         if (StringUtils.isNotBlank(goodsName)) {
             sqlCond.append(" and r.orderItems.goods.shortName like :goodsName");
             paramsMap.put("goodsName", "%" + goodsName + "%");

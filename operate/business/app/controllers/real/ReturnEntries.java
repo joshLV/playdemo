@@ -116,10 +116,10 @@ public class ReturnEntries extends Controller {
             entry.save();
             //第三方发货 退款
             //按数量退款
-            if (entry.partialRefundPrice == null && entry.returnedCount != null) {
+            if (entry.partialRefundPrice == null && entry.returnedCount > 0) {
                 OrderItems.handleRealGoodsRefund(entry.orderItems, entry.returnedCount);
             }  //部分退款
-            else if (entry.partialRefundPrice != null && entry.returnedCount == null) {
+            else if (entry.partialRefundPrice != null && entry.returnedCount == 0) {
                 OrderItems.handleRealGoodsRefundByPartialRefundPrice(entry.orderItems, entry.partialRefundPrice);
             }
         }
@@ -148,10 +148,10 @@ public class ReturnEntries extends Controller {
 //        OrderItems.handleRealGoodsRefund(entry.orderItems, entry.returnedCount);
         //部分退款
         //按数量退款
-        if (entry.partialRefundPrice == null && entry.returnedCount != null) {
+        if (entry.partialRefundPrice == null && entry.returnedCount > 0) {
             OrderItems.handleRealGoodsRefund(entry.orderItems, entry.returnedCount);
         }  //部分退款
-        else if (entry.partialRefundPrice != null && entry.returnedCount == null) {
+        else if (entry.partialRefundPrice != null && entry.returnedCount == 0) {
             OrderItems.handleRealGoodsRefundByPartialRefundPrice(entry.orderItems, entry.partialRefundPrice);
         }
         index(null);
@@ -167,7 +167,6 @@ public class ReturnEntries extends Controller {
      */
     @Right("RETURN_GOODS")
     public static void returnGoods(RealGoodsReturnEntry entry) {
-        System.out.println("entry.unreceivedReason:" + entry.unreceivedReason);
 
         Long orderId = null;
         if (entry.orderItems != null && entry.orderItems.id != null && entry.orderItems.id != 0L) {
