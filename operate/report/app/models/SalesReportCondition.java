@@ -106,7 +106,12 @@ public class SalesReportCondition implements Serializable {
     }
 
     public String getFilter() {
-        StringBuilder condBuilder = new StringBuilder(" where (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" where (r.order.status='PAID' " +
+                " or r.order.status='SENT'" +
+                " or r.order.status = 'PREPARED'" +
+                " or r.order.status='UPLOADED'" +
+                "  ) " +
+                " and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
 
         if (StringUtils.isNotBlank(shortName)) {
@@ -278,7 +283,10 @@ public class SalesReportCondition implements Serializable {
 
     public String getResalerFilter() {
         StringBuilder condBuilder = new StringBuilder(" where " +
-                "  (r.order.status='PAID' or r.order.status='SENT')" +
+                "  (r.order.status='PAID' " +
+                " or r.order.status = 'PREPARED'" +
+                " or r.order.status='UPLOADED'" +
+                "  or r.order.status='SENT')" +
                 " and r.goods.isLottery=false and r.order=o and o.userId=b.id" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED ");
         if (StringUtils.isNotBlank(shortName)) {
