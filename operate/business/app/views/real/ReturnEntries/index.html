@@ -111,7 +111,7 @@
                        href="javascript:showConfirmModal('${entry.orderItems?.goods?.shortName}','${entry.orderItems?.goods?.supplierId}', '${entry.returnedCount}', '${entry.id}');">已收到货</a>
                 #{/if}
                 <a id="link_unreturned"
-                   href="javascript:showReasonModal('${entry.orderItems?.goods?.shortName}','${entry?.partialRefundPrice}','${entry.returnedCount}', '${entry.id}');">未收到货</a>
+                   href="javascript:showReasonModal('${entry.orderItems?.goods?.shortName}','${entry?.partialRefundPrice}','${entry.returnedCount}', '${entry.id}','${entry.orderItems?.salePrice}');">未收到货</a>
             #{/if}
             </td>
         #{/if}
@@ -176,7 +176,7 @@ class:"form-horizontal",method:"PUT"}
         </div>
         <div class="control-group" id="unreceivedAmount" style="display: none">
             <div class="control-group">
-                <label class="control-label">退货金额</label>
+                <label class="control-label"><span id="number_refund_amount"></span>退货金额</label>
 
                 <div class="controls"><span id="refundAmount" style="line-height: 30px;"></span></div>
             </div>

@@ -103,10 +103,10 @@ public class ReturnEntries extends Controller {
             stockItem.create();
             //3、退款
             //按数量退款
-            if (entry.partialRefundPrice == null && entry.returnedCount != null) {
+            if (entry.partialRefundPrice == null && entry.returnedCount > 0) {
                 OrderItems.handleRealGoodsRefund(entry.orderItems, entry.returnedCount);
             }  //部分退款
-            else if (entry.partialRefundPrice != null && entry.returnedCount == null) {
+            else if (entry.partialRefundPrice != null && entry.returnedCount == 0) {
                 OrderItems.handleRealGoodsRefundByPartialRefundPrice(entry.orderItems, entry.partialRefundPrice);
             }
         } else {

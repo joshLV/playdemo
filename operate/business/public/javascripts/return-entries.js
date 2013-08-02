@@ -3,37 +3,39 @@
  * User: sujie
  * Date: 4/1/13 5:24 PM
  */
-function showConfirmModal(goodsName,supplierId, returnCount, entryId) {
+function showConfirmModal(goodsName, supplierId, returnCount, entryId) {
     $("#return_goods_name").html(goodsName);
     $("#return_count").html(returnCount);
     $("#maxReturnCount").html(returnCount);
     $("#stockInCount").val(returnCount);
     $("#confirmModal").modal('show');
-    if (supplierId==5){
+    if (supplierId == 5) {
         $("#instock").show();
         $("unreceivedCount").show();
     }
     $("#confirmForm").attr("action", "/real/return-entries/" + entryId + "/received?x-http-method-override=PUT");
 }
 
-function showReasonModal(goodsName,partialRefundPrice, returnCount, entryId) {
+function showReasonModal(goodsName, partialRefundPrice, returnCount, entryId, salePrice) {
     $("#goods_name").html(goodsName);
     $("#count").html(returnCount);
     $("#reasonModal").modal('show');
 
     $("#refundAmount").html(partialRefundPrice);
-    if (partialRefundPrice==''){
+    if (partialRefundPrice == '') {
         $("unreceivedCount").show();
-        $("#unreceivedAmount").hide();
-    }else {
+        $("#unreceivedAmount").show();
+        $("#number_refund_amount").text("按数量");
+        $("#refundAmount").html(returnCount * salePrice + "元");
+    } else {
         $("#unreceivedAmount").show();
     }
-    $("#reasonForm").attr("action",  "/real/return-entries/" + entryId + "/unreceived?x-http-method-override=PUT");
+    $("#reasonForm").attr("action", "/real/return-entries/" + entryId + "/unreceived?x-http-method-override=PUT");
 }
 $(function () {
 
     $("#receive").click(function () {
-        if ($("#stockInCount").val()==''){
+        if ($("#stockInCount").val() == '') {
 
         }
 
