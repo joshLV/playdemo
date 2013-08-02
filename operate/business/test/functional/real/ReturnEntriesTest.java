@@ -113,8 +113,6 @@ public class ReturnEntriesTest extends FunctionalTest {
     }
 
 
-
-
     @Test
     public void testTakeoutSkuChangeReceived() throws Exception {
 
@@ -161,6 +159,7 @@ public class ReturnEntriesTest extends FunctionalTest {
         assertEquals(new BigDecimal("8.5").setScale(2), orderItems.getAmount().setScale(2));
         Map<String, Object> urlParams = new HashMap<>();
         urlParams.put("id", entry.id);
+        urlParams.put("stockInCount", takeoutItem.count);
         response = PUT(Router.reverse("real.ReturnEntries.received", urlParams).url,
                 "application/x-www-form-urlencoded", "");
         assertStatus(302, response);
