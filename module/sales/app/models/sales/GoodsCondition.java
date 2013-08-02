@@ -213,8 +213,8 @@ public class GoodsCondition implements Serializable {
 
         if (StringUtils.isNotBlank(jobNumber)) {
             condBuilder.append(" and g.supplierId in (select s.id from Supplier s where s.salesId in ( " +
-                    " select o.id from OperateUser o where o.jobNumber =:jobNumber))");
-            paramMap.put("jobNumber", jobNumber);
+                    " select o.id from OperateUser o where o.userName like :userName))");
+            paramMap.put("userName", jobNumber + "%");
         }
 
 
