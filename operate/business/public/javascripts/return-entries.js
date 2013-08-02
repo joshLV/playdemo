@@ -25,6 +25,7 @@ function showReasonModal(goodsName, partialRefundPrice, returnCount, entryId, sa
     if (partialRefundPrice == '') {
         $("unreceivedCount").show();
         $("#unreceivedAmount").show();
+        $("#number_refund_amount").show();
         $("#number_refund_amount").text("按数量");
         $("#refundAmount").html(returnCount * salePrice + "元");
     } else {
