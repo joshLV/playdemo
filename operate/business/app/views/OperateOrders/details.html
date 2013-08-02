@@ -16,16 +16,21 @@
         $("#shippingInfo_expressNumber").val(expressNumber);
     }
 
-    function prepareReturn(id, goodsName, count) {
+    function prepareReturn(id, goodsName, count, salePrice, refundFlag) {
         $("#entry_orderItems_id").val(id);
         $("#goodsName").html(goodsName);
         $("#maxReturnedCount").val(count);
         $("#entry_returnedCount").val(count);
+        $("#refundPrice").text(salePrice*count + "元");
+        $("#refundAmount").val(salePrice);
         $("#note_entry_returnedCount").removeClass("error");
         $("#note_entry_returnedCount").html("");
         $("#note_entry_reason").removeClass("error");
         $("#note_entry_reason").html("");
         $('#returnGoodsModal').modal('show');
+        if (refundFlag == '1') {
+            $("#refundFlag").show();
+        }
     }
 
     function sendOrderItemMessage(id) {
@@ -47,9 +52,13 @@
 
     $(function () {
         var handleReturnEntry = function () {
-
-            $.post("/real/return",
-                    {"entry.orderItems.id": $("#entry_orderItems_id").val(), "entry.returnedCount": $("#entry_returnedCount").val(), "entry.reason": $("#entry_reason").val()},
+            var params = {"entry.orderItems.id": $("#entry_orderItems_id").val(), "entry.returnedCount": $("#entry_returnedCount").val(),
+                "entry.reason": $("#entry_reason").val()};
+            if ($("#refundType_1").attr("checked")) {
+                params = {"entry.orderItems.id": $("#entry_orderItems_id").val(),"entry.returnedCount": 0,
+                    "entry.partialRefundPrice": $("#entry_partialRefundPrice").val(), "entry.reason": $("#entry_reason").val()};
+            }
+            $.post("/real/return", params,
                     function (data) {
                         if (!isNaN(data)) {
                             window.location = "/orders/" + data;
@@ -87,43 +96,85 @@
                     $("#sendForm").submit();
                 }
             });
+
+            var returnCountEle = $("#entry_returnedCount");
+            var refundAmountEle = $("#refundAmount");
+            returnCountEle.keyup(function () {
+                var refundAmountValue = refundAmountEle.val();
+                var count = returnCountEle.val().trim();
+                if (count == '' || count <= 0) {
+                    count = 1;
+                    returnCountEle.val("1");
+                }
+                $("#refundPrice").text(count * refundAmountValue);
+            });
+
+            $("#refundType_0").click(function () {
+                var maxReturnedCount = $("#maxReturnedCount").val();
+                $("#refundByPartial").hide();
+                $("#refundByNumber").show();
+                $(this).attr("checked", true);
+                $("#refundType_1").attr("checked", false);
+                $("#entry_reason").val("");
+                $("#entry_partialRefundPrice").val("");
+                $("#entry_returnedCount").val(maxReturnedCount);
+                $("#refundPrice").text(maxReturnedCount*refundAmountEle.val());
+            })
+            $("#refundType_1").click(function () {
+                var maxReturnedCount = $("#maxReturnedCount").val();
+                $("#maxRefundPrice").text(maxReturnedCount * refundAmountEle.val());
+                $("#refundByPartial").show();
+                $("#refundByNumber").hide();
+                $(this).attr("checked", true);
+                $("#refundType_0").attr("checked", false);
+                $("#entry_reason").val("");
+                $("#entry_returnedCount").val(1);
+
+                $("#refundPrice").text(refundAmountEle.val());
+            })
+
+
             $("#return").click(function () {
                 var result = true;
                 var returnedCount = $("#entry_returnedCount").val().trim();
 
                 if (returnedCount == "") {
-                    $("#note_entry_returnedCount").addClass("error");
-                    $("#note_entry_returnedCount").html("请输入退货数量!");
+                    $("#note_entry_returnedCount").html("请输入退货数量!").addClass("error");
                     $("#entry_returnedCount").focus();
                     result = false;
                 }
                 else {
-                    $("#note_entry_returnedCount").removeClass("error");
                     $("#note_entry_returnedCount").html("");
                 }
-                if (returnedCount > $("#maxReturnedCount").val() || returnedCount < 1) {
-                    $("#note_entry_returnedCount").addClass("error");
-                    $("#note_entry_returnedCount").html("退货数量必须在1到" + $("#maxReturnedCount").val() + "之间!");
+                var maxReturnedCount = $("#maxReturnedCount").val();
+                if (returnedCount > maxReturnedCount || returnedCount < 1) {
+                    $("#note_entry_returnedCount").html("退货数量必须在1到" + maxReturnedCount + "之间!").addClass("error");
                     $("#entry_returnedCount").focus();
                     result = false;
                 }
                 else {
-                    $("#note_entry_returnedCount").removeClass("error");
                     $("#note_entry_returnedCount").html("");
+                }
+                if ($("#refundType_1").attr("checked")) {
+                    if ($("#entry_partialRefundPrice").val() == '') {
+                        $("#entry_partialRefundPrice_err").html("请输入部分退货金额!").addClass("error");
+                        result = false;
+                    }
+                    var returnedMaxAmount = maxReturnedCount * $("#refundAmount").val();
+                    if ($("#entry_partialRefundPrice").val() > returnedMaxAmount) {
+                        $("#entry_partialRefundPrice_err").html("输入的部分退货金额不能超过" + returnedMaxAmount + "元！").addClass("error");
+                        result = false;
+                    }
                 }
                 if ($("#entry_reason").val().trim() == "") {
-                    $("#note_entry_reason").addClass("error");
-                    $("#note_entry_reason").html("请输入退货原因!");
-                    $("#note_entry_reason").val("");
+                    $("#note_entry_reason").html("请输入退货原因!").addClass("error");
                     $("#note_entry_reason").focus();
                     result = false;
                 } else {
-                    $("#note_entry_reason").removeClass("error");
-                    $("#note_entry_reason").val("");
+                    $("#note_entry_reason").html("");
                 }
                 if (result) {
                     handleReturnEntry();
-//                    $("#returnForm").submit();
                 }
             });
         #{/if}
@@ -276,11 +327,11 @@
                 #{if orderItem.status == models.order.OrderStatus.PAID}
                     <a
                             href="javascript:void(0);"
-                            onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}')">退款</a>#{/if}
+                            onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}','${orderItem.salePrice}','0')">退款</a>#{/if}
                 #{else}
                     <a
                             href="javascript:void(0);"
-                            onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}')">申请退货</a>
+                            onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}','${orderItem.salePrice}','1')">申请退货</a>
                 #{/else}
             #{/if}</td>
         </tr>
@@ -465,13 +516,41 @@
 
         <input type="hidden" name="entry.orderItems.id" id="entry_orderItems_id"/>
         <input type="hidden" name="maxReturnedCount" id="maxReturnedCount"/>
+        <input type="hidden" name="refundAmount" id="refundAmount"/>
 
+        <div class="control-group" id="refundFlag" style="display: none">
+            <label class="control-label">退款方式</label>
+
+            <div class="controls">
+                <input type="radio" id="refundType_0" name="refundType" value="0" checked>按数量退款
+                <input type="radio" id="refundType_1" name="refundType" value="1">部分退款
+            </div>
+        </div>
         <div class="control-group">
             <label class="control-label">商品</label>
 
             <div class="controls"><span id="goodsName" style="line-height: 30px;"></span></div>
         </div>
-        #{layout_operate.textField name:'entry.returnedCount', required:true, err:"returnedCount"/}
+
+        <div id="refundByNumber" style="display: block">
+            #{layout_operate.textField name:'entry.returnedCount', required:true, err:"returnedCount"/}
+            <div class="control-group">
+                <label class="control-label">退货金额</label>
+
+                <div class="controls" id="refundPrice"></div>
+            </div>
+        </div>
+
+        <div id="refundByPartial" style="display: none">
+            <div class="control-group">
+                <label class="control-label"><span style="color: red">*</span>部分退货金额</label>
+
+                <div class="controls"><input type="text" name="entry.partialRefundPrice" id="entry_partialRefundPrice"/>
+                    <span style="color: grey">(最大可退款金额为：<b id="maxRefundPrice"></b>元)</span>
+                    <span id="entry_partialRefundPrice_err" style="display: block"></span>
+                </div>
+            </div>
+        </div>
         #{layout_operate.textField name:'entry.reason', value:entry?.reason, required:true, err:"reason"/}
     #{/form}
     </div>
@@ -479,7 +558,6 @@
         <a href="#" id="return" class="btn btn-primary">退货</a>
         <a href="#" class="btn" data-dismiss="modal">取消</a>
     </div>
-
 
 </div>
 

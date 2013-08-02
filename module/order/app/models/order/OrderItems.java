@@ -23,7 +23,6 @@ import play.data.validation.Max;
 import play.data.validation.Min;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
-import play.modules.solr.Solr;
 import util.common.InfoUtil;
 
 import javax.persistence.Column;
@@ -39,6 +38,7 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -170,9 +170,6 @@ public class OrderItems extends Model {
     @Column(name = "refund_price")
     public BigDecimal refundPrice;
 
-    @Column(name = "refund_type")
-    @Enumerated(EnumType.STRING)
-    public RefundType refundType;
 
     /**
      * 佣金
@@ -665,7 +662,7 @@ public class OrderItems extends Model {
     }
 
     /**
-     * 实物退款处理.
+     * 实物退款处理. 按数量退款
      *
      * @param orderItems
      */
@@ -799,15 +796,164 @@ public class OrderItems extends Model {
         order.refundedAmount = order.refundedAmount.add(consumedAmount.multiply(new BigDecimal(returnedCount))).add(refundPromotionAmount);
         order.save();
 
+        orderItems.refundPrice = order.refundedAmount.add(consumedAmount.multiply(new BigDecimal(returnedCount))).add(refundPromotionAmount);
         orderItems.returnCount += returnedCount;
         orderItems.status = OrderStatus.RETURNED;
         orderItems.save();
 
         // 更改搜索服务中的库存
-        Solr.save(orderItems.goods);
+//        Solr.save(orderItems.goods);
 
         return returnFlg;
 
+    }
+
+    /**
+     * 实物退款处理. 按数量退款
+     *
+     * @param orderItems
+     */
+    public static String handleRealGoodsRefundByPartialRefundPrice(OrderItems orderItems,
+                                                                   BigDecimal partialRefundPrice) {
+        String returnFlg = "";
+
+        if (orderItems == null || orderItems.id == null || partialRefundPrice == null) {
+            returnFlg = "{\"error\":\"no such orderItems\"}";
+            return returnFlg;
+        }
+        //todo 刷单的不可退款
+//        if (orderItems.isCheatedOrder) {
+//            returnFlg = "{\"error\":\"cheated order can't refund\"}";
+//            return returnFlg;
+//        }
+        //未付款和已取消的订单不能退款
+        if (orderItems.status == OrderStatus.CANCELED || orderItems.status == OrderStatus.UNPAID) {
+            returnFlg = "{\"error\":\"can not apply refund with this goods\"}";
+            return returnFlg;
+        }
+
+
+        //先计算已消费的金额
+        BigDecimal consumedAmount = BigDecimal.ZERO;
+        Order order = orderItems.order;
+        if (order.isWebsiteOrder()) {
+            consumedAmount = orderItems.salePrice;
+        } else {
+            consumedAmount = orderItems.resalerPrice;
+        }
+
+        //最后我们来看看最终能退多少
+        BigDecimal refundPromotionAmount = BigDecimal.ZERO;
+
+        // 创建退款交易
+        Account account = orderItems.order.getBuyerAccount();
+        Logger.info("account=" + account.id + ", refundCashAmount=" + consumedAmount + ", " +
+                "refundPromotionAmount=" + refundPromotionAmount);
+
+        //给分销商打款成功标识
+        boolean toResalerAccountSuc = true;
+        //从商户扣款成功标识
+        boolean fromSupplierAccountSuc = true;
+        //从平台佣金账户扣款成功标识
+        boolean fromCommissionAccountSuc = true;
+
+        Account supplierAccount = orderItems.getSupplierAccount();
+        Account commissionAccount = AccountUtil.getPlatformCommissionAccount(orderItems.order.operator);
+        BigDecimal platformCommission;
+
+        if (orderItems.salePrice.compareTo(orderItems.resalerPrice) < 0) {
+            // 如果成交价小于分销商成本价（这种情况只有在一百券网站上才会发生），
+            // 那么一百券就没有佣金，平台的佣金也变为成交价减成本价
+            platformCommission = (orderItems.salePrice.subtract(orderItems.originalPrice)).multiply(partialRefundPrice
+                    .divide(orderItems.salePrice, RoundingMode.HALF_UP));
+        } else {
+            // 平台的佣金等于分销商成本价减成本价
+            platformCommission = (orderItems.resalerPrice.subtract(orderItems.originalPrice)).multiply
+                    (partialRefundPrice.divide(orderItems.salePrice, RoundingMode.HALF_UP));
+        }
+
+        //判断如果是已上传或已发货的商品，则给从商户帐号打钱给平台收款账户
+        if (orderItems.status == OrderStatus.UPLOADED || orderItems.status == OrderStatus.SENT || orderItems.status == OrderStatus.RETURNING) {
+//            for (int i = 0; i < returnedCount; i++) {
+            TradeBill tradeBill = TradeUtil.refundToPlatFormIncomingTrade(order.operator)
+                    .fromAccount(supplierAccount)
+                    .balancePaymentAmount(partialRefundPrice)
+                    .promotionPaymentAmount(refundPromotionAmount)
+                    .orderId(orderItems.order.getId())
+                    .make();
+
+            if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
+                Logger.info("实物退款失败:从商户帐号打钱给平台收款账户fromAccount=" + supplierAccount.id + ",orderItem.id=" + orderItems.id);
+                fromSupplierAccountSuc = false;
+//                break;
+            }
+
+
+            //佣金账户打钱给平台收款账户
+            if (platformCommission.compareTo(BigDecimal.ZERO) > 0) {
+                tradeBill = TradeUtil.refundToPlatFormIncomingTrade(orderItems.order.operator)
+                        .fromAccount(commissionAccount)
+                        .balancePaymentAmount(platformCommission)
+                        .promotionPaymentAmount(refundPromotionAmount)
+                        .orderId(orderItems.order.id)
+                        .make();
+
+                if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
+                    Logger.info("实物退款失败:从平台佣金帐号打钱给平台收款账户fromAccount=" + commissionAccount.id + ",orderItem.id=" + orderItems.id);
+                    fromCommissionAccountSuc = false;
+//                    break;
+                }
+            }
+        }
+
+        //如果从商户扣款失败则回滚之前保存的数据
+        if (!fromSupplierAccountSuc) {
+            JPA.em().getTransaction().rollback();
+            returnFlg = "{\"error\":\"supplier account refund failed\"}";
+            return returnFlg;
+        }
+
+        //如果从商户扣款失败则回滚之前保存的数据
+        if (!fromCommissionAccountSuc) {
+            JPA.em().getTransaction().rollback();
+            returnFlg = "{\"error\":\"platformCommission account refund failed\"}";
+            return returnFlg;
+        }
+//        }
+
+        //从平台收款账户打款给分销账户
+//        for (int i = 0; i < returnedCount; i++) {
+        TradeBill tradeBill = TradeUtil.refundFromPlatFormIncomingTrade(order.operator)
+                .toAccount(account)
+                .balancePaymentAmount(partialRefundPrice)
+                .promotionPaymentAmount(refundPromotionAmount)
+                .orderId(orderItems.order.getId())
+                .make();
+
+        if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
+            Logger.info("实物退款失败:从平台收款账户打款给分销账户toAccount=" + account.id + ",orderItem.id=" + orderItems.id);
+            toResalerAccountSuc = false;
+//            break;
+        }
+//        }
+        //如果给分销大款失败则回滚之前保存的数据
+        if (!toResalerAccountSuc) {
+            JPA.em().getTransaction().rollback();
+            returnFlg = "{\"error\":\"resaler account refund failed\"}";
+            return returnFlg;
+        }
+        // 更新已退款的活动金金额
+        order.refundedAmount = order.refundedAmount.add(partialRefundPrice);
+        order.save();
+
+        orderItems.refundPrice = partialRefundPrice;
+        orderItems.status = OrderStatus.RETURNED;
+        orderItems.save();
+
+        // 更改搜索服务中的库存
+//        Solr.save(orderItems.goods);
+
+        return returnFlg;
     }
 
     /**
