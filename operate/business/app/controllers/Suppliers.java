@@ -263,7 +263,9 @@ public class Suppliers extends Controller {
         //可提现余额
         BigDecimal prepaymentBalance = Prepayment.findAmountBySupplier(supplier);
         BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, date);
-        render(supplier, withdrawAmount, supplierWithdrawAmount);
+        BigDecimal supplierAmount = account.amount;
+        System.out.println("supplierAmount = " + supplierAmount);
+        render(supplier, withdrawAmount, supplierWithdrawAmount, supplierAmount);
     }
 
 
