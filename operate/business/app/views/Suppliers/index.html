@@ -104,10 +104,10 @@
                 #{/layout_operate.checkPermissionField}
 
                 #{layout_operate.checkPermissionField value:["SALES_SET_SUPPLIER_WITHDRAW_AMOUNT"]}
-                    #{if operatorId == supplier?.salesId}
+                    *{#{if operatorId == supplier?.salesId}}*
                         <a href="/suppliers/${supplier.id}/set-withdraw-amount?page=${page?:1}">设置提现金额</a>
                         /
-                    #{/if}
+                    *{#{/if}}*
                 #{/layout_operate.checkPermissionField}
 
                 #{layout_operate.checkPermissionField value:["SUPPLIERS"]}
