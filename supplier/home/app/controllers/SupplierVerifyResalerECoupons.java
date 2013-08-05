@@ -124,7 +124,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
         jsonMap.put("partnerGoodsId", partnerGoodsId);
         jsonMap.put("partnerShopId", partnerShopId);
         jsonMap.put("goodsId", goodsId);
-//        body = "{\"status\":0,\"data\":[{\"result\":\"\u6d88\u8d39\u6210\u529f\",\"code\":\"201819625306\",\"errcode\":false}]}";
+//        body = "{\"status\":0,\"data\":[{\"result\":\"\u6d88\u8d39\u6210\u529f\",\"code\":\"201819625306\",\"errcode\":false},{\"result\":\"消费成功\",\"code\":\"201819625306\",\"errcode\":false}]}";
         JsonParser jsonParser = new JsonParser();
         JsonObject result = jsonParser.parse(body).getAsJsonObject();
         String errcode = "";
