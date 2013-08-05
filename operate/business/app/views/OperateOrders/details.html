@@ -21,7 +21,7 @@
         $("#goodsName").html(goodsName);
         $("#maxReturnedCount").val(count);
         $("#entry_returnedCount").val(count);
-        $("#refundPrice").text(salePrice*count + "元");
+        $("#refundPrice").text(salePrice * count + "元");
         $("#refundAmount").val(salePrice);
         $("#note_entry_returnedCount").removeClass("error");
         $("#note_entry_returnedCount").html("");
@@ -55,7 +55,7 @@
             var params = {"entry.orderItems.id": $("#entry_orderItems_id").val(), "entry.returnedCount": $("#entry_returnedCount").val(),
                 "entry.reason": $("#entry_reason").val()};
             if ($("#refundType_1").attr("checked")) {
-                params = {"entry.orderItems.id": $("#entry_orderItems_id").val(),"entry.returnedCount": 0,
+                params = {"entry.orderItems.id": $("#entry_orderItems_id").val(), "entry.returnedCount": 0,
                     "entry.partialRefundPrice": $("#entry_partialRefundPrice").val(), "entry.reason": $("#entry_reason").val()};
             }
             $.post("/real/return", params,
@@ -118,7 +118,7 @@
                 $("#entry_reason").val("");
                 $("#entry_partialRefundPrice").val("");
                 $("#entry_returnedCount").val(maxReturnedCount);
-                $("#refundPrice").text(maxReturnedCount*refundAmountEle.val());
+                $("#refundPrice").text(maxReturnedCount * refundAmountEle.val());
             })
             $("#refundType_1").click(function () {
                 var maxReturnedCount = $("#maxReturnedCount").val();
@@ -147,7 +147,7 @@
                     $("#note_entry_returnedCount").html("");
                 }
                 var maxReturnedCount = $("#maxReturnedCount").val();
-                if (returnedCount > maxReturnedCount || returnedCount < 1) {
+                if (Number(returnedCount) > Number(maxReturnedCount) || returnedCount < 1) {
                     $("#note_entry_returnedCount").html("退货数量必须在1到" + maxReturnedCount + "之间!").addClass("error");
                     $("#entry_returnedCount").focus();
                     result = false;
