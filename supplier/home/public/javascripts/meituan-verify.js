@@ -188,8 +188,8 @@ jQuery(function ($) {
                                     $("#verify-info-" + i).text("上海野生动物园135套餐周末票 " + item.result);
                                 } else {
                                     $("#verify-info-" + i).text(item.result);
-                                    $("#verify-btn").text("验证消费").removeClass("disabled");
                                 }
+                                $("#verify-btn").text("验证消费").removeClass("disabled");
 
                             })
 
