@@ -171,6 +171,8 @@ public class SalesReport implements Comparable<SalesReport> {
 
     public OperateUser operateUser;
 
+    public BigDecimal offlineAmount;
+
     //--------人效报表_begin---------------------------//
     public SalesReport(OperateUser operateUser, Long buyNumber,
                        BigDecimal totalAmount, BigDecimal grossMargin, BigDecimal profit, BigDecimal netSalesAmount, BigDecimal totalCost, BigDecimal totalAmountCommissionAmount) {
@@ -257,6 +259,14 @@ public class SalesReport implements Comparable<SalesReport> {
         this.cheatedOrderCommissionAmount = cheatedOrderCommissionAmount;
 
     }
+
+    //supplier offline grossMargin
+    public SalesReport(OperateUser operateUser, BigDecimal offlineAmount) {
+        this.operateUser = operateUser;
+        this.offlineAmount = offlineAmount;
+
+    }
+
     //--------人效报表_end---------------------------//
 
     //--------销售报表_begin---------------------------//
@@ -1063,6 +1073,20 @@ public class SalesReport implements Comparable<SalesReport> {
 
         List<SalesReport> consumedList = query.getResultList();
 
+        //线下毛利
+        sql = "select new models.SalesReport(ou,sum(e.adsFee)) from SupplierAdsFee e,Supplier s,OperateUser ou ";
+        groupBy = " group by s.salesId";
+
+        query = JPA.em()
+                .createQuery(sql + condition.getOfflineGross() + groupBy + " order by sum(e.adsFee) desc");
+
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap1().get(param));
+        }
+
+        List<SalesReport> offlineGrossMarginList = query.getResultList();
+
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
         //merge
@@ -1139,7 +1163,12 @@ public class SalesReport implements Comparable<SalesReport> {
                 map.put(getReportKeyOfPeopleEffect(refundItem), refundItem);
             }
         }
-
+        for (SalesReport offline : offlineGrossMarginList) {
+            SalesReport item = map.get(getReportKeyOfPeopleEffect(offline));
+            if (item != null) {
+                item.offlineAmount = offline.offlineAmount;
+            }
+        }
         for (SalesReport consumedItem : consumedList) {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(consumedItem));
             if (item != null) {

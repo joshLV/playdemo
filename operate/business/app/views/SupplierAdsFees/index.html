@@ -1,0 +1,54 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'商户广告费管理' /}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @SupplierAdsFees.index() , id:'form',class:"form-horizontal" }
+    <legend>${title}</legend>
+    <div>
+        商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
+        #{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}
+        #{select 'condition.type', id:type, class:'span2', value:condition?.type}
+            #{option null}--请选择--#{/option}
+            #{list models.supplier.ReceivedType.values(), as:'type'}
+                #{option type.code}${type.name}#{/option}
+            #{/list}
+        #{/select}
+        <button class="btn btn-primary" id="search" type="submit">搜索</button>
+    </div>
+#{/form}
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+            <th width="298px">商户</th>
+            <th width="200px">销售专员</th>
+            <th width="200px">广告费</th>
+            <th width="100px">收取时间</th>
+            <th width="50px">类型</th>
+            <th width="150px">创建时间</th>
+            <th width="150px">操 作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        #{paginate.list items:adsFeeList, as:'ads'}
+        <tr>
+            <td>${ads.supplier.otherName}</td>
+            <td>${ads.supplier?.getSalesName()}</td>
+            <td>${ads.adsFee}</td>
+            <td>${ads.receivedAt?.format()}</td>
+            <td>&{'ads.'+ads.receivedType}</td>
+            <td>${ads.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td><a href="/suppliers_adsfee/${ads.id}/edit?page=${page?:1}">修改</a>
+                / #{vx.deleteLink id:ads?.id,  action:"/suppliers_adsfee"/}
+            </td>
+        </tr>
+        #{/paginate.list}
+        </tbody>
+    </table>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:adsFeeList /}
+        </ul>
+    </div>
+</div>

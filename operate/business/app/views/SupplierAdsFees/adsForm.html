@@ -1,0 +1,72 @@
+#{if "add".equals(action)}
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>商户</label>
+
+    <div class="controls">
+        #{vx.selectInputField  name:"supplierName", id:"ads.supplier.id", list:supplierList ,value:goods?.supplierId/}
+        <span class="error">#{error 'ads.supplier'/}</span>
+    </div>
+</div>
+#{/if}
+#{else}
+<input type="hidden" name="ads.supplier.id" value="${ads?.supplier?.id}">
+    #{layout_operate.textField name:'ads.supplier', value:ads?.supplier?.fullName, disabled:true/}
+#{/else}
+#{layout_operate.textField name:'ads.adsFee', value:ads?.adsFee, required:true/}
+<div class="control-group">
+    <label class="control-label">广告类型</label>
+
+    <div class="controls">
+    #{select 'ads.receivedType', id:ReceivedType, class:'span2', value:ads?.receivedType}
+        #{list models.supplier.ReceivedType.values(), as:'type'}
+        #{option type.code}${type.name}#{/option}
+    #{/list}
+    #{/select}
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">收取时间</label>
+
+    <div class="controls">
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" name="ads.receivedAt" size="16" type="text"
+                   value="${ads?.receivedAt?.format()}">
+
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+    </div>
+</div>
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存" >
+#{if "edit".equals(action)}
+    #{vx.cancelButton url:'/suppliers_adsfee', class:'btn btn-primary'/}
+#{/if}
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#supplierName").blur(function () {
+            var found = false;
+            var m = list.length;
+            var id = null;
+            for (i = 0; i < m; i++) {
+                if (list[i].name == $("#supplierName").val()) {
+                    found = true;
+                    id = list[i].id;
+                }
+            }
+            if (!found) {
+                $("#id_supplierName").val(-1);
+            } else {
+                $("#err-supplierUser_supplier_id").html("");
+                $("#save").attr('disabled', false);
+            }
+
+            if ($("#supplierName").val().trim() == '') {
+                $("#id_supplierName").val(0);
+                $("#save").attr('disabled', true);
+            }else {
+                $("#save").attr('disabled', false);
+            }
+        });
+    });
+</script>

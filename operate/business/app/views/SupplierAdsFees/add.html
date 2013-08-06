@@ -1,0 +1,16 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'添加商户广告费' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+
+<div class="body">
+#{form @SupplierAdsFees.create() , id:'creationForm',enctype:'multipart/form-data',class:"form-horizontal" }
+    <legend>${title}</legend>
+    #{set action:"add"/}
+    #{include '/SupplierAdsFees/adsForm.html'/}
+#{/form}
+</div>
+
+

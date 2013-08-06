@@ -153,6 +153,7 @@
             #{layout_operate.sortField name:'毛利率', descField:condition?.desc, desc:'000000002',asc:'000000001'/}
         #{/if}
         #{layout_operate.sortField name:'净利润', descField:condition?.desc, desc:'000000200',asc:'000000100'/}
+        <th>线下毛利</th>
         </thead>
     #{set i:0/}
     %{
@@ -201,6 +202,9 @@
                 <td style="text-align:right">${(report?.grossMargin?:0).format('#0.00')}%</td>
                 <td style="text-align:right">${(report?.profit?:0).format('#0.00')}</td>
             #{/if}
+            <td style="text-align:right">
+            ${(report?.offlineAmount?:0).format('#0.00')}
+            </td>
         </tr>
     #{/paginate.list}
     </table>

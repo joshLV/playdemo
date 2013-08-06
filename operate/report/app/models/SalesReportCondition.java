@@ -865,50 +865,21 @@ public class SalesReportCondition implements Serializable {
         return condBuilder.toString();
     }
 
-    public String getFilterRefundResalerOfPeopleEffect() {
-        paramMap1 = new HashMap<>();
-        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and e.status=:status and e.goods.isLottery=false" +
-                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
-                "  and r.order=o and o.userId=b.id ");
-        paramMap1.put("status", ECouponStatus.REFUND);
+    public String getOfflineGross() {
+        paramMap = new HashMap<>();
+        StringBuilder condBuilder = new StringBuilder(" where e.supplier=s and s.deleted=0 and s.salesId=ou.id ");
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         if (!hasSeeReportProfitRight) {
             condBuilder.append(" and ou.id =:salesId");
-            paramMap1.put("salesId", salesId);
+            paramMap.put("salesId", salesId);
         }
         if (StringUtils.isNotBlank(userName)) {
             condBuilder.append(" and ou.userName like :userName");
-            paramMap1.put("userName", "%" + userName + "%");
+            paramMap.put("userName", "%" + userName + "%");
         }
         if (StringUtils.isNotBlank(jobNumber)) {
             condBuilder.append(" and ou.jobNumber=:jobNumber");
-            paramMap1.put("jobNumber", jobNumber);
-        }
-
-        if (beginAt != null) {
-            condBuilder.append(" and e.refundAt >= :refundAtBegin");
-            paramMap1.put("refundAtBegin", beginAt);
-        }
-        if (endAt != null) {
-            condBuilder.append(" and e.refundAt <= :refundAtEnd");
-            paramMap1.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
-        }
-        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
-            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
-            List<Long> supplierIds = new ArrayList<>();
-            for (Supplier s : suppliers) {
-                supplierIds.add(s.id);
-            }
-            if (supplierIds != null && supplierIds.size() > 0) {
-                condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
-                paramMap1.put("supplierIds", supplierIds);
-            } else {
-                condBuilder.append(" and 1=0");
-            }
-        }
-        if (supplierId != 0) {
-            condBuilder.append(" and e.goods.supplierId = :supplierId");
-            paramMap1.put("supplierId", supplierId);
+            paramMap.put("jobNumber", jobNumber);
         }
 
         return condBuilder.toString();
