@@ -183,7 +183,12 @@
 
 <script language="JavaScript" type="text/JavaScript">
     function confirmBatchFreeze() {
-        if (confirm("确定要批量冻结未使用的所有券号吗?")) {
+        if ($('#freeze_option').val() == 'ISSUPPLIERCHEATEDORDER') {
+            promptText = "确定要操作商家刷单并券消费吗?"
+        } else {
+            promptText = "确定要批量冻结未使用的所有券号吗?"
+        }
+        if (confirm(promptText)) {
             var result = true;
             if ($("#freeze_option").val() == "OTHERS" && $("#other_reason").val().trim() == "") {
                 $("#error_other_reason").html("<span style='display: block;color: #ff0000;padding-left: 450px;'>请输入原因!</span>");

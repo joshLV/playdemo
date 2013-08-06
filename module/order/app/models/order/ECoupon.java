@@ -1285,13 +1285,13 @@ public class ECoupon extends Model {
                 eCoupon.cheatedOrderSource = CheatedOrderSource.SUPPLIER;
                 eCoupon.isFreeze = 0;
                 // 给商户打钱
-                TradeBill consumeTrade = TradeUtil.consumeTrade(coupon.order.operator)
-                        .toAccount(coupon.getSupplierAccount())
-                        .balancePaymentAmount(coupon.salePrice)
-                        .orderId(coupon.order.getId())
-                        .coupon(coupon.eCouponSn)
+                TradeBill consumeTrade = TradeUtil.consumeTradeBySupplierCheated(eCoupon.order.operator)
+                        .toAccount(eCoupon.getSupplierAccount())
+                        .balancePaymentAmount(eCoupon.salePrice)
+                        .orderId(eCoupon.order.getId())
+                        .coupon(eCoupon.eCouponSn)
                         .make();
-                TradeUtil.success(consumeTrade, "商户刷单并券消费(" + coupon.order.description + ")");
+                TradeUtil.success(consumeTrade, "商户刷单并券消费(" + eCoupon.order.description + ")");
                 ECouponHistoryMessage.with(eCoupon).operator(userName)
                         .remark("商户刷单并券消费").sendToMQ();
                 break;

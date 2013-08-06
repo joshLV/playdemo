@@ -67,6 +67,18 @@ public class TradeUtil {
     }
 
     /**
+     * 创建商户刷单消费交易
+     */
+    public static TradeBill consumeTradeBySupplierCheated(Operator operator) {
+        TradeBill bill = new TradeBill();
+        bill.fromAccount = AccountUtil.getPlatformIncomingAccount(operator); //默认收款账户为平台收款账户
+        bill.tradeType = TradeType.SUPPLIER_CHEATED;
+        return bill;
+    }
+
+
+
+    /**
      * 创建佣金交易，消费者消费成功后，将佣金付给平台和一百券
      */
     public static TradeBill commissionTrade(Operator operator) {

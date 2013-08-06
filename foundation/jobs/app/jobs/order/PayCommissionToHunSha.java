@@ -9,7 +9,6 @@ import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import models.order.ECoupon;
 import models.order.Order;
-import play.jobs.OnApplicationStart;
 
 import java.math.BigDecimal;
 
@@ -20,7 +19,7 @@ import java.math.BigDecimal;
  */
 @JobDefine(title = "商户刷单给巴黎国际婚纱户打佣金", description = "商户刷单给巴黎国际婚纱户打佣金")
 //@On("0 0 3 * * ?")
-@OnApplicationStart
+//@OnApplicationStart
 public class PayCommissionToHunSha extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
