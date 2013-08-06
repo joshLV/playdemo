@@ -76,6 +76,13 @@ public class TradeUtil {
         return bill;
     }
 
+    public static TradeBill commissionTrade(Account account) {
+        TradeBill bill = new TradeBill();
+        bill.fromAccount = account;  //付款方账户为平台收款账户
+        bill.tradeType = TradeType.COMMISSION;
+        return bill;
+    }
+
     /**
      * 创建运费交易，发货后,平台佣金账户将收取运费
      */

@@ -35,7 +35,6 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
-import play.modules.solr.Solr;
 import util.common.InfoUtil;
 import util.extension.ExtensionInvoker;
 import util.extension.ExtensionResult;
@@ -110,6 +109,8 @@ public class ECoupon extends Model {
 
     @Column(name = "is_cheated_order")
     public Boolean isCheatedOrder = false;
+
+
 
     @Column(name = "other_reason")
     public String otherReason;
