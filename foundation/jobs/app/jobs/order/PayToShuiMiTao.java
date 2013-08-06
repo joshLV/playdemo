@@ -4,7 +4,6 @@ import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import models.order.OrderItems;
 import play.db.jpa.JPA;
-import play.jobs.On;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -17,7 +16,7 @@ import java.util.List;
  * Time: 下午4:56
  */
 @JobDefine(title = "给水蜜桃商户打款", description = "给水蜜桃商户打款")
-@On("0 0 4 * * ?")
+//@On("0 0 4 * * ?")
 //@OnApplicationStart
 public class PayToShuiMiTao extends JobWithHistory {
     @Override
