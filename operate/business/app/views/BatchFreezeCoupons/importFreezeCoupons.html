@@ -123,7 +123,8 @@
                         value="${coupon?.freezedReason}"
                         onchange="select(this);"
                         >
-                    <option value="ISCHEATEDORDER">刷单</option>
+                    <option value="ISSHIHUICHEATEDORDER">视惠刷单</option>
+                    <option value="ISSUPPLIERCHEATEDORDER">商家刷单并券消费</option>
                     <option value="UNABLEVERIFY">无法验证</option>
                     <option value="OTHERS">其他原因</option>
                 </select>
@@ -139,7 +140,8 @@
                 </div>
         </span>
         &nbsp; &nbsp; &nbsp;
-        <button class="btn btn-primary" id="freezecoupon" onClick="return confirmBatchFreeze();">批量冻结
+        <button class="btn btn-primary" id="freezecoupon" onClick="return confirmBatchFreeze();"><span
+                id="button_text">批量冻结</span>
         </button>
         <br><br>
         <table class="table table-striped table-bordered table-condensed">
@@ -195,10 +197,14 @@
     }
 
     function select(myObject) {
-        var selectedValue = myObject.value
+        var selectedValue = myObject.value;
+        $('#button_text').text('批量冻结');
         if (selectedValue == "OTHERS") {
             document.getElementById("mySpan").innerHTML = "请填写原因：";
             document.getElementById("textContainer").style.display = "";
+        }
+        else if (selectedValue == "ISSUPPLIERCHEATEDORDER") {
+            $('#button_text').text('确认');
         }
         else {
             document.getElementById("textContainer").style.display = "none";

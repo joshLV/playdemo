@@ -495,6 +495,7 @@ DELETE  /goods-schedule/{id}                    GoodsSchedules.delete
 POST     /verified-ecoupon-do-refund            VerifiedECouponRefunds.refund
 
 GET     /makeup                                 OperateCouponMakeUp.index
+GET     /pay_to_supplier                        OperateCouponMakeUp.pay
 
 # 快速查询券号、手机号或订单号
 GET      /quick-search                          QuickSearchs.query

@@ -111,7 +111,6 @@ public class ECoupon extends Model {
     public Boolean isCheatedOrder = false;
 
 
-
     @Column(name = "other_reason")
     public String otherReason;
 
@@ -120,6 +119,10 @@ public class ECoupon extends Model {
      */
     @Enumerated(EnumType.STRING)
     public ECouponFreezedReason freezedReason;
+
+    @Column(name = "cheated_order_source")
+    @Enumerated(EnumType.STRING)
+    public CheatedOrderSource cheatedOrderSource;
 
     /**
      * 部分第三方团购可能使用密码，而券市场的券不需要。
@@ -1277,8 +1280,24 @@ public class ECoupon extends Model {
         eCoupon.isFreeze = isFreeze;
         eCoupon.freezedReason = coupon.freezedReason;
         switch (coupon.freezedReason) {
-            case ISCHEATEDORDER:
+            case ISSUPPLIERCHEATEDORDER:
                 eCoupon.isCheatedOrder = true;
+                eCoupon.cheatedOrderSource = CheatedOrderSource.SUPPLIER;
+                eCoupon.isFreeze = 0;
+                // 给商户打钱
+                TradeBill consumeTrade = TradeUtil.consumeTrade(coupon.order.operator)
+                        .toAccount(coupon.getSupplierAccount())
+                        .balancePaymentAmount(coupon.salePrice)
+                        .orderId(coupon.order.getId())
+                        .coupon(coupon.eCouponSn)
+                        .make();
+                TradeUtil.success(consumeTrade, "商户刷单并券消费(" + coupon.order.description + ")");
+                ECouponHistoryMessage.with(eCoupon).operator(userName)
+                        .remark("商户刷单并券消费").sendToMQ();
+                break;
+            case ISSHIHUICHEATEDORDER:
+                eCoupon.isCheatedOrder = true;
+                eCoupon.cheatedOrderSource = CheatedOrderSource.SHIHUI;
                 ECouponHistoryMessage.with(eCoupon).operator(userName)
                         .remark(isFreeze == 0 ? "解冻券号" : "冻结券号(刷单)").sendToMQ();
                 break;
