@@ -112,6 +112,8 @@ public class SupplierWithdraws extends Controller {
         //销售设置商户的提现金额
         if (canNotWithdraw == Boolean.FALSE) {
             amount = setAmount;
+        } else {
+            canNotWithdraw = Boolean.TRUE;
         }
 
         WithdrawBill withdraw = WithdrawBill.find("byAccountAndStatus", account, WithdrawBillStatus.APPLIED).first();
@@ -126,6 +128,8 @@ public class SupplierWithdraws extends Controller {
         if (withdrawAccount == null) {
             error("invalid withdraw account");
         }
+
+
         if (Boolean.TRUE.compareTo(canNotWithdraw) != 1 && (amount == null || amount.compareTo(account.amount) > 0
                 || amount.compareTo(BigDecimal.TEN) < 0)) {
             Validation.addError("amount", "提现金额不能小于10元,且不能大于余额！！");
