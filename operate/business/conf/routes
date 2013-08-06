@@ -496,6 +496,8 @@ POST     /verified-ecoupon-do-refund            VerifiedECouponRefunds.refund
 
 GET     /makeup                                 OperateCouponMakeUp.index
 GET     /pay_to_supplier                        OperateCouponMakeUp.pay
+GET     /pay_commission_to_supplier             OperateCouponMakeUp.payCommissionToSupplier
+
 
 # 快速查询券号、手机号或订单号
 GET      /quick-search                          QuickSearchs.query
