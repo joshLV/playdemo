@@ -15,7 +15,8 @@ public enum TradeType {
     TRANSFER,           //转账
     DEBT_COLLECTION,    //收账
     PAY_DEBT,           //付账
-    BALANCE_BILL;       //冲正
+    BALANCE_BILL,       //冲正
+    SUPPLIER_CHEATED;  //商户刷单
 
 
     /**
