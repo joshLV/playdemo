@@ -1295,7 +1295,7 @@ public class ECoupon extends Model {
                 ECouponHistoryMessage.with(eCoupon).operator(userName)
                         .remark("商户刷单并券消费").sendToMQ();
                 break;
-            case ISSHIHUICHEATEDORDER:
+            case ISCHEATEDORDER:
                 eCoupon.isCheatedOrder = true;
                 eCoupon.cheatedOrderSource = CheatedOrderSource.SHIHUI;
                 ECouponHistoryMessage.with(eCoupon).operator(userName)

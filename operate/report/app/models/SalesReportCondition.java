@@ -1,6 +1,7 @@
 package models;
 
 import com.uhuila.common.util.DateUtil;
+import models.order.CheatedOrderSource;
 import models.order.ECouponStatus;
 
 import models.supplier.Supplier;
@@ -914,11 +915,16 @@ public class SalesReportCondition implements Serializable {
         return condBuilder.toString();
     }
 
-    public String getFilterCheatedOrderOfPeopleEffect() {
+    public String getFilterCheatedOrderOfPeopleEffect(CheatedOrderSource cheatedOrderSource) {
         StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and r.order.status='PAID' and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and e.isCheatedOrder = true ");
+        paramMap1 = new HashMap<>();
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        if (cheatedOrderSource != null) {
+            condBuilder.append(" and e.cheatedOrderSource =:cheatedOrderSource");
+            paramMap1.put("cheatedOrderSource", cheatedOrderSource);
+        }
         if (!hasSeeReportProfitRight) {
             condBuilder.append(" and ou.id =:salesId");
             paramMap1.put("salesId", salesId);
@@ -946,6 +952,7 @@ public class SalesReportCondition implements Serializable {
 
         return condBuilder.toString();
     }
+
 
     public String getFilterCheatedOrderResalerOfPeopleEffect() {
         StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and r.order.status='PAID' and r.goods.isLottery=false" +
