@@ -704,3 +704,11 @@ freight.supplier=商户
 freight.express=快递公司
 balance.amount=冲正金额
 trade_type.BALANCE_BILL = 冲正
+
+ads.adsFee=广告费
+ads.receivedType=广告费类型
+ads.supplier=商户
+ads.ONLINE_FEE=上线费
+ads.ADS_FEE=广告费
+ads.OPERATE_FEE=代运营费
+

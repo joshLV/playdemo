@@ -276,6 +276,14 @@ POST    /suppliers_category                     SuppliersCategory.create
 GET     /suppliers_category/{id}/edit           SuppliersCategory.edit
 PUT     /suppliers_category/{id}                SuppliersCategory.update
 
+#商户广告费
+GET     /suppliers_adsfee                     SupplierAdsFees.index
+GET     /suppliers_adsfee/new                 SupplierAdsFees.add
+POST    /suppliers_adsfee                     SupplierAdsFees.create
+GET     /suppliers_adsfee/{id}/edit           SupplierAdsFees.edit
+PUT     /suppliers_adsfee/{id}                SupplierAdsFees.update
+DELETE  /suppliers_adsfee/{id}                SupplierAdsFees.delete
+
 #商户操作员管理
 GET     /users                                  OperateSupplierUsers.index
 GET     /users/new                              OperateSupplierUsers.add

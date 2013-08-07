@@ -55,6 +55,7 @@
     <permission key="VIEW_ECOUPONSN" text="查看完整券号" roles="customservice,webop"/>
 
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
+    <permission key="SUPPLIERS_ADS_NEW" text="商户广告费添加" roles="editor"/>
     <permission key="SUPPLIERS_MANAGE" text="商户删除和冻结" roles="editor"/>
     <permission key="SALES_SET_SUPPLIER_WITHDRAW_AMOUNT" text="商务销售可以设置商户提现金额" roles="sales"/>
     <permission key="SUPPLIERS" text="查看商户" roles="editor,customservice,sales"/>
@@ -110,6 +111,10 @@
                         permissions="SUPPLIERS"/>
             <navigation key="suppliers_contracts" action="SuppliersContracts.index" text="商户合同管理"
                         permissions="VIEW_SUPPLIER_CONTRACT"/>
+        </navigation>
+        <navigation key="ads_fee" text="商户广告费" permissions="SUPPLIERS_ADS_NEW">
+            <navigation key="ads_fee_add" action="SupplierAdsFees.add" text="商户广告费添加" permissions="SUPPLIERS_ADS_NEW"/>
+            <navigation key="ads_fee_index" action="SupplierAdsFees.index" text="商户广告费管理" permissions="SUPPLIERS_ADS_NEW"/>
         </navigation>
         <navigation key="supplierUsers" text="商户操作员" permissions="SUPPLIER_USERS_NEW,SUPPLIER_USERS">
             <navigation key="supplierUsers_add" action="OperateSupplierUsers.add" text="商户操作员添加"
@@ -281,7 +286,8 @@
                         permissions="INCOMINGS_REPORT"/>
             <navigation key="real_goods_order_reports" action="real.RealGoodsSalesReports.index" text="实物销售报表"
                         permissions="REAL_GOODS_ORDER_REPORT"/>
-            <navigation key="channel_real_sale_reports" action="real.RealGoodsSalesReports.channelRealSaleReport" text="渠道实物销售报表"
+            <navigation key="channel_real_sale_reports" action="real.RealGoodsSalesReports.channelRealSaleReport"
+                        text="渠道实物销售报表"
                         permissions="CHANNEL_REAL_SALE_REPORT"/>
             <navigation key="resale_sales_reports" action="OperateResaleSalesReports.index" text="渠道销售汇总"
                         permissions="RESALE_SALES_REPORT"/>
