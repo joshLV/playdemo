@@ -35,7 +35,6 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
-import play.modules.solr.Solr;
 import util.common.InfoUtil;
 import util.extension.ExtensionInvoker;
 import util.extension.ExtensionResult;
@@ -111,6 +110,7 @@ public class ECoupon extends Model {
     @Column(name = "is_cheated_order")
     public Boolean isCheatedOrder = false;
 
+
     @Column(name = "other_reason")
     public String otherReason;
 
@@ -119,6 +119,10 @@ public class ECoupon extends Model {
      */
     @Enumerated(EnumType.STRING)
     public ECouponFreezedReason freezedReason;
+
+    @Column(name = "cheated_order_source")
+    @Enumerated(EnumType.STRING)
+    public CheatedOrderSource cheatedOrderSource;
 
     /**
      * 部分第三方团购可能使用密码，而券市场的券不需要。
@@ -1276,8 +1280,24 @@ public class ECoupon extends Model {
         eCoupon.isFreeze = isFreeze;
         eCoupon.freezedReason = coupon.freezedReason;
         switch (coupon.freezedReason) {
+            case ISSUPPLIERCHEATEDORDER:
+                eCoupon.isCheatedOrder = true;
+                eCoupon.cheatedOrderSource = CheatedOrderSource.SUPPLIER;
+                eCoupon.isFreeze = 0;
+                // 给商户打钱
+                TradeBill consumeTrade = TradeUtil.consumeTradeBySupplierCheated(eCoupon.order.operator)
+                        .toAccount(eCoupon.getSupplierAccount())
+                        .balancePaymentAmount(eCoupon.salePrice)
+                        .orderId(eCoupon.order.getId())
+                        .coupon(eCoupon.eCouponSn)
+                        .make();
+                TradeUtil.success(consumeTrade, "商户刷单并券消费(" + eCoupon.order.description + ")");
+                ECouponHistoryMessage.with(eCoupon).operator(userName)
+                        .remark("商户刷单并券消费").sendToMQ();
+                break;
             case ISCHEATEDORDER:
                 eCoupon.isCheatedOrder = true;
+                eCoupon.cheatedOrderSource = CheatedOrderSource.SHIHUI;
                 ECouponHistoryMessage.with(eCoupon).operator(userName)
                         .remark(isFreeze == 0 ? "解冻券号" : "冻结券号(刷单)").sendToMQ();
                 break;

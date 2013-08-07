@@ -422,6 +422,8 @@ trade_type.COMMISSION=佣金
 trade_type.PURCHASE_COSTING=采购成本
 trade_type.FREIGHT=运费
 trade_type.TRANSFER=转账
+trade_type.SUPPLIER_CHEATED=商户刷单
+
 
 platform.CONSUMER=一百券网站
 platform.RESALER=分销网
