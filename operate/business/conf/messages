@@ -707,6 +707,7 @@ trade_type.BALANCE_BILL = 冲正
 
 ads.adsFee=广告费
 ads.receivedType=广告费类型
+ads.receivedAt=收取时间
 ads.supplier=商户
 ads.ONLINE_FEE=上线费
 ads.ADS_FEE=广告费

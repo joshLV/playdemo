@@ -2,25 +2,20 @@ package jobs.order;
 
 import com.google.gson.JsonObject;
 import models.accounts.PaymentSource;
+import models.admin.SupplierUser;
 import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
-import models.order.DeliveryType;
-import models.order.ECoupon;
-import models.order.ECouponHistoryMessage;
-import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.OrderItems;
-import models.order.OuterOrder;
-import models.order.OuterOrderPartner;
-import models.order.OuterOrderStatus;
+import models.order.*;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
+import models.sales.Shop;
 import play.Logger;
 import play.jobs.Every;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -78,8 +73,14 @@ public class MeituanCouponJob extends JobWithHistory {
         for (int i = 0; i < couponStrList.size(); i++) {
             ECoupon c = couponList.get(i);
             c.partnerCouponId = couponStrList.get(i);
-            c.status = ECouponStatus.CONSUMED;
+            c.partner=ECouponPartner.BD;
             c.save();
+            Shop shop = Shop.findById(3580L);
+
+            SupplierUser supplierUser = SupplierUser.find("byShop", shop).first();
+            c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);
+            c.save();
+
             ECouponHistoryMessage.with(c).remark("系统定时自动生成美团订单,成功后自动验证")
                     .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         }
