@@ -1,5 +1,6 @@
 package controllers;
 
+import models.order.CheatedOrderSource;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import operate.rbac.annotations.ActiveNavigation;
@@ -41,11 +42,13 @@ public class BatchFreezeCoupons extends Controller {
         List<String> inExistentCoupons = new ArrayList<>();
         List<ECoupon> usedCouponsList = new ArrayList<>();
         List<ECoupon> freezedCouponsList = new ArrayList<>();
+        List<ECoupon> supplierCheatedCouponsList = new ArrayList<>();
         Set<ECoupon> unUsedCouponsList = new HashSet<>();
         BigDecimal tempUnUsed = BigDecimal.ZERO;
         BigDecimal tempFreezed = BigDecimal.ZERO;
         BigDecimal sumUnUsed = BigDecimal.ZERO;
         BigDecimal sumFreezed = BigDecimal.ZERO;
+        BigDecimal sumSupplierCheated = BigDecimal.ZERO;
         String couponsFreezedId = "";
         for (int i = 0; i < couponSns.length; i++) {
             //不存在的券号
@@ -67,6 +70,14 @@ public class BatchFreezeCoupons extends Controller {
                 sumFreezed = sumFreezed.add(tempFreezed.add(tempCoupon.salePrice));
                 continue;
             }
+            //商户已刷单的券号
+            tempCoupon = ECoupon.find("eCouponSn=? and isCheatedOrder=? and cheatedOrderSource = ?", couponSns[i], Boolean.TRUE, CheatedOrderSource.SUPPLIER).first();
+            if (tempCoupon != null) {
+                supplierCheatedCouponsList.add(tempCoupon);
+                sumSupplierCheated = sumSupplierCheated.add(tempFreezed.add(tempCoupon.salePrice));
+                continue;
+            }
+
             //未消费的券号
             tempCoupon = ECoupon.find("eCouponSn=? and status=?", couponSns[i], ECouponStatus.UNCONSUMED).first();
             if (tempCoupon != null) {
@@ -81,7 +92,7 @@ public class BatchFreezeCoupons extends Controller {
             ECoupon temp = (ECoupon) it.next();
             couponsFreezedId += temp.id + ",";
         }
-        render(inExistentCoupons, usedCouponsList, freezedCouponsList, unUsedCouponsList, sumUnUsed, sumFreezed, couponsFreezedId);
+        render(inExistentCoupons, usedCouponsList, freezedCouponsList, unUsedCouponsList, sumUnUsed, sumFreezed, couponsFreezedId,supplierCheatedCouponsList,sumSupplierCheated);
     }
 
     public static void batchFreezeCoupons(String couponsFreezedId, ECoupon coupon) {

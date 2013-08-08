@@ -218,7 +218,7 @@
             <navigation key="virtual_verify_index" action="OperateVerifyCoupons.virtual" text="虚拟验证第三方券号"
                         permissions="VIRTUAL_VERIFY_COUPON"/>
             <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permissions="COUPONS_MANAGE"/>
-            <navigation key="freeze_coupons" action="BatchFreezeCoupons.index" text="批量冻结券号"
+            <navigation key="freeze_coupons" action="BatchFreezeCoupons.index" text="批量冻结券号/商户刷单"
                         permissions="COUPONS_MANAGE"/>
             <navigation key="verified_ecoupon_refund" action="VerifiedECouponRefunds.index" text="已消费券退款"
                         permissions="VERIFIED_ECOUPON_REFUND"/>
