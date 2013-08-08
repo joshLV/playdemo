@@ -41,28 +41,10 @@ import util.extension.ExtensionResult;
 import util.transaction.RemoteCallback;
 import util.transaction.RemoteRecallCheck;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @Table(name = "e_coupon")
@@ -1284,6 +1266,7 @@ public class ECoupon extends Model {
                 eCoupon.isCheatedOrder = true;
                 eCoupon.cheatedOrderSource = CheatedOrderSource.SUPPLIER;
                 eCoupon.isFreeze = 0;
+                eCoupon.status = ECouponStatus.CONSUMED;
                 // 给商户打钱
                 TradeBill consumeTrade = TradeUtil.consumeTradeBySupplierCheated(eCoupon.order.operator)
                         .toAccount(eCoupon.getSupplierAccount())
