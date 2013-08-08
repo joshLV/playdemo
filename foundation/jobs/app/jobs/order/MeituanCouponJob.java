@@ -15,7 +15,6 @@ import play.jobs.Every;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,12 +72,12 @@ public class MeituanCouponJob extends JobWithHistory {
         for (int i = 0; i < couponStrList.size(); i++) {
             ECoupon c = couponList.get(i);
             c.partnerCouponId = couponStrList.get(i);
-            c.partner=ECouponPartner.BD;
             c.save();
             Shop shop = Shop.findById(3580L);
-
+            c.refresh();
             SupplierUser supplierUser = SupplierUser.find("byShop", shop).first();
             c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);
+            c.partner = ECouponPartner.MT;
             c.save();
 
             ECouponHistoryMessage.with(c).remark("系统定时自动生成美团订单,成功后自动验证")
