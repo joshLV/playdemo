@@ -23,13 +23,13 @@ public class SupplierAdsFee extends Model {
     @ManyToOne
     public Supplier supplier;
 
-    @Column(name = "ads_fee")
     @Required
+    @Column(name = "ads_fee")
     @Min(value = 1)
     public BigDecimal adsFee;
 
-    @Column(name = "received_at")
     @Required
+    @Column(name = "received_at")
     public Date receivedAt;
 
     @Enumerated(EnumType.STRING)

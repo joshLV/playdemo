@@ -12,5 +12,6 @@ public enum ECouponPartner {
     WUBA,   //? 为什么有这个？
     TB,     // 淘宝
     BD,//百度
+    MT,//美团
     SINA     //新浪微博
 }
