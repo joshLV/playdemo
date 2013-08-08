@@ -881,6 +881,14 @@ public class SalesReportCondition implements Serializable {
             condBuilder.append(" and ou.jobNumber=:jobNumber");
             paramMap.put("jobNumber", jobNumber);
         }
+        if (beginAt != null) {
+            condBuilder.append(" and e.receivedAt >= :receivedAtBegin");
+            paramMap.put("receivedAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.receivedAt <= :receivedAtEnd");
+            paramMap.put("receivedAtEnd", DateUtil.getEndOfDay(endAt));
+        }
 
         return condBuilder.toString();
     }

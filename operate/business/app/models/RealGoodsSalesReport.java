@@ -138,7 +138,7 @@ public class RealGoodsSalesReport {
 
     public static List<RealGoodsSalesReport> findByCondition(RealGoodsSalesReportCondition condition) {
         //售出
-        String sql = "select new models.RealGoodsSalesReport(r.goods,r.goods.salePrice,r.goods.originalPrice,sum(r.buyNumber),'1')" +
+        String sql = "select new models.RealGoodsSalesReport(r.goods,r.salePrice,r.originalPrice,sum(r.buyNumber),'1')" +
                 " from OrderItems r ";
         String groupBy = " group by r.goods.id";
         Query query = JPA.em()
@@ -153,7 +153,7 @@ public class RealGoodsSalesReport {
 
 
         //退款
-        sql = "select new models.RealGoodsSalesReport(r.goods,r.goods.salePrice,r.goods.originalPrice,sum(r.returnCount),'0')" +
+        sql = "select new models.RealGoodsSalesReport(r.goods,r.salePrice,r.originalPrice,sum(r.returnCount),'0')" +
                 " from OrderItems r ,RealGoodsReturnEntry  rr";
         groupBy = " group by r.goods.id";
         query = JPA.em()
@@ -227,7 +227,7 @@ public class RealGoodsSalesReport {
     }
     public static List<RealGoodsSalesReport> findChannleSales(RealGoodsSalesReportCondition condition) {
         //售出
-        String sql = "select new models.RealGoodsSalesReport(r.order,r.goods,r.goods.salePrice,r.goods.originalPrice,sum(r.buyNumber),'1')" +
+        String sql = "select new models.RealGoodsSalesReport(r.order,r.goods,r.salePrice,r.originalPrice,sum(r.buyNumber),'1')" +
                 " from OrderItems r ";
         String groupBy = " group by r.order.userId,r.goods.id";
         Query query = JPA.em()
@@ -241,7 +241,7 @@ public class RealGoodsSalesReport {
         List<RealGoodsSalesReport> paidResultList = query.getResultList();
 
         //退款
-        sql = "select new models.RealGoodsSalesReport(r.order,r.goods,r.goods.salePrice,r.goods.originalPrice,sum(r.returnCount),'0')" +
+        sql = "select new models.RealGoodsSalesReport(r.order,r.goods,r.salePrice,r.originalPrice,sum(r.returnCount),'0')" +
                 " from OrderItems r ,RealGoodsReturnEntry  rr";
         groupBy = " group by r.order.userId,r.goods.id";
         query = JPA.em()
@@ -302,7 +302,7 @@ public class RealGoodsSalesReport {
                     totalNumber = totalNumber + (item.salesCount == null ? 0L : item.salesCount);
                     totalRefundNumber = totalRefundNumber + (item.refundCount == null ? 0L : item.refundCount);
                     totalCost = totalCost.add(item.totalSalesCost == null ? BigDecimal.ZERO : item.totalSalesCost);
-                    totalRefundCost = totalCost.add(item.totalRefundCost == null ? BigDecimal.ZERO : item.totalRefundCost);
+                    totalRefundCost = totalRefundCost.add(item.totalRefundCost == null ? BigDecimal.ZERO : item.totalRefundCost);
                 }
             }
 
