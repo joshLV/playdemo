@@ -1,7 +1,6 @@
 package jobs.order;
 
 import com.google.gson.JsonObject;
-import controllers.Application;
 import models.accounts.PaymentSource;
 import models.admin.SupplierUser;
 import models.jobs.JobWithHistory;
@@ -13,11 +12,9 @@ import models.sales.MaterialType;
 import models.sales.Shop;
 import play.Logger;
 import play.jobs.Every;
-import play.jobs.OnApplicationStart;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
