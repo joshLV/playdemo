@@ -17,7 +17,7 @@ import java.util.Map;
  * Date: 13-7-11
  * Time: 下午5:04
  */
-//@Ignore
+@Ignore
 public class BaiduUtilTest extends UnitTest {
 
     @After
