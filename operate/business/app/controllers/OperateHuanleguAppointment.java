@@ -210,6 +210,15 @@ public class OperateHuanleguAppointment extends Controller {
             String err = "无有效的券,或券号数量大于5";
             render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
         }
+        int len = -1;
+        for(String c : couponStrList) {
+            if (len == -1) {
+                len = c.length();
+            } else if(len != c.length()) {
+                String err = "券号长度不一致，请检查";
+                render("OperateHuanleguAppointment/withoutOurOrder.html", err, goods, appointmentDate, mobile, couponSn, resaler, goodsList);
+            }
+        }
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(appointmentDate);
