@@ -1,6 +1,7 @@
 package jobs.order;
 
 import com.google.gson.JsonObject;
+import controllers.Application;
 import models.accounts.PaymentSource;
 import models.admin.SupplierUser;
 import models.jobs.JobWithHistory;
@@ -12,6 +13,7 @@ import models.sales.MaterialType;
 import models.sales.Shop;
 import play.Logger;
 import play.jobs.Every;
+import play.jobs.OnApplicationStart;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -73,12 +75,12 @@ public class MeituanCouponJob extends JobWithHistory {
         for (int i = 0; i < couponStrList.size(); i++) {
             ECoupon c = couponList.get(i);
             c.partnerCouponId = couponStrList.get(i);
-            c.partner=ECouponPartner.BD;
             c.save();
             Shop shop = Shop.findById(3580L);
-
+            c.refresh();
             SupplierUser supplierUser = SupplierUser.find("byShop", shop).first();
             c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);
+            c.partner = ECouponPartner.MT;
             c.save();
 
             ECouponHistoryMessage.with(c).remark("系统定时自动生成美团订单,成功后自动验证")
