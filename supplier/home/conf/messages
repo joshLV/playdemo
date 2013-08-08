@@ -28,6 +28,8 @@ trade_type.REFUND=交易退款
 trade_type.COMMISSION=佣金
 trade_type.PURCHASE_COSTING=出售
 trade_type.FREIGHT=运费
+trade_type.SUPPLIER_CHEATED=商户刷单
+
 
 supplier.fullName=公司名称
 supplier.domainName=域名
