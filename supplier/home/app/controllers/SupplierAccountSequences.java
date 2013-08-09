@@ -49,7 +49,7 @@ public class SupplierAccountSequences extends Controller {
                 pageNumber, PAGE_SIZE);
         //account_sequence记录的备注是订单的首个商品名，为避免出现显示别家商户的商品名，在此重新查一遍
         for (AccountSequence sequence : accountSequences.getCurrentPage()) {
-            if (sequence.tradeType != TradeType.PURCHASE_COSTING && sequence.tradeType != TradeType.REFUND) {
+            if (sequence.tradeType != TradeType.PURCHASE_COSTING && sequence.tradeType != TradeType.REFUND &&sequence.tradeType !=TradeType.SUPPLIER_CHEATED) {
                 continue;
             }
             List<OrderItems> orderItems = OrderItems.findBySupplierOrder(account.id, sequence.orderId);

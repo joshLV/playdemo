@@ -7,6 +7,7 @@ import com.uhuila.common.util.RandomNumberUtil;
 import extension.order.ECouponVerifyContext;
 import extension.order.ECouponVerifyInvocation;
 import models.accounts.Account;
+import models.accounts.AccountSequence;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
