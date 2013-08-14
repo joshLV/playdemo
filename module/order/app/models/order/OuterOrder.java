@@ -56,8 +56,8 @@ public class OuterOrder extends Model {
     @Column(name = "order_type")
     public OuterOrderType orderType; //此订单的产生类型
 
-    @Column(name = "refund_amount")
-    public Integer refundAmount;
+    @Column(name = "refund_number")
+    public Integer refundNumber;
 
     public OuterOrder() {
         this.createdAt = new Date();
