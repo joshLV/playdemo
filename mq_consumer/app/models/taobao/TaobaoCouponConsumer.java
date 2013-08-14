@@ -94,9 +94,9 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             outerOrder.save();
         } else if (outerOrder.status == OuterOrderStatus.REFUND_COPY) {
             List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-            Integer refundAmount =  outerOrder.refundAmount;
+            Integer refundNumber =  outerOrder.refundNumber;
             for (ECoupon coupon : eCoupons) {
-                if (refundAmount != null && refundAmount == 0){
+                if (refundNumber != null && refundNumber == 0){
                     break;
                 }
                 if (coupon.status == ECouponStatus.UNCONSUMED) {
@@ -105,8 +105,8 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                         // TODO: 在ECoupon记录一下申请过退款，渠道方可能退款成功了，需要跟进，并记录退款历史
                         Logger.error("taobao refund error !!!!!!!! coupon id: %s. %s", coupon.id, errInfo);
                     }else {
-                        if (refundAmount != null ){
-                            refundAmount -= 1;
+                        if (refundNumber != null ){
+                            refundNumber -= 1;
                         }
                     }
 

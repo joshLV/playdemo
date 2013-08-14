@@ -120,6 +120,7 @@ Resaler resaler;
         assertEquals(OuterOrderStatus.ORDER_COPY, outerOrder.status);
         Map<String, String> params = prepareParams();
         params.put("method", "cancel");
+        params.put("cancel_num", "1");
         resign(params);
 
         Http.Response response = POST2("/api/v1/taobao/coupon", params);
