@@ -55,7 +55,8 @@ public class TaobaoCouponAPI extends Controller {
                 resend(outerOrder);
                 break;
             case "cancel":
-                cancel(outerOrder);
+                int cancelAmount = Integer.parseInt(params.get("cancel_num"));
+                cancel(outerOrder, cancelAmount);
                 break;
             case "modified"://用户修改手机号
                 mobileModified(params, outerOrder);
@@ -113,13 +114,14 @@ public class TaobaoCouponAPI extends Controller {
     /**
      * 退款逻辑
      */
-    private static void cancel(OuterOrder outerOrder) {
+    private static void cancel(OuterOrder outerOrder, int refundAmount) {
         if (outerOrder == null) {
             Logger.warn("taobao coupon cancel error: outerOrder not found");
             renderJSON("{\"code\":504}");
             return;//没找到外部商品ID
         }
         outerOrder.status = OuterOrderStatus.REFUND_COPY;
+        outerOrder.refundAmount = refundAmount;
         outerOrder.save();
         Logger.info("taobao refund success");
         renderJSON("{\"code\":200}");

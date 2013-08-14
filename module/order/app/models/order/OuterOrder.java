@@ -56,6 +56,9 @@ public class OuterOrder extends Model {
     @Column(name = "order_type")
     public OuterOrderType orderType; //此订单的产生类型
 
+    @Column(name = "refund_amount")
+    public Integer refundAmount;
+
     public OuterOrder() {
         this.createdAt = new Date();
         this.lockVersion = 0;
