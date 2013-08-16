@@ -90,10 +90,11 @@ public class SupplierUploadOrderShippingInfos extends Controller {
         List<String> uploadSuccessOrders = new ArrayList<>();
         List<String> unExistedExpressCompanys = new ArrayList<>();
         List<String> emptyExpressInofs = new ArrayList<>();
+        List<String> existedUploadOrders = new ArrayList<>();
         List<LogisticImportData> successTaobaoLogistics = new ArrayList<>();
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
         for (LogisticImportData logistic : logistics) {
-            if (StringUtils.isBlank(logistic.expressCompany)) {
+            if (StringUtils.isBlank(logistic.expressCompany) || StringUtils.isBlank(logistic.expressNumber)) {
                 emptyExpressInofs.add(logistic.orderNumber);
                 continue;
             }
@@ -108,6 +109,11 @@ public class SupplierUploadOrderShippingInfos extends Controller {
                 unExistedOrders.add(logistic.orderNumber);
                 continue;
             }
+
+            if (orderItems.shippingInfo.expressCompany != null && StringUtils.isNotBlank(orderItems.shippingInfo.expressNumber)) {
+                existedUploadOrders.add(logistic.orderNumber);
+                continue;
+            }
             orderItems.shippingInfo.expressCompany = expressCompany;
             orderItems.shippingInfo.expressNumber = logistic.expressNumber;
             orderItems.shippingInfo.save();
@@ -120,14 +126,13 @@ public class SupplierUploadOrderShippingInfos extends Controller {
             uploadSuccessOrders.add(logistic.orderNumber);
             if (resaler != null && orderItems.order.userId.equals(resaler.getId())
                     && orderItems.order.operator.id.equals(resaler.operator.getId())) {
-                System.out.println("successTaobaoLogistics = " + successTaobaoLogistics);
-
                 successTaobaoLogistics.add(logistic);
             }
         }
         JPA.em().flush();
 
         List<ExpressCompany> expressCompanyList = ExpressCompany.findAll();
+        renderArgs.put("existedUploadOrders", existedUploadOrders);
         renderArgs.put("emptyExpressInofs", emptyExpressInofs);
         renderArgs.put("expressCompanyList", expressCompanyList);
         renderArgs.put("unExistedOrders", unExistedOrders);

@@ -93,6 +93,7 @@ public class UploadOrderShippingInfos extends Controller {
         List<String> unExistedExpressCompanys = new ArrayList<>();
         List<String> emptyExpressInofs = new ArrayList<>();
         List<String> noGoodsCodeList = new ArrayList<>();
+        List<String> existedUploadOrders = new ArrayList<>();
         //todo 检查实物订单信息中是否存在退货订单
         List<RealGoodsReturnEntry> returnEntryList = new ArrayList<>();
         for (LogisticImportData logistic : logistics) {
@@ -110,7 +111,7 @@ public class UploadOrderShippingInfos extends Controller {
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
 
         for (LogisticImportData logistic : logistics) {
-            if (StringUtils.isBlank(logistic.expressCompany)) {
+            if (StringUtils.isBlank(logistic.expressCompany) || StringUtils.isBlank(logistic.expressNumber)) {
                 emptyExpressInofs.add(logistic.orderNumber);
                 continue;
             }
@@ -131,8 +132,10 @@ public class UploadOrderShippingInfos extends Controller {
             }
 
             if (StringUtils.isNotBlank(orderItems.shippingInfo.expressNumber) || orderItems.shippingInfo.expressCompany != null) {
+                existedUploadOrders.add(logistic.orderNumber);
                 continue;
             }
+
             orderItems.shippingInfo.expressCompany = expressCompany;
             orderItems.shippingInfo.expressNumber = logistic.expressNumber;
             orderItems.shippingInfo.freight = Freight.findFreight(orderItems.goods.getSupplier(), expressCompany,
@@ -157,6 +160,7 @@ public class UploadOrderShippingInfos extends Controller {
         JPA.em().flush();
 
         List<ExpressCompany> expressCompanyList = ExpressCompany.findAll();
+        renderArgs.put("existedUploadOrders", existedUploadOrders);
         renderArgs.put("emptyExpressInofs", emptyExpressInofs);
         renderArgs.put("expressCompanyList", expressCompanyList);
         renderArgs.put("noGoodsCodeList", noGoodsCodeList);
