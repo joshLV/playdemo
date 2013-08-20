@@ -1117,11 +1117,10 @@ public class SalesReport implements Comparable<SalesReport> {
 
 
         for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap1().get(param));
+            query.setParameter(param, condition.getParamMap().get(param));
         }
 
         List<SalesReport> offlineGrossMarginList = query.getResultList();
-
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
         //merge
@@ -1202,6 +1201,8 @@ public class SalesReport implements Comparable<SalesReport> {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(offline));
             if (item != null) {
                 item.offlineAmount = offline.offlineAmount;
+            }else {
+                map.put(getReportKeyOfPeopleEffect(offline), offline);
             }
         }
 
