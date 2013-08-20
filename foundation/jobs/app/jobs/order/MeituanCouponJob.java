@@ -73,7 +73,15 @@ public class MeituanCouponJob extends JobWithHistory {
             ECoupon c = couponList.get(i);
             c.partnerCouponId = couponStrList.get(i);
             c.save();
+            //默认是野生动物园的
             Shop shop = Shop.findById(3580L);
+            //速8酒店
+            if ("3538".equals(c.goods.id.toString())) {
+                shop = Shop.findById(3941L);
+            } else if ("3535".equals(c.goods.id.toString())) {
+                //a8酒店
+                shop = Shop.findById(3938L);
+            }
             c.refresh();
             SupplierUser supplierUser = SupplierUser.find("byShop", shop).first();
             c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);

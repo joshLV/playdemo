@@ -18,6 +18,7 @@ import models.sales.SupplierResalerShop;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.libs.WS;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -67,29 +68,34 @@ public class SupplierVerifyResalerECoupons extends Controller {
         }
     }
 
-    public static void meituan(String goodsId, String partnerGoodsId, String partnerShopId, List<String> couponIds) {
+    public static void meituan(String partnerGoodsId, List<String> couponIds) {
 
         String message = "";
         if (StringUtils.isBlank(partnerGoodsId)) {
             message = "请选择美团项目！";
             renderJSON("{\"message\":\"" + message + "\"}");
         }
-        if (StringUtils.isBlank(partnerShopId)) {
-            message = "请选择门店！";
-            renderJSON("{\"message\":\"" + message + "\"}");
-        }
-        if (couponIds == null) {
+        if (couponIds == null || couponIds.size() == 0) {
             message = "请输入券号！";
             renderJSON("{\"message\":\"" + message + "\"}");
+            return;
+        }
+        SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("partnerGoodsId = ?", partnerGoodsId).first();
+        if (supplierResalerProduct == null) {
+            message = "输入的美团项目没有指定一百券对应的商品信息！";
+            renderJSON("{\"message\":\"" + message + "\"}");
+            return;
         }
 
         Resaler resaler = Resaler.findApprovedByLoginName("meituan");
         Supplier supplier = SupplierRbac.currentUser().supplier;
-        SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("supplier=? and resaler=? and resalerPartnerShopId=?", supplier, resaler, partnerShopId).first();
-        String cookie = "";
-        if (supplierResalerShop != null) {
-            cookie = supplierResalerShop.cookieValue;
+        SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("supplier=? and resaler=? and resalerPartnerGoodsId=?", supplier, resaler, partnerGoodsId).first();
+        if (supplierResalerShop == null) {
+            message = "输入的美团项目没有指定一百券对应的商品信息！";
+            renderJSON("{\"message\":\"" + message + "\"}");
+            return;
         }
+        String cookie = supplierResalerShop.cookieValue;
         Map<String, String> headers = new HashMap<>();
         headers.put("Accept", "*/*");
         headers.put("Accept-Encoding", "deflate,sdch");
@@ -113,18 +119,22 @@ public class SupplierVerifyResalerECoupons extends Controller {
             params.put("codes[" + i + "]", couponIds.get(i));
         }
         params.put("dealid", partnerGoodsId);
-        params.put("bizloginid", partnerShopId);
+        params.put("bizloginid", supplierResalerShop.resalerPartnerShopId);
+
+        Logger.info("美团项目ID：%s,对应门店ID：%s,对应一百券商品ID：%s", partnerGoodsId, supplierResalerShop.resalerPartnerShopId, supplierResalerProduct.goods.id.toString());
+
         WS.HttpResponse response = WS.url("http://e.meituan.com/coupon/batchconsume").params(params).headers(headers).followRedirects(false).post();
         List<Http.Header> headerList = response.getHeaders();
         for (Http.Header header : headerList) {
             System.out.println(header.name + ": " + header.value());
         }
+
         String body = response.getString();
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("partnerGoodsId", partnerGoodsId);
-        jsonMap.put("partnerShopId", partnerShopId);
-        jsonMap.put("goodsId", goodsId);
-//        body = "{\"status\":0,\"data\":[{\"result\":\"\u6d88\u8d39\u6210\u529f\",\"code\":\"201819625306\",\"errcode\":false},{\"result\":\"消费成功\",\"code\":\"201819625306\",\"errcode\":false}]}";
+        jsonMap.put("partnerShopId", supplierResalerShop.resalerPartnerShopId);
+        jsonMap.put("goodsId", supplierResalerProduct.goods.id.toString());
+        body = "{\"status\":0,\"data\":[{\"result\":\"\u6d88\u8d39\u6210\u529f\",\"code\":\"9083555383\",\"errcode\":false}]}";
         JsonParser jsonParser = new JsonParser();
         JsonObject result = jsonParser.parse(body).getAsJsonObject();
         String errcode = "";
@@ -135,8 +145,8 @@ public class SupplierVerifyResalerECoupons extends Controller {
                 JsonObject data = obj.getAsJsonObject();
                 String coupon = data.get("code").getAsString();
                 errcode = data.get("errcode").getAsString();//成功为false 失败为1
-//                message = data.get("result").getAsString();
                 if (!"1".equals(errcode)) {
+                    data.addProperty("goodsname",supplierResalerProduct.partnerGoodsName);
                     OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon, OuterOrderPartner.MT);
                     if (outerOrder == null) {
                         outerOrder = new OuterOrder();
