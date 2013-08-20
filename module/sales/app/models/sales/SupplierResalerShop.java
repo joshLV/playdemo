@@ -23,6 +23,9 @@ public class SupplierResalerShop extends Model {
     @JoinColumn(name="resaler_id")
     public Resaler resaler;
 
+    @Column(name = "resaler_partner_goods_id")
+    public String resalerPartnerGoodsId;
+
     @Column(name = "resaler_partner_shop_id")
     public String resalerPartnerShopId;
 

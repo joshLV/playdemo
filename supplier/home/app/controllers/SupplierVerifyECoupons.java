@@ -260,69 +260,6 @@ public class SupplierVerifyECoupons extends Controller {
 
     }
 
-    public static void meituan(String partnerGoodsId, String partnerShopId, @As(",") List<String> couponIds) {
-        String message = "";
-        if (StringUtils.isBlank(partnerGoodsId)) {
-            message = "请选择美团项目！";
-            renderJSON("{\"message\":\"" + message + "\"}");
-        }
-        if (StringUtils.isBlank(partnerShopId)) {
-            message = "请选择门店！";
-            renderJSON("{\"message\":\"" + message + "\"}");
-        }
-        if (couponIds == null) {
-            message = "请输入券号！";
-            renderJSON("{\"message\":\"" + message + "\"}");
-        }
-        Resaler resaler = Resaler.findApprovedByLoginName("meituan");
-        Supplier supplier = SupplierRbac.currentUser().supplier;
-        SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("supplier=? and resaler=? and resalerPartnerShopId=?", supplier, resaler, partnerShopId).first();
-        String cookie = "";
-        if (supplierResalerShop != null) {
-            cookie = supplierResalerShop.cookieValue;
-        }
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Accept", "*/*");
-        headers.put("Accept-Encoding", "deflate,sdch");
-        headers.put("Accept-Language", "zh-CN,zh;q=0.8");
-        headers.put("Cache-Control", "max-age=0");
-        headers.put("Connection", "keep-alive");
-        headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        headers.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36");
-
-        headers.put("Host", "e.meituan.com");
-        headers.put("Origin", "http://e.meituan.com");
-        headers.put("Referer", "http://e.meituan.com/coupon/");
-        headers.put("X-Requested-With", "XMLHttpRequest");
-
-        headers.put("Cookie", cookie);
-        Map<String, Object> params = new HashMap<>();
-        for (int i = 0; i < couponIds.size(); i++) {
-            params.put("codes[" + i + "]", couponIds.get(i));
-        }
-        params.put("dealid", partnerGoodsId);
-        params.put("bizloginid", partnerShopId);
-        WS.HttpResponse response = WS.url("http://e.meituan.com/coupon/batchconsume").params(params).headers(headers).followRedirects(false).post();
-        List<Http.Header> headerList = response.getHeaders();
-        for (Http.Header header : headerList) {
-            System.out.println(header.name + ": " + header.value());
-        }
-        String body = response.getString();
-        System.out.println(body);
-        JsonParser jsonParser = new JsonParser();
-        JsonObject result = jsonParser.parse(body).getAsJsonObject();
-        if (result.has("data")) {
-            JsonArray dataResult = result.get("data").getAsJsonArray();
-            for (JsonElement obj : dataResult) {
-                JsonObject data = obj.getAsJsonObject();
-//                String errcode = data.get("errcode").getAsString();//成功为false 失败为1
-                message = data.get("result").getAsString();
-            }
-        }
-
-        renderJSON("{\"message\":\"" + message + "\"}");
-    }
-
     public static void meituan2() {
         //第一次登录
         Map<String, String> headers = getHeaders("meituan");

@@ -33,38 +33,35 @@
                 <input type="hidden" name="shopId" id="shopId" value="${shop?.id}"/>
             #{/else}
             </div>
-
+            <!--野生动物园 -->
+        #{set couponItemCount :4/}
+        #{if currentUser.supplier.id ==664}
             <div class="field-group">
-                <label>美团分店</label>
-            ${resalerShopList?.get(0)?.resalerPartnerShopName}
-            *{#{select 'partnerShopId', id:"partnerShopId", value:partnerShopId}}*
-            *{#{list items:resalerShopList, as:'shop'}}*
-            *{#{option shop?.resalerPartnerShopId}${shop?.resalerPartnerShopName}#{/option}}*
-            *{#{/list}}*
-            *{#{/select}}*
+                <label>美团项目</label>
+            ${resalerProductList?.get(0)?.partnerGoodsName}
             </div>
-            <input type="hidden" name="partnerShopId" id="partnerShopId"
-                   value="${resalerShopList?.get(0)?.resalerPartnerShopId}"/>
             <input type="hidden" name="partnerGoodsId" id="partnerGoodsId"
                    value="${resalerProductList?.get(0)?.partnerGoodsId}"/>
-            <input type="hidden" name="goodsId" id="goodsId" value="${resalerProductList?.get(0)?.goods?.id}"/>
-        *{<div class="field-group">}*
-        *{<label>美团项目</label>}*
-        *{#{select 'partnerGoodsId', id:"partnerGoodsId", value:partnerGoodsId}}*
-        *{#{option ''}--请选择--#{/option}}*
-        *{#{list items:resalerProductList, as:'resalerGoods'}}*
-        *{#{option resalerGoods?.partnerGoodsId}${resalerGoods?.partnerGoodsName}#{/option}}*
-        *{#{/list}}*
-        *{#{/select}}*
-        *{</div>}*
-            <h2>输入券号<span style="display: inline;color: grey">(验证时请确认输入的券号全部为10位或12位)</span></h2>
+        #{/if}
+        #{else}
+            #{set couponItemCount :0/}
+            <div class="field-group">
+                <label>美团项目</label>
+                #{select 'partnerGoodsId', id:"partnerGoodsId", value:partnerGoodsId}
+                    #{list items:resalerProductList, as:'resalerGoods'}
+                        #{option resalerGoods?.partnerGoodsId}${resalerGoods?.partnerGoodsName}#{/option}
+                    #{/list}
+                #{/select}
+            </div>
+        #{/else}
+            <h2>输入券号<span style="display: inline;color: grey">(验证时请确认输入的券号为10位或12位)</span></h2>
 
 
             <div class="field-group">
             *{<label class="coupon-label" for="enter-coupon">输入券号</label>}*
-            #{list items:0..4, as:'index'}
+            #{list items:0..couponItemCount, as:'index'}
                 <input type="text" size="32" maxlength="14" name="coupon" id="enter-coupon" coupon-index="${index}"
-                       class="enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px" />
+                       class="enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
                 <span id="verify-info-${index}" style="color: red;display: block"></span>
             #{/list}
                 <a id="verify-btn" class="btn batch-verify" href="javascript:void(0);"

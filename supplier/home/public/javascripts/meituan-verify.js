@@ -80,6 +80,8 @@ jQuery(function ($) {
                             enterCoupon.focus();
                             $("#verify-info-" + index).text(data.errorInfo);
                             $("#verify-btn").text("验证消费").removeClass("disabled");
+                        } else {
+                            $("#verify-info-" + index).text("该券商品信息：" + data.goodsName);
                         }
                     },
                     error: function (data) {
@@ -185,7 +187,7 @@ jQuery(function ($) {
                             var msg = [];
                             $.each(eval(data), function (i, item) {
                                 if (item.errcode != 1) {
-                                    $("#verify-info-" + i).text("上海野生动物园135套餐周末票 " + item.result);
+                                    $("#verify-info-" + i).text(item.goodsname + " " + item.result);
                                 } else {
                                     $("#verify-info-" + i).text(item.result);
                                 }
@@ -204,7 +206,7 @@ jQuery(function ($) {
                     data: {'shopId': shopIdInput.val(), 'eCouponSns': couponIds},
                     success: function (data) {
                         if (data != null) {
-                            for (var i=0;i<data.length;i++){
+                            for (var i = 0; i < data.length; i++) {
                                 $("#verify-info-" + i).text(data[i]);
                                 $("#verify-btn").text("验证消费").removeClass("disabled");
                             }
