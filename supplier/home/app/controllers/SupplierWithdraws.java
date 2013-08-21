@@ -86,8 +86,6 @@ public class SupplierWithdraws extends Controller {
         BigDecimal withdrawAmount = account.getWithdrawAmount(withDrawEndDate);
         //商户可提现金额
         BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, withDrawEndDate);
-        Logger.info("333withdrawAmount=%s, supplierWithdrawAmount=%s, prepaymentBalance=%s", withdrawAmount.toString(),
-                supplierWithdrawAmount.toString(), prepaymentBalance.toString());
         Boolean canNotWithdraw = null;
         String salesName = "";
         String salesPhone = "";
@@ -99,6 +97,18 @@ public class SupplierWithdraws extends Controller {
         OperateUser operateUser = OperateUser.findById(supplier.salesId);
         salesName = operateUser.userName;
         salesPhone = operateUser.mobile;
+
+        //判断该商户是否设置预留金和最少提现金额
+        String lessWithdrawAmount = supplier.getProperty(Supplier.SET_LESS_WITHDRAW_AMOUNT);
+        String reserveAmount = supplier.getProperty(Supplier.SET_RESERVE_AMOUNT);
+        BigDecimal lessWithdrawAmountToBigDecimal = StringUtils.isBlank(lessWithdrawAmount) ? BigDecimal.ZERO : new BigDecimal(lessWithdrawAmount);
+        BigDecimal reserveAmountToBigDecimal = StringUtils.isBlank(reserveAmount) ? BigDecimal.ZERO : new BigDecimal(reserveAmount);
+
+        supplierWithdrawAmount = supplierWithdrawAmount.subtract(lessWithdrawAmountToBigDecimal).subtract(reserveAmountToBigDecimal);
+        supplierWithdrawAmount = supplierWithdrawAmount.compareTo(BigDecimal.ZERO) > 0 ? supplierWithdrawAmount : BigDecimal.ZERO;
+
+        renderArgs.put("lessWithdrawAmount",lessWithdrawAmountToBigDecimal);
+        renderArgs.put("reserveAmount",reserveAmountToBigDecimal);
         render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount,
                 withDrawEndDate, supplier, canNotWithdraw, salesName, salesPhone);
     }

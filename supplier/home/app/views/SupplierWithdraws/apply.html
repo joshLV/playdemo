@@ -118,9 +118,12 @@ ${err}
                     </div>
                 #{/else}
             </div>
+            <div style="padding-left: 34px;padding-bottom: 10px;color: coral">
+                (本商户预留金额：${reserveAmount?.formatCurrency('CNY')}
+                最少提现金额：${lessWithdrawAmount?.formatCurrency('CNY')})
+            </div>
             <div class="form-actions">
-                #{if account?.getSupplierWithdrawAmount(prepaymentBalance,
-                withDrawEndDate)?.compareTo(BigDecimal.ZERO)>0}
+                #{if supplierWithdrawAmount.compareTo(BigDecimal.ZERO)>0}
                     <button type="submit" class="btn btn-primary">提交申请</button>
                 #{/if}
                 <input type="hidden" name="canNotWithdraw" value="${canNotWithdraw}"/>
