@@ -44,7 +44,7 @@ public class MailUtil {
     }
 
     public static void sendExpiredContractNoticeMail(MailMessage message) {
-        message.setTemplate("expiredContractNotice");
+        message.setTemplate("expiredContract");
         sendCommonMail(message);
     }
      public static void sendExpiredNoRefundCouponMail(MailMessage message) {
