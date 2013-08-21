@@ -15,9 +15,7 @@ import play.jobs.On;
 import play.jobs.OnApplicationStart;
 
 import javax.persistence.Query;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: yan
@@ -25,8 +23,7 @@ import java.util.List;
  * Time: 下午5:07
  */
 @JobDefine(title = "商户合同预警检查", description = "10天后商户合同过期提醒")
-//@On("0 0 8 * * ?")
-@OnApplicationStart
+@On("0 0 8 * * ?")
 public class ExpiredContractNotice extends JobWithHistory {
     public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.contract.email.receiver", "yanjingyun@uhuila.com");
 
@@ -40,18 +37,26 @@ public class ExpiredContractNotice extends JobWithHistory {
         query.setFirstResult(0);
         query.setMaxResults(200);
         List<SupplierContract> contracts = query.getResultList();
+        Map<String, Object> contractMap;
+        List<Map<String, Object>> contractList = new ArrayList<>();
         String subject = "10天后商户合同过期提醒";
+        for (SupplierContract contract : contracts) {
+            contractMap = new HashMap<>();
+            contractMap.put("expireAt", contract.expireAt);
+            contractMap.put("supplierCompanyName", contract.supplierCompanyName);
+            contractMap.put("supplierName", contract.supplierName);
+            contractMap.put("description", contract.description);
+            contractMap.put("contractCount", contracts.size());
+            contractList.add(contractMap);
+        }
         if (contracts.size() > 0) {
-            for (SupplierContract contract : contracts) {
-                MailMessage mailMessage = new MailMessage();
-                mailMessage.addRecipient(MAIL_RECEIVER);
-                mailMessage.setSubject(Play.mode.isProd() ? subject : subject + "【测试】");
-                mailMessage.putParam("expireAt", contract.expireAt);
-                mailMessage.putParam("supplierCompanyName", contract.supplierCompanyName);
-                mailMessage.putParam("contractCount", contracts.size());
-                mailMessage.putParam("supplierName", contract.supplierName);
-                MailUtil.sendExpiredContractNoticeMail(mailMessage);
-            }
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.addRecipient(MAIL_RECEIVER);
+            mailMessage.setSubject(Play.mode.isProd() ? subject : subject + "【测试】");
+            mailMessage.putParam("expireAt", DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE));
+            mailMessage.putParam("contractList", contractList);
+            mailMessage.putParam("contractCount", contracts.size());
+            MailUtil.sendExpiredContractNoticeMail(mailMessage);
         }
 
     }
