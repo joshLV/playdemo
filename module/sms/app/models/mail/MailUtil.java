@@ -43,6 +43,10 @@ public class MailUtil {
         sendCommonMail(message);
     }
 
+    public static void sendExpiredContractNoticeMail(MailMessage message) {
+        message.setTemplate("expiredContractNotice");
+        sendCommonMail(message);
+    }
      public static void sendExpiredNoRefundCouponMail(MailMessage message) {
         message.setTemplate("expiredNoRefundCoupon");
         sendCommonMail(message);

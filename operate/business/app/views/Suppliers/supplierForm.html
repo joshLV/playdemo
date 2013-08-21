@@ -113,7 +113,27 @@ error:'supplier.operator'}
                value="1" ${"1".equals(dianPing)?'checked':''}/>点评&nbsp;&nbsp;
     </div>
 </div>
+#{if "edit".equals(action)}
+%{
+reserveAmount=supplier?.getProperty(models.supplier.Supplier.SET_RESERVE_AMOUNT);
+lessWithdrawAmount=supplier?.getProperty(models.supplier.Supplier.SET_LESS_WITHDRAW_AMOUNT);
+}%
+#{/if}
 
+<div class="control-group">
+    <label class="control-label">预留金额</label>
+
+    <div class="controls">
+        <input type="text" name="setReserveAmount" id="supplier_setReserveAmount" value="${reserveAmount}"/>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">最少提现金额</label>
+
+    <div class="controls">
+        <input type="text" name="setLessWithdrawAmount" id="supplier_setLessWithdrawAmount" value="${lessWithdrawAmount}"/>
+    </div>
+</div>
 *{<div class="control-group">}*
 *{<label class="control-label">选择分销商</label>}*
 

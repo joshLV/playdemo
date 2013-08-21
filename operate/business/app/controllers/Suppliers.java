@@ -148,6 +148,8 @@ public class Suppliers extends Controller {
         supplier.setProperty(Supplier.SET_WITHDRAW_AMOUNT, request.params.get(Supplier.SET_WITHDRAW_AMOUNT));
         supplier.setProperty(Supplier.MEI_TUAN, request.params.get(Supplier.MEI_TUAN));
         supplier.setProperty(Supplier.DIAN_PING, request.params.get(Supplier.DIAN_PING));
+        supplier.setProperty(Supplier.SET_RESERVE_AMOUNT, request.params.get(Supplier.SET_RESERVE_AMOUNT));
+        supplier.setProperty(Supplier.SET_LESS_WITHDRAW_AMOUNT, request.params.get(Supplier.SET_LESS_WITHDRAW_AMOUNT));
     }
 
     private static void redirectUrl(int page) {
@@ -264,7 +266,6 @@ public class Suppliers extends Controller {
         BigDecimal prepaymentBalance = Prepayment.findAmountBySupplier(supplier);
         BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, date);
         BigDecimal supplierAmount = account.amount;
-        System.out.println("supplierAmount = " + supplierAmount);
         render(supplier, withdrawAmount, supplierWithdrawAmount, supplierAmount);
     }
 
