@@ -12,15 +12,7 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -303,7 +295,7 @@ public class WithdrawBill extends Model {
             BigDecimal tempClearedAmount = BigDecimal.ZERO;
             List<ClearedAccount> clearedAccountList = ClearedAccount.find(
                     "accountId=? and settlementStatus=? and date < ? order by date",
-                    account.id, SettlementStatus.UNCLEARED, withdrawDate).fetch();
+                    account.id, SettlementStatus.UNCLEARED, this.appliedAt).fetch();
             for (ClearedAccount clearedAccount : clearedAccountList) {
                 tempClearedAmount = tempClearedAmount.add(clearedAccount.amount);
                 clearedAccount.settlementStatus = SettlementStatus.CLEARED;

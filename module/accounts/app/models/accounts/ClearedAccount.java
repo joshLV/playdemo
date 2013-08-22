@@ -72,4 +72,18 @@ public class ClearedAccount extends Model {
         return amount != null ? amount : BigDecimal.ZERO;
     }
 
+    @Override
+    public String toString() {
+        return "ClearedAccount{" +
+                "accountId=" + accountId +
+                ", amount=" + amount +
+                ", date=" + date +
+                ", accountSequences=" + accountSequences +
+                ", settlementStatus=" + settlementStatus +
+                ", withdrawBill=" + withdrawBill +
+                ", updatedAt=" + updatedAt +
+                ", updatedBy='" + updatedBy + '\'' +
+                ", prepayment=" + prepayment +
+                '}';
+    }
 }
