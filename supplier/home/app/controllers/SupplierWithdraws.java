@@ -104,7 +104,7 @@ public class SupplierWithdraws extends Controller {
         BigDecimal lessWithdrawAmountToBigDecimal = StringUtils.isBlank(lessWithdrawAmount) ? BigDecimal.ZERO : new BigDecimal(lessWithdrawAmount);
         BigDecimal reserveAmountToBigDecimal = StringUtils.isBlank(reserveAmount) ? BigDecimal.ZERO : new BigDecimal(reserveAmount);
 
-        supplierWithdrawAmount = supplierWithdrawAmount.subtract(lessWithdrawAmountToBigDecimal).subtract(reserveAmountToBigDecimal);
+        supplierWithdrawAmount = supplierWithdrawAmount.subtract(reserveAmountToBigDecimal);
         supplierWithdrawAmount = supplierWithdrawAmount.compareTo(BigDecimal.ZERO) > 0 ? supplierWithdrawAmount : BigDecimal.ZERO;
 
         renderArgs.put("lessWithdrawAmount",lessWithdrawAmountToBigDecimal);

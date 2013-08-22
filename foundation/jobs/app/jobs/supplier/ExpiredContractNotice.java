@@ -16,6 +16,7 @@ import play.jobs.On;
 import play.jobs.OnApplicationStart;
 
 import javax.persistence.Query;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -25,9 +26,9 @@ import java.util.*;
  */
 @JobDefine(title = "商户合同预警检查", description = "10天后商户合同过期提醒")
 //@On("0 0 8 * * ?")
-@Every("5mn")
+@OnApplicationStart
 public class ExpiredContractNotice extends JobWithHistory {
-    public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.contract.email.receiver", "yanjingyun@uhuila.com");
+    public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.contract.email.receiver", "dev@uhuila.com");
 
     @Override
     public void doJobWithHistory() {
@@ -41,11 +42,10 @@ public class ExpiredContractNotice extends JobWithHistory {
         List<SupplierContract> contracts = query.getResultList();
         Map<String, Object> contractMap;
         List<Map<String, Object>> contractList = new ArrayList<>();
-        System.out.println(contracts.size()+">>>>>>>>>>");
-        String subject = "10天后商户合同过期提醒";
+        String subject = "商户合同到期提醒";
         for (SupplierContract contract : contracts) {
             contractMap = new HashMap<>();
-            contractMap.put("expireAt", contract.expireAt);
+            contractMap.put("expireAt", new SimpleDateFormat("yyyy-MM-dd").format(contract.expireAt));
             contractMap.put("supplierCompanyName", contract.supplierCompanyName);
             contractMap.put("supplierName", contract.supplierName);
             contractMap.put("description", contract.description);
@@ -59,7 +59,6 @@ public class ExpiredContractNotice extends JobWithHistory {
             mailMessage.putParam("expireAt", DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE));
             mailMessage.putParam("contractList", contractList);
             mailMessage.putParam("contractCount", contracts.size());
-            System.out.println("--------send mail");
             MailUtil.sendExpiredContractNoticeMail(mailMessage);
         }
 
