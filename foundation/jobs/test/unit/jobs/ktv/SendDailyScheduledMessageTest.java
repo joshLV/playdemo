@@ -44,7 +44,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         job.doJob();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
 
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包（1间）9点至12点】【15026682165中包（1间）9点至11点】", msg.getContent());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         job.doJob();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
 
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包（1间）9点至12点】", msg.getContent());
     }
 
     @Test
@@ -64,9 +64,9 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         SendDailyScheduledMessage job = new SendDailyScheduledMessage();
         job.doJobWithHistory();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
+        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包（1间）9点至13点】", msg.getContent());
         msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】", msg.getContent());
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包（1间）9点至12点】", msg.getContent());
 
     }
 
@@ -78,9 +78,9 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         SendDailyScheduledMessage job = new SendDailyScheduledMessage();
         job.doJob();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
+        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包（1间）9点至13点】", msg.getContent());
         msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包（1间）9点至12点】【15026682165中包（1间）9点至11点】", msg.getContent());
 
     }
 
@@ -92,10 +92,10 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         SendDailyScheduledMessage job = new SendDailyScheduledMessage();
         job.doJob();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包(1间)9点至13点】", msg.getContent());
+        assertSMSContentEquals(dateFormat.format(new Date()) + "test店预订【15026682165中包（1间）9点至13点】", msg.getContent());
         msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
 
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至11点】", msg.getContent());
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包（1间）9点至12点】【15026682165中包（1间）9点至11点】", msg.getContent());
     }
 
     @Test
@@ -106,11 +106,11 @@ public class SendDailyScheduledMessageTest extends UnitTest {
         SendDailyScheduledMessage job = new SendDailyScheduledMessage();
         job.doJob();
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至12点】", msg.getContent());
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包（1间）9点至12点】【15026682165中包（1间）9点至12点】", msg.getContent());
         msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至12点】【15026682165中包(1间)9点至12点】", msg.getContent());
+        assertSMSContentEquals(dateFormat.format(new Date()) + "测试店预订【15026682165中包（1间）9点至12点】【15026682165中包（1间）9点至12点】【15026682165中包（1间）9点至12点】", msg.getContent());
         msg = (SMSMessage) MockMQ.getLastMessage(SMSMessage.SMS_QUEUE);
-        assertSMSContentEquals(dateFormat.format(new Date()) + "徐汇店预订【15026682165中包(1间)9点至14点】", msg.getContent());
+        assertSMSContentEquals(dateFormat.format(new Date()) + "徐汇店预订【15026682165中包（1间）9点至14点】", msg.getContent());
     }
 
     private void create12OrderInfo() {
