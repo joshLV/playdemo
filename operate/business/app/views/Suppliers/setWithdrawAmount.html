@@ -68,11 +68,13 @@
 
         <div class="controls">
             <span>${supplierWithdrawAmount?.formatCurrency('CNY')}</span>
+            <span style="color: indianred">(预留金额：${reserveAmountToBigDecimal?.formatCurrency('CNY')})</span>
         </div>
+
     </div>
+
     <input type="hidden" id="supplier_withdraw_amount" name="supplierWithdrawAmount" value="${supplierWithdrawAmount}">
     <input type="hidden" id="supplier_id" name="supplier.id" value="${supplier?.id}">
-
 
     <div class="control-group">
         <label class="control-label"><span style="color: red;">*</span>商户可提现金额</label>

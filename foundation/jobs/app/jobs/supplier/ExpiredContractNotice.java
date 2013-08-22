@@ -54,7 +54,7 @@ public class ExpiredContractNotice extends JobWithHistory {
         }
         if (contracts.size() > 0) {
             MailMessage mailMessage = new MailMessage();
-            mailMessage.addRecipient(MAIL_RECEIVER);
+            mailMessage.addRecipient(MAIL_RECEIVER.split(","));
             mailMessage.setSubject(Play.mode.isProd() ? subject : subject + "【测试】");
             mailMessage.putParam("expireAt", new SimpleDateFormat("yyyy-MM-dd").
                     format(DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE)));

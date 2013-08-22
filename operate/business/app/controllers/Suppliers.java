@@ -266,7 +266,12 @@ public class Suppliers extends Controller {
         BigDecimal prepaymentBalance = Prepayment.findAmountBySupplier(supplier);
         BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, date);
         BigDecimal supplierAmount = account.amount;
-        render(supplier, withdrawAmount, supplierWithdrawAmount, supplierAmount);
+        //预留金
+        String reserveAmount = supplier.getProperty(Supplier.SET_RESERVE_AMOUNT);
+        BigDecimal reserveAmountToBigDecimal = StringUtils.isBlank(reserveAmount) ? BigDecimal.ZERO : new BigDecimal(reserveAmount);
+        supplierWithdrawAmount = supplierWithdrawAmount.subtract(reserveAmountToBigDecimal);
+
+        render(supplier, withdrawAmount, supplierWithdrawAmount, supplierAmount, reserveAmountToBigDecimal);
     }
 
 
