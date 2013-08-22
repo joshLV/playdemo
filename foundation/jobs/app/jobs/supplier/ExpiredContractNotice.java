@@ -11,6 +11,7 @@ import models.supplier.Supplier;
 import models.supplier.SupplierContract;
 import org.apache.commons.lang.time.DateUtils;
 import play.Play;
+import play.jobs.Every;
 import play.jobs.On;
 import play.jobs.OnApplicationStart;
 
@@ -23,7 +24,8 @@ import java.util.*;
  * Time: 下午5:07
  */
 @JobDefine(title = "商户合同预警检查", description = "10天后商户合同过期提醒")
-@On("0 0 8 * * ?")
+//@On("0 0 8 * * ?")
+@Every("5mn")
 public class ExpiredContractNotice extends JobWithHistory {
     public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.contract.email.receiver", "yanjingyun@uhuila.com");
 
@@ -39,6 +41,7 @@ public class ExpiredContractNotice extends JobWithHistory {
         List<SupplierContract> contracts = query.getResultList();
         Map<String, Object> contractMap;
         List<Map<String, Object>> contractList = new ArrayList<>();
+        System.out.println(contracts.size()+">>>>>>>>>>");
         String subject = "10天后商户合同过期提醒";
         for (SupplierContract contract : contracts) {
             contractMap = new HashMap<>();
@@ -56,6 +59,7 @@ public class ExpiredContractNotice extends JobWithHistory {
             mailMessage.putParam("expireAt", DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE));
             mailMessage.putParam("contractList", contractList);
             mailMessage.putParam("contractCount", contracts.size());
+            System.out.println("--------send mail");
             MailUtil.sendExpiredContractNoticeMail(mailMessage);
         }
 
