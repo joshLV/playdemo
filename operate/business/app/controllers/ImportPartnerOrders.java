@@ -16,14 +16,7 @@ import models.accounts.PaymentSource;
 import models.ktv.KtvTaobaoUtil;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
-import models.order.DeliveryType;
-import models.order.LogisticImportData;
-import models.order.Order;
-import models.order.OrderShippingInfo;
-import models.order.OuterOrder;
-import models.order.OuterOrderPartner;
-import models.order.OuterOrderStatus;
-import models.order.OuterOrderType;
+import models.order.*;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
@@ -42,12 +35,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p/>
@@ -112,7 +100,7 @@ public class ImportPartnerOrders extends Controller {
         }
         List<String> existedOrderList = new ArrayList<>();
         List<String> notEnoughInventoryGoodsList = new ArrayList<>();
-        List<String> importSuccessOrderList = new ArrayList<>();
+        Set<String> importSuccessOrderList = new HashSet<>();
         Set<String> unBindGoodsSet = new HashSet<>();
         List<String> diffOrderPriceList = new ArrayList<>();
         if (logistics.size() == 0) {
@@ -194,9 +182,9 @@ public class ImportPartnerOrders extends Controller {
                             logistic.setPaidAt(trade.getPayTime());
                             logistic.setExpressInfo(order.getLogisticsCompany());
                             String receiverMobile = trade.getReceiverMobile();
-                            if (StringUtils.isBlank(receiverMobile)){
+                            if (StringUtils.isBlank(receiverMobile)) {
                                 logistic.setPhone(trade.getReceiverPhone());
-                            }else {
+                            } else {
                                 logistic.setPhone(receiverMobile);
                             }
                             logistic.setReceiver(trade.getReceiverName());
@@ -217,7 +205,7 @@ public class ImportPartnerOrders extends Controller {
             page += 1;
         }
         List<String> existedOrderList = new ArrayList<>();
-        List<String> importSuccessOrderList = new ArrayList<>();
+        Set<String> importSuccessOrderList = new HashSet<>();
         Set<String> unBindGoodsSet = new HashSet<>();
         List<String> diffOrderPriceList = new ArrayList<>();
         processLogisticList(logisticImportDataList, OuterOrderPartner.TB, existedOrderList,
@@ -225,42 +213,101 @@ public class ImportPartnerOrders extends Controller {
 
         OuterOrderPartner partner = OuterOrderPartner.TB;
         render("ImportPartnerOrders/index.html", partner, errorInfo, existedOrderList,
-                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList,unSetSupplierCodeList);
+                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList, unSetSupplierCodeList);
     }
 
     private static void processLogisticList(List<LogisticImportData> logistics, OuterOrderPartner partner,
-                                            List<String> existedOrderList, List<String> importSuccessOrderList,
+                                            List<String> existedOrderList, Set<String> importSuccessOrderList,
                                             Set<String> unBindGoodsSet, List<String> diffOrderPriceList,
                                             Boolean TBAutoImportRealOrder) {
+        Map<String, List<LogisticImportData>> outOrderMap = new HashMap<>();
+        List<LogisticImportData> outGoodsNoList = new ArrayList<>();
         for (LogisticImportData logistic : logistics) {
             Logger.info("Process OrderNO: %s", logistic.outerOrderNo);
+            if (outOrderMap.containsKey(logistic.outerOrderNo)) {
+                outGoodsNoList.add(logistic);
+                outOrderMap.put(logistic.outerOrderNo, outGoodsNoList);
+            }
 
-            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, logistic.outerOrderNo).first();
+            if (outOrderMap.get(logistic.outerOrderNo) == null) {
+                outGoodsNoList = new ArrayList<>();
+                outGoodsNoList.add(logistic);
+                outOrderMap.put(logistic.outerOrderNo, outGoodsNoList);
+            }
+        }
 
+        for (Map.Entry map : outOrderMap.entrySet()) {
+            List<LogisticImportData> logisticList = (List<LogisticImportData>) map.getValue();
+            String outerOrderNo = map.getKey().toString();
+            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, outerOrderNo).first();
             if (outerOrder != null) {
                 if (outerOrder.orderType != OuterOrderType.IMPORT && outerOrder.status == OuterOrderStatus.ORDER_IGNORE) {
                     //如果 状态不是IMPORT， 并且status 是IGNORE，说明可能是一号店API拉去过来的订单，我们这里给转成导入的订单
-                    outerOrder.message = new Gson().toJson(logistic);
+                    outerOrder.message = new Gson().toJson(logisticList);
                     outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
                     outerOrder.orderType = OuterOrderType.IMPORT;
                 } else {
-                    existedOrderList.add(logistic.outerOrderNo);
+                    existedOrderList.add(outerOrderNo);
                     continue;
                 }
             } else {
-                outerOrder = logistic.toOuterOrder(partner);
+                outerOrder = toNewOuterOrder(outerOrderNo, partner, logisticList);
             }
-            if (partner == OuterOrderPartner.WB) {
+
+            createYbqOrder(outerOrderNo, logisticList, outerOrder, partner, importSuccessOrderList, unBindGoodsSet, TBAutoImportRealOrder);
+        }
+
+        //58订单处理
+        if (partner == OuterOrderPartner.WB) {
+            for (LogisticImportData logistic : logistics) {
+                Logger.info("Process OrderNO: %s", logistic.outerOrderNo);
+
+                OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, logistic.outerOrderNo).first();
+
+                if (outerOrder != null) {
+                    if (outerOrder.orderType != OuterOrderType.IMPORT && outerOrder.status == OuterOrderStatus.ORDER_IGNORE) {
+                        //如果 状态不是IMPORT， 并且status 是IGNORE，说明可能是一号店API拉去过来的订单，我们这里给转成导入的订单
+                        outerOrder.message = new Gson().toJson(logistic);
+                        outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+                        outerOrder.orderType = OuterOrderType.IMPORT;
+                    } else {
+                        existedOrderList.add(logistic.outerOrderNo);
+                        continue;
+                    }
+                } else {
+                    outerOrder = logistic.toOuterOrder(partner);
+                }
                 createWubaYbqOrder(logistic, partner, outerOrder, importSuccessOrderList, diffOrderPriceList, unBindGoodsSet);
-            } else {
-                createYbqOrder(logistic, outerOrder, partner, importSuccessOrderList, unBindGoodsSet, TBAutoImportRealOrder);
             }
         }
 
     }
 
+    /**
+     * 转换为 OuterOrder
+     *
+     * @param partner      分销伙伴
+     * @param logisticList
+     * @return OuterOrder
+     */
+    private static OuterOrder toNewOuterOrder(String outerOrderNo, OuterOrderPartner partner, List<LogisticImportData> logisticList) {
+        OuterOrder outerOrder = new OuterOrder();
+        outerOrder.orderId = outerOrderNo;
+        outerOrder.partner = partner;
+        if (partner == OuterOrderPartner.TB) {
+            outerOrder.resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+        } else {
+            outerOrder.resaler = Resaler.findApprovedByLoginName(partner.partnerLoginName());
+        }
+        outerOrder.message = new Gson().toJson(logisticList);
+        outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+        outerOrder.orderType = OuterOrderType.IMPORT;
+        outerOrder.createdAt = new Date();
+        return outerOrder;
+    }
+
     private static void createWubaYbqOrder(LogisticImportData logistic, OuterOrderPartner partner, OuterOrder outerOrder,
-                                           List<String> importSuccessOrderList, List<String> diffOrderPriceList, Set<String> unBindGoodsSet) {
+                                           Set<String> importSuccessOrderList, List<String> diffOrderPriceList, Set<String> unBindGoodsSet) {
         //先取得订单总金额
         BigDecimal orderAmount = logistic.salePrice;
         Resaler wubaResaler = Resaler.findApprovedByLoginName(Resaler.WUBA_LOGIN_NAME);
@@ -314,24 +361,62 @@ public class ImportPartnerOrders extends Controller {
     /**
      * 除了WUBA以外的订单导入
      */
-    private static void createYbqOrder(LogisticImportData logistic, OuterOrder outerOrder, OuterOrderPartner partner,
-                                       List<String> importSuccessOrderList, Set<String> unBindGoodsSet,
-                                       Boolean TBAutoImportRealOrder) {
-        Order ybqOrder = logistic.toYbqOrder(partner, TBAutoImportRealOrder);
-        //save ybqOrder info
-        if (ybqOrder != null) {
-            outerOrder.ybqOrder = ybqOrder;
-            outerOrder.save();
-            ybqOrder.paidAt = logistic.paidAt;
-            ybqOrder.createdAt = logistic.paidAt;
-            ybqOrder.save();
-            importSuccessOrderList.add(logistic.outerOrderNo);
-        } else {
-            //未映射商品
-            Logger.info("未映射商品NO=" + logistic.outerGoodsNo + " NOT Found!");
-            unBindGoodsSet.add(logistic.outerGoodsNo);
-        }
-    }
 
+    private static void createYbqOrder(String outerOrderNo, List<LogisticImportData> logisticList, OuterOrder outerOrder, OuterOrderPartner partner,
+                                       Set<String> importSuccessOrderList, Set<String> unBindGoodsSet,
+                                       Boolean TBAutoImportRealOrder) {
+        Resaler resaler = Resaler.findOneByLoginName(partner.partnerLoginName());
+        if (resaler == null) {
+            Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
+            return;
+        }
+
+        Order ybqOrder = Order.createResaleOrder(resaler).save();
+        if (ybqOrder == null) {
+            Logger.info("import order,ybqOrder create fail");
+            return;
+        }
+
+        //save ybqOrder info
+        outerOrder.ybqOrder = ybqOrder;
+        outerOrder.save();
+        ybqOrder.paidAt = logisticList.get(0).paidAt;
+        ybqOrder.createdAt = logisticList.get(0).paidAt;
+        ybqOrder.save();
+
+        OrderShippingInfo orderShipInfo = logisticList.get(0).createOrderShipInfo();
+        BigDecimal nowOrderAmount = BigDecimal.ZERO;
+        //创建OrderItem
+        for (LogisticImportData logistic : logisticList) {
+            Goods goods = null;
+            if (TBAutoImportRealOrder) {
+                goods = ResalerProduct.getGoodsByOuterGoodsNo(resaler, logistic.outerGoodsNo, partner);
+            } else {
+                goods = ResalerProduct.getGoodsByPartnerProductId(resaler, logistic.outerGoodsNo, partner);
+            }
+            if (goods == null) {
+                //未映射商品
+                Logger.info("未映射商品NO=" + logistic.outerGoodsNo + " NOT Found!");
+                unBindGoodsSet.add(logistic.outerGoodsNo);
+                outerOrder.delete();
+                continue;
+            } else {
+                importSuccessOrderList.add(outerOrderNo);
+            }
+            nowOrderAmount = nowOrderAmount.add(goods.salePrice.multiply(new BigDecimal(logistic.buyNumber)));
+            //产生orderItem
+            logistic.createOrderItem(ybqOrder, goods, orderShipInfo, logistic.buyNumber, goods.salePrice);
+        }
+
+        ybqOrder.deliveryType = DeliveryType.LOGISTICS;
+        ybqOrder.accountPay = ybqOrder.needPay;
+        ybqOrder.discountPay = BigDecimal.ZERO;
+        ybqOrder.payMethod = PaymentSource.getBalanceSource().code;
+        Account account = ybqOrder.chargeAccount();
+        ybqOrder.paid(account);
+        ybqOrder.paidAt = logisticList.get(0).paidAt;
+        ybqOrder.save();
+
+    }
 
 }

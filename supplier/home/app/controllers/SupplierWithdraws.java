@@ -98,17 +98,16 @@ public class SupplierWithdraws extends Controller {
         salesName = operateUser.userName;
         salesPhone = operateUser.mobile;
 
-        //判断该商户是否设置预留金和最少提现金额
+        //判断该商户是否设置预留金和最少提现金额和有销售设置提现金额
         String lessWithdrawAmount = supplier.getProperty(Supplier.SET_LESS_WITHDRAW_AMOUNT);
         String reserveAmount = supplier.getProperty(Supplier.SET_RESERVE_AMOUNT);
-        BigDecimal lessWithdrawAmountToBigDecimal = StringUtils.isBlank(lessWithdrawAmount) ? BigDecimal.ZERO : new BigDecimal(lessWithdrawAmount);
         BigDecimal reserveAmountToBigDecimal = StringUtils.isBlank(reserveAmount) ? BigDecimal.ZERO : new BigDecimal(reserveAmount);
-
+        BigDecimal lessWithdrawAmountToBigDecimal = StringUtils.isBlank(lessWithdrawAmount) ? BigDecimal.ZERO : new BigDecimal(lessWithdrawAmount);
         supplierWithdrawAmount = supplierWithdrawAmount.subtract(reserveAmountToBigDecimal);
-        supplierWithdrawAmount = supplierWithdrawAmount.compareTo(BigDecimal.ZERO) > 0 ? supplierWithdrawAmount : BigDecimal.ZERO;
 
-        renderArgs.put("lessWithdrawAmount",lessWithdrawAmountToBigDecimal);
-        renderArgs.put("reserveAmount",reserveAmountToBigDecimal);
+        supplierWithdrawAmount = supplierWithdrawAmount.compareTo(BigDecimal.ZERO) > 0 ? supplierWithdrawAmount : BigDecimal.ZERO;
+        renderArgs.put("lessWithdrawAmount", lessWithdrawAmountToBigDecimal);
+        renderArgs.put("reserveAmount", reserveAmountToBigDecimal);
         render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount,
                 withDrawEndDate, supplier, canNotWithdraw, salesName, salesPhone);
     }
@@ -131,14 +130,12 @@ public class SupplierWithdraws extends Controller {
             error("您有一笔待审批的提现申请，请等待审批完毕再申请提现");
         }
 
-
         WithdrawAccount withdrawAccount = account.accountType == AccountType.SHOP ?
                 WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierUser.shop.id, AccountType.SHOP) :
                 WithdrawAccount.findByIdAndUser(withdrawAccountId, supplier.getId(), AccountType.SUPPLIER);
         if (withdrawAccount == null) {
             error("invalid withdraw account");
         }
-
 
         if (Boolean.TRUE.compareTo(canNotWithdraw) != 1 && (amount == null || amount.compareTo(account.amount) > 0
                 || amount.compareTo(BigDecimal.TEN) < 0)) {
