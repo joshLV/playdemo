@@ -1,11 +1,11 @@
 <html>
 <body>
-<head>10天后合同过期的商户</head>
+<head>10天后合同将过期的商户</head>
 <p>
-    以下总共有<strong>${message.getParam("contractCount")}</strong>个商户合同在<strong>${message.getParam("expireAt")}</strong>号将过期，请注意！
+    以下总共有<strong>${message.getParam("contractCount")}</strong>家商户的合同在<strong>${message.getParam("expireAt")}</strong>日到期，请注意！
 </p>
-<table>
-    <th>销售专员</th>
+<table style="width:80%;" cellpadding="1" cellspacing="0" border="1" bordercolor="#000000">
+    <th with="30%">销售专员</th>
     <th>商户</th>
 #{list items:message.getParam("contractList"),as :'contractMap'}
     <tr>
