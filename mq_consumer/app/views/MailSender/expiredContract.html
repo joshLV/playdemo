@@ -4,7 +4,7 @@
 <p>
     以下总共有<strong>${message.getParam("contractCount")}</strong>家商户的合同在<strong>${message.getParam("expireAt")}</strong>日到期，请注意！
 </p>
-<table style="width:80%;" cellpadding="1" cellspacing="0" border="1" bordercolor="#000000">
+<table style="width:70%;" cellpadding="1" cellspacing="0" border="1" bordercolor="#000000">
     <th with="30%">销售专员</th>
     <th>商户</th>
 #{list items:message.getParam("contractList"),as :'contractMap'}

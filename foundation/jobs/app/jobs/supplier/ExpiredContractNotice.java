@@ -45,7 +45,7 @@ public class ExpiredContractNotice extends JobWithHistory {
         String subject = "商户合同到期提醒";
         for (SupplierContract contract : contracts) {
             contractMap = new HashMap<>();
-            contractMap.put("expireAt", new SimpleDateFormat("yyyy-MM-dd").format(contract.expireAt));
+//            contractMap.put("expireAt", new SimpleDateFormat("yyyy-MM-dd").format(contract.expireAt));
             contractMap.put("supplierCompanyName", contract.supplierCompanyName);
             contractMap.put("supplierName", contract.supplierName);
             contractMap.put("description", contract.description);
@@ -56,7 +56,8 @@ public class ExpiredContractNotice extends JobWithHistory {
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient(MAIL_RECEIVER);
             mailMessage.setSubject(Play.mode.isProd() ? subject : subject + "【测试】");
-            mailMessage.putParam("expireAt", DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE));
+            mailMessage.putParam("expireAt", new SimpleDateFormat("yyyy-MM-dd").
+                    format(DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE)));
             mailMessage.putParam("contractList", contractList);
             mailMessage.putParam("contractCount", contracts.size());
             MailUtil.sendExpiredContractNoticeMail(mailMessage);
