@@ -37,11 +37,13 @@ import java.util.Set;
  */
 public class ImportPartnerOrdersTest extends FunctionalTest {
     ResalerProduct resalerProduct;
+    ResalerProduct resalerProduct1;
     Account account;
     Resaler resaler;
     Goods goods;
     OuterOrder outerOrder;
-             Order order;
+    Order order;
+
     @BeforeClass
     public static void setUpClass() {
         Play.tmpDir = new File("/tmp"); //解决测试时上传失败的问题
@@ -77,6 +79,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
         });
         resaler = FactoryBoy.create(Resaler.class);
         resalerProduct = FactoryBoy.create(ResalerProduct.class);
+        resalerProduct1 = FactoryBoy.create(ResalerProduct.class);
 
         account = AccountUtil.getAccount(resaler.id, AccountType.RESALER);
         account.creditable = AccountCreditable.YES;
@@ -86,6 +89,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void testImpOrder_JD_测试重复订单不会重复导入() {
         outerOrder = FactoryBoy.create(OuterOrder.class);
         outerOrder.orderId = "453172893";
@@ -114,6 +118,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void testImpOrder_JD_Success7AndUnbindGoods5() {
         resaler.loginName = Resaler.JD_LOGIN_NAME;
         resaler.partner = "JD";
@@ -148,6 +153,10 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
         resalerProduct.partnerProductId = "23020076246";
         resalerProduct.partner = OuterOrderPartner.TB;
         resalerProduct.save();
+
+        resalerProduct1.partnerProductId = "23020076245";
+        resalerProduct1.partner = OuterOrderPartner.TB;
+        resalerProduct1.save();
         VirtualFile vfImage = VirtualFile.fromRelativePath("test/data/partnerOrder/TB_Orders.xlsx");
         Map<String, File> fileParams = new HashMap<>();
         fileParams.put("orderFile", vfImage.getRealFile());
@@ -163,6 +172,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void testImpOrder_YHD() {
         resaler.loginName = Resaler.YHD_LOGIN_NAME;
         resaler.save();
@@ -186,7 +196,6 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
-    @Ignore
     public void testImpOrder_WB() {
         resaler.loginName = Resaler.WUBA_LOGIN_NAME;
         resaler.save();
@@ -273,7 +282,6 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
-    @Ignore
     public void testImpOrder_WB_DiffPrice() {
         resaler.loginName = Resaler.WUBA_LOGIN_NAME;
         resaler.save();

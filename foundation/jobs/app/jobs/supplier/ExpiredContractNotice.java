@@ -10,6 +10,7 @@ import models.order.OrderStatus;
 import models.supplier.Supplier;
 import models.supplier.SupplierContract;
 import org.apache.commons.lang.time.DateUtils;
+import play.Logger;
 import play.Play;
 import play.jobs.Every;
 import play.jobs.On;
@@ -26,7 +27,6 @@ import java.util.*;
  */
 @JobDefine(title = "商户合同预警检查", description = "10天后商户合同过期提醒")
 @On("0 0 8 * * ?")
-//@OnApplicationStart
 public class ExpiredContractNotice extends JobWithHistory {
     public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.contract.email.receiver", "dev@uhuila.com");
 
@@ -35,6 +35,8 @@ public class ExpiredContractNotice extends JobWithHistory {
         String sql = "select sc from SupplierContract sc where sc.expireAt >=:expireAtBegin and " +
                 " sc.expireAt <:expireAtEnd group by sc.supplierId order by sc.id";
         Query query = Order.em().createQuery(sql);
+        Logger.info("date:%s",new SimpleDateFormat("yyyy-MM-dd").
+                format(DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE)));
         query.setParameter("expireAtBegin", DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE));
         query.setParameter("expireAtEnd", DateUtils.truncate(DateUtils.addDays(new Date(), 11), Calendar.DATE));
         query.setFirstResult(0);
@@ -45,7 +47,6 @@ public class ExpiredContractNotice extends JobWithHistory {
         String subject = "商户合同到期提醒";
         for (SupplierContract contract : contracts) {
             contractMap = new HashMap<>();
-//            contractMap.put("expireAt", new SimpleDateFormat("yyyy-MM-dd").format(contract.expireAt));
             contractMap.put("supplierCompanyName", contract.supplierCompanyName);
             contractMap.put("supplierName", contract.supplierName);
             contractMap.put("description", contract.description);
@@ -55,6 +56,7 @@ public class ExpiredContractNotice extends JobWithHistory {
         if (contracts.size() > 0) {
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient(MAIL_RECEIVER.split(","));
+
             mailMessage.setSubject(Play.mode.isProd() ? subject : subject + "【测试】");
             mailMessage.putParam("expireAt", new SimpleDateFormat("yyyy-MM-dd").
                     format(DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE)));
