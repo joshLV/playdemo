@@ -77,7 +77,7 @@ public class ExpiredNoRefundCouponNotice extends JobWithHistory {
         }
         if (couponList.size() > 0) {
             MailMessage mailMessage = new MailMessage();
-            mailMessage.addRecipient(MAIL_RECEIVER);
+            mailMessage.addRecipient(MAIL_RECEIVER.split(","));
             mailMessage.setSubject(Play.mode.isProd() ? subject : subject + "【测试】");
             mailMessage.putParam("subject", subject);
             mailMessage.putParam("couponList", couponList);

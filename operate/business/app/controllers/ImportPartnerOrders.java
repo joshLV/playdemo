@@ -26,6 +26,7 @@ import net.sf.jxls.reader.XLSReader;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
+import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.vfs.VirtualFile;
@@ -220,43 +221,6 @@ public class ImportPartnerOrders extends Controller {
                                             List<String> existedOrderList, Set<String> importSuccessOrderList,
                                             Set<String> unBindGoodsSet, List<String> diffOrderPriceList,
                                             Boolean TBAutoImportRealOrder) {
-        Map<String, List<LogisticImportData>> outOrderMap = new HashMap<>();
-        List<LogisticImportData> outGoodsNoList = new ArrayList<>();
-        for (LogisticImportData logistic : logistics) {
-            Logger.info("Process OrderNO: %s", logistic.outerOrderNo);
-            if (outOrderMap.containsKey(logistic.outerOrderNo)) {
-                outGoodsNoList.add(logistic);
-                outOrderMap.put(logistic.outerOrderNo, outGoodsNoList);
-            }
-
-            if (outOrderMap.get(logistic.outerOrderNo) == null) {
-                outGoodsNoList = new ArrayList<>();
-                outGoodsNoList.add(logistic);
-                outOrderMap.put(logistic.outerOrderNo, outGoodsNoList);
-            }
-        }
-
-        for (Map.Entry map : outOrderMap.entrySet()) {
-            List<LogisticImportData> logisticList = (List<LogisticImportData>) map.getValue();
-            String outerOrderNo = map.getKey().toString();
-            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, outerOrderNo).first();
-            if (outerOrder != null) {
-                if (outerOrder.orderType != OuterOrderType.IMPORT && outerOrder.status == OuterOrderStatus.ORDER_IGNORE) {
-                    //如果 状态不是IMPORT， 并且status 是IGNORE，说明可能是一号店API拉去过来的订单，我们这里给转成导入的订单
-                    outerOrder.message = new Gson().toJson(logisticList);
-                    outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
-                    outerOrder.orderType = OuterOrderType.IMPORT;
-                } else {
-                    existedOrderList.add(outerOrderNo);
-                    continue;
-                }
-            } else {
-                outerOrder = toNewOuterOrder(outerOrderNo, partner, logisticList);
-            }
-
-            createYbqOrder(outerOrderNo, logisticList, outerOrder, partner, importSuccessOrderList, unBindGoodsSet, TBAutoImportRealOrder);
-        }
-
         //58订单处理
         if (partner == OuterOrderPartner.WB) {
             for (LogisticImportData logistic : logistics) {
@@ -279,6 +243,71 @@ public class ImportPartnerOrders extends Controller {
                 }
                 createWubaYbqOrder(logistic, partner, outerOrder, importSuccessOrderList, diffOrderPriceList, unBindGoodsSet);
             }
+        } else {
+            Resaler resaler = Resaler.findOneByLoginName(partner.partnerLoginName());
+            Map<String, List<LogisticImportData>> outOrderMap = new HashMap<>();
+            List<LogisticImportData> outGoodsNoList = new ArrayList<>();
+            LogisticImportData newLogistic = null;
+            for (LogisticImportData logistic : logistics) {
+                Goods goods = null;
+                if (TBAutoImportRealOrder) {
+                    goods = ResalerProduct.getGoodsByOuterGoodsNo(resaler, logistic.outerGoodsNo, partner);
+                } else {
+                    goods = ResalerProduct.getGoodsByPartnerProductId(resaler, logistic.outerGoodsNo, partner);
+                }
+                if (goods == null) {
+                    if (outOrderMap.containsKey(logistic.outerOrderNo)) {
+                        outOrderMap = new HashMap<>();
+                        Logger.info("该订单有未映射的商品，orderNO" + logistic.outerOrderNo);
+                        continue;
+                    }
+
+                    //未映射商品
+                    Logger.info("未映射商品NO=" + logistic.outerGoodsNo + " NOT Found!");
+                    unBindGoodsSet.add(logistic.outerGoodsNo);
+                    continue;
+                }
+                newLogistic = logistic;
+
+                if (unBindGoodsSet.size() > 0) {
+                    Logger.info("该订单有未映射的商品，orderNO" + logistic.outerOrderNo);
+                    continue;
+                }
+
+                if (outOrderMap.containsKey(logistic.outerOrderNo)) {
+                    outGoodsNoList.add(newLogistic);
+                    outOrderMap.put(logistic.outerOrderNo, outGoodsNoList);
+                }
+
+                if (outOrderMap.get(logistic.outerOrderNo) == null) {
+                    outGoodsNoList = new ArrayList<>();
+                    outGoodsNoList.add(newLogistic);
+                    outOrderMap.put(logistic.outerOrderNo, outGoodsNoList);
+                }
+            }
+
+            for (Map.Entry map : outOrderMap.entrySet()) {
+                List<LogisticImportData> logisticList = (List<LogisticImportData>) map.getValue();
+                String outerOrderNo = map.getKey().toString();
+                Logger.info("Process OrderNO: %s", outerOrderNo);
+                OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, outerOrderNo).first();
+                if (outerOrder != null) {
+                    if (outerOrder.orderType != OuterOrderType.IMPORT && outerOrder.status == OuterOrderStatus.ORDER_IGNORE) {
+                        //如果 状态不是IMPORT， 并且status 是IGNORE，说明可能是一号店API拉去过来的订单，我们这里给转成导入的订单
+                        outerOrder.message = new Gson().toJson(logisticList);
+                        outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+                        outerOrder.orderType = OuterOrderType.IMPORT;
+                    } else {
+                        existedOrderList.add(outerOrderNo);
+                        continue;
+                    }
+                } else {
+                    outerOrder = toNewOuterOrder(outerOrderNo, partner, logisticList);
+                }
+
+                createYbqOrder(outerOrderNo, logisticList, outerOrder, partner, importSuccessOrderList, unBindGoodsSet, TBAutoImportRealOrder);
+            }
+
         }
 
     }
@@ -383,7 +412,7 @@ public class ImportPartnerOrders extends Controller {
         ybqOrder.paidAt = logisticList.get(0).paidAt;
         ybqOrder.createdAt = logisticList.get(0).paidAt;
         ybqOrder.save();
-
+        importSuccessOrderList.add(outerOrderNo);
         OrderShippingInfo orderShipInfo = logisticList.get(0).createOrderShipInfo();
         BigDecimal nowOrderAmount = BigDecimal.ZERO;
         //创建OrderItem
@@ -393,15 +422,6 @@ public class ImportPartnerOrders extends Controller {
                 goods = ResalerProduct.getGoodsByOuterGoodsNo(resaler, logistic.outerGoodsNo, partner);
             } else {
                 goods = ResalerProduct.getGoodsByPartnerProductId(resaler, logistic.outerGoodsNo, partner);
-            }
-            if (goods == null) {
-                //未映射商品
-                Logger.info("未映射商品NO=" + logistic.outerGoodsNo + " NOT Found!");
-                unBindGoodsSet.add(logistic.outerGoodsNo);
-                outerOrder.delete();
-                continue;
-            } else {
-                importSuccessOrderList.add(outerOrderNo);
             }
             nowOrderAmount = nowOrderAmount.add(goods.salePrice.multiply(new BigDecimal(logistic.buyNumber)));
             //产生orderItem
