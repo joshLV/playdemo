@@ -271,7 +271,10 @@ public class Suppliers extends Controller {
         BigDecimal reserveAmountToBigDecimal = StringUtils.isBlank(reserveAmount) ? BigDecimal.ZERO : new BigDecimal(reserveAmount);
         supplierWithdrawAmount = supplierWithdrawAmount.subtract(reserveAmountToBigDecimal);
 
-        render(supplier, withdrawAmount, supplierWithdrawAmount, supplierAmount, reserveAmountToBigDecimal);
+        String lessWithdrawAmount = supplier.getProperty(Supplier.SET_LESS_WITHDRAW_AMOUNT);
+        BigDecimal lessWithdrawAmountToBigDecimal = StringUtils.isBlank(lessWithdrawAmount) ? BigDecimal.ZERO : new BigDecimal(lessWithdrawAmount);
+
+        render(supplier, withdrawAmount, supplierWithdrawAmount, supplierAmount, reserveAmountToBigDecimal,lessWithdrawAmountToBigDecimal);
     }
 
 

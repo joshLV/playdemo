@@ -68,7 +68,8 @@
 
         <div class="controls">
             <span>${supplierWithdrawAmount?.formatCurrency('CNY')}</span>
-            <span style="color: indianred">(预留金额：${reserveAmountToBigDecimal?.formatCurrency('CNY')})</span>
+            <span style="color: indianred">(预留金额：${reserveAmountToBigDecimal?.formatCurrency('CNY')}
+                ,最小提现金额：${lessWithdrawAmountToBigDecimal?.formatCurrency('CNY')})</span>
         </div>
 
     </div>
@@ -98,7 +99,13 @@
     </div>
     <div class="control-group">
         <label class="control-label"></label>
-        <a class="btn btn-primary" id="confirm">确定 </a><span id="processing"></span>
+        #{if lessWithdrawAmountToBigDecimal.compareTo(supplierWithdrawAmount)>0}
+        <span class="alert alert-warnning">可提现金额小于最小提现金额，暂时不能提现！</span><br>
+        #{/if}
+        #{else}
+            <a class="btn btn-primary" id="confirm">确定 </a><span id="processing">
+        #{/else}
+    </span>
         <a href="/suppliers" class="btn btn-primary">返回</a>
     </div>
 #{/form}
