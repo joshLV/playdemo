@@ -172,7 +172,6 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
-    @Ignore
     public void testImpOrder_YHD() {
         resaler.loginName = Resaler.YHD_LOGIN_NAME;
         resaler.save();
@@ -196,6 +195,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void testImpOrder_WB() {
         resaler.loginName = Resaler.WUBA_LOGIN_NAME;
         resaler.save();
@@ -282,6 +282,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void testImpOrder_WB_DiffPrice() {
         resaler.loginName = Resaler.WUBA_LOGIN_NAME;
         resaler.save();
