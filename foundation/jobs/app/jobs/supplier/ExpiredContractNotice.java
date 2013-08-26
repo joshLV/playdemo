@@ -7,6 +7,7 @@ import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.Order;
 import models.order.OrderStatus;
+import models.supplier.ContractStatus;
 import models.supplier.Supplier;
 import models.supplier.SupplierContract;
 import org.apache.commons.lang.time.DateUtils;
@@ -25,20 +26,21 @@ import java.util.*;
  * Date: 13-8-20
  * Time: 下午5:07
  */
-@JobDefine(title = "商户合同预警检查", description = "10天后商户合同过期提醒")
-@On("0 0 8 * * ?")
+@JobDefine(title = "商户合同预警检查", description = "10天内商户合同过期提醒")
+//@On("0 0 8 * * ?")
+@Every("20mn")
+//@OnApplicationStart
 public class ExpiredContractNotice extends JobWithHistory {
-    public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.contract.email.receiver", "dev@uhuila.com");
+    public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.contract.email.receiver", "yanjingyun@uhuila.com,juna@uhuila.com");
 
     @Override
     public void doJobWithHistory() {
-        String sql = "select sc from SupplierContract sc where sc.expireAt >=:expireAtBegin and " +
-                " sc.expireAt <:expireAtEnd group by sc.supplierId order by sc.id";
+        String sql = "select sc from SupplierContract sc where sc.status = :status and sc.expireAt >=:expireAtBegin and " +
+                " sc.expireAt <:expireAtEnd group by sc.supplierId order by sc.expireAt ";
         Query query = Order.em().createQuery(sql);
-        Logger.info("date:%s",new SimpleDateFormat("yyyy-MM-dd").
-                format(DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE)));
-        query.setParameter("expireAtBegin", DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE));
-        query.setParameter("expireAtEnd", DateUtils.truncate(DateUtils.addDays(new Date(), 11), Calendar.DATE));
+        query.setParameter("status", ContractStatus.NORMAL);
+        query.setParameter("expireAtBegin", DateUtils.truncate(new Date(), Calendar.DATE));
+        query.setParameter("expireAtEnd", DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE));
         query.setFirstResult(0);
         query.setMaxResults(200);
         List<SupplierContract> contracts = query.getResultList();
@@ -49,7 +51,10 @@ public class ExpiredContractNotice extends JobWithHistory {
             contractMap = new HashMap<>();
             contractMap.put("supplierCompanyName", contract.supplierCompanyName);
             contractMap.put("supplierName", contract.supplierName);
+            contractMap.put("supplierId", contract.supplierId);
             contractMap.put("description", contract.description);
+            contractMap.put("expireAt", new SimpleDateFormat("yyyy-MM-dd").
+                    format(DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE)));
             contractMap.put("contractCount", contracts.size());
             contractList.add(contractMap);
         }
@@ -58,8 +63,7 @@ public class ExpiredContractNotice extends JobWithHistory {
             mailMessage.addRecipient(MAIL_RECEIVER.split(","));
 
             mailMessage.setSubject(Play.mode.isProd() ? subject : subject + "【测试】");
-            mailMessage.putParam("expireAt", new SimpleDateFormat("yyyy-MM-dd").
-                    format(DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE)));
+
             mailMessage.putParam("contractList", contractList);
             mailMessage.putParam("contractCount", contracts.size());
             MailUtil.sendExpiredContractNoticeMail(mailMessage);

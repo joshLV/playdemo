@@ -116,7 +116,12 @@ ${err}
                 #{/if}
                 #{else}
                     <div class="control-value">
-                    ${supplierWithdrawAmount?.formatCurrency('CNY')}
+                        #{if  lessWithdrawAmount.compareTo(supplierWithdrawAmount)<0}
+                        ${supplierWithdrawAmount?.formatCurrency('CNY')}
+                        #{/if}
+                        #{else}
+                            ¥ 0.00
+                        #{/else}
                         <input type="hidden" name="amount" value="${supplierWithdrawAmount}"/>
                         (统计截止日期: ${withDrawEndDate.format('yyyy-MM-dd')})
                         <span class="error" style="margin-left:20px;" id="error-amount">#{error 'amount'/}</span>
@@ -124,23 +129,34 @@ ${err}
                 #{/else}
             </div>
             <div style="padding-left: 34px;padding-bottom: 10px;color: coral">
-                #{if (reserveAmount.compareTo(BigDecimal.ZERO)>0||lessWithdrawAmount.compareTo(BigDecimal.ZERO)>0 )&& lessWithdrawAmount.compareTo(supplierWithdrawAmount)>0 }
+                #{if (reserveAmount.compareTo(BigDecimal.ZERO)>0||lessWithdrawAmount.compareTo(BigDecimal.ZERO)>0 )&&
+                (lessWithdrawAmount.compareTo(supplierWithdrawAmount)>0 || reserveAmount.compareTo(supplierWithdrawAmount)<0)}
                     (
                 #{/if}
                 #{if reserveAmount.compareTo(BigDecimal.ZERO)>0}本商户预留金额：${reserveAmount?.formatCurrency('CNY')}#{/if}
                 #{if lessWithdrawAmount.compareTo(BigDecimal.ZERO)>0 }
                     最小提现金额：${lessWithdrawAmount?.formatCurrency('CNY')}
                 #{/if}
-                #{if (reserveAmount.compareTo(BigDecimal.ZERO)>0||lessWithdrawAmount.compareTo(BigDecimal.ZERO)>0 )&& lessWithdrawAmount.compareTo(supplierWithdrawAmount)>0 }
+                #{if (reserveAmount.compareTo(BigDecimal.ZERO)>0||lessWithdrawAmount.compareTo(BigDecimal.ZERO)>0 )&&
+                (lessWithdrawAmount.compareTo(supplierWithdrawAmount)>0 || reserveAmount.compareTo(supplierWithdrawAmount)<0)}
                     )
                 #{/if}
             </div>
             <div class="form-actions">
-                #{if (!canNotWithdraw && canNotWithdraw!=null && supplierWithdrawAmount.compareTo(supplier.withdrawAmount)>0 &&
-                lessWithdrawAmount.compareTo(supplier.withdrawAmount)<=0 ) &&
-                supplierWithdrawAmount.compareTo(BigDecimal.ZERO)>0  && lessWithdrawAmount.compareTo(supplierWithdrawAmount)<0 }
-                    <button type="submit" class="btn btn-primary">提交申请</button>
+                #{if (!canNotWithdraw && canNotWithdraw!=null)}
+                    #{if supplierWithdrawAmount.compareTo(BigDecimal.ZERO)>0  && supplierWithdrawAmount.compareTo(supplier.withdrawAmount)>0 &&
+                    lessWithdrawAmount.compareTo(supplier.withdrawAmount)<=0 && lessWithdrawAmount.compareTo(supplierWithdrawAmount)<0 }
+                        <button type="submit" class="btn btn-primary">提交申请</button>
+                    #{/if}
                 #{/if}
+                #{elseif supplierWithdrawAmount.compareTo(BigDecimal.ZERO)>0  && lessWithdrawAmount.compareTo(supplierWithdrawAmount)<0 }
+                    <button type="submit" class="btn btn-primary">提交申请</button>
+                #{/elseif}
+            *{#{if (!canNotWithdraw && canNotWithdraw!=null && supplierWithdrawAmount.compareTo(supplier.withdrawAmount)>0 &&}*
+            *{lessWithdrawAmount.compareTo(supplier.withdrawAmount)<=0 ) &&}*
+            *{supplierWithdrawAmount.compareTo(BigDecimal.ZERO)>0  && lessWithdrawAmount.compareTo(supplierWithdrawAmount)<0 }}*
+            *{<button type="submit" class="btn btn-primary">提交申请</button>}*
+            *{#{/if}}*
                 <input type="hidden" name="canNotWithdraw" value="${canNotWithdraw}"/>
                 <a class="btn" href="/withdraws">取消</a>
             </div>

@@ -1,9 +1,6 @@
 package controllers;
 
-import models.supplier.Supplier;
-import models.supplier.SupplierContract;
-import models.supplier.SupplierContractCondition;
-import models.supplier.SupplierContractImage;
+import models.supplier.*;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import operate.rbac.annotations.Right;
@@ -75,7 +72,7 @@ public class SuppliersContracts extends Controller {
     @Right("SUPPLIER_CONTRACT_MANAGEMENT")
     public static void edit(Long contractId) {
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
-        if (hasContractManagementPermission == true) {
+        if (hasContractManagementPermission) {
             SupplierContract contract = SupplierContract.findById(contractId);
             Supplier supplier = Supplier.findById(contract.supplierId);
             String supplierName = supplier.otherName;
@@ -112,7 +109,7 @@ public class SuppliersContracts extends Controller {
     @Right("SUPPLIER_CONTRACT_MANAGEMENT")
     public static void update(Long contractId, @Valid SupplierContract contract) {
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
-        if (hasContractManagementPermission == true) {
+        if (hasContractManagementPermission) {
             checkExpireAt(contract);
             if (StringUtils.isBlank(contract.description)) {
                 Validation.addError("contract.description", "validation.required");
@@ -132,9 +129,21 @@ public class SuppliersContracts extends Controller {
     }
 
     @Right("SUPPLIER_CONTRACT_MANAGEMENT")
+    public static void terminate(Long contractId) {
+        Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
+        if (hasContractManagementPermission) {
+            SupplierContract contract = SupplierContract.findById(contractId);
+            contract.status = ContractStatus.TERMINATE;
+            contract.save();
+        }
+        index(null);
+    }
+
+
+    @Right("SUPPLIER_CONTRACT_MANAGEMENT")
     public static void updateDescription(Long imageId, String description) {
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
-        if (hasContractManagementPermission == true) {
+        if (hasContractManagementPermission) {
             SupplierContractImage image = SupplierContractImage.findById(imageId);
             if (image != null) {
                 image.description = description;
@@ -157,7 +166,7 @@ public class SuppliersContracts extends Controller {
             contract.supplierId = condition.supplierId;
         }
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
-        if (hasContractManagementPermission == true) {
+        if (hasContractManagementPermission) {
             checkExpireAt(contract);
             checkSupplier(contract);
             if (contract.supplierId == 0 || contract.supplierId == null) {
@@ -188,7 +197,7 @@ public class SuppliersContracts extends Controller {
     @Right("SUPPLIER_CONTRACT_MANAGEMENT")
     public static void uploadContract(Long supplierId, Long contractId) {
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
-        if (hasContractManagementPermission == true) {
+        if (hasContractManagementPermission) {
             SupplierContract contract = SupplierContract.findById(contractId);
             render(supplierId, contractId, contract);
         } else {
