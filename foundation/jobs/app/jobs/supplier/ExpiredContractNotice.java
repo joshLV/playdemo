@@ -28,7 +28,8 @@ import java.util.*;
  */
 @JobDefine(title = "商户合同预警检查", description = "10天内商户合同过期提醒")
 //@On("0 0 8 * * ?")
-@OnApplicationStart
+@Every("20mn")
+//@OnApplicationStart
 public class ExpiredContractNotice extends JobWithHistory {
     public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.contract.email.receiver", "yanjingyun@uhuila.com,juna@uhuila.com");
 
