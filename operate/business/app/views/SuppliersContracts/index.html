@@ -57,12 +57,16 @@
             <td>${contract?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>${contract?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>
-                #{if hasViewContractPermission == true}
+                #{if hasViewContractPermission}
                     <a href="@{SuppliersContracts.view(contract.id)}">查看合同</a>
                 #{/if}
-                #{if hasContractManagementPermission == true}
+                #{if hasViewContractPermission}
                     /
                     <a href="@{SuppliersContracts.edit(contract.id)}">修改</a>
+
+                    #{if models.supplier.ContractStatus.NORMAL.equals(contract.status)}
+                        /#{vx.operateLink text:"终止合同", url:"/supplier_contract/"+contract.id+"/terminate", method:"PUT",confirm:true/}
+                    #{/if}
                     /
                     #{vx.deleteLink id:contract?.id, name:"该合同", action:"/supplier_contract"/}
                 #{/if}

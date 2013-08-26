@@ -58,6 +58,10 @@ public class SupplierContract extends Model {
     @OneToMany(mappedBy = "contract")
     public List<SupplierContractImage> supplierContractImagesList;
 
+    @Enumerated(EnumType.STRING)
+    public ContractStatus status;
+
+
     /**
      * 所属商户ID
      */

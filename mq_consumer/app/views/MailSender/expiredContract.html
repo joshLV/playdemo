@@ -1,16 +1,25 @@
 <html>
 <body>
-<head>10天后合同将过期的商户</head>
+<head>10天内合同将过期的商户</head>
 <p>
-    以下总共有<strong>${message.getParam("contractCount")}</strong>家商户的合同在<strong>${message.getParam("expireAt")}</strong>日到期，请注意！
+    以下总共有<strong>${message.getParam("contractCount")}</strong>家商户的合同即将到期，请注意！
 </p>
 <table style="width:70%;" cellpadding="1" cellspacing="0" border="1" bordercolor="#000000">
     <th with="30%">销售专员</th>
     <th>商户</th>
+    <th>到期时间</th>
+    <th>操作</th>
 #{list items:message.getParam("contractList"),as :'contractMap'}
     <tr>
         <td>${contractMap.get("description")}</td>
         <td>${contractMap.get("supplierCompanyName")}（${contractMap.get("supplierName")}）</td>
+        <td>${contractMap.get("expireAt")}</td>
+        <td><a href="http://business.seewi.com.cn/supplier_contract/new?supplierName=${contractMap.get("supplierName")}&condition.supplierId=${contractMap.get("supplierId")}" target="_blank">
+            续约合同</a>
+            | <a href="http://business.seewi.com.cn/supplier_contract?supplierName=${contractMap.get("supplierName")}&condition.supplierId=${contractMap.get("supplierId")}"
+               target="_blank">
+                合同终止</a>
+        </td>
     </tr>
 #{/list}
 </table>

@@ -49,6 +49,7 @@ GET     /supplier_contract/new                             SuppliersContracts.ad
 GET     /supplier_contract/{contractId}/edit               SuppliersContracts.edit
 GET     /supplier_contract/{contractId}/view               SuppliersContracts.view
 PUT     /supplier_contract/{contractId}                    SuppliersContracts.update
+PUT     /supplier_contract/{contractId}/terminate          SuppliersContracts.terminate
 DELETE  /supplier_contract/{id}                            SuppliersContracts.delete
 DELETE  /supplier_contract_images/{id}                     SuppliersContracts.deleteImage
 GET     /supplier_contract/{imageId}                       SuppliersContracts.updateDescription
