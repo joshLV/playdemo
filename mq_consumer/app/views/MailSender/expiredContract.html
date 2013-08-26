@@ -4,11 +4,11 @@
 <p>
     以下总共有<strong>${message.getParam("contractCount")}</strong>家商户的合同即将到期，请注意！
 </p>
-<table style="width:70%;" cellpadding="1" cellspacing="0" border="1" bordercolor="#000000">
-    <th with="30%">销售专员</th>
+<table style="width:85%;" cellpadding="1" cellspacing="0" border="1" bordercolor="#000000">
+    <th with="20%">销售专员</th>
     <th>商户</th>
-    <th>到期时间</th>
-    <th>操作</th>
+    <th with="20%">到期时间</th>
+    <th with="25%">操作</th>
 #{list items:message.getParam("contractList"),as :'contractMap'}
     <tr>
         <td>${contractMap.get("description")}</td>
