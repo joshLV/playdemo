@@ -54,7 +54,7 @@ public class ExpiredContractNotice extends JobWithHistory {
             contractMap.put("supplierId", contract.supplierId);
             contractMap.put("description", contract.description);
             contractMap.put("expireAt", new SimpleDateFormat("yyyy-MM-dd").
-                    format(DateUtils.truncate(DateUtils.addDays(new Date(), 10), Calendar.DATE)));
+                    format(contract.expireAt));
             contractMap.put("contractCount", contracts.size());
             contractList.add(contractMap);
         }
