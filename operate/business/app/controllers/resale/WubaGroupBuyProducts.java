@@ -43,7 +43,6 @@ public class WubaGroupBuyProducts extends Controller {
         Goods goods = Goods.findById(goodsId);
 
         String allCategoriesJson = WubaUtil.allProductTypesJsonCache();
-        System.out.println(allCategoriesJson+"----");
         Collection<Shop> shopList = goods.getShopList();
         Supplier supplier = Supplier.findById(goods.supplierId);
 

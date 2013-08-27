@@ -83,7 +83,7 @@ public class SupplierGoodsReport {
     }
 
     public static List<SupplierGoodsReport> getConsumedCountList(Long supplierId, String goodsShortName, Long shopId, Date fromDate, Date toDate) {
-        return getGoodsCountList(supplierId, goodsShortName, shopId, fromDate, toDate, "consumedAt", "select new models.report.SupplierGoodsReport(goods.id, goods.shortName, count(*), sum(faceValue)) " +
+        return getGoodsCountList(supplierId, goodsShortName, shopId, fromDate, toDate, "consumedAt", "select new models.report.SupplierGoodsReport(goods.id, goods.shortName, count(*), sum(originalPrice)) " +
                 "from ECoupon where status=models.order.ECouponStatus.CONSUMED");
     }
 

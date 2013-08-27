@@ -60,10 +60,11 @@
     <table cellspacing="0" cellpadding="0" border="0" class="standard-table">
         <thead>
         <tr>
-            <th width="45px">消费者手机</th>
-            <th width="45px">券号</th>
+            <th width="40px">消费者手机</th>
+            <th width="40px">券号</th>
             <th width="120px">商品名称</th>
             <th width="30px">面值</th>
+            <th width="40px">采购价</th>
             <th width="50px">消费门店</th>
             <th width="50px">验证方式</th>
             <th width="50px">消费时间</th>
@@ -90,6 +91,7 @@
                 </span>
             </td>
             <td align="right">${coupon?.faceValue?.formatCurrency('CNY')}</td>
+            <td align="right">${coupon?.originalPrice?.formatCurrency('CNY')}</td>
             <td>${coupon?.getConsumedShop()}</td>
             <td>&{'coupon.'+coupon?.verifyType}<br>
                 #{if coupon?.verifyType!=models.order.VerifyCouponType.AUTO_VERIFY}

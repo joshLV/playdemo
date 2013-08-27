@@ -34,14 +34,15 @@
             <label class="control-label" for="grouponName">团购长标题名称 *</label>
             <div class="controls">
                 <input type="text" id="grouponName" class="input-block-level" name="groupon_name" value="${goods.name}" data-max-length="512">
-                <span class="help-block">不超过512个字符<span id="inputTeamTitle-monitor"></span></span>
+                <span class="help-block">不超过512个字符<span id="grouponName-monitor"></span></span>
             </div>
         </div>
+
         <div class="control-group">
             <label class="control-label" for="shortTitle">团购短名称 *</label>
             <div class="controls">
                 <input type="text" id="shortTitle" name="short_title" class="input-xxlarge" value="${goods.shortName}" data-max-length="20">
-                <span class="help-inline">不超过20个字符<span id="inputTitle-monitor"></span></span>
+                <span class="help-inline">不超过20个字符<span id="shortTitle-monitor"></span></span>
             </div>
         </div>
         <div class="control-group">
@@ -49,7 +50,7 @@
             <div class="controls">
                 <input type="text" id="inputProdImg" name="groupon_main_image" class="input-xxlarge" value="${goods.getImageLargePath()}">
                 <span class="btn" id="buttonProdImg" >选择图片</span>
-                <span class="help-block">http开头，图片尺寸为680*425</span>
+                <span class="help-block">http开头，图片尺寸为448(宽)*280(高)</span>
                 <img src="${goods.imageOriginalPath}" alt="" id="imgProdImg">
             </div>
         </div>
@@ -57,7 +58,7 @@
             <label class="control-label" for="smsTitlee">短信标题 *</label>
             <div class="controls">
                 <input type="text" id="smsTitle" name="SMS_title" class="input-xxlarge" value="${goods.title}" data-max-length="30">
-                <span class="help-inline">不超过30个字符<span id="inputListShortTitle-monitor"></span></span>
+                <span class="help-inline">不超过30个字符<span id="smsTitle-monitor"></span></span>
             </div>
         </div>
         <div class="control-group">
@@ -85,24 +86,25 @@
             <label class="control-label">团购开始时间 *</label>
             <div class="controls">
                 <input type="text" name="begin_time" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-                       class="Wdate" value="${goods.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}"> <span class="help-inline">(当前时间前2个月~1年后的当前时间)</span>
+                       class="Wdate" value="${goods.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
                 团购结束时间 *
                 <input type="text" name="end_time" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-                       class="Wdate" value="${goods.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}"> <span class="help-inline">(当前时间~1年后的当前时间)</span>
+                       class="Wdate" value="${goods.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">券截止日期 *</label>
             <div class="controls">
                 <input type="text" name="valid_time" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-                       class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}"> <span class="help-inline">(当前时间~1年后的当前时间)</span>
+                       class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                <span class="help-inline">(券截止日期 > 团购结束时间)</span>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="maxSale">商品总库存 *</label>
             <div class="controls">
-                <input type="text" id="maxSale" name="max_sale" value="0">
-                <span class="help-inline">必须大于等于0</span>
+                <input type="text" id="maxSale" name="max_sale" value="9999">
+                <span class="help-inline">必须大于0</span>
             </div>
         </div>
         <div class="control-group">
@@ -183,11 +185,16 @@
                         <td>行政区 *</td>
                         <td><input type="text" name="area_name_${shop.id}" value="上海 徐汇区" class="input-xlarge"></td>
                         <td>营业时间 *</td>
-                        <td><input type="text" name="open_time_${shop.id}" value="正常营业时间" class="input-xlarge"></td>
+                        <td><input type="text" name="open_time_${shop.id}" value="全天" class="input-xlarge">
+                            <span class="help-inline">(纯文本，比如：周一至周五 9:00-21:35，周六、日9：00-23：18。)</span>
+                        </td>
                     </tr>
                     <tr>
                         <td>商家名称 *</td>
-                        <td><input type="text" name="name_${shop.id}" value="${supplier.otherName} ${shop.name}" class="input-xlarge"></td>
+                        <td>
+                            <input type="text" name="name_${shop.id}" value="${supplier.otherName} ${shop.name}" class="input-xlarge">
+                            <span class="help-inline">(填写的方式为：团品所属的品牌名+分店)</span>
+                        </td>
                         <td>电话 *</td>
                         <td><input type="text" name="telephone_${shop.id}" value="${shop.phone}" class="input-xlarge"></td>
                     </tr>
@@ -196,9 +203,9 @@
                         <td><input type="text" name="traffic_info_${shop.id}" class="input-xlarge"></td>
                     </tr>
                     <tr>
-                        <td>地图经度</td>
+                        <td>地图经度*</td>
                         <td><input type="text" name="lng_${shop.id}" value="${shop.longitude}" class="input-xlarge"></td>
-                        <td>地图纬度</td>
+                        <td>地图纬度*</td>
                         <td><input type="text" name="lat_${shop.id}" value="${shop.latitude}" class="input-xlarge"></td>
                     </tr>
                     <tr>
@@ -216,7 +223,10 @@
                     </tr>
                     <tr>
                         <td>商家地址</td>
-                        <td colspan="3"><input type="text" name="address_${shop.id}" value="${shop.address}" class="input-xxlarge"></td>
+                        <td colspan="3">
+                            <input type="text" name="address_${shop.id}" value="${shop.address}" class="input-xxlarge">
+                            <span class="help-inline">(格式为：xx市xx区xx路xx号，务必提供行政区，并精确到xx号)</span>
+                        </td>
                     </tr>
                     <tr>
                         <td>商圈 *</td>

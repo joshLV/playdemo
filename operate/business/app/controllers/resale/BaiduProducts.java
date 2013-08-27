@@ -72,6 +72,7 @@ public class BaiduProducts extends Controller {
         ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.BD, resaler, goods);
         requestMap.put("brand", goods.brand.name);
         requestMap.put("tpid", String.valueOf(product.goodsLinkId));
+        requestMap.put("stock_model", 0);
         System.out.println(firstCatalog.substring(0, firstCatalog.indexOf(",")));
         requestMap.put("first_catalog", firstCatalog.substring(0, firstCatalog.indexOf(",")));
         requestMap.put("token_mode", 0);
@@ -161,13 +162,13 @@ public class BaiduProducts extends Controller {
 
         groupbuyInfoParams.remove("body");
         groupbuyInfoParams.remove("goodsId");
+        groupbuyInfoParams.remove("productId");
         Map<String, Object> requestMap = new HashMap<>();
         for (Map.Entry<String, String> entry : groupbuyInfoParams.entrySet()) {
             requestMap.put(entry.getKey(), entry.getValue());
         }
 
-//        extractRequestParam(shopIds, groupbuyInfoParams, requestMap);
-
+        extractRequestParam(shopIds, groupbuyInfoParams, requestMap);
 
         Map<String, Object> rMap = new HashMap<>();
         rMap.put("tpid", product.goodsLinkId);
@@ -191,9 +192,9 @@ public class BaiduProducts extends Controller {
     }
 
     private static void extractRequestParam(List<String> shopIds, Map<String, String> groupbuyInfoParams, Map<String, Object> requestMap) {
-        requestMap.put("stock_model", 1);
         requestMap.put("begin_time", getUinxTime(groupbuyInfoParams.get("begin_time")));
         requestMap.put("end_time", getUinxTime(groupbuyInfoParams.get("end_time")));
+        requestMap.put("valid_begin_time", getUinxTime(groupbuyInfoParams.get("begin_time")));
         requestMap.put("valid_time", getUinxTime(groupbuyInfoParams.get("valid_time")));
 
         Map<String, String> sp = new HashMap<>();

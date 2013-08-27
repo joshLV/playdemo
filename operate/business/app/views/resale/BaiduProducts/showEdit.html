@@ -37,7 +37,7 @@ ${goods.shortName}</a>
     <div class="controls">
         <input type="text" id="grouponName" class="input-block-level" name="groupon_name" value="${goods.name}"
                data-max-length="512">
-        <span class="help-block">不超过512个字符<span id="inputTeamTitle-monitor"></span></span>
+        <span class="help-block">不超过512个字符<span id="grouponName-monitor"></span></span>
     </div>
 </div>
 <div class="control-group">
@@ -46,7 +46,7 @@ ${goods.shortName}</a>
     <div class="controls">
         <input type="text" id="shortTitle" name="short_title" class="input-xxlarge" value="${goods.shortName}"
                data-max-length="20">
-        <span class="help-inline">不超过20个字符<span id="inputTitle-monitor"></span></span>
+        <span class="help-inline">不超过20个字符<span id="shortTitle-monitor"></span></span>
     </div>
 </div>
 <div class="control-group">
@@ -56,7 +56,7 @@ ${goods.shortName}</a>
         <input type="text" id="inputProdImg" name="groupon_main_image" class="input-xxlarge"
                value="${goods.getImageLargePath()}">
         <span class="btn" id="buttonProdImg">选择图片</span>
-        <span class="help-block">http开头，图片尺寸为680*425</span>
+        <span class="help-block">http开头，图片尺寸为448(宽)*280(高)</span>
         <img src="${goods.imageOriginalPath}" alt="" id="imgProdImg">
     </div>
 </div>
@@ -66,10 +66,9 @@ ${goods.shortName}</a>
     <div class="controls">
         <input type="text" id="smsTitle" name="SMS_title" class="input-xxlarge" value="${goods.title}"
                data-max-length="30">
-        <span class="help-inline">不超过30个字符<span id="inputListShortTitle-monitor"></span></span>
+        <span class="help-inline">不超过30个字符<span id="smsTitle-monitor"></span></span>
     </div>
 </div>
-
 <div class="control-group">
     <label class="control-label" for="originalPrice">市场价 *</label>
 
@@ -97,14 +96,15 @@ ${goods.shortName}</a>
     <div class="controls">
         <input type="text" name="valid_time" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
                class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
+        <span class="help-inline">(券截止日期 > 团购结束时间)</span>
     </div>
 </div>
 <div class="control-group">
     <label class="control-label" for="maxSale">商品总库存 *</label>
 
     <div class="controls">
-        <input type="text" id="maxSale" name="max_sale" value="0">
-        <span class="help-inline">必须大于等于0</span>
+        <input type="text" id="maxSale" name="max_sale" value="9999">
+        <span class="help-inline">必须大于0</span>
     </div>
 </div>
 <div class="control-group">
@@ -135,19 +135,19 @@ ${goods.shortName}</a>
         </textarea>
     </div>
 </div>
-<div class="control-group">
-    <label class="control-label">团购套餐详情</label>
+*{<div class="control-group">}*
+    *{<label class="control-label">团购套餐详情</label>}*
 
-    <div class="controls">
-        <textarea rows="8" cols="100" name="ext" style="width:850px;height:550px;display:hidden;">
-        ${goods.details.raw()}
-            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
-            </p>
-        ${goods.supplierDes.raw()}
-        </textarea>
-    </div>
-</div>
+    *{<div class="controls">}*
+        *{<textarea rows="8" cols="100" name="ext" style="width:850px;height:550px;display:hidden;">}*
+        *{${goods.details.raw()}}*
+            *{<p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">}*
+                *{<span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>}*
+            *{</p>}*
+        *{${goods.supplierDes.raw()}}*
+        *{</textarea>}*
+    *{</div>}*
+*{</div>}*
 <div class="control-group">
     <label class="control-label">发布城市 *</label>
     <div class="controls">
