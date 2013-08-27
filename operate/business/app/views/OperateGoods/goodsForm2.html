@@ -81,6 +81,19 @@
     </div>
     <span id="err-isLottery"></span>
 </div>
+    #{if goods?.isSendCouponBySupplier()}
+    %{
+    couponAmount=goods?.getProperties(models.sales.Goods.COUPON_AMOUNT,"5");
+    }%
+    <div class="control-group" id="set_coupon_monery">
+        <label class="control-label">优惠券金额</label>
+
+        <div class="controls">
+            <input type="text" name="couponAmount" id="supplier_setCouponAmount" value="${couponAmount?:5}"/>
+            <span class="help-block"> (可以发放优惠券的商户才可以设置此项金额) </span>
+        </div>
+    </div>
+    #{/if}
 <div class="control-group" id="advancedDeposit" style="display: none">
     <label class="control-label"><span style="color: red; ">*</span>&{'goods.advancedDeposit'}</label>
 

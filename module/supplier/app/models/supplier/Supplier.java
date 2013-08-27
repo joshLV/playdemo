@@ -82,6 +82,7 @@ public class Supplier extends Model {
     public static final String DIAN_PING = "dianPing"; //是否在点评上验证
     public static final String SET_LESS_WITHDRAW_AMOUNT = "setLessWithdrawAmount"; //设置最少提现金额
     public static final String SET_RESERVE_AMOUNT = "setReserveAmount"; //设置预留金额
+    public static final String IS_SENT_COUPON= "sendCoupon"; //设置是否发放优惠券
 
 
     private static Supplier SHIHUI = null;

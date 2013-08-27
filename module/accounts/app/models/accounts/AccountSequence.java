@@ -115,7 +115,8 @@ public class AccountSequence extends Model {
 
     @Transient
     public String platform;                     //平台
-
+    @Transient
+    public Boolean sendCoupon=Boolean.FALSE;                  //supplier send coupon
 
     public AccountSequence() {
 

@@ -680,7 +680,15 @@ public class ECoupon extends Model {
         if (this.goods.isSecondaryVerificationGoods()) {
             paidToSupplierPrice = originalPrice.subtract(advancedDeposit);
         }
-
+        // 判断该商户是否发放了优惠券,查找该订单是否已经存在有已消费的券号，有的跳出，没有则给商户打一次钱，也就是说一个订单只打一次钱
+        if (this.goods.isSendCouponBySupplier()) {
+            for (ECoupon e : order.eCoupons) {
+                if (e.status == ECouponStatus.CONSUMED) {
+                    break;
+                }
+            }
+            paidToSupplierPrice = paidToSupplierPrice.subtract(new BigDecimal(goods.getProperties(Goods.COUPON_AMOUNT, "5")));
+        }
         // 给商户打钱
         TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
                 .toAccount(getSupplierAccount())
