@@ -27,16 +27,14 @@ import java.util.*;
  * Time: 下午5:07
  */
 @JobDefine(title = "商户合同预警检查", description = "10天内商户合同过期提醒")
-//@On("0 0 8 * * ?")
-@Every("20mn")
-//@OnApplicationStart
+@On("0 0 8 * * ?")
 public class ExpiredContractNotice extends JobWithHistory {
-    public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.contract.email.receiver", "yanjingyun@uhuila.com,juna@uhuila.com");
+    public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.contract.email.receiver", "dev@uhuila.com");
 
     @Override
     public void doJobWithHistory() {
         String sql = "select sc from SupplierContract sc where sc.status = :status and sc.expireAt >=:expireAtBegin and " +
-                " sc.expireAt <:expireAtEnd group by sc.supplierId order by sc.expireAt ";
+                " sc.expireAt <:expireAtEnd group by sc.supplierId order by sc.description,sc.expire_at ";
         Query query = Order.em().createQuery(sql);
         query.setParameter("status", ContractStatus.NORMAL);
         query.setParameter("expireAtBegin", DateUtils.truncate(new Date(), Calendar.DATE));

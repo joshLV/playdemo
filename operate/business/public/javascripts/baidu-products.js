@@ -127,7 +127,7 @@ $(function(){
         filterMode:false,
         allowFileManager:false
     });
-    $("#inputTeamTitle, #inputTitle, #inputListShortTitle").each(function(){
+    $("#grouponName, #shortTitle, #smsTitle").each(function(){
         var ele = $(this);
         var maxLength = parseInt(ele.attr('data-max-length'));
         var monitor = $('#' + ele.attr('id') + '-monitor');
