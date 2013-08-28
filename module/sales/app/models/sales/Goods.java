@@ -667,7 +667,7 @@ public class Goods extends Model {
         if (this.id == null) {
             return false;
         }
-        return "1".equals(getSupplier().getProperty(Supplier.IS_SEND_COUPON));
+        return "1".equals(getSupplier().getProperty(Supplier.IS_SENT_COUPON));
     }
 
     @Column(name = "is_all_shop")
