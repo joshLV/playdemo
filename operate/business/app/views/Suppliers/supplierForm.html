@@ -73,7 +73,7 @@ error:'supplier.operator'}
     giftCard=giftCard?:supplier?.getProperty(models.supplier.Supplier.PROPERTY_GIFT_CARD)?:'0';
     freezeAmount = freezeAmount?:supplier?.getProperty(models.supplier.Supplier.FREEZE_AMOUNT)?:'0';
     setWithdrawAmount = setWithdrawAmount?:supplier?.getProperty(models.supplier.Supplier.SET_WITHDRAW_AMOUNT)?:'0';
-    sendCoupon = sendCoupon?:supplier?.getProperty(models.supplier.Supplier.IS_SEND_COUPON)?:'0';
+    sendCoupon = sendCoupon?:supplier?.getProperty(models.supplier.Supplier.IS_SENT_COUPON)?:'0';
     }%
 #{/if}
     <div class="controls">

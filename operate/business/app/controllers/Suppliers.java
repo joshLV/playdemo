@@ -150,7 +150,7 @@ public class Suppliers extends Controller {
         supplier.setProperty(Supplier.DIAN_PING, request.params.get(Supplier.DIAN_PING));
         supplier.setProperty(Supplier.SET_RESERVE_AMOUNT, request.params.get(Supplier.SET_RESERVE_AMOUNT));
         supplier.setProperty(Supplier.SET_LESS_WITHDRAW_AMOUNT, request.params.get(Supplier.SET_LESS_WITHDRAW_AMOUNT));
-        supplier.setProperty(Supplier.IS_SEND_COUPON, request.params.get(Supplier.IS_SEND_COUPON));
+        supplier.setProperty(Supplier.IS_SENT_COUPON, request.params.get(Supplier.IS_SENT_COUPON));
     }
 
     private static void redirectUrl(int page) {
