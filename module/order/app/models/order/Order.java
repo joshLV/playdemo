@@ -542,7 +542,6 @@ public class Order extends Model {
                             (0.01));
                 }
             }
-            System.out.println("order commission = " + commission);
             orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice, commission);
             orderItem = addOrderItem(orderItem, discountCode, isPromoteFlag);
         }

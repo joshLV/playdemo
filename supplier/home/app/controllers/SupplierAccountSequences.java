@@ -14,6 +14,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class SupplierAccountSequences extends Controller {
                 pageNumber, PAGE_SIZE);
         //account_sequence记录的备注是订单的首个商品名，为避免出现显示别家商户的商品名，在此重新查一遍
         for (AccountSequence sequence : accountSequences.getCurrentPage()) {
-            if (sequence.tradeType != TradeType.PURCHASE_COSTING && sequence.tradeType != TradeType.REFUND &&sequence.tradeType !=TradeType.SUPPLIER_CHEATED) {
+            if (sequence.tradeType != TradeType.PURCHASE_COSTING && sequence.tradeType != TradeType.REFUND && sequence.tradeType != TradeType.SUPPLIER_CHEATED) {
                 continue;
             }
             List<OrderItems> orderItems = OrderItems.findBySupplierOrder(account.id, sequence.orderId);
@@ -71,6 +72,13 @@ public class SupplierAccountSequences extends Controller {
             Order order = Order.findById(accountSequence.orderId);
             if (order != null) {
                 accountSequence.orderNumber = order.orderNumber;
+                BigDecimal sumAmount = BigDecimal.ZERO;
+                for (OrderItems item : order.orderItems) {
+                    sumAmount = sumAmount.add(new BigDecimal(item.buyNumber).multiply(item.resalerPrice));
+                }
+                if (sumAmount.compareTo(order.amount) > 0) {
+                    accountSequence.sendCoupon = true;
+                }
             }
             return order;
         }

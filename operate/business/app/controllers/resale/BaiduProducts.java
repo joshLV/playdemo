@@ -1,6 +1,8 @@
 package controllers.resale;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import controllers.OperateRbac;
 import models.baidu.BaiduResponse;
 import models.baidu.BaiduUtil;
@@ -172,7 +174,7 @@ public class BaiduProducts extends Controller {
 
         Map<String, Object> rMap = new HashMap<>();
         rMap.put("tpid", product.goodsLinkId);
-        rMap.put("update", new Gson().toJson(requestMap));
+        rMap.put("update", requestMap);
         //发起请求
         BaiduResponse response = BaiduUtil.sendRequest(rMap, "updateproduct.action");
         //保存历史
@@ -188,6 +190,25 @@ public class BaiduProducts extends Controller {
         }
 
         render("resale/BaiduProducts/result.html", response);
+
+    }
+
+    @ActiveNavigation("resale_partner_product")
+    public static void list() {
+        Map<String, Object> rMap = new HashMap<>();
+//        rMap.put("form", product.goodsLinkId);
+//        rMap.put("to", requestMap);
+//        rMap.put("pageNum", requestMap);
+//        rMap.put("pageSize", requestMap);
+//        rMap.put("status", 0);
+        //发起请求
+        BaiduResponse response = BaiduUtil.sendRequest(rMap, "listProduct.action");
+        //保存历史
+        if (response.isOk()) {
+            for (JsonElement element : response.data.getAsJsonArray()) {
+                JsonObject obj = element.getAsJsonObject();
+            }
+        }
 
     }
 

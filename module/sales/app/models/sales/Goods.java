@@ -109,6 +109,8 @@ public class Goods extends Model {
      */
     public static final String SECONDARY_VERIFICATION = "secondaryVerification";
     public static final String PROPERTY_GIFT_CARD = "giftCard";
+    //优惠券金额
+    public static final String COUPON_AMOUNT = "couponAmount";
 
     //  ========= 不同的价格列表 =======
     /**
@@ -657,6 +659,16 @@ public class Goods extends Model {
         return false;
     }
 
+    /**
+     * 是否是可发放优惠券的商户
+     */
+    @Transient
+    public boolean isSendCouponBySupplier() {
+        if (this.id == null) {
+            return false;
+        }
+        return "1".equals(getSupplier().getProperty(Supplier.IS_SEND_COUPON));
+    }
 
     @Column(name = "is_all_shop")
     public Boolean isAllShop = true;
@@ -2420,6 +2432,7 @@ public class Goods extends Model {
         }
 
     }
+
 
     /**
      * 是否二次验证商品

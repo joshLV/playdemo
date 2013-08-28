@@ -42,7 +42,7 @@ public class BaiduOrderScanner extends JobWithHistory {
         //筛选出我们没有处理过的
         for (JsonElement order : orders) {
             JsonObject orderObject = order.getAsJsonObject();
-            String orderId = orderObject.get("").getAsString();
+            String orderId = orderObject.get("order_id").getAsString();
             if (OuterOrder.getOuterOrder(orderId, OuterOrderPartner.BD) == null) {
                 OuterOrder outerOrder = new OuterOrder();
                 //此处不保存outerOrder的message，等处理的时候会再去百度取最新的订单信息并保存
@@ -63,7 +63,7 @@ public class BaiduOrderScanner extends JobWithHistory {
         Date start = calendar.getTime();
 
         Map<String, Object> params = new HashMap<>();
-        params.put("status", "2");//已付款订单
+//        params.put("status", "2");//已付款订单
         params.put("from", new SimpleDateFormat(ORDER_DATE).format(start));
         params.put("to", new SimpleDateFormat(ORDER_DATE).format(end));
         BaiduResponse response = BaiduUtil.sendRequest(params, "getOrderByTime.action");

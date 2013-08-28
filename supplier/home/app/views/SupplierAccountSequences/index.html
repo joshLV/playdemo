@@ -70,6 +70,10 @@
             <td>${accountSequence?.accountName}</td>
                 <td>${accountSequence?.remark}#{if accountSequence?.tradeType != models.accounts.TradeType.WITHDRAW}
                     <br/>订单号:${accountSequence?.orderNumber}
+                    #{if accountSequence.sendCoupon}
+                        <a href="#" title="使用了优惠券"><img
+                                src="#{asset.url href:"/images/m/ico-info.png" /}" style="vertical-align: middle;"></a>
+                    #{/if}
                 #{/if}</td>
                 <td>&{'trade_type.'+accountSequence?.tradeType}</td>
                 <td>
@@ -77,7 +81,9 @@
                             class="success"
                     #{/if} #{if accountSequence?.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
                             class="red"
-                    #{/if}>${accountSequence?.changeAmount}</div>
+                    #{/if}>
+                    ${accountSequence?.changeAmount}
+                    </div>
                 </td>
                 <td>${accountSequence?.balance}</td>
                 <td>&{'accountSequence.'+accountSequence?.settlementStatus?:'CLEARED'}</td>

@@ -879,6 +879,11 @@ public class OperateGoods extends Controller {
         } else {
             goods.setProperties(Goods.PROPERTY_GIFT_CARD, request.params.get(Goods.PROPERTY_GIFT_CARD));
         }
+        System.out.println(request.params.get(Goods.COUPON_AMOUNT)+">>>>>>>");
+        if (StringUtils.isNotBlank(request.params.get(Goods.COUPON_AMOUNT))) {
+
+            goods.setProperties(Goods.COUPON_AMOUNT, request.params.get(Goods.COUPON_AMOUNT));
+        }
 
     }
 }
