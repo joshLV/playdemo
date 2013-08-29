@@ -7,7 +7,6 @@ import com.uhuila.common.util.RandomNumberUtil;
 import extension.order.ECouponVerifyContext;
 import extension.order.ECouponVerifyInvocation;
 import models.accounts.Account;
-import models.accounts.AccountSequence;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
@@ -373,9 +372,9 @@ public class ECoupon extends Model {
             } else {
                 this.eCouponSn = couponSn;
             }
-            if (!order.isBaiduResaler()) {
-                this.createType = ECouponCreateType.IMPORT;
-            }
+//            if (!order.isBaiduResaler()) {
+            this.createType = ECouponCreateType.IMPORT;
+//            }
         }
         this.orderItems = orderItems;
         this.smsSentCount = 0;
