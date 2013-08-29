@@ -56,7 +56,7 @@
 
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
     <permission key="SUPPLIERS_ADS_NEW" text="商户广告费添加" roles="account"/>
-    <permission key="SUPPLIERS_MANAGE" text="商户删除和冻结" roles="account"/>
+    <permission key="SUPPLIERS_MANAGE" text="商户删除和冻结" roles="editor"/>
     <permission key="SALES_SET_SUPPLIER_WITHDRAW_AMOUNT" text="商务销售可以设置商户提现金额" roles="sales"/>
     <permission key="SUPPLIERS" text="查看商户" roles="editor,customservice,sales"/>
     <permission key="SUPPLIERS_USERS_NEW" text="商户操作员添加" roles="editor"/>
