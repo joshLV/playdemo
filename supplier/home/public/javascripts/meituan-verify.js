@@ -192,7 +192,6 @@ jQuery(function ($) {
                                     $("#verify-info-" + i).text(item.result);
                                 }
                                 $("#verify-btn").text("验证消费").removeClass("disabled");
-
                             })
 
                         }
