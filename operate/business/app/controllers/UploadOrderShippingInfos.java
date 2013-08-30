@@ -32,11 +32,7 @@ import play.vfs.VirtualFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p/>
@@ -89,11 +85,11 @@ public class UploadOrderShippingInfos extends Controller {
         }
 
         List<String> unExistedOrders = new ArrayList<>();
-        List<String> uploadSuccessOrders = new ArrayList<>();
+        Set<String> uploadSuccessOrders = new HashSet<>();
         List<String> unExistedExpressCompanys = new ArrayList<>();
         List<String> emptyExpressInofs = new ArrayList<>();
         List<String> noGoodsCodeList = new ArrayList<>();
-        List<String> existedUploadOrders = new ArrayList<>();
+        Set<String> existedUploadOrders = new HashSet<>();
         //todo 检查实物订单信息中是否存在退货订单
         List<RealGoodsReturnEntry> returnEntryList = new ArrayList<>();
         for (LogisticImportData logistic : logistics) {
@@ -125,38 +121,40 @@ public class UploadOrderShippingInfos extends Controller {
                 continue;
             }
             //查询该商户下的订单信息，存在则更新物流信息
-            OrderItems orderItems = OrderItems.find("goods.sku is not null and goods.code=? and order.orderNumber=?", logistic.goodsCode, logistic.orderNumber).first();
-            if (orderItems == null) {
+            List<OrderItems> orderItemsList = OrderItems.find("goods.sku is not null and goods.code=? and order.orderNumber=?", logistic.goodsCode, logistic.orderNumber).fetch();
+
+            if (orderItemsList.size() == 0) {
                 unExistedOrders.add(logistic.orderNumber);
                 continue;
             }
+            for (OrderItems orderItem : orderItemsList) {
+                orderItem.shippingInfo.expressCompany = expressCompany;
+                orderItem.shippingInfo.expressNumber = logistic.expressNumber;
+                orderItem.shippingInfo.freight = Freight.findFreight(orderItem.goods.getSupplier(), expressCompany,
+                        orderItem.shippingInfo.address);
+                orderItem.shippingInfo.save();
+                orderItem.status = OrderStatus.SENT;
+                orderItem.sendAt = new Date();
+                orderItem.save();
 
-            if (StringUtils.isNotBlank(orderItems.shippingInfo.expressNumber) || orderItems.shippingInfo.expressCompany != null) {
-                existedUploadOrders.add(logistic.orderNumber);
-                continue;
+                //订单已发货，给商户打钱操作
+                if (StringUtils.isBlank(orderItem.shippingInfo.expressNumber) && orderItem.shippingInfo.expressCompany == null) {
+                    orderItem.realGoodsPayCommission();
+                } else {
+                    existedUploadOrders.add(logistic.orderNumber);
+                    continue;
+                }
+
+                if (resaler != null && orderItem.order.userId.equals(resaler.getId())
+                        && orderItem.order.operator.id.equals(resaler.operator.getId())) {
+                    successTaobaoLogistics.add(logistic);
+                }
             }
 
-            orderItems.shippingInfo.expressCompany = expressCompany;
-            orderItems.shippingInfo.expressNumber = logistic.expressNumber;
-            orderItems.shippingInfo.freight = Freight.findFreight(orderItems.goods.getSupplier(), expressCompany,
-                    orderItems.shippingInfo.address);
-            orderItems.shippingInfo.save();
-            orderItems.status = OrderStatus.SENT;
-            orderItems.sendAt = new Date();
-            orderItems.save();
-
-            //订单已发货，给商户打钱操作
-            orderItems.realGoodsPayCommission();
-
-            uploadSuccessOrders.add(logistic.orderNumber);
-            if (resaler != null && orderItems.order.userId.equals(resaler.getId())
-                    && orderItems.order.operator.id.equals(resaler.operator.getId())) {
-                System.out.println("successTaobaoLogistics = " + successTaobaoLogistics);
-
-                successTaobaoLogistics.add(logistic);
+            if (existedUploadOrders.size() == 0) {
+                uploadSuccessOrders.add(logistic.orderNumber);
             }
         }
-
         JPA.em().flush();
 
         List<ExpressCompany> expressCompanyList = ExpressCompany.findAll();
