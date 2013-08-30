@@ -68,31 +68,28 @@ public class SupplierVerifyResalerECoupons extends Controller {
         }
     }
 
-    public static void meituan(String partnerGoodsId, List<String> couponIds) {
-
-        String message = "";
+    public static void meituan(String partnerGoodsId, String partnerShopId, List<String> couponIds) {
         if (StringUtils.isBlank(partnerGoodsId)) {
-            message = "请选择美团项目！";
-            renderJSON("{\"message\":\"" + message + "\"}");
+            renderJSON("{\"result\":\"请输入商品信息！\",\"errcode\":1}");
         }
         if (couponIds == null || couponIds.size() == 0) {
-            message = "请输入券号！";
-            renderJSON("{\"message\":\"" + message + "\"}");
+            renderJSON("{\"result\":\"请输入券号！\",\"errcode\":1}");
             return;
         }
         SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("partnerGoodsId = ?", partnerGoodsId).first();
         if (supplierResalerProduct == null) {
-            message = "输入的美团项目没有指定一百券对应的商品信息！";
-            renderJSON("{\"message\":\"" + message + "\"}");
+            renderJSON("[{\"result\":\"输入的美团项目没有指定一百券对应的商品信息\",\"errcode\":1}]}]");
+            return;
+        }
+        if (StringUtils.isBlank(partnerShopId)) {
+            renderJSON("[{\"result\":\"请选择美团分店！\",\"errcode\":1}]");
             return;
         }
 
         Resaler resaler = Resaler.findApprovedByLoginName("meituan");
-        Supplier supplier = SupplierRbac.currentUser().supplier;
-        SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("supplier=? and resaler=? and resalerPartnerGoodsId=?", supplier, resaler, partnerGoodsId).first();
+        SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("resalerPartnerShopId=? and resaler=?", partnerShopId, resaler).first();
         if (supplierResalerShop == null) {
-            message = "输入的美团项目没有指定一百券对应的商品信息！";
-            renderJSON("{\"message\":\"" + message + "\"}");
+            renderJSON("[{\"result\":\"输入的美团项目没有指定一百券对应的商品信息\",\"errcode\":1}]}]");
             return;
         }
         String cookie = supplierResalerShop.cookieValue;
@@ -119,9 +116,9 @@ public class SupplierVerifyResalerECoupons extends Controller {
             params.put("codes[" + i + "]", couponIds.get(i));
         }
         params.put("dealid", partnerGoodsId);
-        params.put("bizloginid", supplierResalerShop.resalerPartnerShopId);
+        params.put("bizloginid", partnerShopId);
 
-        Logger.info("美团项目ID：%s,对应门店ID：%s,对应一百券商品ID：%s", partnerGoodsId, supplierResalerShop.resalerPartnerShopId, supplierResalerProduct.goods.id.toString());
+        Logger.info("美团项目ID：%s,对应门店ID：%s,对应一百券商品ID：%s", partnerGoodsId, partnerShopId, supplierResalerProduct.goods.id.toString());
 
         WS.HttpResponse response = WS.url("http://e.meituan.com/coupon/batchconsume").params(params).headers(headers).followRedirects(false).post();
         List<Http.Header> headerList = response.getHeaders();
@@ -132,7 +129,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
         String body = response.getString();
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("partnerGoodsId", partnerGoodsId);
-        jsonMap.put("partnerShopId", supplierResalerShop.resalerPartnerShopId);
+        jsonMap.put("partnerShopId", partnerShopId);
         jsonMap.put("goodsId", supplierResalerProduct.goods.id.toString());
 //        body = "{\"status\":0,\"data\":[{\"result\":\"\u6d88\u8d39\u6210\u529f\",\"code\":\"9083555383\",\"errcode\":false}]}";
         JsonParser jsonParser = new JsonParser();
@@ -140,13 +137,12 @@ public class SupplierVerifyResalerECoupons extends Controller {
         String errcode = "";
         if (result.has("data")) {
             JsonArray dataResult = result.get("data").getAsJsonArray();
-            System.out.println("data:" + dataResult);
             for (JsonElement obj : dataResult) {
                 JsonObject data = obj.getAsJsonObject();
                 String coupon = data.get("code").getAsString();
                 errcode = data.get("errcode").getAsString();//成功为false 失败为1
                 if (!"1".equals(errcode)) {
-                    data.addProperty("goodsname",supplierResalerProduct.partnerGoodsName);
+                    data.addProperty("goodsname", supplierResalerProduct.partnerGoodsName);
                     OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon, OuterOrderPartner.MT);
                     if (outerOrder == null) {
                         outerOrder = new OuterOrder();
@@ -161,6 +157,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
 
                 }
             }
+            System.out.println(dataResult.toString());
             renderJSON(dataResult.toString());
         }
 
