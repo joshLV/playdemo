@@ -37,8 +37,15 @@
     #{/select}
     </div>
 </div>
+<div class="control-group">
+    <label class="control-label">备注</label>
+
+    <div class="controls">
+        <textarea name="ads.remark">${ads?.remark}</textarea>
+    </div>
+</div>
 <div class="form-actions">
-    <input class="btn btn-primary" id="save" type="submit" value="保存" >
+    <input class="btn btn-primary" id="save" type="submit" value="保存">
 #{if "edit".equals(action)}
     #{vx.cancelButton url:'/suppliers_adsfee', class:'btn btn-primary'/}
 #{/if}
@@ -65,7 +72,7 @@
             if ($("#supplierName").val().trim() == '') {
                 $("#id_supplierName").val(0);
                 $("#save").attr('disabled', true);
-            }else {
+            } else {
                 $("#save").attr('disabled', false);
             }
         });

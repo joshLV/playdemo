@@ -44,6 +44,8 @@ public class SupplierAdsFee extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
+    public String remark;
+
     @Enumerated(EnumType.STRING)
     public DeletedStatus deleted;
 
