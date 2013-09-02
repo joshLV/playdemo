@@ -86,6 +86,9 @@ public class OrderListener extends JobWithHistory {
 
             if (response.isOk()) {
                 List<Node> orders = XPath.selectNodes("./order", response.data);
+                if (orders.size() == 0) {
+                    return orderCodeList;
+                }
                 for (Node order : orders) {
                     orderCodeList.add(XPath.selectText("./orderCode", order).trim());
                 }
