@@ -15,11 +15,7 @@ import play.jobs.Every;
 import play.libs.XPath;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author likang
@@ -41,13 +37,12 @@ public class OrderListener extends JobWithHistory {
             return;
         }
         //从一号店拉取订单列表
-        List<Node> orders = newOrders();
-        if (orders == null || orders.size() == 0) {
+        List<String> orderCodeList = getNewOrderCodeList();
+        if (orderCodeList.size() == 0) {
             return;
         }
         //筛选出我们没有处理过的
-        for (Node order : orders) {
-            String orderCode = XPath.selectText("./orderCode", order).trim();
+        for (String orderCode : orderCodeList) {
             if (OuterOrder.find("byOrderIdAndPartner", orderCode, OuterOrderPartner.YHD).first() == null) {
                 OuterOrder outerOrder = new OuterOrder();
                 //此处不保存outerOrder的message，等处理的时候会再去一号店拉取最新的订单信息并保存
@@ -65,7 +60,7 @@ public class OrderListener extends JobWithHistory {
      *
      * @return 已付款未发货的订单摘要
      */
-    public List<Node> newOrders() {
+    public List<String> getNewOrderCodeList() {
         Date end = new Date(System.currentTimeMillis() + 600000);//当前时间往后10分钟
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(end);
@@ -78,12 +73,29 @@ public class OrderListener extends JobWithHistory {
         params.put("dateType", "1");//按付款时间查询
         params.put("startTime", new SimpleDateFormat(ORDER_DATE).format(start));
         params.put("endTime", new SimpleDateFormat(ORDER_DATE).format(end));
+        params.put("pageRows", "100");
 
-        YHDResponse response = YHDUtil.sendRequest(params, "yhd.orders.get", "orderList");
+        int page = 0;
 
-        if (response.isOk()) {
-            return XPath.selectNodes("./order", response.data);
+        List<String> orderCodeList = new ArrayList<>();
+
+        while (true) {
+            page += 1;
+            params.put("curPage", String.valueOf(page));
+            YHDResponse response = YHDUtil.sendRequest(params, "yhd.orders.get", "orderList");
+
+            if (response.isOk()) {
+                List<Node> orders = XPath.selectNodes("./order", response.data);
+                for (Node order : orders) {
+                    orderCodeList.add(XPath.selectText("./orderCode", order).trim());
+                }
+                if (orderCodeList.size() >= response.totalCount) {
+                    return orderCodeList;
+                }
+            } else {
+                return orderCodeList;
+            }
+
         }
-        return null;
     }
 }

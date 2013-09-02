@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class YHDResponse {
     public int errorCount = 1;
+    public int totalCount = 0;
     public List<Node> errors = new ArrayList<>(); // errorCode errorDes pkInfo
 
     public Node data;
