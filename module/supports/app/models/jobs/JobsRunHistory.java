@@ -4,12 +4,7 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import util.DateHelper;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +25,7 @@ public class JobsRunHistory extends Model {
 
     public String status;
 
+    @Lob
     public String remark;
 
     /**
