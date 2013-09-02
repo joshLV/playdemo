@@ -68,7 +68,10 @@ public class YHDUtil {
     public static YHDResponse parseMessage(Document document, String dataElementName) {
         YHDResponse response = new YHDResponse();
         response.errorCount = Integer.parseInt(XPath.selectText("/response/errorCount", document).trim());
-
+        String totalCountStr = XPath.selectText("/response/totalCount", document);
+        if (StringUtils.isNotBlank(totalCountStr)) {
+            response.totalCount = Integer.parseInt(totalCountStr);
+        }
         if (response.errorCount > 0) {
             response.errors = XPath.selectNodes("/response/errInfoList/errDetailInfo", document);
         }
