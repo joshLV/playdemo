@@ -23,9 +23,9 @@ public class TaobaoCouponJob extends JobWithHistory {
 
     @Override
     public void doJobWithHistory() {
-        if (!ON && Play.runingInTestMode()) {
-            return;
-        }
+//        if (!ON && Play.runingInTestMode()) {
+//            return;
+//        }
         Logger.info("start taobao coupon job");
         List<OuterOrder> outerOrders = OuterOrder.find("partner = ? and (status = ? or status = ? or status = ? or status = ?)",
                 OuterOrderPartner.TB,
