@@ -657,17 +657,6 @@ public class Goods extends Model {
         return false;
     }
 
-    /**
-     * 是否是可发放优惠券的商户
-     */
-    @Transient
-    public boolean isSendCouponBySupplier() {
-        if (this.id == null) {
-            return false;
-        }
-        return "1".equals(getSupplier().getProperty(Supplier.IS_SENT_COUPON));
-    }
-
     @Column(name = "is_all_shop")
     public Boolean isAllShop = true;
 

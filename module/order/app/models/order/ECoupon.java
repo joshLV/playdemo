@@ -130,7 +130,7 @@ public class ECoupon extends Model {
      * 折扣掉的费用.
      */
     @Column(name = "rebate_value")
-    public BigDecimal rebateValue;
+    public BigDecimal rebateValue = BigDecimal.ZERO;
     /**
      * 给推荐人返利费用.
      */
@@ -679,14 +679,10 @@ public class ECoupon extends Model {
         if (this.goods.isSecondaryVerificationGoods()) {
             paidToSupplierPrice = originalPrice.subtract(advancedDeposit);
         }
-        // 判断该商户是否发放了优惠券,有则减去该平摊到每个券的优惠金额
-        if (this.goods.isSendCouponBySupplier()) {
-            paidToSupplierPrice = paidToSupplierPrice.subtract(this.rebateValue);
-        }
         // 给商户打钱
         TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
                 .toAccount(getSupplierAccount())
-                .balancePaymentAmount(paidToSupplierPrice)
+                .balancePaymentAmount(paidToSupplierPrice.subtract(this.rebateValue == null ? BigDecimal.ZERO : this.rebateValue))//默认减去该平摊到每个券的优惠金额
                 .orderId(order.getId())
                 .coupon(eCouponSn)
                 .make();
