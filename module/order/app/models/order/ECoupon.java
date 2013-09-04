@@ -729,17 +729,18 @@ public class ECoupon extends Model {
 //                    .orderId(this.order.id)
 //                    .make();
 //            TradeUtil.success(rebateTrade, "活动折扣费" + rebateValue);
-//        } else if (salePrice.compareTo(originalPrice) < 0) {
-//            BigDecimal detaPrice = originalPrice.subtract(salePrice);
-//            // 如果售价低于进价，从活动金账户出
-//            TradeBill rebateTrade = TradeUtil.transferTrade()
-//                    .fromAccount(AccountUtil.getPromotionAccount(order.operator))
-//                    .toAccount(AccountUtil.getPlatformIncomingAccount(order.operator))
-//                    .balancePaymentAmount(detaPrice)
-//                    .orderId(this.order.id)
-//                    .make();
-//            TradeUtil.success(rebateTrade, "低价销售补贴" + detaPrice);
-//        }
+//        } else
+        if (salePrice.compareTo(originalPrice) < 0) {
+            BigDecimal detaPrice = originalPrice.subtract(salePrice);
+            // 如果售价低于进价，从活动金账户出
+            TradeBill rebateTrade = TradeUtil.transferTrade()
+                    .fromAccount(AccountUtil.getPromotionAccount(order.operator))
+                    .toAccount(AccountUtil.getPlatformIncomingAccount(order.operator))
+                    .balancePaymentAmount(detaPrice)
+                    .orderId(this.order.id)
+                    .make();
+            TradeUtil.success(rebateTrade, "低价销售补贴" + detaPrice);
+        }
 
 //        //给推荐人返利金额
 //        if (this.order.promoteUserId != null) {
