@@ -30,11 +30,7 @@ import play.vfs.VirtualFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p/>
@@ -110,7 +106,7 @@ public class SupplierUploadOrderShippingInfos extends Controller {
                 continue;
             }
 
-            if (orderItems.shippingInfo.expressCompany != null && StringUtils.isNotBlank(orderItems.shippingInfo.expressNumber)) {
+            if (orderItems.shippingInfo != null && orderItems.shippingInfo.expressCompany != null && StringUtils.isNotBlank(orderItems.shippingInfo.expressNumber)) {
                 existedUploadOrders.add(logistic.orderNumber);
                 continue;
             }
