@@ -25,6 +25,7 @@
             <th width="100px">收取时间</th>
             <th width="50px">类型</th>
             <th width="150px">创建时间</th>
+            <th>备注</th>
             <th width="150px">操 作</th>
         </tr>
         </thead>
@@ -39,6 +40,7 @@
             <td>${ads.receivedAt?.format()}</td>
             <td>&{'ads.'+ads.receivedType}</td>
             <td>${ads.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>${ads?.remark?.raw()}</td>
             <td><a href="/suppliers_adsfee/${ads.id}/edit?page=${page?:1}">修改</a>
                 / #{vx.deleteLink id:ads?.id,  action:"/suppliers_adsfee"/}
             </td>

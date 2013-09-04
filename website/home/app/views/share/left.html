@@ -19,10 +19,13 @@
             </li>
             <li><a #{if request.url.contains("/withdraw")}class="current"#{/if}  href="@{UserWithdraw.index()}">»
                 提现申请</a></li>
+            <!--
             <li><a #{if request.url.contains("/cash-coupon")}class="current"#{/if}  href="@{UserCashCoupons.index()}">»
                 现金券充值</a></li>
             <li><a #{if request.url.equals("/user-coins")}class="current"#{/if} href="/user-coins">» 我的金币</a></li>
+            -->
         </ul>
+        <!--
         <h3 #{if request.url.contains("/voucher")}class="active"#{/if}>
         我的抵用券</h3>
         <ul>
@@ -38,6 +41,7 @@
             <li><a #{if request.url.contains("/user-point-record")}class="current"#{/if} href="/user-point-record">»
                 兑换记录</a></li>
         </ul>
+        -->
     *{
         <h3 #{if request.url.contains("/rebate")}class="active"#{/if}>推荐返利</h3>
         <ul>

@@ -258,19 +258,19 @@
 <!-- #consult -->
 </div>
 <!-- #section -->
-<div id="sidebar">
-#{if isCheckinGoods}
-    <div class="checkin-box">
-        #{if isCheckinToday && cas?.isLogin}
-            <p>本月累计签到 <span>${checkinNumber}</span> 天<br>您有 <span>${totalCoins}</span> 枚金币
-                <a href="${helper.Domain.getHomeHost(request)}/user-coins" target="_blank">去兑换</a>
-            </p>
-        #{/if}
-        #{else}
-            <a id="j_checkin" class="checkin" href="@{ObtainGoldenCoins.index(goods.id)}">马上签到领金币</a>
-        #{/else}
-    </div>
-#{/if}
+*{<div id="sidebar">}*
+*{#{if isCheckinGoods}}*
+    *{<div class="checkin-box">}*
+        *{#{if isCheckinToday && cas?.isLogin}}*
+            *{<p>本月累计签到 <span>${checkinNumber}</span> 天<br>您有 <span>${totalCoins}</span> 枚金币}*
+                *{<a href="${helper.Domain.getHomeHost(request)}/user-coins" target="_blank">去兑换</a>}*
+            *{</p>}*
+        *{#{/if}}*
+        *{#{else}}*
+            *{<a id="j_checkin" class="checkin" href="@{ObtainGoldenCoins.index(goods.id)}">马上签到领金币</a>}*
+        *{#{/else}}*
+    *{</div>}*
+*{#{/if}}*
 #{include '/Goods2/sidebar.html' /}
 </div>
 </div>

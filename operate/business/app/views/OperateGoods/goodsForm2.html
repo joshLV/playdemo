@@ -81,19 +81,6 @@
     </div>
     <span id="err-isLottery"></span>
 </div>
-    #{if goods?.isSendCouponBySupplier()}
-    %{
-    couponAmount=goods?.getProperties(models.sales.Goods.COUPON_AMOUNT,"5");
-    }%
-    <div class="control-group" id="set_coupon_monery">
-        <label class="control-label">优惠券金额</label>
-
-        <div class="controls">
-            <input type="text" name="couponAmount" id="supplier_setCouponAmount" value="${couponAmount?:5}"/>
-            <span class="help-block"> (可以发放优惠券的商户才可以设置此项金额) </span>
-        </div>
-    </div>
-    #{/if}
 <div class="control-group" id="advancedDeposit" style="display: none">
     <label class="control-label"><span style="color: red; ">*</span>&{'goods.advancedDeposit'}</label>
 
@@ -147,36 +134,36 @@
     #{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice?:"0",
     note:'元', tip:'不允许低于采购价（如有需要，请联系开发，不要自行降低采购价！！)',
     required:true/}
-<div class="control-group">
-    <label class="control-label"><span style="color: red; ">*</span>&{'goods.promoterPrice'}</label>
+*{<div class="control-group">}*
+    *{<label class="control-label"><span style="color: red; ">*</span>&{'goods.promoterPrice'}</label>}*
 
-    <div class="controls">
-        <input type="text" id='goods_promoterPrice' name="goods.promoterPrice" class="input-xlarge"
-               value="${goods?.promoterPrice}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"
-               onkeyup="showAddedRebate();limitMoneyFormat(this,this.value)"
-               onkeydown="showAddedRebate();limitMoneyFormat(this,this.value)"
-               onchange="showAddedRebate();limitMoneyFormat(this,this.value)"/>% <span
-            style="color: blue; ">返利为</span><span style="color: red; "
-                                                  id="promoterPrice">0</span><span
-            style="color: blue; ">元</span>
-        <span class="error">#{error 'goods.promoterPrice'/}</span>
-    </div>
-</div>
-<div class="control-group">
-    <label class="control-label"><span style="color: red; ">*</span>&{'goods.invitedUserPrice'}</label>
+    *{<div class="controls">}*
+        *{<input type="text" id='goods_promoterPrice' name="goods.promoterPrice" class="input-xlarge"}*
+               *{value="${goods?.promoterPrice}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"}*
+               *{onkeyup="showAddedRebate();limitMoneyFormat(this,this.value)"}*
+               *{onkeydown="showAddedRebate();limitMoneyFormat(this,this.value)"}*
+               *{onchange="showAddedRebate();limitMoneyFormat(this,this.value)"/>% <span}*
+            *{style="color: blue; ">返利为</span><span style="color: red; "}*
+                                                  *{id="promoterPrice">0</span><span}*
+            *{style="color: blue; ">元</span>}*
+        *{<span class="error">#{error 'goods.promoterPrice'/}</span>}*
+    *{</div>}*
+*{</div>}*
+*{<div class="control-group">}*
+    *{<label class="control-label"><span style="color: red; ">*</span>&{'goods.invitedUserPrice'}</label>}*
 
-    <div class="controls">
-        <input type="text" id='goods_invitedUserPrice' name="goods.invitedUserPrice" class="input-xlarge"
-               value="${goods?.invitedUserPrice}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"
-               onkeyup="showAddedRebate();limitMoneyFormat(this,this.value)"
-               onkeydown="showAddedRebate();limitMoneyFormat(this,this.value)"
-               onchange="showAddedRebate();limitMoneyFormat(this,this.value)"/>% <span
-            style="color: blue; ">返利为</span><span style="color: red; "
-                                                  id="invitedPrice">0</span><span
-            style="color: blue; ">元</span>
-        <span class="error">#{error 'goods.invitedUserPrice'/}</span>
-    </div>
-</div>
+    *{<div class="controls">}*
+        *{<input type="text" id='goods_invitedUserPrice' name="goods.invitedUserPrice" class="input-xlarge"}*
+               *{value="${goods?.invitedUserPrice}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"}*
+               *{onkeyup="showAddedRebate();limitMoneyFormat(this,this.value)"}*
+               *{onkeydown="showAddedRebate();limitMoneyFormat(this,this.value)"}*
+               *{onchange="showAddedRebate();limitMoneyFormat(this,this.value)"/>% <span}*
+            *{style="color: blue; ">返利为</span><span style="color: red; "}*
+                                                  *{id="invitedPrice">0</span><span}*
+            *{style="color: blue; ">元</span>}*
+        *{<span class="error">#{error 'goods.invitedUserPrice'/}</span>}*
+    *{</div>}*
+*{</div>}*
 <div class="control-group" id="goods_coupon_type">
     <label class="control-label">券类型
     </label>
@@ -243,18 +230,18 @@
     </div>
 </div>
 
-<div class="control-group">
-    <label class="control-label"></label>
+*{<div class="control-group">}*
+    *{<label class="control-label"></label>}*
 
-    <div class="controls" id="ktv_products" style="display:none;">
-         <span id="ktv_products_label" style="display: none;margin-left:-100px; ">
-            <span style="color: red;">*</span>
-            选择Ktv产品</span>
-        <table id="tableKtvProducts" class="table table-striped table-bordered table-condensed">
-            #{include '/KtvProducts/showKtvProducts.html'/}
-        </table>
-    </div>
-</div>
+    *{<div class="controls" id="ktv_products" style="display:none;">}*
+         *{<span id="ktv_products_label" style="display: none;margin-left:-100px; ">}*
+            *{<span style="color: red;">*</span>}*
+            *{选择Ktv产品</span>}*
+        *{<table id="tableKtvProducts" class="table table-striped table-bordered table-condensed">}*
+            *{#{include '/KtvProducts/showKtvProducts.html'/}}*
+        *{</table>}*
+    *{</div>}*
+*{</div>}*
 
     #{layout_operate.textField name:'goods.keywords', value:goods?.keywords /}
 <div class="form-actions">
@@ -282,8 +269,8 @@
         #{vx.cancelButton url:"/goods?page="+(page?:1), class:'btn btn-primary'/}
     #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.getStatus()?:'OFFSALE'}"/>
-    <input type="hidden" id="ktv_supplier" name="ktvSupplier" value="${ktvSupplier}"/>
-    <input type="hidden" id="ktv_product_val" name="ktvProduct" value="${ktvProduct}"/>
+    *{<input type="hidden" id="ktv_supplier" name="ktvSupplier" value="${ktvSupplier}"/>}*
+    *{<input type="hidden" id="ktv_product_val" name="ktvProduct" value="${ktvProduct}"/>}*
     <input type="hidden" id="hasSku" value="${hasSku}"/>
     <input type="hidden" id="action" name="action" value="${action}"/>
 
@@ -351,17 +338,17 @@ if ($("#goods_materialType_1").attr("checked")) {
     $("input[id=freeShipping]").attr("checked", false);
 }
 
-showAddedRebate();
-function showAddedRebate() {
-    var goods_salePrice = $("#goods_salePrice").val() == null ? 0 : $("#goods_salePrice").val();
-    var goods_promoterPrice = parseFloat($('#goods_promoterPrice').val());
-    goods_promoterPrice = goods_promoterPrice == null || goods_promoterPrice.toString() == 'NaN' ? 0 : goods_promoterPrice;
-    $("#promoterPrice").html((goods_salePrice * goods_promoterPrice * 0.01).toFixed(2));
-
-    var goods_invitedPrice = parseFloat($('#goods_invitedUserPrice').val());
-    goods_invitedPrice = goods_invitedPrice == null || goods_invitedPrice.toString() == 'NaN' ? 0 : goods_invitedPrice;
-    $("#invitedPrice").html((goods_salePrice * goods_invitedPrice * 0.01).toFixed(2));
-}
+//showAddedRebate();
+//function showAddedRebate() {
+//    var goods_salePrice = $("#goods_salePrice").val() == null ? 0 : $("#goods_salePrice").val();
+//    var goods_promoterPrice = parseFloat($('#goods_promoterPrice').val());
+//    goods_promoterPrice = goods_promoterPrice == null || goods_promoterPrice.toString() == 'NaN' ? 0 : goods_promoterPrice;
+//    $("#promoterPrice").html((goods_salePrice * goods_promoterPrice * 0.01).toFixed(2));
+//
+//    var goods_invitedPrice = parseFloat($('#goods_invitedUserPrice').val());
+//    goods_invitedPrice = goods_invitedPrice == null || goods_invitedPrice.toString() == 'NaN' ? 0 : goods_invitedPrice;
+//    $("#invitedPrice").html((goods_salePrice * goods_invitedPrice * 0.01).toFixed(2));
+//}
 
 $(function () {
     $("#goods_faceValue").keyup(function () {
@@ -370,7 +357,7 @@ $(function () {
 
     $("#goods_salePrice").keyup(function () {
         limitMoneyFormat(this, $("#goods_salePrice").val());
-        showAddedRebate();
+//        showAddedRebate();
     })
 
     $("#goods_isAllShop_2").click(function () {
@@ -381,6 +368,7 @@ $(function () {
     });
 
 
+    *{
     #{if !"edit".equals(action)}
         if ($("#goods_ktvProduct_2").attr("checked")) {
             $("#select_all_shops").show();
@@ -420,12 +408,12 @@ $(function () {
         $("#ktv_products").hide();
         $("#ktv_products_label").hide();
         $("#ktv_product").hide();
-    }
+    }}*
 
     if ($("#goods_isAllShop_2").attr("checked")) {
         $("#shop").show();//显示门店列表
     }
-
+*{
     //普通产品
     $("#goods_ktvProduct_2").click(function () {
         $("#select_all_shops").show();
@@ -438,7 +426,7 @@ $(function () {
         $("#tableShop").load("/shops/" + supplierId + "/showGoodsShops?ktvProduct=" + ktvProduct, function (data) {
             $("#selectAll").click();
         });
-    });
+    });}*
 
 
     $("#supplierName").blur(function () {
@@ -472,13 +460,13 @@ $(function () {
             $("#tableShop").load("/shops/" + id + "/showGoodsShops", function (data) {
                 $("#selectAll").click();
             });
-            $("#tableKtvProducts").load("/ktv-products/" + id + "/showKtvProducts", function (data) {
-
-            });
+//            $("#tableKtvProducts").load("/ktv-products/" + id + "/showKtvProducts", function (data) {
+//
+//            });
         }
-        if ($("input[name='goods.ktvProduct']:checked").val() == 'true') {
-            $("#select_all_shops").hide();
-        }
+//        if ($("input[name='goods.ktvProduct']:checked").val() == 'true') {
+//            $("#select_all_shops").hide();
+//        }
 //        action = $("#action").val();
 //        if ($("#ktv_supplier").val() == true && action == "add") {
 //            $("#ktv_product").show();

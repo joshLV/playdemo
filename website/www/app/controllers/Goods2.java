@@ -356,18 +356,18 @@ public class Goods2 extends Controller {
                         return GoodsSchedule.findSchedule(goods, currentDate);
                     }
                 });
-        //判断该商品是否签到商品
-        boolean isCheckinGoods = scheduleList.size() > 0;
-
-        //判断是否签到
-        UserGoldenCoin userGoldenCoin = UserGoldenCoin.getCheckinInfo(user, false);
-        renderArgs.put("isCheckinToday", userGoldenCoin != null);
-        renderArgs.put("checkinNumber", UserGoldenCoin.getCheckinTimes(user));
-        renderArgs.put("totalCoins", UserGoldenCoin.getTotalCoins(user));
+//        //判断该商品是否签到商品
+//        boolean isCheckinGoods = scheduleList.size() > 0;
+//
+//        //判断是否签到
+//        UserGoldenCoin userGoldenCoin = UserGoldenCoin.getCheckinInfo(user, false);
+//        renderArgs.put("isCheckinToday", userGoldenCoin != null);
+//        renderArgs.put("checkinNumber", UserGoldenCoin.getCheckinTimes(user));
+//        renderArgs.put("totalCoins", UserGoldenCoin.getTotalCoins(user));
 
 
         renderArgs.put("tjUrl", tjUrl);
-        renderArgs.put("isCheckinGoods", isCheckinGoods);
+//        renderArgs.put("isCheckinGoods", isCheckinGoods);
         renderArgs.put("browsedGoodsList", browsedGoodsList);
         renderArgs.put("goods", goods);
         renderArgs.put("imagesList", goods.getCachedGoodsImagesList());

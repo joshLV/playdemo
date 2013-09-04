@@ -343,7 +343,7 @@ public class Orders extends Controller {
             orderItem.save();
 
             // 保存商品折扣
-            if (discountCode != null && discountCode.goods != null && discountCode.goods.id == goodsItem.id) {
+            if (discountCode != null && discountCode.goods != null && discountCode.goods.id.equals(goodsItem.id)) {
                 OrderDiscount orderDiscount = new OrderDiscount();
                 orderDiscount.discountCode = discountCode;
                 orderDiscount.order = order;

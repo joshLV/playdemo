@@ -47,11 +47,11 @@
         </div>
     #{/else}
 
-        <div class="checkin">
-            <a class="link"#{if scheduleList.size()>0} href="/p/${scheduleList.get(0).goods.id}" #{/if}
-               #{else}href=""#{/else}target="_blank">领金币　兑现金</a>
-            <a class="help" href="http://www.yibaiquan.com/topic/117" target="_blank"></a>
-        </div>
+        *{<div class="checkin">}*
+            *{<a class="link"#{if scheduleList.size()>0} href="/p/${scheduleList.get(0).goods.id}" #{/if}}*
+               *{#{else}href=""#{/else}target="_blank">领金币　兑现金</a>}*
+            *{<a class="help" href="http://www.yibaiquan.com/topic/117" target="_blank"></a>}*
+        *{</div>}*
 
         <div class="promise"><a href="/service" target="_blank"><img src="http://img.uhcdn.com/home/prom.png"
                                                                      alt=""/></a></div>

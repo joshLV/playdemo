@@ -109,8 +109,6 @@ public class Goods extends Model {
      */
     public static final String SECONDARY_VERIFICATION = "secondaryVerification";
     public static final String PROPERTY_GIFT_CARD = "giftCard";
-    //优惠券金额
-    public static final String COUPON_AMOUNT = "couponAmount";
 
     //  ========= 不同的价格列表 =======
     /**

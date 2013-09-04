@@ -152,16 +152,16 @@ public class Home2 extends Controller {
             renderArgs.put("savedMoney", savedMoney);
         }
 
-        //判断是否有签到商品
-        List<GoodsSchedule> scheduleList = CacheHelper.getCache(
-                CacheHelper.getCacheKey(GoodsSchedule.CACHEKEY, "WWW_SCHEDULE_GOODS"),
-                new CacheCallBack<List<GoodsSchedule>>() {
-                    @Override
-                    public List<GoodsSchedule> loadData() {
-                        return GoodsSchedule.findSchedule(null, currentDate);
-                    }
-                });
-        renderArgs.put("scheduleList", scheduleList);
+//        //判断是否有签到商品
+//        List<GoodsSchedule> scheduleList = CacheHelper.getCache(
+//                CacheHelper.getCacheKey(GoodsSchedule.CACHEKEY, "WWW_SCHEDULE_GOODS"),
+//                new CacheCallBack<List<GoodsSchedule>>() {
+//                    @Override
+//                    public List<GoodsSchedule> loadData() {
+//                        return GoodsSchedule.findSchedule(null, currentDate);
+//                    }
+//                });
+//        renderArgs.put("scheduleList", scheduleList);
 
         //首页楼层banner
         Block webOneFloor = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_1F"), new CacheCallBack<Block>() {

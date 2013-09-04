@@ -288,19 +288,19 @@ public class OperateGoods extends Controller {
         String createdFrom = "Op";
         goods.createHistory(createdFrom);
 
-        //KTV商品处理
-        if (goods.isKtvProduct()) {
-            Shop shop = Shop.findById(Long.valueOf(request.params.getAll("goods.shops.id")[0]));
-            goods.shops = new HashSet<>();
-            goods.isAllShop = false;
-            goods.shops.add(shop);
-            goods.save();
-            KtvProductGoods productGoods = new KtvProductGoods();
-            productGoods.shop = shop;
-            productGoods.product = goods.product;
-            productGoods.goods = goods;
-            productGoods.save();
-        }
+//        //KTV商品处理
+//        if (goods.isKtvProduct()) {
+//            Shop shop = Shop.findById(Long.valueOf(request.params.getAll("goods.shops.id")[0]));
+//            goods.shops = new HashSet<>();
+//            goods.isAllShop = false;
+//            goods.shops.add(shop);
+//            goods.save();
+//            KtvProductGoods productGoods = new KtvProductGoods();
+//            productGoods.shop = shop;
+//            productGoods.product = goods.product;
+//            productGoods.goods = goods;
+//            productGoods.save();
+//        }
         index(null);
     }
 
@@ -333,10 +333,10 @@ public class OperateGoods extends Controller {
         if (goods.salePrice != null && goods.originalPrice != null && goods.salePrice.compareTo(goods.originalPrice) < 0) {
             Validation.addError("goods.salePrice", "validation.lessThanOriginalPrice");
         }
-        if (goods.promoterPrice != null && goods.invitedUserPrice != null &&
-                goods.promoterPrice.compareTo(goods.invitedUserPrice) < 0) {
-            Validation.addError("goods.invitedUserPrice", "validation.moreThanPromoterPrice");
-        }
+//        if (goods.promoterPrice != null && goods.invitedUserPrice != null &&
+//                goods.promoterPrice.compareTo(goods.invitedUserPrice) < 0) {
+//            Validation.addError("goods.invitedUserPrice", "validation.moreThanPromoterPrice");
+//        }
         if ("1".equals(StringUtils.trimToEmpty(request.params.get("secondaryVerification")))) {
             if (goods.advancedDeposit == null || goods.advancedDeposit.compareTo(BigDecimal.ZERO) <= 0) {
                 Validation.addError("goods.advancedDeposit", "validation.required");
@@ -463,17 +463,17 @@ public class OperateGoods extends Controller {
         models.sales.Goods goods = models.sales.Goods.findById(id);
         checkShops(goods.supplierId);
         boolean ktvSupplier = goods.isKtvSupplier();
-        List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
-        setGoodsProduct(goods);
+//        List<KtvProduct> productList = KtvProduct.findProductBySupplier(goods.supplierId);
+//        setGoodsProduct(goods);
         renderInit(goods);
-        boolean ktvProduct = true;
-        //普通产品
-        if (KtvProductGoods.find("goods.id = ?", id).first() == null) {
-            ktvSupplier = false;
-            ktvProduct = false;
-        }
+//        boolean ktvProduct = true;
+//        //普通产品
+//        if (KtvProductGoods.find("goods.id = ?", id).first() == null) {
+//            ktvSupplier = false;
+//            ktvProduct = false;
+//        }
         renderArgs.put("imageLargePath", goods.getImageLargePath());
-        render(id, ktvSupplier, productList, ktvProduct);
+        render(id);
 
     }
 
@@ -649,20 +649,20 @@ public class OperateGoods extends Controller {
         setGoodsProperties(goodsItem);
         String createdFrom = "Op";
         goodsItem.createHistory(createdFrom);
-        if (goodsItem.isKtvProduct()) {
-            KtvProductGoods productGoods = KtvProductGoods.find("goods=?", goodsItem).first();
-            if (productGoods != null) {
-                productGoods.shop = goodsItem.shops.iterator().next();
-                productGoods.product = goods.product;
-                productGoods.save();
-            } else {
-                productGoods = new KtvProductGoods();
-                productGoods.goods = goodsItem;
-                productGoods.shop = goodsItem.shops.iterator().next();
-                productGoods.product = goods.product;
-                productGoods.save();
-            }
-        }
+//        if (goodsItem.isKtvProduct()) {
+//            KtvProductGoods productGoods = KtvProductGoods.find("goods=?", goodsItem).first();
+//            if (productGoods != null) {
+//                productGoods.shop = goodsItem.shops.iterator().next();
+//                productGoods.product = goods.product;
+//                productGoods.save();
+//            } else {
+//                productGoods = new KtvProductGoods();
+//                productGoods.goods = goodsItem;
+//                productGoods.shop = goodsItem.shops.iterator().next();
+//                productGoods.product = goods.product;
+//                productGoods.save();
+//            }
+//        }
 
 
         redirectUrl(page, queryString);
@@ -878,11 +878,6 @@ public class OperateGoods extends Controller {
             goods.setProperties(Goods.PROPERTY_GIFT_CARD, "0");
         } else {
             goods.setProperties(Goods.PROPERTY_GIFT_CARD, request.params.get(Goods.PROPERTY_GIFT_CARD));
-        }
-        System.out.println(request.params.get(Goods.COUPON_AMOUNT)+">>>>>>>");
-        if (StringUtils.isNotBlank(request.params.get(Goods.COUPON_AMOUNT))) {
-
-            goods.setProperties(Goods.COUPON_AMOUNT, request.params.get(Goods.COUPON_AMOUNT));
         }
 
     }

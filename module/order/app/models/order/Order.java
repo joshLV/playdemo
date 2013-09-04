@@ -58,6 +58,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -528,21 +529,9 @@ public class Order extends Model {
     public OrderItems addOrderItem(Goods goods, Long number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice,
                                    DiscountCode discountCode, boolean isPromoteFlag) {
         OrderItems orderItem = null;
-        BigDecimal commission = BigDecimal.ZERO;
         if (number > 0 && goods != null) {
             //取得渠道商品的佣金比例，如果没有则按渠道比例计算
-            Resaler tempResaler = Resaler.findById(userId);
-            if (tempResaler != null) {
-                GoodsResalerCommission resalerCommision = GoodsResalerCommission.find("goods=? and resaler=?", goods, tempResaler).first();
-                if (resalerCommision != null) {
-                    commission = resalerCommision.commissionRatio.multiply(goods.salePrice).multiply(new BigDecimal
-                            (0.01));
-                } else {
-                    commission = tempResaler.commissionRatio.multiply(goods.salePrice).multiply(new BigDecimal
-                            (0.01));
-                }
-            }
-            orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice, commission);
+            orderItem = getOrderItems(goods, number, mobile, salePrice, resalerPrice);
             orderItem = addOrderItem(orderItem, discountCode, isPromoteFlag);
         }
 
@@ -560,9 +549,58 @@ public class Order extends Model {
             //用优惠码的情况
             orderItem.rebateValue = getDiscountValueOfGoodsAmount(orderItem.goods, orderItem.buyNumber, discountCode);
         }
+
         this.orderItems.add(orderItem);
         this.amount = this.amount.add(orderItem.getLineValue()); //计算折扣价
         this.needPay = this.amount;
+
+        return orderItem;
+    }
+
+    private OrderItems getOrderItems(Goods goods, Long number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice) {
+        OrderItems orderItem;//取得渠道商品的佣金比例，如果没有则按渠道比例计算
+        Resaler tempResaler = Resaler.findById(userId);
+        BigDecimal commission = BigDecimal.ZERO;
+        if (tempResaler != null) {
+            GoodsResalerCommission resalerCommision = GoodsResalerCommission.find("goods=? and resaler=?", goods, tempResaler).first();
+            if (resalerCommision != null) {
+                commission = resalerCommision.commissionRatio.multiply(goods.salePrice).multiply(new BigDecimal
+                        (0.01));
+            } else {
+                commission = tempResaler.commissionRatio.multiply(goods.salePrice).multiply(new BigDecimal
+                        (0.01));
+            }
+        }
+        orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice, commission);
+        return orderItem;
+    }
+
+    //淘宝优惠券用
+    public OrderItems addOrderItem(Goods goods, Long number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice, BigDecimal discountFee) {
+        OrderItems orderItem = null;
+        if (number > 0 && goods != null) {
+            orderItem = getOrderItems(goods, number, mobile, salePrice, resalerPrice);
+
+            orderItem = addOrderItem(orderItem, discountFee);
+        }
+
+        return orderItem;
+    }
+
+    //淘宝优惠券用
+    public OrderItems addOrderItem(OrderItems orderItem, BigDecimal discountFee) {
+        if (orderItem.buyNumber <= 0 || orderItem.goods == null) {
+            return null;
+        }
+
+        //如果商户发放了优惠券，则记录优惠券金额
+        if (orderItem.goods.isSendCouponBySupplier()) {
+            orderItem.rebateValue = discountFee;
+        }
+        this.orderItems.add(orderItem);
+        this.amount = this.amount.add(orderItem.getLineValue()); //计算折扣价
+        this.needPay = this.amount;
+        this.rebateValue = this.rebateValue.add(discountFee);
 
         return orderItem;
     }
@@ -890,6 +928,7 @@ public class Order extends Model {
                     isKtvSupplier = true;
                     roomOrderInfo = KtvRoomOrderInfo.find("orderItem=?", orderItem).first();
                 }
+                BigDecimal sumCouponRebateValue = BigDecimal.ZERO;
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     //创建电子券
                     ECoupon eCoupon = createCoupon(goods, orderItem);
@@ -898,6 +937,17 @@ public class Order extends Model {
                         eCoupon.save();
                     }
 
+                    //针对淘宝发放优惠券的情况
+                    if (eCoupon.goods.isSendCouponBySupplier()) {
+                        if ((i + 1) < orderItem.buyNumber) {
+                            BigDecimal rb = orderItem.rebateValue.divide(new BigDecimal(orderItem.buyNumber), 2, RoundingMode.CEILING);
+                            sumCouponRebateValue = sumCouponRebateValue.add(rb);
+                            eCoupon.rebateValue = rb;
+                        } else {
+                            eCoupon.rebateValue = orderItem.rebateValue.subtract(sumCouponRebateValue).setScale(2);
+                        }
+                        eCoupon.save();
+                    }
                     //在新浪微博购买产生券，更新partner
                     if (sinaResaler != null && this.userId.equals(sinaResaler.id)) {
                         eCoupon.partner = ECouponPartner.SINA;
