@@ -83,7 +83,7 @@ public class ECouponLowPriceGoodsConsumeTest extends UnitTest {
 //                        SupplierUser supplierUser, VerifyCouponType type) {
         Boolean success = ecoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.TELEPHONE);
         assertTrue(success);
-        
+
         // 平台收款帐户减少10元
         platformIncomingAccount.refresh();
         assertEquals(new BigDecimal("90.00"), platformIncomingAccount.amount.setScale(2));

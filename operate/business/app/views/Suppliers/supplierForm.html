@@ -73,7 +73,6 @@ error:'supplier.operator'}
     giftCard=giftCard?:supplier?.getProperty(models.supplier.Supplier.PROPERTY_GIFT_CARD)?:'0';
     freezeAmount = freezeAmount?:supplier?.getProperty(models.supplier.Supplier.FREEZE_AMOUNT)?:'0';
     setWithdrawAmount = setWithdrawAmount?:supplier?.getProperty(models.supplier.Supplier.SET_WITHDRAW_AMOUNT)?:'0';
-    sendCoupon = sendCoupon?:supplier?.getProperty(models.supplier.Supplier.IS_SENT_COUPON)?:'0';
     }%
 #{/if}
     <div class="controls">
@@ -92,8 +91,6 @@ error:'supplier.operator'}
                value="1" ${"1".equals(freezeAmount)?'checked':''}/>是否要冻结金额
         <input type="checkbox" name="setWithdrawAmount" id="supplier_setWithdrawAmount"
                value="1" ${"1".equals(setWithdrawAmount)?'checked':''}/>是否由销售设置提现金额
-        <input type="checkbox" name="sendCoupon" id="supplier_sendCoupon"
-               value="1" ${"1".equals(sendCoupon)?'checked':''}/>是否由商户发放优惠券
         *{<span class="help-block"> (每月分 5-14, 15-24, 25-4 三个阶段提现。分别提上月25号之前，本月5号之前，本月15号之前 的款) </span>}*
 
     </div>

@@ -130,7 +130,7 @@ public class ECoupon extends Model {
      * 折扣掉的费用.
      */
     @Column(name = "rebate_value")
-    public BigDecimal rebateValue;
+    public BigDecimal rebateValue = BigDecimal.ZERO;
     /**
      * 给推荐人返利费用.
      */
@@ -679,14 +679,10 @@ public class ECoupon extends Model {
         if (this.goods.isSecondaryVerificationGoods()) {
             paidToSupplierPrice = originalPrice.subtract(advancedDeposit);
         }
-        // 判断该商户是否发放了优惠券,有则减去该平摊到每个券的优惠金额
-        if (this.goods.isSendCouponBySupplier()) {
-            paidToSupplierPrice = paidToSupplierPrice.subtract(this.rebateValue);
-        }
         // 给商户打钱
         TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
                 .toAccount(getSupplierAccount())
-                .balancePaymentAmount(paidToSupplierPrice)
+                .balancePaymentAmount(paidToSupplierPrice.subtract(this.rebateValue == null ? BigDecimal.ZERO : this.rebateValue))//默认减去该平摊到每个券的优惠金额
                 .orderId(order.getId())
                 .coupon(eCouponSn)
                 .make();
@@ -733,17 +729,18 @@ public class ECoupon extends Model {
 //                    .orderId(this.order.id)
 //                    .make();
 //            TradeUtil.success(rebateTrade, "活动折扣费" + rebateValue);
-//        } else if (salePrice.compareTo(originalPrice) < 0) {
-//            BigDecimal detaPrice = originalPrice.subtract(salePrice);
-//            // 如果售价低于进价，从活动金账户出
-//            TradeBill rebateTrade = TradeUtil.transferTrade()
-//                    .fromAccount(AccountUtil.getPromotionAccount(order.operator))
-//                    .toAccount(AccountUtil.getPlatformIncomingAccount(order.operator))
-//                    .balancePaymentAmount(detaPrice)
-//                    .orderId(this.order.id)
-//                    .make();
-//            TradeUtil.success(rebateTrade, "低价销售补贴" + detaPrice);
-//        }
+//        } else
+        if (salePrice.compareTo(originalPrice) < 0) {
+            BigDecimal detaPrice = originalPrice.subtract(salePrice);
+            // 如果售价低于进价，从活动金账户出
+            TradeBill rebateTrade = TradeUtil.transferTrade()
+                    .fromAccount(AccountUtil.getPromotionAccount(order.operator))
+                    .toAccount(AccountUtil.getPlatformIncomingAccount(order.operator))
+                    .balancePaymentAmount(detaPrice)
+                    .orderId(this.order.id)
+                    .make();
+            TradeUtil.success(rebateTrade, "低价销售补贴" + detaPrice);
+        }
 
 //        //给推荐人返利金额
 //        if (this.order.promoteUserId != null) {
