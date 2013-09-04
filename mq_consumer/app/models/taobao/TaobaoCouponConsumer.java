@@ -195,8 +195,12 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         List<com.taobao.api.domain.Order> orders = taobaoTrade.getTrade().getOrders();
         for (com.taobao.api.domain.Order order : orders) {
             Long number = order.getNum();
-            BigDecimal orderItemPayment = new BigDecimal(order.getPayment());
-            BigDecimal salePrice = orderItemPayment.divide(new BigDecimal(number), RoundingMode.DOWN);
+            //payment = needPay + discount_fee
+
+            order.setDiscountFee("5");
+            BigDecimal orderItemPayment = new BigDecimal(order.getPayment()).add(new BigDecimal(order.getDiscountFee()));
+//            BigDecimal orderItemPayment = new BigDecimal(order.getPayment()).add(new BigDecimal(order.getDiscountFee()));
+            BigDecimal salePrice = orderItemPayment.divide(new BigDecimal(number),2, RoundingMode.DOWN);
             //导入券库存检查
             if (goods.hasEnoughInventory(number)) {
                 Logger.error("enventory not enough: goods.id=" + goods.id);
@@ -204,7 +208,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 return null;
             }
             OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, number,
-                    userPhone, salePrice, salePrice);
+                    userPhone, salePrice, salePrice,new BigDecimal(order.getDiscountFee()));
             uhuilaOrderItem.save();
             //ktv商品才创建sku订单
             if (goods.isKtvProduct()) {

@@ -40,7 +40,7 @@
                    value="${goods?.isOrder}" ${goods?.isOrder?'checked':''}/><span id="err-isOrder"></span>
             预约商品&nbsp;&nbsp;
             <input type="checkbox" name="secondaryVerification" id="goods_secondary_verification"
-                                   value="${secondaryVerification}"${"1".equals(secondaryVerification)?'checked':''}/>二次验证商品
+                   value="${secondaryVerification}"${"1".equals(secondaryVerification)?'checked':''}/>二次验证商品
         </div>
         <span id="err-isLottery"></span>
 
@@ -65,7 +65,7 @@
     *{</div>}*
 
 
-        #{if ktvSupplier != true}
+        *{#{if ktvSupplier != true}}*
         <div class="control-group">
             <label class="control-label"><span style="color: red; ">*</span>商户</label>
 
@@ -74,13 +74,13 @@
                 <span class="error">#{error 'goods.supplierId'/}</span>
             </div>
         </div>
-        #{/if}
-        #{else}
-        <input type="hidden" id="goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">
-        <input type="hidden" id="ktvProduct" name="ktvProduct" value="${ktvProduct}">
+        *{#{/if}}*
+        *{#{else}}*
+        *{<input type="hidden" id="goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">}*
+        *{<input type="hidden" id="ktvProduct" name="ktvProduct" value="${ktvProduct}">}*
 
-            #{layout_operate.textField name:'goods.supplier', value:goods?.supplier?.fullName, disabled:true/}
-        #{/else}
+            *{#{layout_operate.textField name:'goods.supplier', value:goods?.supplier?.fullName, disabled:true/}}*
+        *{#{/else}}*
 
 
 
@@ -103,71 +103,71 @@
         #{layout_operate.textField name:'goods.faceValue', value:goods?.faceValue, note:'元', required:true/}
         #{layout_operate.textField name:'goods.originalPrice', value:goods?.originalPrice,note:'元', required:true/}
         #{layout_operate.textField name:'goods.salePrice', value:goods.salePrice, note:'元', required:true/}
-    <div class="control-group">
-        <label class="control-label"><span style="color: red; ">*</span>&{'goods.promoterPrice'}</label>
+    *{<div class="control-group">}*
+        *{<label class="control-label"><span style="color: red; ">*</span>&{'goods.promoterPrice'}</label>}*
 
-        <div class="controls">
-            <input type="text" id='goods_promoterPrice' name="goods.promoterPrice" class="input-xlarge"
-                   value="${goods?.promoterPrice}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"
-                   onkeyup="showAddedRebate();limitMoneyFormat(this,this.value)"
-                   onkeydown="showAddedRebate();limitMoneyFormat(this,this.value)"
-                   onchange="showAddedRebate();limitMoneyFormat(this,this.value)"/>% <span
-                style="color: blue; ">返利为</span><span style="color: red; "
-                                                      id="promoterPrice"></span><span
-                style="color: blue; ">元</span>
-            <span class="error">#{error 'goods.promoterPrice'/}</span>
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label"><span style="color: red; ">*</span>&{'goods.invitedUserPrice'}</label>
+        *{<div class="controls">}*
+            *{<input type="text" id='goods_promoterPrice' name="goods.promoterPrice" class="input-xlarge"}*
+                   *{value="${goods?.promoterPrice}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"}*
+                   *{onkeyup="showAddedRebate();limitMoneyFormat(this,this.value)"}*
+                   *{onkeydown="showAddedRebate();limitMoneyFormat(this,this.value)"}*
+                   *{onchange="showAddedRebate();limitMoneyFormat(this,this.value)"/>% <span}*
+                *{style="color: blue; ">返利为</span><span style="color: red; "}*
+                                                      *{id="promoterPrice"></span><span}*
+                *{style="color: blue; ">元</span>}*
+            *{<span class="error">#{error 'goods.promoterPrice'/}</span>}*
+        *{</div>}*
+    *{</div>}*
+    *{<div class="control-group">}*
+        *{<label class="control-label"><span style="color: red; ">*</span>&{'goods.invitedUserPrice'}</label>}*
 
-        <div class="controls">
-            <input type="text" id='goods_invitedUserPrice' name="goods.invitedUserPrice" class="input-xlarge"
-                   value="${goods?.invitedUserPrice}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"
-                   onkeyup="showAddedRebate();limitMoneyFormat(this,this.value)"
-                   onkeydown="showAddedRebate();limitMoneyFormat(this,this.value)"
-                   onchange="showAddedRebate();limitMoneyFormat(this,this.value)"/>% <span
-                style="color: blue; ">返利为</span><span style="color: red; "
-                                                      id="invitedPrice"></span><span
-                style="color: blue; ">元</span>
-            <span class="error">#{error 'goods.invitedUserPrice'/}</span>
-        </div>
-    </div>
+        *{<div class="controls">}*
+            *{<input type="text" id='goods_invitedUserPrice' name="goods.invitedUserPrice" class="input-xlarge"}*
+                   *{value="${goods?.invitedUserPrice}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"}*
+                   *{onkeyup="showAddedRebate();limitMoneyFormat(this,this.value)"}*
+                   *{onkeydown="showAddedRebate();limitMoneyFormat(this,this.value)"}*
+                   *{onchange="showAddedRebate();limitMoneyFormat(this,this.value)"/>% <span}*
+                *{style="color: blue; ">返利为</span><span style="color: red; "}*
+                                                      *{id="invitedPrice"></span><span}*
+                *{style="color: blue; ">元</span>}*
+            *{<span class="error">#{error 'goods.invitedUserPrice'/}</span>}*
+        *{</div>}*
+    *{</div>}*
         #{layout_operate.textField name:'goods.cumulativeStocks', value:goods?.cumulativeStocks, note:'件', required:true/}
         #{layout_operate.textField name:'goods.virtualBaseSaleCount', value:goods?.virtualBaseSaleCount, note:'件'/}
 
         #{layout_operate.textField name:'goods.limitNumber', value:'0', note:'个'/}
-    <div class="control-group">
-        <label class="control-label">指定消费日
-        </label>
+    *{<div class="control-group">}*
+        *{<label class="control-label">指定消费日}*
+        *{</label>}*
 
-        <div class="controls">
-            <input type="hidden" name="goods.useWeekDay" id="goods_useWeekDay" value="${goods?.useWeekDay}"/>
+        *{<div class="controls">}*
+            *{<input type="hidden" name="goods.useWeekDay" id="goods_useWeekDay" value="${goods?.useWeekDay}"/>}*
 
-            #{list items:1..7, as:'i'}
-                <input type="checkbox" name="useWeekDay[]" class="input-medium"
-                       value="${i}" #{if goods?.useWeekDay?.contains(String.valueOf(i))}checked#{/if}/>
-                星期#{if i==1}一&nbsp;&nbsp;#{/if}
-                #{if i==2}二&nbsp;&nbsp;#{/if}
-                #{if i==3}三&nbsp;&nbsp;#{/if}
-                #{if i==4}四&nbsp;&nbsp;#{/if}
-                #{if i==5}五&nbsp;&nbsp;#{/if}
-                #{if i==6}六&nbsp;&nbsp;#{/if}
-                #{if i==7}日&nbsp;&nbsp;#{/if}
-            #{/list}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="checkbox" name="useWeekDayAll" class="input-medium" id="selectWeekDayAll"
-                   #{if goods?.useWeekDay== null || goods?.useWeekDay?.length()==13  }checked#{/if}> 全选
-            <span class="error">#{error 'goods.useWeekDayAll' /}</span>
-        </div>
-    </div>
+            *{#{list items:1..7, as:'i'}}*
+                *{<input type="checkbox" name="useWeekDay[]" class="input-medium"}*
+                       *{value="${i}" #{if goods?.useWeekDay?.contains(String.valueOf(i))}checked#{/if}/>}*
+                *{星期#{if i==1}一&nbsp;&nbsp;#{/if}}*
+                *{#{if i==2}二&nbsp;&nbsp;#{/if}}*
+                *{#{if i==3}三&nbsp;&nbsp;#{/if}}*
+                *{#{if i==4}四&nbsp;&nbsp;#{/if}}*
+                *{#{if i==5}五&nbsp;&nbsp;#{/if}}*
+                *{#{if i==6}六&nbsp;&nbsp;#{/if}}*
+                *{#{if i==7}日&nbsp;&nbsp;#{/if}}*
+            *{#{/list}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}*
+            *{<input type="checkbox" name="useWeekDayAll" class="input-medium" id="selectWeekDayAll"}*
+                   *{#{if goods?.useWeekDay== null || goods?.useWeekDay?.length()==13  }checked#{/if}> 全选}*
+            *{<span class="error">#{error 'goods.useWeekDayAll' /}</span>}*
+        *{</div>}*
+    *{</div>}*
         #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)', required:true/}
         #{layout_operate.htmlField name:'goods.exhibition', value:goods?.exhibition, uploadImgUrl:'/goods/images', required:true/}
         #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
         #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images'/}
         #{layout_operate.htmlField name:'goods.supplierDes', value:goods?.supplierDes, uploadImgUrl:'/goods/images', required:true/}
-    <span id="ktv_product">
-        #{layout_operate.radioField name:'goods.ktvProduct', value:ktvProduct?:false, required:true/}
-    </span>
+    *{<span id="ktv_product">}*
+        *{#{layout_operate.radioField name:'goods.ktvProduct', value:ktvProduct?:false, required:true/}}*
+    *{</span>}*
     <span id="all_shops_selection">
         #{layout_operate.radioField name:'goods.isAllShop', value:isAllShop?:false, required:true/}
     </span>
@@ -185,20 +185,20 @@
             </table>
         </div>
     </div>
-    <div class="control-group">
-        <label class="control-label"></label>
+    *{<div class="control-group">}*
+        *{<label class="control-label"></label>}*
 
-        <div class="controls" id="ktv_products" style="display:none;">
-         <span id="ktv_products_label" style="display: none;margin-left:-100px; ">
-            <span style="color: red;">*</span>
-            选择Ktv产品</span>
-            <table id="tableKtvProducts" class="table table-striped table-bordered table-condensed">
-                #{include '/KtvProducts/showKtvProducts.html'/}
-            </table>
-        </div>
-    </div>
+        *{<div class="controls" id="ktv_products" style="display:none;">}*
+         *{<span id="ktv_products_label" style="display: none;margin-left:-100px; ">}*
+            *{<span style="color: red;">*</span>}*
+            *{选择Ktv产品</span>}*
+            *{<table id="tableKtvProducts" class="table table-striped table-bordered table-condensed">}*
+                *{#{include '/KtvProducts/showKtvProducts.html'/}}*
+            *{</table>}*
+        *{</div>}*
+    *{</div>}*
     <div class="form-actions">
-        <input type="hidden" id="ktv_supplier" name="ktvSupplier" value="${ktvSupplier}"/>
+        *{<input type="hidden" id="ktv_supplier" name="ktvSupplier" value="${ktvSupplier}"/>}*
         <input class="btn btn-primary" id="save" type="submit" value="保存"/>
     *{<input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>}*
     *{<input class="btn btn-primary" id="preview" type="submit" value="预览"/>}*
@@ -224,17 +224,17 @@
             }
             $("#goods_useWeekDay").val(week.join(","));
         }
-        showAddedRebate();
-        function showAddedRebate() {
-            var goods_salePrice = $("#goods_salePrice").val() == null ? 0 : $("#goods_salePrice").val();
-            var goods_promoterPrice = parseFloat($('#goods_promoterPrice').val());
-            goods_promoterPrice = goods_promoterPrice == null || goods_promoterPrice.toString() == 'NaN' ? 0 : goods_promoterPrice;
-            $("#promoterPrice").html((goods_salePrice * goods_promoterPrice * 0.01).toFixed(2));
-
-            var goods_invitedPrice = parseFloat($('#goods_invitedUserPrice').val());
-            goods_invitedPrice = goods_invitedPrice == null || goods_invitedPrice.toString() == 'NaN' ? 0 : goods_invitedPrice;
-            $("#invitedPrice").html((goods_salePrice * goods_invitedPrice * 0.01).toFixed(2));
-        }
+//        showAddedRebate();
+//        function showAddedRebate() {
+//            var goods_salePrice = $("#goods_salePrice").val() == null ? 0 : $("#goods_salePrice").val();
+//            var goods_promoterPrice = parseFloat($('#goods_promoterPrice').val());
+//            goods_promoterPrice = goods_promoterPrice == null || goods_promoterPrice.toString() == 'NaN' ? 0 : goods_promoterPrice;
+//            $("#promoterPrice").html((goods_salePrice * goods_promoterPrice * 0.01).toFixed(2));
+//
+//            var goods_invitedPrice = parseFloat($('#goods_invitedUserPrice').val());
+//            goods_invitedPrice = goods_invitedPrice == null || goods_invitedPrice.toString() == 'NaN' ? 0 : goods_invitedPrice;
+//            $("#invitedPrice").html((goods_salePrice * goods_invitedPrice * 0.01).toFixed(2));
+//        }
         $(function () {
 
             $("#goods_faceValue").keyup(function () {
@@ -268,7 +268,7 @@
             }
             return true;
         }
-
+*{
         if ($("#goods_ktvProduct_2").attr("checked")) {
             $("#select_all_shops").show();
             $("#ktv_supplier_shops").hide();
@@ -289,12 +289,7 @@
             $("#select_shops_label").html("选择门店");
 
         }
-
-        if ($("#goods_isAllShop_2").attr("checked")) {
-            $("#shop").show();//显示门店列表
-        }
-
-        //普通产品
+         //普通产品
         $("#goods_ktvProduct_2").click(function () {
             $("#select_all_shops").show();
             $("#ktv_supplier_shops").hide();
@@ -321,6 +316,12 @@
                 $("#selectAll").click();
             });
         });
+}*
+        if ($("#goods_isAllShop_2").attr("checked")) {
+            $("#shop").show();//显示门店列表
+        }
+
+
 
         $("#goods_secondary_verification").click(function () {
             if (this.checked) {

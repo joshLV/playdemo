@@ -156,7 +156,8 @@
                         </tbody>
                     </table>
                 </td>
-                <td>${goods?.categories?.iterator()?.next()?.name}</td>
+
+                <td>#{if goods?.categories}${goods?.categories?.iterator()?.next()?.name}#{/if}</td>
                 <td class="amount">${goods?.faceValue?.formatCurrency('CNY')}</td>
                 <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
                 <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>

@@ -679,14 +679,9 @@ public class ECoupon extends Model {
         if (this.goods.isSecondaryVerificationGoods()) {
             paidToSupplierPrice = originalPrice.subtract(advancedDeposit);
         }
-        // 判断该商户是否发放了优惠券,查找该订单是否已经存在有已消费的券号，有的跳出，没有则给商户打一次钱，也就是说一个订单只打一次钱
+        // 判断该商户是否发放了优惠券,有则减去该平摊到每个券的优惠金额
         if (this.goods.isSendCouponBySupplier()) {
-            for (ECoupon e : order.eCoupons) {
-                if (e.status == ECouponStatus.CONSUMED) {
-                    break;
-                }
-            }
-            paidToSupplierPrice = paidToSupplierPrice.subtract(new BigDecimal(goods.getProperties(Goods.COUPON_AMOUNT, "5")));
+            paidToSupplierPrice = paidToSupplierPrice.subtract(this.rebateValue);
         }
         // 给商户打钱
         TradeBill consumeTrade = TradeUtil.consumeTrade(order.operator)
@@ -730,47 +725,47 @@ public class ECoupon extends Model {
             TradeUtil.success(platformCommissionTrade, order.description);
         }
 
-        if (rebateValue != null && rebateValue.compareTo(BigDecimal.ZERO) > 0) {
-            TradeBill rebateTrade = TradeUtil.transferTrade()
-                    .fromAccount(AccountUtil.getUhuilaAccount(order.operator))
-                    .toAccount(AccountUtil.getPlatformIncomingAccount(order.operator))
-                    .balancePaymentAmount(rebateValue)
-                    .orderId(this.order.id)
-                    .make();
-            TradeUtil.success(rebateTrade, "活动折扣费" + rebateValue);
-        } else if (salePrice.compareTo(originalPrice) < 0) {
-            BigDecimal detaPrice = originalPrice.subtract(salePrice);
-            // 如果售价低于进价，从活动金账户出
-            TradeBill rebateTrade = TradeUtil.transferTrade()
-                    .fromAccount(AccountUtil.getPromotionAccount(order.operator))
-                    .toAccount(AccountUtil.getPlatformIncomingAccount(order.operator))
-                    .balancePaymentAmount(detaPrice)
-                    .orderId(this.order.id)
-                    .make();
-            TradeUtil.success(rebateTrade, "低价销售补贴" + detaPrice);
-        }
+//        if (rebateValue != null && rebateValue.compareTo(BigDecimal.ZERO) > 0) {
+//            TradeBill rebateTrade = TradeUtil.transferTrade()
+//                    .fromAccount(AccountUtil.getUhuilaAccount(order.operator))
+//                    .toAccount(AccountUtil.getPlatformIncomingAccount(order.operator))
+//                    .balancePaymentAmount(rebateValue)
+//                    .orderId(this.order.id)
+//                    .make();
+//            TradeUtil.success(rebateTrade, "活动折扣费" + rebateValue);
+//        } else if (salePrice.compareTo(originalPrice) < 0) {
+//            BigDecimal detaPrice = originalPrice.subtract(salePrice);
+//            // 如果售价低于进价，从活动金账户出
+//            TradeBill rebateTrade = TradeUtil.transferTrade()
+//                    .fromAccount(AccountUtil.getPromotionAccount(order.operator))
+//                    .toAccount(AccountUtil.getPlatformIncomingAccount(order.operator))
+//                    .balancePaymentAmount(detaPrice)
+//                    .orderId(this.order.id)
+//                    .make();
+//            TradeUtil.success(rebateTrade, "低价销售补贴" + detaPrice);
+//        }
 
-        //给推荐人返利金额
-        if (this.order.promoteUserId != null) {
-            User promoteUser = User.findById(this.order.promoteUserId);
-            User invitedUser = User.findById(this.order.consumerId);
-            if (promoteUser == null || invitedUser == null) {
-                throw new IllegalArgumentException("promoteUser or invitedUser is not existed");
-            }
-
-            PromoteRebate promoteRebate = PromoteRebate.find("invitedUser=? and order =?", invitedUser, this.order).first();
-            if (promoteRebate != null) {
-                Account account = AccountUtil.getConsumerAccount(promoteUser.getId());
-                TradeBill rebateTrade = TradeUtil.transferTrade()
-                        .fromAccount(AccountUtil.getUhuilaAccount(this.order.operator))
-                        .toAccount(account)
-                        .balancePaymentAmount(promoterRebateValue)
-                        .orderId(this.order.id)
-                        .make();
-                TradeUtil.success(rebateTrade, "推荐获得的返利" + rebateValue);
-            }
-
-        }
+//        //给推荐人返利金额
+//        if (this.order.promoteUserId != null) {
+//            User promoteUser = User.findById(this.order.promoteUserId);
+//            User invitedUser = User.findById(this.order.consumerId);
+//            if (promoteUser == null || invitedUser == null) {
+//                throw new IllegalArgumentException("promoteUser or invitedUser is not existed");
+//            }
+//
+//            PromoteRebate promoteRebate = PromoteRebate.find("invitedUser=? and order =?", invitedUser, this.order).first();
+//            if (promoteRebate != null) {
+//                Account account = AccountUtil.getConsumerAccount(promoteUser.getId());
+//                TradeBill rebateTrade = TradeUtil.transferTrade()
+//                        .fromAccount(AccountUtil.getUhuilaAccount(this.order.operator))
+//                        .toAccount(account)
+//                        .balancePaymentAmount(promoterRebateValue)
+//                        .orderId(this.order.id)
+//                        .make();
+//                TradeUtil.success(rebateTrade, "推荐获得的返利" + rebateValue);
+//            }
+//
+//        }
         Logger.info("ECoupon.payCommission done: eCoupon.id=" + this.id);
     }
 

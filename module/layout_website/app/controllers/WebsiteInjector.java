@@ -58,7 +58,7 @@ public class WebsiteInjector extends Controller {
         final User user = SecureCAS.getUser();
         injectWebIdentification(user);
         //推荐时记录cookie
-        injectPromoterCookier(user);
+//        injectPromoterCookier(user);
 
         Http.Cookie cookie = request.cookies.get("identity");
         final String cookieValue = cookie == null ? null : cookie.value;
