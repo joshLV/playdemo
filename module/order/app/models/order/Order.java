@@ -594,9 +594,7 @@ public class Order extends Model {
         }
 
         //如果商户发放了优惠券，则记录优惠券金额
-        if (orderItem.goods.isSendCouponBySupplier()) {
-            orderItem.rebateValue = discountFee;
-        }
+        orderItem.rebateValue = discountFee;
         this.orderItems.add(orderItem);
         this.amount = this.amount.add(orderItem.getLineValue()); //计算折扣价
         this.needPay = this.amount;
@@ -938,7 +936,7 @@ public class Order extends Model {
                     }
 
                     //针对淘宝发放优惠券的情况
-                    if (eCoupon.goods.isSendCouponBySupplier()) {
+                    if (eCoupon.partner == ECouponPartner.TB) {
                         if ((i + 1) < orderItem.buyNumber) {
                             BigDecimal rb = orderItem.rebateValue.divide(new BigDecimal(orderItem.buyNumber), 2, RoundingMode.CEILING);
                             sumCouponRebateValue = sumCouponRebateValue.add(rb);
