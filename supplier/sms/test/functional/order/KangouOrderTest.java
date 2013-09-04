@@ -18,6 +18,7 @@ import models.sales.Goods;
 import models.sales.ResalerProduct;
 import models.supplier.Supplier;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.templates.Template;
@@ -33,6 +34,7 @@ import java.util.Map;
  * Date: 13-4-17
  * Time: 下午4:31
  */
+@Ignore
 public class KangouOrderTest extends FunctionalTest {
     ResalerProduct product;
     Goods goods;
