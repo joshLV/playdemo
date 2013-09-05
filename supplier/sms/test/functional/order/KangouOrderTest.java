@@ -76,6 +76,7 @@ public class KangouOrderTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void test通过京东生成看购网订单() {
         Template template = TemplateLoader.load("test/data/jd.SendOrderRequest.xml");
         Map<String, Object> params = new HashMap<>();

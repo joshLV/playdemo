@@ -84,13 +84,14 @@ public class SupplierVerifyResalerECoupons extends Controller {
 
         Resaler resaler = Resaler.findApprovedByLoginName("meituan");
         SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("resalerPartnerGoodsId=? and resaler=?", partnerGoodsId, resaler).first();
-        if (StringUtils.isBlank(partnerShopId)) {
-            partnerShopId = supplierResalerShop.resalerPartnerShopId;
-        }
 
         if (supplierResalerShop == null) {
             renderJSON("[{\"result\":\"输入的美团项目没有指定一百券对应的商品信息\",\"errcode\":1}]}]");
             return;
+        }
+
+        if (StringUtils.isBlank(partnerShopId)) {
+            partnerShopId = supplierResalerShop.resalerPartnerShopId;
         }
         String cookie = supplierResalerShop.cookieValue;
         Map<String, String> headers = new HashMap<>();
