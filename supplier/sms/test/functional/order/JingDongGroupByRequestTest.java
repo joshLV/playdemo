@@ -6,6 +6,7 @@ import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.ResalerProduct;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
@@ -22,6 +23,7 @@ import java.util.Map;
  * Date: 13-1-16
  * Time: 下午6:24
  */
+@Ignore
 public class JingDongGroupByRequestTest extends FunctionalTest {
     ResalerProduct product;
     Resaler resaler;
