@@ -12,6 +12,7 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.ResalerProduct;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -94,9 +95,9 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             outerOrder.save();
         } else if (outerOrder.status == OuterOrderStatus.REFUND_COPY) {
             List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-            Integer refundNumber =  outerOrder.refundNumber;
+            Integer refundNumber = outerOrder.refundNumber;
             for (ECoupon coupon : eCoupons) {
-                if (refundNumber != null && refundNumber == 0){
+                if (refundNumber != null && refundNumber == 0) {
                     break;
                 }
                 if (coupon.status == ECouponStatus.UNCONSUMED) {
@@ -104,8 +105,8 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                     if (!errInfo.equals(ECoupon.ECOUPON_REFUND_OK)) {
                         // TODO: 在ECoupon记录一下申请过退款，渠道方可能退款成功了，需要跟进，并记录退款历史
                         Logger.error("taobao refund error !!!!!!!! coupon id: %s. %s", coupon.id, errInfo);
-                    }else {
-                        if (refundNumber != null ){
+                    } else {
+                        if (refundNumber != null) {
                             refundNumber -= 1;
                         }
                     }
@@ -196,9 +197,12 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         for (com.taobao.api.domain.Order order : orders) {
             Long number = order.getNum();
             //payment = needPay + discount_fee
+            if (StringUtils.isBlank(order.getDiscountFee())) {
+                order.setDiscountFee("0");
+            }
             BigDecimal orderItemPayment = new BigDecimal(order.getPayment()).add(new BigDecimal(order.getDiscountFee()));
 //            BigDecimal orderItemPayment = new BigDecimal(order.getPayment()).add(new BigDecimal(order.getDiscountFee()));
-            BigDecimal salePrice = orderItemPayment.divide(new BigDecimal(number),2, RoundingMode.DOWN);
+            BigDecimal salePrice = orderItemPayment.divide(new BigDecimal(number), 2, RoundingMode.DOWN);
             //导入券库存检查
             if (goods.hasEnoughInventory(number)) {
                 Logger.error("enventory not enough: goods.id=" + goods.id);
@@ -206,7 +210,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 return null;
             }
             OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, number,
-                    userPhone, salePrice, salePrice,new BigDecimal(order.getDiscountFee()));
+                    userPhone, salePrice, salePrice, new BigDecimal(order.getDiscountFee()));
             uhuilaOrderItem.save();
             //ktv商品才创建sku订单
             if (goods.isKtvProduct()) {
@@ -262,7 +266,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             }
             switch (map[0]) {
                 case "日期":
-                    if (map[1].contains("(")){
+                    if (map[1].contains("(")) {
                         map[1] = map[1].substring(0, map[1].indexOf("("));
                     }
                     matcher = skuDatePattern.matcher(map[1]);
