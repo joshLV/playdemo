@@ -350,7 +350,7 @@ public class ECoupon extends Model {
             //记录给推荐人的返利，每个券占用的返利
             this.promoterRebateValue = getLinePromoterRebateValue();
         }
-        this.rebateValue = orderItems.rebateValue;
+//        this.rebateValue = orderItems.rebateValue;
         this.createdAt = new Date();
         this.effectiveAt = goods.effectiveAt;
         this.expireAt = goods.expireAt;

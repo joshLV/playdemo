@@ -72,7 +72,7 @@ public class SupplierAccountSequences extends Controller {
             Order order = Order.findById(accountSequence.orderId);
             if (order != null) {
                 accountSequence.orderNumber = order.orderNumber;
-                if (order.rebateValue.compareTo(BigDecimal.ZERO) > 0) {
+                if (order.rebateValue != null && BigDecimal.ZERO.compareTo(order.rebateValue) < 0) {
                     accountSequence.sendCoupon = true;
                 }
             }

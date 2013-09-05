@@ -55,11 +55,11 @@
                     #{/list}
                 #{/select}
             </div>
-            <!--酒店联盟的商户 -->
-            #{if currentUser.supplier.id==748}
-                <input type="hidden" name="partnerShopId" id="partnerShopId"
-                       value="${resalerShopList?.get(0)?.resalerPartnerShopId}"/>
-            #{/if}
+            *{<!--酒店联盟的商户 -->}*
+            *{#{if currentUser.supplier.id==748}}*
+                *{<input type="hidden" name="partnerShopId" id="partnerShopId"}*
+                       *{value="${resalerShopList?.get(0)?.resalerPartnerShopId}"/>}*
+            *{#{/if}}*
             <!--pony蛋糕的商户 -->
             #{if currentUser.supplier.id==657}
                 #{set couponItemCount :4/}

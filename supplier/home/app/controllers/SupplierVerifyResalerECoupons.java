@@ -81,13 +81,13 @@ public class SupplierVerifyResalerECoupons extends Controller {
             renderJSON("[{\"result\":\"输入的美团项目没有指定一百券对应的商品信息\",\"errcode\":1}]}]");
             return;
         }
-        if (StringUtils.isBlank(partnerShopId)) {
-            renderJSON("[{\"result\":\"请选择美团分店！\",\"errcode\":1}]");
-            return;
-        }
 
         Resaler resaler = Resaler.findApprovedByLoginName("meituan");
-        SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("resalerPartnerShopId=? and resaler=?", partnerShopId, resaler).first();
+        SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("resalerPartnerGoodsId=? and resaler=?", partnerGoodsId, resaler).first();
+        if (StringUtils.isBlank(partnerShopId)) {
+            partnerShopId = supplierResalerShop.resalerPartnerShopId;
+        }
+
         if (supplierResalerShop == null) {
             renderJSON("[{\"result\":\"输入的美团项目没有指定一百券对应的商品信息\",\"errcode\":1}]}]");
             return;
@@ -157,7 +157,6 @@ public class SupplierVerifyResalerECoupons extends Controller {
 
                 }
             }
-            System.out.println(dataResult.toString());
             renderJSON(dataResult.toString());
         }
 
