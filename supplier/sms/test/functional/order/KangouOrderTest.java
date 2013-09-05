@@ -41,38 +41,38 @@ public class KangouOrderTest extends FunctionalTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
-        FactoryBoy.create(Supplier.class, new BuildCallback<Supplier>() {
-            @Override
-            public void build(Supplier target) {
-                target.domainName = "kangou";
-            }
-        });
-        FactoryBoy.create(SupplierUser.class);
-        goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
-            @Override
-            public void build(Goods target) {
-                target.supplierGoodsId = 162l;
-            }
-        });
-
-        final Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
-            @Override
-            public void build(Resaler target) {
-                target.loginName = Resaler.JD_LOGIN_NAME;
-                target.partner = "JD";
-            }
-        });
-        //创建可欠款账户
-        AccountUtil.getCreditableAccount(resaler.id, AccountType.RESALER);
-        product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
-            @Override
-            public void build(ResalerProduct target) {
-                target.partner = OuterOrderPartner.JD;
-                target.resaler = resaler;
-            }
-        });
-
-        ResalerFactory.getYibaiquanResaler(); //必须存在一百券
+//        FactoryBoy.create(Supplier.class, new BuildCallback<Supplier>() {
+//            @Override
+//            public void build(Supplier target) {
+//                target.domainName = "kangou";
+//            }
+//        });
+//        FactoryBoy.create(SupplierUser.class);
+//        goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+//            @Override
+//            public void build(Goods target) {
+//                target.supplierGoodsId = 162l;
+//            }
+//        });
+//
+//        final Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+//            @Override
+//            public void build(Resaler target) {
+//                target.loginName = Resaler.JD_LOGIN_NAME;
+//                target.partner = "JD";
+//            }
+//        });
+//        //创建可欠款账户
+//        AccountUtil.getCreditableAccount(resaler.id, AccountType.RESALER);
+//        product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
+//            @Override
+//            public void build(ResalerProduct target) {
+//                target.partner = OuterOrderPartner.JD;
+//                target.resaler = resaler;
+//            }
+//        });
+//
+//        ResalerFactory.getYibaiquanResaler(); //必须存在一百券
     }
 
     @Test
