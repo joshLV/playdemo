@@ -343,14 +343,13 @@
                 &nbsp;+ 运费：
             #{if orders.containsRealGoods() && orders.freight.compareTo(BigDecimal.ZERO)>0}${models.order.Order.FREIGHT}#{/if}#{else}
                 0#{/else} 元
-            #{if orders.rebateValue != null && orders.rebateValue.compareTo(BigDecimal.ZERO) > 0}
-                &nbsp;- <span style="color:red">折扣：${orders.rebateValue}元</span>
-            #{/if}
                 = &nbsp;总金额：
             ${orders.amount} 元 (可提现余额支付:${orders.accountPay}元,
                 不可提现余额支付:${orders.promotionBalancePay?:java.math.BigDecimal.ZERO}元,
                 网银支付:${orders.discountPay}元,
-                抵用券支付:${orders.voucherValue ?: 0} 元)
+            #{if orders.rebateValue != null && orders.rebateValue.compareTo(BigDecimal.ZERO) > 0}
+                &nbsp;<span style="color:red">折扣：${orders.rebateValue}元</span>
+            #{/if})
             </td>
         </tr>
     </table>

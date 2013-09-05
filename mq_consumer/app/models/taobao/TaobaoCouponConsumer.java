@@ -196,8 +196,6 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         for (com.taobao.api.domain.Order order : orders) {
             Long number = order.getNum();
             //payment = needPay + discount_fee
-
-            order.setDiscountFee("5");
             BigDecimal orderItemPayment = new BigDecimal(order.getPayment()).add(new BigDecimal(order.getDiscountFee()));
 //            BigDecimal orderItemPayment = new BigDecimal(order.getPayment()).add(new BigDecimal(order.getDiscountFee()));
             BigDecimal salePrice = orderItemPayment.divide(new BigDecimal(number),2, RoundingMode.DOWN);

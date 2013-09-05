@@ -598,7 +598,7 @@ public class Order extends Model {
         this.orderItems.add(orderItem);
         this.amount = this.amount.add(orderItem.getLineValue()); //计算折扣价
         this.needPay = this.amount;
-        this.rebateValue = this.rebateValue.add(discountFee);
+        this.rebateValue = this.rebateValue == null ? BigDecimal.ZERO.add(discountFee) : this.rebateValue.add(discountFee);
 
         return orderItem;
     }
@@ -935,16 +935,18 @@ public class Order extends Model {
                         eCoupon.save();
                     }
 
+                    Logger.info("eCoupon.partner == ECouponPartner.TB"+(eCoupon.partner == ECouponPartner.TB));
                     //针对淘宝发放优惠券的情况
                     if (eCoupon.partner == ECouponPartner.TB) {
                         if ((i + 1) < orderItem.buyNumber) {
                             BigDecimal rb = orderItem.rebateValue.divide(new BigDecimal(orderItem.buyNumber), 2, RoundingMode.CEILING);
                             sumCouponRebateValue = sumCouponRebateValue.add(rb);
                             eCoupon.rebateValue = rb;
+                            eCoupon.save();
                         } else {
                             eCoupon.rebateValue = orderItem.rebateValue.subtract(sumCouponRebateValue).setScale(2);
+                            eCoupon.save();
                         }
-                        eCoupon.save();
                     }
                     //在新浪微博购买产生券，更新partner
                     if (sinaResaler != null && this.userId.equals(sinaResaler.id)) {
