@@ -10,6 +10,7 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.Shop;
+import models.sales.SupplierResalerShop;
 import play.Logger;
 import play.jobs.Every;
 
@@ -35,11 +36,12 @@ public class MeituanCouponJob extends JobWithHistory {
         for (OuterOrder outerOrder : outerOrders) {
             JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
             Long goodsId = jsonObject.get("goodsId").getAsLong();
+            Long shopId = jsonObject.get("shopId").getAsLong();
             Goods goods = Goods.findById(goodsId);
             List<String> couponStrList = new ArrayList<>();
             couponStrList.add(outerOrder.orderId);
             //生成一百券订单
-            Order order = createYbqOrder(outerOrder.resaler, goods, couponStrList, null,
+            Order order = createYbqOrder(outerOrder.resaler, goods, shopId, couponStrList, null,
                     goods.salePrice);
             outerOrder.ybqOrder = order;
             outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
@@ -48,7 +50,7 @@ public class MeituanCouponJob extends JobWithHistory {
         }
     }
 
-    private static Order createYbqOrder(Resaler resaler, Goods goods, List<String> couponStrList,
+    private static Order createYbqOrder(Resaler resaler, Goods goods, Long shopId, List<String> couponStrList,
                                         String mobile, BigDecimal salePrice) {
         Order ybqOrder = Order.createResaleOrder(resaler);
         ybqOrder.save();
@@ -73,15 +75,8 @@ public class MeituanCouponJob extends JobWithHistory {
             ECoupon c = couponList.get(i);
             c.partnerCouponId = couponStrList.get(i);
             c.save();
-            //默认是野生动物园的
-            Shop shop = Shop.findById(3580L);
-            //速8酒店
-            if ("3538".equals(c.goods.id.toString())) {
-                shop = Shop.findById(3941L);
-            } else if ("3535".equals(c.goods.id.toString())) {
-                //a8酒店
-                shop = Shop.findById(3938L);
-            }
+
+            Shop shop = Shop.findById(shopId);
             c.refresh();
             SupplierUser supplierUser = SupplierUser.find("byShop", shop).first();
             c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);

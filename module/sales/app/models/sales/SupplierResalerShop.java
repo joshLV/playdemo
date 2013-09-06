@@ -38,6 +38,10 @@ public class SupplierResalerShop extends Model {
     @Column(name = "password")
     public String password;
 
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
+    public Shop shop;
+
     @Column(name = "cookie_value")
     public String cookieValue;
 
