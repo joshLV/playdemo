@@ -9,6 +9,20 @@
     a.btn {
         width: 88px;
     }
+
+    #enter-coupon {
+        width: 180px;
+
+    }
+
+    .field-group {
+        padding: 5px 10px;
+
+    }
+
+    p {
+        font-size: 15px;
+    }
 </style>
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/meituan-verify.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -16,79 +30,104 @@
 <div class="bd batch-verify">
     <h2>券验证</h2>
 
-    <form id="coupon-form" action="@{SupplierVerifyECoupons.verify()}" method="post">
+    <div style="width:762px;margin:0 auto;">
+    #{if ("1".equals(currentUser?.supplier?.getProperty(models.supplier.Supplier.MEI_TUAN))) }
+        <div style="width:374px;height:100%;border:1px solid black;float:left;">
+            <form id="coupon-form" action="@{SupplierVerifyECoupons.verify()}" method="post">
 
-        <div class="field-sect">
-            <div class="field-group">
-                <label>一百券分店</label>
-            #{if shop == null}
-                #{select 'shopId', id:"shopId", value:shopId}
-                    #{list items:shopList, as:'shop'}
-                        #{option shop?.id}${shop?.name}#{/option}
-                    #{/list}
-                #{/select}
-            #{/if}
-            #{else}
-                <p>${shop?.name}</p>
-                <input type="hidden" name="shopId" id="shopId" value="${shop?.id}"/>
-            #{/else}
-            </div>
-            <!--野生动物园 -->
-        #{set couponItemCount :4/}
-        #{if currentUser.supplier.id ==664}
-            <div class="field-group">
-                <label>美团项目</label>
-            ${resalerProductList?.get(0)?.partnerGoodsName}
-            </div>
-            <input type="hidden" name="partnerGoodsId" id="partnerGoodsId"
-                   value="${resalerProductList?.get(0)?.partnerGoodsId}"/>
-            <input type="hidden" name="partnerShopId" id="partnerShopId"
-                   value="${resalerShopList?.get(0)?.resalerPartnerShopId}"/>
-        #{/if}
-        #{else}
-            #{set couponItemCount :0/}
-            <div class="field-group">
-                <label>美团项目</label>
-                #{select 'partnerGoodsId', id:"partnerGoodsId", value:partnerGoodsId}
-                    #{list items:resalerProductList, as:'resalerGoods'}
-                        #{option resalerGoods?.partnerGoodsId}${resalerGoods?.partnerGoodsName}#{/option}
-                    #{/list}
-                #{/select}
-            </div>
-            *{<!--酒店联盟的商户 -->}*
-            *{#{if currentUser.supplier.id==748}}*
-                *{<input type="hidden" name="partnerShopId" id="partnerShopId"}*
-                       *{value="${resalerShopList?.get(0)?.resalerPartnerShopId}"/>}*
-            *{#{/if}}*
-            <!--pony蛋糕的商户 -->
-            #{if currentUser.supplier.id==657}
-                #{set couponItemCount :4/}
-                <div class="field-group">
-                    <label>美团分店</label>
-                    #{select 'partnerShopId', id:"partnerShopId", value:partnerShopId}
-                        #{option ''}全部门店#{/option}
-                        #{list items:resalerShopList, as:'partnerShop'}
-                            #{option partnerShop?.resalerPartnerShopId}${partnerShop?.resalerPartnerShopName}#{/option}
+                <div class="field-sect">
+                    <h2>【一百券，美团】券验证</h2>
+
+                    <p>一百券分店:
+                        #{if shop == null}
+                            <select name="shopId" id="shopId" style="width: 230px">
+                                #{list items:shopList, as:'shop'}
+                                    <option value="${shop?.id}">${shop?.name}</option>
+                                #{/list}
+                            </select>
+                        #{/if}
+                        #{else}
+                        ${shop?.name}
+                            <input type="hidden" name="shopId" id="shopId" value="${shop?.id}"/>
+                        #{/else}
+                    </p>
+                    <!--野生动物园 -->
+                    #{set couponItemCount :4/}
+                    #{if currentUser.supplier.id ==664}
+                        <p>美 团 项 目 :
+                        ${resalerProductList?.get(0)?.partnerGoodsName}
+                            <input type="hidden" name="partnerGoodsId" id="partnerGoodsId"
+                                   value="${resalerProductList?.get(0)?.partnerGoodsId}"/>
+                            <input type="hidden" name="partnerShopId" id="partnerShopId"
+                                   value="${resalerShopList?.get(0)?.resalerPartnerShopId}"/>
+                        </p>
+                    #{/if}
+                    #{else}
+                        #{set couponItemCount :0/}
+                        <p>美 团 项 目:
+                            <select name="partnerGoodsId" id="partnerGoodsId" style="width: 230px">
+                                #{list items:resalerProductList, as:'resalerGoods'}
+                                    <option value="${resalerGoods?.partnerGoodsId}">${resalerGoods?.partnerGoodsName}</option>
+                                #{/list}
+                            </select>
+                        </p>
+                        <!--pony蛋糕的商户 -->
+                        #{if currentUser.supplier.id==657}
+                            #{set couponItemCount :4/}
+                            <p>美 团 分 店:
+                                <select name="partnerShopId" id="partnerShopId" style="width: 230px">
+                                    <option value=''>全部门店</option>
+                                    #{list items:resalerShopList, as:'partnerShop'}
+                                        <option value="${partnerShop?.resalerPartnerShopId}">${partnerShop?.resalerPartnerShopName}</option>
+                                    #{/list}
+                                </select>
+                            </p>
+                        #{/if}
+                    #{/else}
+
+                    <div style="padding-top: 10px;font-size: 20px;">输入券号<span style="display: inline;color: grey">(请输入10位或12位券号)</span>
+                    </div>
+
+                    <div class="field-group" style="text-align: left">
+                    *{<label class="coupon-label" for="enter-coupon">输入券号</label>}*
+                        #{list items:0..couponItemCount, as:'index'}
+                            <input type="text" size="22" maxlength="14" name="coupon" id="enter-coupon"
+                                   coupon-index="${index}"
+                                   class="enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
+                            <span id="verify-info-${index}" style="color: red;display: block"></span>
                         #{/list}
-                    #{/select}
+                        <a id="verify-btn" class="btn batch-verify" href="javascript:void(0);"
+                           hidefocus="true">验证消费</a>
+                        <span id="verify-msg" style="color: red;display: block"></span>
+                    </div>
                 </div>
-            #{/if}
-        #{/else}
-            <h2>输入券号<span style="display: inline;color: grey">(验证时请确认输入的券号为10位或12位)</span></h2>
+            </form>
+        </div>
+    #{/if}
+    #{if ("1".equals(currentUser?.supplier?.getProperty(models.supplier.Supplier.DIAN_PING))) }
+        <div style="width:374px;height:100%;border:1px solid black;float:left;margin-left:10px;">
+            <div class="field-sect">
+                <h2>【点评】券验证</h2>
 
+                <div style="padding-top: 10px;font-size: 20px;">输入券号<span style="display: inline;color: grey">(请输入10位点评的券)</span>
+                </div>
 
-            <div class="field-group">
-            *{<label class="coupon-label" for="enter-coupon">输入券号</label>}*
-            #{list items:0..couponItemCount, as:'index'}
-                <input type="text" size="32" maxlength="14" name="coupon" id="enter-coupon" coupon-index="${index}"
-                       class="enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
-                <span id="verify-info-${index}" style="color: red;display: block"></span>
-            #{/list}
-                <a id="verify-btn" class="btn batch-verify" href="javascript:void(0);"
-                   hidefocus="true">验证消费</a>
-                <span id="verify-msg" style="color: red;display: block"></span>
+                <div class="field-group">
+                *{<label class="coupon-label" for="enter-coupon">输入券号</label>}*
+                    #{list items:0..couponItemCount, as:'index'}
+                        <input type="text" size="22" maxlength="14" name="coupon" id="enter-coupon"
+                               coupon-index="${index}"
+                               class="enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
+                        <span id="verify-info-${index}" style="color: red;display: block"></span>
+                    #{/list}
+                    <a id="verify-btn" class="btn batch-verify" href="javascript:void(0);"
+                       hidefocus="true">验证消费</a>
+                    <span id="verify-msg" style="color: red;display: block"></span>
+                </div>
             </div>
         </div>
-    </form>
-
+    #{/if}
+        <br style="clear:both;"/>
+    </div>
 </div>
+

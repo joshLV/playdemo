@@ -52,13 +52,22 @@ public class SupplierVerifyResalerECoupons extends Controller {
             error("该商户没有添加门店信息！");
         }
 
-        if ("1".equals(supplier.getProperty(Supplier.MEI_TUAN)) || "1".equals(supplier.getProperty(Supplier.DIAN_PING))) {
-            List<SupplierResalerShop> resalerShopList = SupplierResalerShop.find("supplier.id=? and resaler=?", supplier.id, Resaler.findApprovedByLoginName("meituan")).fetch();
-            renderArgs.put("resalerShopList", resalerShopList);
-            List<SupplierResalerProduct> resalerProductList = SupplierResalerProduct.find("supplier.id=? and resaler=?", supplier.id, Resaler.findApprovedByLoginName("meituan")).fetch();
-            renderArgs.put("resalerProductList", resalerProductList);
+
+        if ("1".equals(supplier.getProperty(Supplier.DIAN_PING))) {
+            Resaler dpResaler = Resaler.findApprovedByLoginName("dianping");
+            List<SupplierResalerShop> resalerShopList = SupplierResalerShop.find("supplier.id=? and resaler=?", supplier.id, dpResaler).fetch();
+            renderArgs.put("dpShopList", resalerShopList);
+            List<SupplierResalerProduct> resalerProductList = SupplierResalerProduct.find("supplier.id=? and resaler=?", supplier.id, dpResaler).fetch();
+            renderArgs.put("dpProductList", resalerProductList);
         }
 
+        if ("1".equals(supplier.getProperty(Supplier.MEI_TUAN))) {
+            Resaler mtResaler = Resaler.findApprovedByLoginName("meituan");
+            List<SupplierResalerShop> resalerShopList = SupplierResalerShop.find("supplier.id=? and resaler=?", supplier.id, mtResaler).fetch();
+            renderArgs.put("resalerShopList", resalerShopList);
+            List<SupplierResalerProduct> resalerProductList = SupplierResalerProduct.find("supplier.id=? and resaler=?", supplier.id, mtResaler).fetch();
+            renderArgs.put("resalerProductList", resalerProductList);
+        }
         if (supplierUser.shop == null) {
             render(shopList, supplierUser);
         } else {
@@ -188,7 +197,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
 //        params.put("serialNums", StringUtils.join(couponIds,","));
 
         params.put("receiptId", 0);
-        params.put("t", "m"+System.currentTimeMillis());
+        params.put("t", "m" + System.currentTimeMillis());
 
 //        Logger.info("点评团项目ID：%s,对应门店ID：%s,对应一百券商品ID：%s,对应一百券门店ID：%s", partnerGoodsId, partnerShopId,
 //                supplierResalerProduct.goods.id.toString(), supplierResalerShop.shop.id);
@@ -200,7 +209,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
         }
 
         String body = response.getString();
-        System.out.println(body+"------");
+        System.out.println(body + "------");
     }
 
 }

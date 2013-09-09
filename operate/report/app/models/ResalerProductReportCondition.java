@@ -36,6 +36,8 @@ public class ResalerProductReportCondition {
             builder.append("and c.partner in :partners");
             paramMap.put("partners", partners);
         }
+
+        builder.append(" order by c.goods.beginOnSaleAt desc");
         return builder.toString();
     }
 
