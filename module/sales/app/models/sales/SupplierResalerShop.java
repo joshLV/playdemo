@@ -43,6 +43,7 @@ public class SupplierResalerShop extends Model {
     public Shop shop;
 
     @Column(name = "cookie_value")
+    @Lob
     public String cookieValue;
 
 }

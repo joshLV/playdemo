@@ -164,4 +164,43 @@ public class SupplierVerifyResalerECoupons extends Controller {
         }
 
     }
+
+    public static void dianping(String partnerGoodsId, String partnerShopId, List<String> couponIds) {
+        Resaler resaler = Resaler.findApprovedByLoginName("dianping");
+        SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("resaler=?", resaler).first();
+        String cookie = supplierResalerShop.cookieValue;
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Accept", "application/json, text/javascript");
+        headers.put("Accept-Encoding", "deflate,sdch");
+        headers.put("Accept-Language", "zh-CN,zh;q=0.8");
+        headers.put("Cache-Control", "max-age=0");
+        headers.put("Connection", "keep-alive");
+        headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        headers.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36");
+        headers.put("Host", "e.dianping.com");
+        headers.put("Referer", "http://e.dianping.com/account/login/");
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        headers.put("X-Request", "JSON");
+        headers.put("Cookie", cookie);
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("serialNums", "3242352355");
+//        params.put("serialNums", StringUtils.join(couponIds,","));
+
+        params.put("receiptId", 0);
+        params.put("t", "m"+System.currentTimeMillis());
+
+//        Logger.info("点评团项目ID：%s,对应门店ID：%s,对应一百券商品ID：%s,对应一百券门店ID：%s", partnerGoodsId, partnerShopId,
+//                supplierResalerProduct.goods.id.toString(), supplierResalerShop.shop.id);
+
+        WS.HttpResponse response = WS.url("http://e.dianping.com/tuangou/ajax/batchverify").params(params).headers(headers).followRedirects(false).post();
+        List<Http.Header> headerList = response.getHeaders();
+        for (Http.Header header : headerList) {
+            System.out.println(header.name + ": " + header.value());
+        }
+
+        String body = response.getString();
+        System.out.println(body+"------");
+    }
+
 }
