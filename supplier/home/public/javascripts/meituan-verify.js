@@ -40,8 +40,6 @@ jQuery(function ($) {
             _this.val(value + ' ');
         }
     });
-    var ybqCouponCnt = 0;
-    var mtCouponCnt = 0;
     couponIds = [];
     $(".enter-coupon").each(function () {
         var ele = $(this);
@@ -59,16 +57,6 @@ jQuery(function ($) {
                 $("#verify-info-" + index).text("券号应为10位数字或12位数字，请修正。");
                 return;
             }
-            if (eCouponSn.length == 10) {
-                ybqCouponCnt++;
-            }
-            if (eCouponSn.length == 12) {
-                mtCouponCnt++;
-            }
-//            if (ybqCouponCnt > 0 && mtCouponCnt > 0) {
-//                $("#verify-msg").text("请确认输入的券号全部是10位或全部是12位！");
-//                return false;
-//            }
 
             if (eCouponSn.length == 10) {
                 $.ajax({
@@ -90,12 +78,6 @@ jQuery(function ($) {
                 });
             }
 
-//            var i = $.inArray(eCouponSn, couponIds);
-//            if (i >= 0) {
-//                $("#verify-info-" + index).text("券号输入的有重复，请检查！");
-//                return false;
-//            }
-//            couponIds.push(eCouponSn);
         });
 
     });
@@ -120,18 +102,7 @@ jQuery(function ($) {
                     success = false;
                     return;
                 }
-                if (eCouponSn.length == 10) {
-                    ybqCouponCnt++;
-                }
-                if (eCouponSn.length == 12) {
-                    mtCouponCnt++;
-                }
-//                if (ybqCouponCnt > 0 && mtCouponCnt > 0) {
-//                    $("#verify-msg").text("请确认输入的券号全部是10位或全部是12位！");
-//                    return false;
-//                } else {
-//                    $("#verify-msg").text("");
-//                }
+
                 if (eCouponSn.length == 10) {
                     $.ajax({
                         type: 'POST',
@@ -152,14 +123,6 @@ jQuery(function ($) {
                 }
             });
 
-//            console.log(eCouponSn+">>>"+couponIds)
-//            var i = $.inArray(eCouponSn, couponIds);
-//            if (i >= 0) {
-//                $("#verify-info-" + index).text("券号输入的有重复，请检查！");
-//                success = false;
-//                return false;
-//            }
-//
             if (eCouponSn != '') {
                 couponIds.push(eCouponSn);
             }

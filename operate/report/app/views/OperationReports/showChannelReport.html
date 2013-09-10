@@ -189,6 +189,7 @@ beginValue:condition?.beginAt?.format(), endValue:condition?.endAt?.format()/}
     <th>退款券数量/金额</th>
     <th>退款实物数量/金额</th>
     <th>消费券数量/金额</th>
+    <th>净销售额</th>
     <th>贡献度</th>
     #{if hasSeeReportProfitRight == true}
     <th>毛利率</th>
@@ -239,6 +240,9 @@ beginValue:condition?.beginAt?.format(), endValue:condition?.endAt?.format()/}
             /
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${report?.consumedPrice == null ?' 0.00':report?.consumedPrice?.format('#0.00')}   </a>
+        </td>
+        <td style="text-align:right;">
+        ${report?.salePrice?.add(report?.realSalePrice)?.subtract(report?.refundPrice)?.format('#0.00')}
         </td>
         <td style="text-align:right;">${(report?.contribution?:0).format('#0.00')}%</td>
         #{if hasSeeReportProfitRight == true}
