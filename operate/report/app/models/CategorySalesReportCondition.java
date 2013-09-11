@@ -31,7 +31,11 @@ public class CategorySalesReportCondition {
 
 
     public String getFilter() {
-        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId = s.id and (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId = s.id and (r.order.status='PAID' or r.order.status='SENT'" +
+                " or r.order.status = 'PREPARED'" +
+                " or r.order.status='UPLOADED'" +
+                "  ) " +
+                " and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");

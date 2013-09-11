@@ -757,7 +757,8 @@ public class SalesReportCondition implements Serializable {
 
 
     public String getFilterOfPeopleEffect() {
-        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and (r.order.status='PAID' or r.order.status='SENT' " +
+                "or r.order.status = 'PREPARED' or r.order.status='UPLOADED') and r.goods.isLottery=false");
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         if (!hasSeeReportProfitRight) {
             condBuilder.append(" and o.id =:salesId");

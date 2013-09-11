@@ -21,7 +21,8 @@ public class ChannelSalesDailyReportCondition implements Serializable {
     private Map<String, Object> paramMap1 = new HashMap<>();
 
     public String getPaidAtFilter() {
-        StringBuilder condBuilder = new StringBuilder(" and (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" and (r.order.status='PAID' or r.order.status='SENT' " +
+                "or r.order.status = 'PREPARED' or r.order.status='UPLOADED') and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED ");
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");

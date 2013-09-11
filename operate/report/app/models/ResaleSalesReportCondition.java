@@ -25,7 +25,8 @@ public class ResaleSalesReportCondition {
     public String goodsCode;
 
     public String getFilterPaidAt() {
-        StringBuilder condBuilder = new StringBuilder("and (r.order.status='PAID' or r.order.status='SENT' or r.status='SENT') " +
+        StringBuilder condBuilder = new StringBuilder("and (r.order.status='PAID' or r.order.status='SENT' or r.status='SENT' " +
+                "or r.order.status = 'PREPARED' or r.order.status='UPLOADED') " +
                 "and r.goods.isLottery=false and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED"
         );
 
