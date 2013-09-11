@@ -150,7 +150,8 @@ public class SalesOrderItemReportCondition implements Serializable {
     }
 
     public String getNetSalesFilter() {
-        StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT') and s.id=r.goods.supplierId and r.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT' " +
+                "or r.order.status = 'PREPARED' or r.order.status='UPLOADED') and s.id=r.goods.supplierId and r.goods.isLottery=false");
 
         if (createdAtBegin != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");

@@ -38,7 +38,8 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getFilterPaidAt() {
-        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and r.goods.supplierId = s.id and s.deleted=0 and s.salesId=ou.id and r.order.status='PAID' " +
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and r.goods.supplierId = s.id and s.deleted=0 and s.salesId=ou.id and (r.order.status='PAID' or r.order.status = 'SENT' " +
+                "or r.order.status = 'PREPARED' or r.order.status='UPLOADED')" +
                 "and r.goods.isLottery=false and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED"
         );
 
