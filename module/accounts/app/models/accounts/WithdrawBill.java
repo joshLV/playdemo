@@ -110,6 +110,9 @@ public class WithdrawBill extends Model {
     @Transient
     public String applierName;
 
+    @Transient
+    public String salesName;   //销售专员名字
+
     /**
      * 操作人
      */
