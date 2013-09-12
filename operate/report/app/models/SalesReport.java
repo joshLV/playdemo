@@ -1393,7 +1393,9 @@ public class SalesReport implements Comparable<SalesReport> {
             cheatedOrderAmount = cheatedOrderAmount.add(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount);
         }
         if (netSalesAmount.compareTo(BigDecimal.ZERO) != 0) {
-            grossMargin = netSalesAmount.subtract(netCost).divide(netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            System.out.println("netSalesAmount = " + netSalesAmount);
+            System.out.println("netCost = " + netCost);
+            grossMargin = totalAmount.subtract(totalCost).divide(totalAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
         return new SalesReport(totalConsumed.setScale(2, 4), totalAmount.setScale(2, 4), salesRefundAmount.setScale(2, 4), previousSalesRefundAmount.setScale(2, 4), consumedRefundAmount.setScale(2, 4), previousConsumedRefundAmount.setScale(2, 4), netSalesAmount.setScale(2, 4), grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4), cheatedOrderAmount.setScale(2, 4));
     }

@@ -1272,7 +1272,9 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
         }
 
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
-            grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            System.out.println("totolSalePrice = " + totolSalePrice);
+            System.out.println("totalCost = " + totalCost);
+            grossMargin = totalAmount.subtract(totalCost).divide(totalAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
         return new CategorySalesReport(summaryConsumed.setScale(2, 4), totalAmount.setScale(2, 4), refundAmount.setScale(2, 4), netSalesAmount.setScale(2, 4), grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4), cheatedOrderAmount.setScale(2, 4));
     }
