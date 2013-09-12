@@ -2,17 +2,12 @@ package controllers;
 
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.RmbUtil;
-import models.accounts.Account;
-import models.accounts.AccountSequence;
-import models.accounts.AccountType;
-import models.accounts.WithdrawAccount;
-import models.accounts.WithdrawBill;
-import models.accounts.WithdrawBillCondition;
-import models.accounts.WithdrawBillStatus;
+import models.accounts.*;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.operator.OperateUser;
 import models.operator.Operator;
 import models.order.Prepayment;
 import models.resale.Resaler;
@@ -268,10 +263,19 @@ public class WithdrawApproval extends Controller {
 
             if (bill.account.accountType == AccountType.SUPPLIER) {
                 bill.applierName = "商户(" + bill.accountName + ")";
-            } else if (bill.account.accountType == AccountType.SUPPLIER) {
+                Supplier supplier = Supplier.findById(bill.account.uid);
+                OperateUser operateUser = OperateUser.findById(supplier.salesId);
+                bill.salesName = "业务员:" + (operateUser.userName == null ? operateUser.loginName : operateUser.userName);
+            } else if (bill.account.accountType == AccountType.CONSUMER) {
                 bill.applierName = "消费者(" + bill.accountName + ")";
             } else if (bill.account.accountType == AccountType.RESALER) {
                 bill.applierName = "分销商(" + bill.accountName + ")";
+            } else if (bill.account.accountType == AccountType.SHOP) {
+                bill.applierName = "门店(" + bill.accountName + ")";
+                Shop shop = Shop.findById(bill.account.uid);
+                Supplier supplier = Supplier.findById(shop.supplierId);
+                OperateUser operateUser = OperateUser.findById(supplier.salesId);
+                bill.salesName = "业务员:" + (operateUser.userName == null ? operateUser.loginName : operateUser.userName);
             }
             //人民币大写 单独 用一位位阿拉伯数字显示，并在之前加上人民币符号
 
