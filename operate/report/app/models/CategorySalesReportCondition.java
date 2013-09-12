@@ -78,7 +78,8 @@ public class CategorySalesReportCondition {
 
 
     public String getFilterCheatedOrder() {
-        StringBuilder condBuilder = new StringBuilder(" r.goods.supplierId = s.id and r.order.status='PAID' and r.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" r.goods.supplierId = s.id and (r.order.status='PAID' or r.order.status = 'SENT' " +
+                "or r.order.status = 'PREPARED'  or r.order.status='UPLOADED') and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and e.isCheatedOrder = true ");
         if (StringUtils.isNotBlank(shortName)) {
@@ -121,7 +122,8 @@ public class CategorySalesReportCondition {
     }
 
     public String getFilterCheatedOrderResaler() {
-        StringBuilder condBuilder = new StringBuilder(" r.goods.supplierId = s.id and r.order.status='PAID' and r.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" r.goods.supplierId = s.id and (r.order.status='PAID' or r.order.status = 'SENT' " +
+                "or r.order.status = 'PREPARED'  or r.order.status='UPLOADED') and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and e.isCheatedOrder = true and r.order=o and o.userId=b.id  ");
         if (StringUtils.isNotBlank(shortName)) {
@@ -166,7 +168,7 @@ public class CategorySalesReportCondition {
 
     public String getResalerFilter() {
         StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId = s.id  " +
-                " and (r.order.status='PAID' or r.order.status='SENT')" +
+                " and (r.order.status='PAID' or r.order.status='SENT' or r.order.status = 'PREPARED'  or r.order.status='UPLOADED')" +
                 " and r.goods.isLottery=false and r.order=o and o.userId=b.id" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED ");
         if (StringUtils.isNotBlank(shortName)) {
