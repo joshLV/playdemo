@@ -1173,14 +1173,16 @@ public class SalesReport implements Comparable<SalesReport> {
                     item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).
-                        subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).
-                                add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).
-                                add(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost
-                                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
-                                        .add(refundItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundItem.refundCommissionAmount));
+//                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).
+//                        subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
+//                        .subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
+//                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).
+//                                add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).
+//                                add(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost
+//                                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
+//                                        .add(refundItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundItem.refundCommissionAmount));
+
+                item.profit = item.netSalesAmount.subtract(item.netCost);
 
             } else {
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
@@ -1201,7 +1203,7 @@ public class SalesReport implements Comparable<SalesReport> {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(offline));
             if (item != null) {
                 item.offlineAmount = offline.offlineAmount;
-            }else {
+            } else {
                 map.put(getReportKeyOfPeopleEffect(offline), offline);
             }
         }
