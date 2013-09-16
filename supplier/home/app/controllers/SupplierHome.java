@@ -54,15 +54,21 @@ public class SupplierHome extends Controller {
 
     public static void add() {
         List<Supplier> supplierList = Supplier.findUnDeleted();
+        List<SupplierRole> roles = new ArrayList<>();
+        SupplierRole role = SupplierRole.findById(1L);
+        roles.add(role);
+        role = SupplierRole.findById(2L);
+        roles.add(role);
+        role = SupplierRole.findById(4L);
+        roles.add(role);
+        role = SupplierRole.findById(5L);
+        roles.add(role);
         for (Supplier supplier : supplierList) {
             SupplierUser supplierUser = new SupplierUser();
 
             String password_salt = "'*(Y*@#&Y#'";
             // 密码加密
             supplierUser.encryptedPassword = DigestUtils.md5Hex("Yunying.2013" + password_salt);
-            List<SupplierRole> roles = new ArrayList<>();
-            SupplierRole role = SupplierRole.findById(5L);
-            roles.add(role);
             supplierUser.roles = roles;
             // 随机码
             supplierUser.passwordSalt = password_salt;
