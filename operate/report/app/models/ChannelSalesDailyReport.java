@@ -126,8 +126,16 @@ public class ChannelSalesDailyReport implements Comparable<ChannelSalesDailyRepo
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount == null ? BigDecimal.ZERO : refundItem.refundAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
                 map.put(getReportKey(refundItem), refundItem);
             } else {
+                System.out.println("item.loginName = " + item.loginName);
+                System.out.println("item.salesAmount = " + item.salesAmount);
+
                 item.refundAmount = refundItem.refundAmount;
+                System.out.println("item.refundAmount = " + item.refundAmount);
+
                 item.netSalesAmount = (item.salesAmount == null ? BigDecimal.ZERO : item.salesAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
+                System.out.println("item.netSalesAmount = " + item.netSalesAmount);
+                System.out.println("");
+
             }
         }
 
