@@ -68,13 +68,11 @@ public class RealGoodsReturnEntryCondition implements Serializable {
     }
 
     public String getFilter() {
-        StringBuilder sqlCond = new StringBuilder(" r.orderItems.goods.supplierId =:supplierId");
+        StringBuilder sqlCond = new StringBuilder(" 1=1 ");
         if (paramsMap == null) {
             paramsMap = new HashMap<>();
         }
-        if (supplierId > 0 && supplierId != null) {
-            paramsMap.put("supplierId", supplierId);
-        }
+
         if (status != null) {
             sqlCond.append(" and r.status=:status");
             paramsMap.put("status", status);
@@ -88,10 +86,10 @@ public class RealGoodsReturnEntryCondition implements Serializable {
             sqlCond.append(" and r.orderItems.goods.id=:goodsId");
             paramsMap.put("goodsId", goodsId);
         }
-//        if (supplierId != null && supplierId > 0L) {
-//            sqlCond.append(" and r.orderItems.goods.supplierId=:supplierId");
-//            paramsMap.put("supplierId", supplierId);
-//        }
+        if (supplierId != null && supplierId > 0L) {
+            sqlCond.append(" and r.orderItems.goods.supplierId=:supplierId");
+            paramsMap.put("supplierId", supplierId);
+        }
         if (StringUtils.isNotBlank(goodsName)) {
             sqlCond.append(" and r.orderItems.goods.shortName like :goodsName");
             paramsMap.put("goodsName", "%" + goodsName + "%");
