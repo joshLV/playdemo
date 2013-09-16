@@ -80,6 +80,7 @@ public class SupplierAdsFees extends Controller {
         updAdsFee.adsFee = ads.adsFee;
         updAdsFee.receivedType = ads.receivedType;
         updAdsFee.updatedAt = new Date();
+        updAdsFee.remark = ads.remark;
         updAdsFee.updatedBy = OperateRbac.currentUser().userName;
         updAdsFee.save();
 
