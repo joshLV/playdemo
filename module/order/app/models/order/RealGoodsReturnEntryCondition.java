@@ -68,9 +68,12 @@ public class RealGoodsReturnEntryCondition implements Serializable {
     }
 
     public String getFilter() {
-        StringBuilder sqlCond = new StringBuilder("1=1");
+        StringBuilder sqlCond = new StringBuilder(" r.orderItems.goods.supplierId =:supplierId");
         if (paramsMap == null) {
             paramsMap = new HashMap<>();
+        }
+        if (supplierId > 0 && supplierId != null) {
+            paramsMap.put("supplierId", supplierId);
         }
         if (status != null) {
             sqlCond.append(" and r.status=:status");
