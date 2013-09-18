@@ -42,11 +42,11 @@ public class RealGoodsSalesReportCondition {
         }
 
         if (beginAt != null) {
-            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            condBuilder.append(" and r.order.createdAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
-            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            condBuilder.append(" and r.order.createdAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
 
