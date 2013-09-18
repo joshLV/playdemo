@@ -350,7 +350,7 @@ public class ImportPartnerOrders extends Controller {
         outerOrder.ybqOrder = ybqOrder;
         outerOrder.save();
         ybqOrder.paidAt = logistic.paidAt;
-        ybqOrder.createdAt = logistic.paidAt;
+        ybqOrder.createdAt = new Date();
         ybqOrder.save();
         importSuccessOrderList.add(logistic.outerOrderNo);
 

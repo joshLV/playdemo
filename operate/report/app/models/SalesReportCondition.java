@@ -125,11 +125,11 @@ public class SalesReportCondition implements Serializable {
         }
 
         if (beginAt != null) {
-            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            condBuilder.append(" and r.order.createdAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
-            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            condBuilder.append(" and r.order.createdAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
         if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
@@ -169,11 +169,11 @@ public class SalesReportCondition implements Serializable {
         }
 
         if (beginAt != null) {
-            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            condBuilder.append(" and r.order.createdAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
-            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            condBuilder.append(" and r.order.createdAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
         if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
@@ -211,11 +211,11 @@ public class SalesReportCondition implements Serializable {
         }
 
         if (beginAt != null) {
-            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            condBuilder.append(" and r.order.createdAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
-            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            condBuilder.append(" and r.order.createdAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
         if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
@@ -299,11 +299,11 @@ public class SalesReportCondition implements Serializable {
             paramMap.put("code", code.trim() + "%");
         }
         if (beginAt != null) {
-            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            condBuilder.append(" and r.order.createdAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
-            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            condBuilder.append(" and r.order.createdAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
         if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
@@ -774,11 +774,11 @@ public class SalesReportCondition implements Serializable {
         }
 
         if (beginAt != null) {
-            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            condBuilder.append(" and r.order.createdAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
-            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            condBuilder.append(" and r.order.createdAt < :createdAtEnd");
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
         if (supplierId != 0) {
@@ -788,40 +788,8 @@ public class SalesReportCondition implements Serializable {
 
         return condBuilder.toString();
 
-
     }
 
-    public String getResalerFilterOfPeopleEffect() {
-        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=ou.id  " +
-                " and (r.order.status='PAID' or r.order.status='SENT')" +
-                " and r.goods.isLottery=false and r.order=o and o.userId=b.id");
-        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
-        if (!hasSeeReportProfitRight) {
-            condBuilder.append(" and o.id =:salesId");
-            paramMap.put("salesId", salesId);
-        }
-        if (StringUtils.isNotBlank(userName)) {
-            condBuilder.append(" and ou.userName like :shortName");
-            paramMap.put("shortName", "%" + userName + "%");
-        }
-        if (StringUtils.isNotBlank(jobNumber)) {
-            condBuilder.append(" and ou.jobNumber= :jobNumber");
-            paramMap.put("jobNumber", jobNumber);
-        }
-        if (beginAt != null) {
-            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
-            paramMap.put("createdAtBegin", beginAt);
-        }
-        if (endAt != null) {
-            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
-        }
-        if (supplierId != 0) {
-            condBuilder.append(" and r.goods.supplierId = :supplierId");
-            paramMap.put("supplierId", supplierId);
-        }
-        return condBuilder.toString();
-    }
 
     public String getRefundFilterOfPeopleEffect(ECouponStatus status) {
         paramMap1 = new HashMap<>();
@@ -918,46 +886,11 @@ public class SalesReportCondition implements Serializable {
             paramMap1.put("jobNumber", jobNumber);
         }
         if (beginAt != null) {
-            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            condBuilder.append(" and r.order.createdAt >= :createdAtBegin");
             paramMap1.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
-            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
-            paramMap1.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
-        }
-        if (supplierId != 0) {
-            condBuilder.append(" and r.goods.supplierId = :supplierId");
-            paramMap1.put("supplierId", supplierId);
-        }
-
-        return condBuilder.toString();
-    }
-
-
-    public String getFilterCheatedOrderResalerOfPeopleEffect() {
-        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and r.order.status='PAID' and r.goods.isLottery=false" +
-                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
-                " and e.isCheatedOrder = true  and r.order=o and o.userId=b.id ");
-        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
-        if (!hasSeeReportProfitRight) {
-            condBuilder.append(" and ou.id =:salesId");
-            paramMap1.put("salesId", salesId);
-        }
-        if (StringUtils.isNotBlank(userName)) {
-            condBuilder.append(" and ou.userName like :userName");
-            paramMap1.put("userName", "%" + userName + "%");
-        }
-        if (StringUtils.isNotBlank(jobNumber)) {
-            condBuilder.append(" and ou.jobNumber=:jobNumber");
-            paramMap1.put("jobNumber", jobNumber);
-        }
-
-        if (beginAt != null) {
-            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
-            paramMap1.put("createdAtBegin", beginAt);
-        }
-        if (endAt != null) {
-            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            condBuilder.append(" and r.order.createdAt < :createdAtEnd");
             paramMap1.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
         if (supplierId != 0) {
