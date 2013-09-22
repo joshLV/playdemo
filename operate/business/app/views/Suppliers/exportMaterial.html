@@ -106,7 +106,7 @@
     <p>登陆域名地址：${supplierDomainName}.quanmx.com　　　　管理员帐号：
     #{list items:supplierUsers, as:'row1'}
 
-        #{if row1.shop==null}
+        #{if row1.shop==null && row1.loginName != 'yy585'}
         ${row1?.loginName}
             &nbsp;
 
