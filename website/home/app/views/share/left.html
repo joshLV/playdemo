@@ -22,10 +22,10 @@
             <!--
             <li><a #{if request.url.contains("/cash-coupon")}class="current"#{/if}  href="@{UserCashCoupons.index()}">»
                 现金券充值</a></li>
-            <li><a #{if request.url.equals("/user-coins")}class="current"#{/if} href="/user-coins">» 我的金币</a></li>
             -->
+            <li><a #{if request.url.equals("/user-coins")}class="current"#{/if} href="/user-coins">» 我的金币</a></li>
         </ul>
-        <!--
+
         <h3 #{if request.url.contains("/voucher")}class="active"#{/if}>
         我的抵用券</h3>
         <ul>
@@ -34,7 +34,7 @@
             <li><a #{if request.url.contains("/voucher/assign")}class="current"#{/if}  href="@{UserVouchers.showAssign()}">»
                 抵用券领取</a></li>
         </ul>
-
+        <!--
         <h3 #{if request.url.contains("/user-point")}class="active"#{/if}>我的积分</h3>
         <ul>
             <li><a #{if request.url.contains("/user-point") && !request.url.contains("/user-point-record") }class="current"#{/if} href="/user-point">» 积分明细</a></li>
