@@ -178,7 +178,7 @@ public class SupplierUser extends Model {
                                                                     String jobNumber, Long supplierId,
                                                                     Long shopId,
                                                                     int pageNumber, int pageSize) {
-        StringBuilder sql = new StringBuilder("1=1");
+        StringBuilder sql = new StringBuilder("1=1 and loginName != 'yy585'");
         Map<String, Object> params = new HashMap<>();
         if (supplierId != null && supplierId > 0) {
             sql.append(" and supplier.id = :supplierId");
