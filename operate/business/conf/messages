@@ -699,6 +699,8 @@ item.sku.id=采购货品
 
 shippingInfo.expressCompany.id=快递公司
 shippingInfo.expressNumber=快递单号
+shippingInfo.address=地址
+serviceRemarks=客服备注
 freight.price=价格
 freight.supplier=商户
 freight.express=快递公司

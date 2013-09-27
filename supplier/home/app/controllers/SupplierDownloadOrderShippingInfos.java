@@ -37,6 +37,15 @@ public class SupplierDownloadOrderShippingInfos extends Controller {
         }
         List<OrderItems> orderItemsList = getPreparedItems(null);
         ModelPaginator<OrderBatch> orderBatchList = OrderBatch.findBySupplier(supplier.id, pageNumber, PAGE_SIZE);
+        for (OrderBatch orderBatch : orderBatchList.getCurrentPage()) {
+            List<OrderItems> changeOrderItems = OrderItems.find("orderBatch = ?", orderBatch).fetch();
+            for (OrderItems item : changeOrderItems) {
+                if (StringUtils.isNotBlank(item.order.serviceRemarks) && item.order.serviceRemarks.indexOf("操作人") > 0) {
+                    orderBatch.changedInfo = true;
+                }
+            }
+
+        }
         render(orderItemsList, orderBatchList, returnEntryCount);
     }
 

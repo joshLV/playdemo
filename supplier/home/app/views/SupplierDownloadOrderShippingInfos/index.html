@@ -17,8 +17,9 @@
     <table cellspacing="0" cellpadding="0" border="0" class="title-table">
         <tr>
             <th wdith="50%">待发货订单数：${orderItemsList?.size()}</th>
+            <th wdith="20%"><span style="color:rgb(255, 112, 0)">【红色连接表示该发货单中收货人信息有变动，请重新下载】</span></th>
         #{if orderItemsList}
-            <td wdith="50%" align="left">
+            <td wdith="30%" align="left">
                 <a class="btn" href="@{SupplierDownloadOrderShippingInfos.exportOrderShipping()}">下载</a></td>
             </td>
         #{/if}
@@ -44,7 +45,7 @@
             <td>${orderBatch.id}</td>
             <td>${orderBatch.orderCount}</td>
             <td>
-                <a href="@{SupplierDownloadOrderShippingInfos.exportOrderShipping(orderBatch.id)}">下载</a>
+                <a href="@{SupplierDownloadOrderShippingInfos.exportOrderShipping(orderBatch.id)}" #{if orderBatch.changedInfo}style="color: red"#{/if}>下载</a>
             </td>
         </tr>
         #{/paginate.list}

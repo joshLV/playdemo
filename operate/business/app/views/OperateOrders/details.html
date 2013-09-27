@@ -358,9 +358,9 @@
 <ul class="nav">
     <li class="active">
         <span><a href="#"> 收货信息</a>
-        <a class="btn" href="#" id="linkUpdateExpress_${orderItems?.get(0)?.shippingInfo?.id}"
+        <button id="linkUpdateExpress_${orderItems?.get(0)?.shippingInfo?.id}" class="btn btn-info"
            onclick="updateExpress('${orderItems?.get(0)?.shippingInfo?.id}','${shippingInfo?.expressCompany?.id}','${shippingInfo?.expressNumber}')
-                   ">修改物流信息</a>
+                   ">修改收货信息</button>
             </span>
     </li>
 %{ outerOrder = models.order.OuterOrder.getOuterOrder(orders) }%
@@ -397,11 +397,7 @@
                 #{/if}
                 #{else }
                 ${orders?.receiverMobile}
-                #{/else}
-            </td>
-        </tr>
-        <tr>
-            <td>
+                #{/else}  |
                 电话：
                 #{if outerOrder!=null}
                 ${orderItems?.get(0)?.shippingInfo?.tel}
@@ -419,11 +415,7 @@
                 #{/if}
                 #{else }
                 ${orders?.deliveryCompany}
-                #{/else}
-            </td>
-        </tr>
-        <tr>
-            <td>
+                #{/else} |
                 物流单号：
                 #{if outerOrder!=null}
                 ${orderItems?.get(0)?.shippingInfo?.expressNumber}
@@ -442,6 +434,11 @@
                 #{else }
                 ${orders?.remark}
                 #{/else}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                备注： ${orders?.serviceRemarks}<br>
             </td>
         </tr>
     </table>
@@ -564,17 +561,18 @@
     <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>
 
-        <h3>修改物流信息</h3>
+        <h3>修改发货信息</h3>
     </div>
     <div class="modal-body">
     #{form @OperateOrders.index(), id:"update_express_form", name:"update_express_form",class:"form-horizontal",method:"PUT"}
-          #{layout_operate.selectField name:'shippingInfo.expressCompany.id', value:goods?.brand?.id, error:'shippingInfo.expressCompany', required:true}
+          #{layout_operate.selectField name:'shippingInfo.expressCompany.id', value:goods?.brand?.id, error:'shippingInfo.expressCompany', required:false}
         #{list items:expressList, as:'express'}
             #{option express?.id}${express?.name}#{/option}
         #{/list}
     #{/layout_operate.selectField}
-
-    #{layout_operate.textField name:'shippingInfo.expressNumber', value:'',required:true /}
+    #{layout_operate.textField name:'shippingInfo.expressNumber', value:'',required:false /}
+    #{layout_operate.textField name:'shippingInfo.address', value:'',required:false /}
+    #{layout_operate.textField name:'serviceRemarks', value:'',required:false /}
     #{/form}
     </div>
     <div class="modal-footer">

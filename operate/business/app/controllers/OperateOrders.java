@@ -1,6 +1,7 @@
 package controllers;
 
 import models.consumer.User;
+import models.operator.OperateUser;
 import models.order.*;
 import models.resale.Resaler;
 import models.sales.Brand;
@@ -116,18 +117,30 @@ public class OperateOrders extends Controller {
                 loginName = resaler.loginName;
             }
         }
-
         // 用于查看手机号的权限
         Boolean hasViewEcouponSnPermission = ContextedPermission.hasPermission("VIEW_ECOUPONSN");
         List<ExpressCompany> expressList = ExpressCompany.findAll();
+
         render(orders, orderItems, loginName, hasViewEcouponSnPermission, expressList);
     }
 
-    public static void updateExpress(Long id, OrderShippingInfo shippingInfo) {
+    public static void updateExpress(Long id, OrderShippingInfo shippingInfo, String serviceRemarks) {
         OrderShippingInfo updateShippingInfo = OrderShippingInfo.findById(id);
-        updateShippingInfo.expressCompany = shippingInfo.expressCompany;
-        updateShippingInfo.expressNumber = shippingInfo.expressNumber;
+        if (shippingInfo.expressCompany != null && updateShippingInfo.expressCompany == null) {
+            updateShippingInfo.expressCompany = shippingInfo.expressCompany;
+        }
+        if (StringUtils.isNotBlank(shippingInfo.expressNumber)) {
+            updateShippingInfo.expressNumber = shippingInfo.expressNumber;
+        }
+        if (StringUtils.isNotBlank(shippingInfo.address)) {
+            updateShippingInfo.address = shippingInfo.address;
+        }
         updateShippingInfo.save();
+        OrderItems orderItem = updateShippingInfo.orderItems.get(0);
+        orderItem.order.serviceRemarks = serviceRemarks + "\r\n 操作人：" + OperateRbac.currentUser().userName;
+        orderItem.order.save();
+        orderItem.save();
+
         details(updateShippingInfo.orderItems.get(0).order.id);
     }
 
