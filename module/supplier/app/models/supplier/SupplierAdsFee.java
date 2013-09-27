@@ -50,7 +50,8 @@ public class SupplierAdsFee extends Model {
     public DeletedStatus deleted;
 
     public static JPAExtPaginator<SupplierAdsFee> getPage(SupplierAdsFeesCondition condition, int pageNumber, int pageSize) {
-        JPAExtPaginator<SupplierAdsFee> adsFeesPage = new JPAExtPaginator<>("SupplierAdsFee s", "s", SupplierAdsFee.class, condition.getFitter(), condition.getParamMap());
+        JPAExtPaginator<SupplierAdsFee> adsFeesPage = new JPAExtPaginator<>("SupplierAdsFee s", "s",
+                SupplierAdsFee.class, condition.getFitter(), condition.getParamMap()).orderBy("s.id desc");
         adsFeesPage.setPageNumber(pageNumber);
         adsFeesPage.setPageSize(pageSize);
         adsFeesPage.setBoundaryControlsEnabled(false);

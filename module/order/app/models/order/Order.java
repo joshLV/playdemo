@@ -271,6 +271,8 @@ public class Order extends Model {
     @Column(name = "supplier_order_number")
     public String supplierOrderNumber;
 
+    @Column(name = "service_remarks")
+    public String serviceRemarks;
     public Order() {
     }
 
