@@ -126,22 +126,20 @@ public class OperateOrders extends Controller {
 
     public static void updateExpress(Long id, OrderShippingInfo shippingInfo, String serviceRemarks) {
         OrderShippingInfo updateShippingInfo = OrderShippingInfo.findById(id);
-        if (shippingInfo.expressCompany != null) {
+        if (shippingInfo.expressCompany != null && updateShippingInfo.expressCompany == null) {
             updateShippingInfo.expressCompany = shippingInfo.expressCompany;
         }
-        if (StringUtils.isNotBlank(shippingInfo.expressNumber)){
+        if (StringUtils.isNotBlank(shippingInfo.expressNumber)) {
             updateShippingInfo.expressNumber = shippingInfo.expressNumber;
         }
         if (StringUtils.isNotBlank(shippingInfo.address)) {
             updateShippingInfo.address = shippingInfo.address;
         }
         updateShippingInfo.save();
-        if (StringUtils.isNotBlank(serviceRemarks)) {
-            OrderItems orderItem = updateShippingInfo.orderItems.get(0);
-            orderItem.order.serviceRemarks = serviceRemarks + "\r\n 操作人：" + OperateRbac.currentUser().userName;
-            orderItem.order.save();
-            orderItem.save();
-        }
+        OrderItems orderItem = updateShippingInfo.orderItems.get(0);
+        orderItem.order.serviceRemarks = serviceRemarks + "\r\n 操作人：" + OperateRbac.currentUser().userName;
+        orderItem.order.save();
+        orderItem.save();
 
         details(updateShippingInfo.orderItems.get(0).order.id);
     }

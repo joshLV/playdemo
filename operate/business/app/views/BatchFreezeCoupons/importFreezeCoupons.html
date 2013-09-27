@@ -150,13 +150,10 @@
         <span style="font-size: large; font-weight: bold;">未使用的券号</span> &nbsp;&nbsp; 数量：${unUsedCouponsList.size()}张
         &nbsp;&nbsp;总金额：${sumUnUsed}
         &nbsp;&nbsp;
-
-
-
         <span>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 请选择的原因：&nbsp;&nbsp;
-                <select name="coupon.freezedReason" id="freeze_option" class="input-small"
+                <select name="coupon.freezedReason" id="freeze_option" class="input-medium"
                         value="${coupon?.freezedReason}"
                         onchange="select(this);"
                         >
@@ -165,7 +162,7 @@
                     <option value="UNABLEVERIFY">无法验证</option>
                     <option value="OTHERS">其他原因</option>
                 </select>
-
+                <div id="commistion" style="display: none">刷单比例<input type="text" name="commissionRatio" class="input-small"/>%(请输入大于0的数字）</div>
                 <div id="textContainer" style="display: none;">
                     <br>
 
@@ -246,9 +243,11 @@
             document.getElementById("textContainer").style.display = "";
         }
         else if (selectedValue == "ISSUPPLIERCHEATEDORDER") {
+            $("#commistion").attr('style','display:inline').show();
             $('#button_text').text('确认');
         }
         else {
+            $("#commistion").hide();
             document.getElementById("textContainer").style.display = "none";
         }
     }

@@ -147,6 +147,7 @@
         <th>消费成本</th>
         #{layout_operate.sortField name:'退款金额', descField:condition?.desc, desc:'000200000',asc:'000100000'/}
         #{layout_operate.sortField name:'刷单金额', descField:condition?.desc, desc:'000020000',asc:'000010000'/}
+        <th>刷单利润</th>
         #{layout_operate.sortField name:'净销售额', descField:condition?.desc, desc:'000002000',asc:'000001000'/}
         <th>净销售成本</th>
         #{if hasSeeReportProfitRight== true}
@@ -191,6 +192,9 @@
                 </a>
             </td>
             <td style="text-align:right">
+                ${(report?.cheatedProfit?:0).format('#0.00')}
+            </td>
+            <td style="text-align:right">
                 <a target="_blank"
                    href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
                 ${(report?.netSalesAmount?:0).format('#0.00')}</a>
@@ -215,4 +219,8 @@
         </ul>
     </div>
 #{/if}
+</div>
+<div class=" well">
+    刷单利润 = 刷单金额 * （1 - 刷单比例）【刷单利润取整】<br>
+    净利润 = 总销售额 - 退款金额 - 刷单金额 - 总销售成本 + 刷单利润<br>
 </div>

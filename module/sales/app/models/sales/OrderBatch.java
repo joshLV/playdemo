@@ -4,12 +4,7 @@ import models.supplier.Supplier;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -38,13 +33,16 @@ public class OrderBatch extends Model {
     /**
      * 订单数
      */
-    @Column(name="order_count")
+    @Column(name = "order_count")
     public Long orderCount;
     /**
      * 创建人姓名
      */
     @Column(name = "created_by")
     public String createdBy;
+
+    @Transient
+    public Boolean changedInfo = Boolean.FALSE;
 
     /**
      * 对应的出库单.
@@ -60,8 +58,8 @@ public class OrderBatch extends Model {
     public OrderBatch() {
     }
 
-    public OrderBatch(Supplier supplier, String createdBy,Long orderCount) {
-        this.orderCount=orderCount;
+    public OrderBatch(Supplier supplier, String createdBy, Long orderCount) {
+        this.orderCount = orderCount;
         this.supplier = supplier;
         this.createdBy = createdBy;
     }

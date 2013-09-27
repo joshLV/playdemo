@@ -30,6 +30,8 @@ import models.tsingtuan.TsingTuanSendOrder;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
+import play.data.validation.Max;
+import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
@@ -43,6 +45,7 @@ import util.transaction.RemoteRecallCheck;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -204,7 +207,13 @@ public class ECoupon extends Model {
 
     @Enumerated(EnumType.STRING)
     public ECouponPartner partner;
-
+    /**
+     * 刷单比例
+     */
+    @Column(name = "commission_ratio")
+    @Min(0)
+    @Max(100)
+    public Integer commissionRatio = 0;
     /**
      * 已同步标记。
      * 如果为true，则已经同步到第三方网站
@@ -1221,8 +1230,8 @@ public class ECoupon extends Model {
         return ECoupon.find("from ECoupon where orderItems.phone=? and replyCode like ?", mobile, replyCode + "%").fetch();
     }
 
-    public static void freeze(long id, String userName, ECoupon coupon) {
-        update(id, 1, userName, coupon);
+    public static void freeze(long id, String userName, ECoupon coupon, String commissionRatio) {
+        update(id, 1, userName, coupon, commissionRatio);
     }
 
     /**
@@ -1256,11 +1265,18 @@ public class ECoupon extends Model {
      * 更新券 是否冻结
      * 在冻结单条券号时，提供三个单选选项：刷单、无法验证、其他，选择"其他"时需要填写文本 保存此信息
      */
-    private static void update(long id, Integer isFreeze, String userName, ECoupon coupon) {
+    private static void update(long id, Integer isFreeze, String userName, ECoupon coupon, String commissionRatio) {
         ECoupon eCoupon = ECoupon.findById(id);
         //记录券历史信息
         eCoupon.isFreeze = isFreeze;
         eCoupon.freezedReason = coupon.freezedReason;
+        eCoupon.commissionRatio = Integer.valueOf(commissionRatio);
+        BigDecimal payToSupplierAmount = eCoupon.salePrice;
+        //如果刷单的时候设置了比例，则按比例打给商户。
+        if (StringUtils.isNotBlank(commissionRatio) && Integer.valueOf(commissionRatio) > 0) {
+            BigDecimal ratio = BigDecimal.ONE.subtract((new BigDecimal(commissionRatio).divide(new BigDecimal(100))));
+            payToSupplierAmount = eCoupon.salePrice.multiply(ratio).setScale(0, RoundingMode.DOWN);
+        }
         switch (coupon.freezedReason) {
             case ISSUPPLIERCHEATEDORDER:
                 eCoupon.isCheatedOrder = true;
@@ -1270,7 +1286,7 @@ public class ECoupon extends Model {
                 // 给商户打钱
                 TradeBill consumeTrade = TradeUtil.consumeTradeBySupplierCheated(eCoupon.order.operator)
                         .toAccount(eCoupon.getSupplierAccount())
-                        .balancePaymentAmount(eCoupon.salePrice)
+                        .balancePaymentAmount(payToSupplierAmount)
                         .orderId(eCoupon.order.getId())
                         .coupon(eCoupon.eCouponSn)
                         .make();
