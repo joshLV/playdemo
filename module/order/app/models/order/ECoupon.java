@@ -1234,6 +1234,10 @@ public class ECoupon extends Model {
         update(id, 1, userName, coupon, commissionRatio);
     }
 
+    public static void freeze(long id, String userName, ECoupon coupon) {
+        update(id, 1, userName, coupon, null);
+    }
+
     /**
      * 冻结此券
      *
@@ -1270,7 +1274,7 @@ public class ECoupon extends Model {
         //记录券历史信息
         eCoupon.isFreeze = isFreeze;
         eCoupon.freezedReason = coupon.freezedReason;
-        eCoupon.commissionRatio = Integer.valueOf(commissionRatio);
+        eCoupon.commissionRatio = StringUtils.isBlank(commissionRatio) ? 0 : Integer.valueOf(commissionRatio);
         BigDecimal payToSupplierAmount = eCoupon.salePrice;
         //如果刷单的时候设置了比例，则按比例打给商户。
         if (StringUtils.isNotBlank(commissionRatio) && Integer.valueOf(commissionRatio) > 0) {
