@@ -273,6 +273,10 @@ public class Order extends Model {
 
     @Column(name = "service_remarks")
     public String serviceRemarks;
+
+    @Column(name = "service_person")
+    public String servicePerson;
+
     public Order() {
     }
 

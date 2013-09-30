@@ -439,6 +439,7 @@
         <tr>
             <td>
                 备注： ${orders?.serviceRemarks}<br>
+                操作人： ${orders?.servicePerson}<br>
             </td>
         </tr>
     </table>
@@ -572,6 +573,7 @@
     #{/layout_operate.selectField}
     #{layout_operate.textField name:'shippingInfo.expressNumber', value:'',required:false /}
     #{layout_operate.textField name:'shippingInfo.address', value:'',required:false /}
+    #{layout_operate.textField name:'shippingInfo.phone', value:'',required:false /}
     #{layout_operate.textField name:'serviceRemarks', value:'',required:false /}
     #{/form}
     </div>
