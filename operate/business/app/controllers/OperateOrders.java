@@ -135,10 +135,16 @@ public class OperateOrders extends Controller {
         if (StringUtils.isNotBlank(shippingInfo.address)) {
             updateShippingInfo.address = shippingInfo.address;
         }
+        if (StringUtils.isNotBlank(shippingInfo.phone)) {
+            updateShippingInfo.phone = shippingInfo.phone;
+        }
         updateShippingInfo.save();
         OrderItems orderItem = updateShippingInfo.orderItems.get(0);
-        orderItem.order.serviceRemarks = serviceRemarks + "\r\n 操作人：" + OperateRbac.currentUser().userName;
+        orderItem.order.serviceRemarks = serviceRemarks;
+        orderItem.order.servicePerson = OperateRbac.currentUser().userName;
+        orderItem.orderBatch.changedFlag = true;
         orderItem.order.save();
+        orderItem.orderBatch.save();
         orderItem.save();
 
         details(updateShippingInfo.orderItems.get(0).order.id);

@@ -45,7 +45,7 @@
             <td>${orderBatch.id}</td>
             <td>${orderBatch.orderCount}</td>
             <td>
-                <a href="@{SupplierDownloadOrderShippingInfos.exportOrderShipping(orderBatch.id)}" #{if orderBatch.changedInfo}style="color: red"#{/if}>下载</a>
+                <a href="@{SupplierDownloadOrderShippingInfos.exportOrderShipping(orderBatch.id)}" #{if orderBatch.changedFlag}style="color: red"#{/if}>下载</a>
             </td>
         </tr>
         #{/paginate.list}

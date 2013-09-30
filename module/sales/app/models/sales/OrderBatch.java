@@ -41,8 +41,8 @@ public class OrderBatch extends Model {
     @Column(name = "created_by")
     public String createdBy;
 
-    @Transient
-    public Boolean changedInfo = Boolean.FALSE;
+    @Column(name = "change_flag")
+    public Boolean changedFlag = Boolean.FALSE;
 
     /**
      * 对应的出库单.
