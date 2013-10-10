@@ -886,11 +886,11 @@ public class SalesReportCondition implements Serializable {
             paramMap1.put("jobNumber", jobNumber);
         }
         if (beginAt != null) {
-            condBuilder.append(" and r.order.createdAt >= :createdAtBegin");
+            condBuilder.append(" and e.cheatedAt >= :createdAtBegin");
             paramMap1.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
-            condBuilder.append(" and r.order.createdAt < :createdAtEnd");
+            condBuilder.append(" and e.cheatedAt < :createdAtEnd");
             paramMap1.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
         if (supplierId != 0) {

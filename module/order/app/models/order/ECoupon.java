@@ -99,6 +99,9 @@ public class ECoupon extends Model {
     @Column(name = "other_reason")
     public String otherReason;
 
+    @Column(name="cheated_at")
+    public Date cheatedAt;
+
     /**
      * 冻结单张券号时的选项,
      */
@@ -1304,6 +1307,7 @@ public class ECoupon extends Model {
                 break;
             case ISCHEATEDORDER:
                 eCoupon.isCheatedOrder = true;
+                eCoupon.cheatedAt = new Date();
                 eCoupon.cheatedOrderSource = CheatedOrderSource.SHIHUI;
                 eCoupon.cheatedAt = new Date();
                 ECouponHistoryMessage.with(eCoupon).operator(userName)

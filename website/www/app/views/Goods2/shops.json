@@ -4,19 +4,19 @@
     "totalOutlet": ${count},
     "outletList":
     #{if count == page}
-    [#{list items:shops, as:'shop'}#{if shop_index > 1},#{/if}{
-        "name": "${shop?.name}",
-        "addr": "${shop?.address?.escapeJavaScript()}",
-        "tel": "${shop?.phone?.escapeJavaScript()}",
-        "latlng": "#{if shop?.latitude && shop?.longitude && shop?.latitude!='0' && shop?.longitude!='0'}${shop?.latitude},${shop?.longitude}#{/if}"}
-    #{/list}]
+        [#{list items:shops, as:'shop'}#{if shop_index > 1 && (page+1)% shop_index  !=0},#{/if}{
+            "name": "${shop?.name}",
+            "addr": "${shop?.address?.escapeJavaScript()}",
+            "tel": "${shop?.phone?.escapeJavaScript()}",
+            "latlng": "#{if shop?.latitude && shop?.longitude && shop?.latitude!='0' && shop?.longitude!='0'}${shop?.latitude},${shop?.longitude}#{/if}"}
+        #{/list}]
     #{/if}
     #{else}
-    [#{paginate.list1 items:shops, as:'shop'}#{if shop_index > 1 && (page+1)% shop_index  !=0},#{/if}{
-        "name": "${shop?.name}",
-        "addr": "${shop?.address?.escapeJavaScript()}",
-        "tel": "${shop?.phone?.escapeJavaScript()}",
-        "latlng": "#{if shop?.latitude && shop?.longitude && shop?.latitude!='0' && shop?.longitude!='0'}${shop?.latitude},${shop?.longitude}#{/if}"}
-    #{/paginate.list1}]
+        [#{paginate.list1 items:shops, as:'shop'}#{if shop_index > 1 && (page+1)% shop_index  !=0},#{/if}{
+            "name": "${shop?.name}",
+            "addr": "${shop?.address?.escapeJavaScript()}",
+            "tel": "${shop?.phone?.escapeJavaScript()}",
+            "latlng": "#{if shop?.latitude && shop?.longitude && shop?.latitude!='0' && shop?.longitude!='0'}${shop?.latitude},${shop?.longitude}#{/if}"}
+        #{/paginate.list1}]
     #{/else}
 }
