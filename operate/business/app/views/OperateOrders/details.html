@@ -358,9 +358,11 @@
 <ul class="nav">
     <li class="active">
         <span><a href="#"> 收货信息</a>
+         #{if orderItems?.get(0)?.shippingInfo}
         <button id="linkUpdateExpress_${orderItems?.get(0)?.shippingInfo?.id}" class="btn btn-info"
            onclick="updateExpress('${orderItems?.get(0)?.shippingInfo?.id}','${shippingInfo?.expressCompany?.id}','${shippingInfo?.expressNumber}')
                    ">修改收货信息</button>
+         #{/if}
             </span>
     </li>
 %{ outerOrder = models.order.OuterOrder.getOuterOrder(orders) }%
