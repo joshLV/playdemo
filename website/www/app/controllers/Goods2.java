@@ -440,6 +440,7 @@ public class Goods2 extends Controller {
         int page = 0;
         if (StringUtils.isEmpty(currPage) || StringUtils.isEmpty(pageSize1)) {
             Collection<Shop> shops = goods.getShopList();
+            page = shops.size();
             render("Goods2/shops.json", shops, page);
         }
 
