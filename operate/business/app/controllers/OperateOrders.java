@@ -126,7 +126,7 @@ public class OperateOrders extends Controller {
 
     public static void updateExpress(Long id, OrderShippingInfo shippingInfo, String serviceRemarks) {
         OrderShippingInfo updateShippingInfo = OrderShippingInfo.findById(id);
-        if (shippingInfo.expressCompany != null && updateShippingInfo.expressCompany == null) {
+        if (shippingInfo.expressCompany != null) {
             updateShippingInfo.expressCompany = shippingInfo.expressCompany;
         }
         if (StringUtils.isNotBlank(shippingInfo.expressNumber)) {
@@ -142,9 +142,11 @@ public class OperateOrders extends Controller {
         OrderItems orderItem = updateShippingInfo.orderItems.get(0);
         orderItem.order.serviceRemarks = serviceRemarks;
         orderItem.order.servicePerson = OperateRbac.currentUser().userName;
-        orderItem.orderBatch.changedFlag = true;
+        if (orderItem.orderBatch !=null){
+            orderItem.orderBatch.changedFlag = true;
+            orderItem.orderBatch.save();
+        }
         orderItem.order.save();
-        orderItem.orderBatch.save();
         orderItem.save();
 
         details(updateShippingInfo.orderItems.get(0).order.id);

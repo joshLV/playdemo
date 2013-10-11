@@ -253,6 +253,9 @@ public class ECoupon extends Model {
     @Column(name = "appointment_date")
     public Date appointmentDate;
 
+    @Column(name = "cheated_at")
+    public Date cheatedAt;
+
     /**
      * 消费者预约备注。
      * 此备注信息将发送此消息者手机.
@@ -1287,6 +1290,7 @@ public class ECoupon extends Model {
                 eCoupon.cheatedOrderSource = CheatedOrderSource.SUPPLIER;
                 eCoupon.isFreeze = 0;
                 eCoupon.status = ECouponStatus.CONSUMED;
+                eCoupon.cheatedAt = new Date();
                 // 给商户打钱
                 TradeBill consumeTrade = TradeUtil.consumeTradeBySupplierCheated(eCoupon.order.operator)
                         .toAccount(eCoupon.getSupplierAccount())
@@ -1301,6 +1305,7 @@ public class ECoupon extends Model {
             case ISCHEATEDORDER:
                 eCoupon.isCheatedOrder = true;
                 eCoupon.cheatedOrderSource = CheatedOrderSource.SHIHUI;
+                eCoupon.cheatedAt = new Date();
                 ECouponHistoryMessage.with(eCoupon).operator(userName)
                         .remark(isFreeze == 0 ? "解冻券号" : "冻结券号(刷单)").sendToMQ();
                 break;
