@@ -80,6 +80,7 @@ public class Supplier extends Model {
     public static final String SET_WITHDRAW_AMOUNT = "setWithdrawAmount"; //是否由销售设置提现金额
     public static final String MEI_TUAN = "meiTuan"; //是否在美团上验证
     public static final String DIAN_PING = "dianPing"; //是否在点评上验证
+    public static final String NUOMI = "nuomi"; //是否在糯米上验证
     public static final String SET_LESS_WITHDRAW_AMOUNT = "setLessWithdrawAmount"; //设置最少提现金额
     public static final String SET_RESERVE_AMOUNT = "setReserveAmount"; //设置预留金额
 

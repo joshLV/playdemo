@@ -103,6 +103,7 @@ error:'supplier.operator'}
 %{
     meiTuan=meiTuan?:supplier?.getProperty(models.supplier.Supplier.MEI_TUAN)?:'0';
     dianPing=dianPingl?:supplier?.getProperty(models.supplier.Supplier.DIAN_PING)?:'0';
+    nuomi=nuomi?:supplier?.getProperty(models.supplier.Supplier.NUOMI)?:'0';
     }%
 #{/if}
     <div class="controls">
@@ -111,6 +112,8 @@ error:'supplier.operator'}
         &nbsp;&nbsp;
         <input type="checkbox" name="dianPing" id="supplier_dianPing"
                value="1" ${"1".equals(dianPing)?'checked':''}/>点评&nbsp;&nbsp;
+        <input type="checkbox" name="nuomi" id="supplier_nuomi"
+               value="1" ${"1".equals(nuomi)?'checked':''}/>糯米网&nbsp;&nbsp;
     </div>
 </div>
 #{if "edit".equals(action)}
