@@ -30,8 +30,10 @@ public class MeituanCouponJob extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
         Logger.info("start meituan coupon job");
-        List<OuterOrder> outerOrders = OuterOrder.find("partner = ? and  status = ?",
+        List<OuterOrder> outerOrders = OuterOrder.find("(partner = ? or partner = ? or partner = ?) and  status = ?",
                 OuterOrderPartner.MT,
+                OuterOrderPartner.DP,
+                OuterOrderPartner.NM,
                 OuterOrderStatus.ORDER_COPY).fetch();
         for (OuterOrder outerOrder : outerOrders) {
             JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
@@ -41,7 +43,7 @@ public class MeituanCouponJob extends JobWithHistory {
             List<String> couponStrList = new ArrayList<>();
             couponStrList.add(outerOrder.orderId);
             //生成一百券订单
-            Order order = createYbqOrder(outerOrder.resaler, goods, shopId, couponStrList, null,
+            Order order = createYbqOrder(outerOrder, goods, shopId, couponStrList, null,
                     goods.salePrice);
             outerOrder.ybqOrder = order;
             outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
@@ -50,9 +52,9 @@ public class MeituanCouponJob extends JobWithHistory {
         }
     }
 
-    private static Order createYbqOrder(Resaler resaler, Goods goods, Long shopId, List<String> couponStrList,
+    private static Order createYbqOrder(OuterOrder outerOrder, Goods goods, Long shopId, List<String> couponStrList,
                                         String mobile, BigDecimal salePrice) {
-        Order ybqOrder = Order.createResaleOrder(resaler);
+        Order ybqOrder = Order.createResaleOrder(outerOrder.resaler);
         ybqOrder.save();
 
         OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, (long) couponStrList.size(), mobile, salePrice, salePrice);
@@ -80,12 +82,26 @@ public class MeituanCouponJob extends JobWithHistory {
             c.refresh();
             SupplierUser supplierUser = SupplierUser.find("byShop", shop).first();
             c.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.AUTO_VERIFY);
-            c.partner = ECouponPartner.MT;
+            c.partner = getECouponPartner(outerOrder.partner.toString());
             c.save();
 
-            ECouponHistoryMessage.with(c).remark("系统定时自动生成美团订单,成功后自动验证")
+            ECouponHistoryMessage.with(c).remark("系统定时自动生成" + outerOrder.partner.partnerName() + "订单,成功后自动验证")
                     .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         }
         return ybqOrder;
     }
+
+    private static ECouponPartner getECouponPartner(String partner) {
+        if ("DP".equals(partner)) {
+            return ECouponPartner.DP;
+        }
+        if ("MT".equals(partner)) {
+            return ECouponPartner.MT;
+        }
+        if ("NM".equals(partner)) {
+            return ECouponPartner.NM;
+        }
+        return null;
+    }
+
 }

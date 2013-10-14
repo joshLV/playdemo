@@ -12,6 +12,8 @@ public enum OuterOrderPartner {
     WB("WB", "58", "wuba"),     // 58
     TB("TB", "淘宝", "taobao"),     // 淘宝电子凭证
     SINA("SINA", "新浪", "sina"),   //新浪卡券
+    DP("DIANPING", "点评", "dianping"),  //点评
+    NM("NUOMI", "糯米", "nuomu"),  //糯米
     MT("MEITUAN", "美团", "meituan");  //美团
 
 

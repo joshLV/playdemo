@@ -13,5 +13,7 @@ public enum ECouponPartner {
     TB,     // 淘宝
     BD,//百度
     MT,//美团
+    DP,//点评
+    NM,//糯米
     SINA     //新浪微博
 }

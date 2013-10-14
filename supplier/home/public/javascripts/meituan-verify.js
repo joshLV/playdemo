@@ -246,7 +246,7 @@ jQuery(function ($) {
                 success: function (data) {
                     if (data != null) {
                         for (var i = 0; i < data.length; i++) {
-                            $("#dp-verify-info-" + i).text(data[i]);
+                            $("#dp-verify-info-" + i).text(data[i].result.msg.message);
                             $("#dp-verify-btn").text("验证消费").removeClass("disabled");
                         }
                     }
