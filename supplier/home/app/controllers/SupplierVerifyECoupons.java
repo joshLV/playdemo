@@ -82,7 +82,7 @@ public class SupplierVerifyECoupons extends Controller {
         Supplier supplier = SupplierRbac.currentUser().supplier;
 
         if ("1".equals(supplier.getProperty(Supplier.MEI_TUAN)) || "1".equals(supplier.getProperty(Supplier.DIAN_PING))) {
-            redirect("/meituan-coupon/verified");
+            redirect("/resaler-coupon/verified");
         }
         Long supplierUserId = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);

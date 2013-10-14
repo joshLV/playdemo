@@ -161,7 +161,6 @@ jQuery(function ($) {
 
                     }});
             } else {
-
                 $.ajax({
                     type: 'POST',
                     url: '/verify/verify',
@@ -184,23 +183,83 @@ jQuery(function ($) {
     };
 
 
-    /**
-     * FORM的点击事件
-     */
-    $('#coupon-form').delegate('a', 'click', function () {
+//    /**
+//     * FORM的点击事件
+//     */
+//    $('#coupon-form').delegate('a', 'click', function () {
+//        couponIds = [];
+//        verifyCoupon();
+//    });
+
+//    /**
+//     * 输入券号 回车
+//     */
+//    $('#coupon-form').keypress(function (e) {
+//        if (e.keyCode == 13) {
+//            couponIds = []
+//            verifyCoupon();
+//            return false;
+//        }
+//    });
+
+    $("#verify-btn").click(function () {
         couponIds = [];
         verifyCoupon();
-    });
+    })
 
-    /**
-     * 输入券号 回车
-     */
-    $('#coupon-form').keypress(function (e) {
-        if (e.keyCode == 13) {
-            couponIds = []
-            verifyCoupon();
+    $("#dp-verify-btn").click(function () {
+        var _this = $(this);
+        if (_this.hasClass("disabled")) {
             return false;
         }
-    });
-});
+        $('#dp-verify-msg').text("");
+
+        var noError = false;
+        $(".dp-enter-coupon").each(function () {
+            var ele = $(this);
+            var index = ele.attr("dp-coupon-index");
+            var eCouponSn = ele.val().replace(/ /g, '');
+            $(ele).change(function () {
+                $('#dp-verify-info-' + index).text("");
+                if (eCouponSn.length != 10) {
+                    $("#dp-verify-info-" + index).text("券号应为10位数字，请修正。");
+                    noError = true;
+                }
+            });
+            if (eCouponSn != '') {
+                couponIds.push(eCouponSn);
+            }
+            return true;
+        });
+
+        if (!noError && couponIds.length == 0) {
+            $("#dp-verify-msg").text("请输入券号！");
+            return false;
+        }
+        if (!noError) {
+            $("#dp-verify-btn").text("正在验证....").addClass("disabled");
+
+            $.ajax({
+                type: 'POST',
+                data: {'couponIds': couponIds},
+                url: '/dianping-coupon/verified',
+                success: function (data) {
+                    if (data != null) {
+                        for (var i = 0; i < data.length; i++) {
+                            $("#dp-verify-info-" + i).text(data[i]);
+                            $("#dp-verify-btn").text("验证消费").removeClass("disabled");
+                        }
+                    }
+                },
+                error: function () {
+                    $("#dp-verify-msg").text("验证失败！");
+                    $("#dp-verify-btn").text("验证消费").removeClass("disabled");
+                }
+
+            });
+        }
+
+    })
+})
+;
 
