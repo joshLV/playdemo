@@ -187,6 +187,95 @@ public class SalesReport implements Comparable<SalesReport> {
     public BigDecimal offlineAmount;
 
     //--------人效报表_begin---------------------------//
+    //paidAt normal real
+    public SalesReport(OperateUser operateUser, Long buyNumber,
+                       BigDecimal totalAmount, BigDecimal totalCost, BigDecimal totalAmountCommissionAmount) {
+        this.operateUser = operateUser;
+        this.buyNumber = buyNumber;
+        this.totalAmount = totalAmount;
+        this.totalCost = totalCost;
+        this.totalAmountCommissionAmount = totalAmountCommissionAmount;
+        this.netSalesAmount = totalAmount;
+        this.netCost = totalCost;
+        if (this.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
+            this.grossMargin = BigDecimal.ZERO;
+        } else {
+            this.grossMargin = (this.netSalesAmount.subtract(this.netCost)).divide(this.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        }
+
+        this.profit = totalAmount.subtract(totalCost).subtract(totalAmountCommissionAmount);
+
+    }
+
+
+    //paidAt normal ecoupon
+    public SalesReport(OperateUser operateUser,
+                       BigDecimal totalAmount, Long buyNumber, BigDecimal totalCost, BigDecimal totalAmountCommissionAmount) {
+        this.operateUser = operateUser;
+        this.buyNumber = buyNumber;
+        this.totalAmount = totalAmount;
+        this.totalCost = totalCost;
+        this.totalAmountCommissionAmount = totalAmountCommissionAmount;
+        this.netSalesAmount = totalAmount;
+        this.netCost = totalCost;
+        if (this.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
+            this.grossMargin = BigDecimal.ZERO;
+        } else {
+            this.grossMargin = (this.netSalesAmount.subtract(this.netCost)).divide(this.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        }
+        this.profit = totalAmount.subtract(totalCost).subtract(totalAmountCommissionAmount);
+    }
+
+    //paidAt shihui cheated
+    public SalesReport(OperateUser operateUser,
+                       BigDecimal totalAmount, BigDecimal totalAmountCommissionAmount, Long buyNumber) {
+        this.operateUser = operateUser;
+        this.buyNumber = buyNumber;
+        this.totalAmount = totalAmount;
+        this.cheatedOrderAmount = totalAmount;
+        this.totalCost = totalAmount;
+        this.totalAmountCommissionAmount = totalAmountCommissionAmount;
+        this.netSalesAmount = BigDecimal.ZERO;
+        this.netCost = BigDecimal.ZERO;
+        this.grossMargin = BigDecimal.ZERO;
+        this.profit = BigDecimal.ZERO.subtract(totalAmountCommissionAmount);
+    }
+
+    //paidAt supplier cheated
+    public SalesReport(OperateUser operateUser,
+                       BigDecimal totalAmount, BigDecimal totalCost, BigDecimal totalAmountCommissionAmount, Long buyNumber, BigDecimal cheatedProfit) {
+        this.operateUser = operateUser;
+        this.buyNumber = buyNumber;
+        this.totalAmount = totalAmount;
+        this.cheatedOrderAmount = totalAmount;
+        this.totalCost = totalCost;
+        this.cheatedOrderCost = totalCost;
+        this.totalAmountCommissionAmount = totalAmountCommissionAmount;
+        this.netSalesAmount = totalAmount;
+        this.netCost = totalCost;
+        if (this.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
+            this.grossMargin = BigDecimal.ZERO;
+        } else {
+            this.grossMargin = (this.netSalesAmount.subtract(this.netCost)).divide(this.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        }
+        this.profit = totalAmount.subtract(totalCost).subtract(totalAmountCommissionAmount);
+        this.cheatedProfit = cheatedProfit;
+    }
+
+    //refund and consumed ecoupon
+    public SalesReport(OperateUser operateUser, BigDecimal amount, BigDecimal refundCost, ECouponStatus status, BigDecimal refundCommissionAmount) {
+        this.operateUser = operateUser;
+        if (status == ECouponStatus.REFUND) {
+            this.refundAmount = amount;
+            this.refundCost = refundCost;
+            this.refundCommissionAmount = refundCommissionAmount;
+        } else if (status == ECouponStatus.CONSUMED) {
+            this.consumedAmount = amount;
+            this.consumedCost = refundCost;
+        }
+    }
+
+
     public SalesReport(OperateUser operateUser, Long buyNumber,
                        BigDecimal totalAmount, BigDecimal grossMargin, BigDecimal profit, BigDecimal netSalesAmount, BigDecimal totalCost, BigDecimal totalAmountCommissionAmount) {
         this.operateUser = operateUser;
@@ -243,18 +332,6 @@ public class SalesReport implements Comparable<SalesReport> {
         this.refundNum = refundNum;
     }
 
-    //refund and consumed ecoupon
-    public SalesReport(OperateUser operateUser, BigDecimal amount, BigDecimal refundCost, ECouponStatus status, BigDecimal refundCommissionAmount) {
-        this.operateUser = operateUser;
-        if (status == ECouponStatus.REFUND) {
-            this.refundAmount = amount;
-            this.refundCost = refundCost;
-            this.refundCommissionAmount = refundCommissionAmount;
-        } else if (status == ECouponStatus.CONSUMED) {
-            this.consumedAmount = amount;
-            this.consumedCost = refundCost;
-        }
-    }
 
     //cheated order from resaler
     public SalesReport(OperateUser operateUser, BigDecimal cheatedOrderCommissionAmount, BigDecimal ratio) {
@@ -263,15 +340,15 @@ public class SalesReport implements Comparable<SalesReport> {
         this.cheatedOrderCommissionAmount = cheatedOrderCommissionAmount;
     }
 
-    //cheated order
-    public SalesReport(OperateUser operateUser, BigDecimal cheatedOrderAmount, Long cheatedOrderNum, BigDecimal cheatedOrderCost, BigDecimal cheatedOrderCommissionAmount) {
-        this.operateUser = operateUser;
-        this.cheatedOrderAmount = cheatedOrderAmount;
-        this.cheatedOrderNum = cheatedOrderNum;
-        this.cheatedOrderCost = cheatedOrderCost;
-        this.cheatedOrderCommissionAmount = cheatedOrderCommissionAmount;
-
-    }
+//    //cheated order
+//    public SalesReport(OperateUser operateUser, BigDecimal cheatedOrderAmount, Long cheatedOrderNum, BigDecimal cheatedOrderCost, BigDecimal cheatedOrderCommissionAmount) {
+//        this.operateUser = operateUser;
+//        this.cheatedOrderAmount = cheatedOrderAmount;
+//        this.cheatedOrderNum = cheatedOrderNum;
+//        this.cheatedOrderCost = cheatedOrderCost;
+//        this.cheatedOrderCommissionAmount = cheatedOrderCommissionAmount;
+//
+//    }
 
     //supplier offline grossMargin
     public SalesReport(OperateUser operateUser, BigDecimal offlineAmount) {
@@ -1038,30 +1115,43 @@ public class SalesReport implements Comparable<SalesReport> {
      * @return
      */
     public static List<SalesReport> queryPeopleEffectData(SalesReportCondition condition) {
-        //毛利率= （总的销售额-总成本（进价*数量）/总销售额
-        //paidAt
+        //paidAt normal real (operateUser,buyNumber,totalAmount,totalCost,commission [netSalesAmount,netCost,grossMargin,profit])
         String sql = "select new models.SalesReport(o,sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.originalPrice*r.buyNumber)" +
-                ",sum(r.commission*r.buyNumber) )" +
+                ",sum(r.commission*r.buyNumber))" +
                 " from OrderItems r,Supplier s,OperateUser o";
         String groupBy = " group by s.salesId";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilterOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
+                .createQuery(sql + condition.getFilterRealOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
 
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
 
-        List<SalesReport> paidResultList = query.getResultList();
+        List<SalesReport> paidRealResultList = query.getResultList();
 
-        //shihui cheated order
-        sql = "select new models.SalesReport(ou,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
-                " ,sum(r.originalPrice),sum(r.commission*r.buyNumber)) " +
+        //paidAt normal ecoupon (operateUser,totalAmount,buyNumber,totalCost,commission [netSalesAmount,netCost,grossMargin,profit])
+        sql = "select new models.SalesReport(o,count(r)" +
+                ",sum(r.salePrice-r.rebateValue/r.buyNumber)" +
+                ",sum(e.originalPrice)" +
+                ",sum(r.commission))" +
+                " from OrderItems r, ECoupon e ,Supplier s,OperateUser o";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterElecOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
+
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        List<SalesReport> paidEcouponResultList = query.getResultList();
+
+
+        //paidAt shihui cheated order (operateUser, totalAmount,  totalAmountCommissionAmount, buyNumber)
+        sql = "select new models.SalesReport(ou,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.commission),count(e)" +
+                ") " +
                 " from OrderItems r, ECoupon e ,Supplier s,OperateUser ou";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterCheatedOrderOfPeopleEffect(CheatedOrderSource.SHIHUI) + groupBy + " order by sum(r" +
@@ -1069,11 +1159,11 @@ public class SalesReport implements Comparable<SalesReport> {
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
         }
-        List<SalesReport> cheatedOrderResultList = query.getResultList();
+        List<SalesReport> cheatedShiHuiOrderResultList = query.getResultList();
 
-        //supplier cheated order
-        sql = "select new models.SalesReport(ou,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)," +
-                " sum(e.salePrice * (e.commissionRatio/100))) " +
+        //paidAt supplier cheated order (operateUser,totalAmount,  totalCost,  totalAmountCommissionAmount,  buyNumber,cheatedProfit)
+        sql = "select new models.SalesReport(ou,sum(r.salePrice-r.rebateValue/r.buyNumber),sum((1-e.commissionRatio/100)*e.salePrice)," +
+                " sum(r.commission),count(e),sum(e.salePrice * (e.commissionRatio/100))) " +
                 " from OrderItems r, ECoupon e ,Supplier s,OperateUser ou";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterCheatedOrderOfPeopleEffect(CheatedOrderSource.SUPPLIER) + groupBy + " order by sum" +
@@ -1085,7 +1175,7 @@ public class SalesReport implements Comparable<SalesReport> {
 
 
         //取得退款的数据 ecoupon
-        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(e.originalPrice),e.status,sum(r.commission)) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
+        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(e.originalPrice),e.status,sum(-r.commission)) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
@@ -1126,58 +1216,97 @@ public class SalesReport implements Comparable<SalesReport> {
         List<SalesReport> offlineGrossMarginList = query.getResultList();
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
+
+
         //merge
-        for (SalesReport paidItem : paidResultList) {
+        //paidAt normal real
+        for (SalesReport paidItem : paidRealResultList) {
             map.put(getReportKeyOfPeopleEffect(paidItem), paidItem);
         }
 
+        //paidAt normal coupon
+        for (SalesReport paidCouponItem : paidEcouponResultList) {
+            SalesReport item = map.get(getReportKeyOfPeopleEffect(paidCouponItem));
+            if (item != null) {
+                item.buyNumber = item.buyNumber + paidCouponItem.buyNumber;
+                item.totalAmount = item.totalAmount.add(paidCouponItem.totalAmount);
+                item.totalCost = item.totalCost.add(paidCouponItem.totalCost);
+                item.totalAmountCommissionAmount = item.totalAmountCommissionAmount.add(paidCouponItem.totalAmountCommissionAmount);
+                item.netSalesAmount = item.totalAmount;
+                item.netCost = item.totalCost;
+                if (item.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
+                    item.grossMargin = BigDecimal.ZERO;
+                } else {
+                    item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                }
+                item.profit = item.netSalesAmount.subtract(item.netCost).subtract(item.totalAmountCommissionAmount);
+            } else {
+                map.put(getReportKeyOfPeopleEffect(paidCouponItem), paidCouponItem);
+                System.out.println("paidCouponItem.totalCost = " + paidCouponItem.totalCost);
+            }
+        }
 
-        for (SalesReport cheatedItem : cheatedOrderResultList) {
+
+        for (SalesReport cheatedItem : cheatedShiHuiOrderResultList) {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(cheatedItem));
             if (item == null) {
-                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount);
-                cheatedItem.netCost = cheatedItem.totalCost.subtract(cheatedItem.cheatedOrderCost);
-                if (cheatedItem.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
-                    cheatedItem.grossMargin = BigDecimal.ZERO;
-                } else {
-                    cheatedItem.grossMargin = (cheatedItem.netSalesAmount.subtract(cheatedItem.netCost)).divide(cheatedItem.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
-                }
-
-                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).add(cheatedItem.cheatedOrderCost)
-                        .add(cheatedItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCommissionAmount);
                 map.put(getReportKeyOfPeopleEffect(cheatedItem), cheatedItem);
             } else {
-                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
-                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
-                item.netSalesAmount = item.totalAmount.subtract(item.cheatedOrderAmount);
-                item.netCost = item.totalCost.subtract(item.cheatedOrderCost);
+                item.buyNumber = item.buyNumber + cheatedItem.buyNumber;
+                item.cheatedOrderAmount = cheatedItem.totalAmount;
+                item.totalAmount = item.totalAmount.add(cheatedItem.totalAmount);
+                item.totalCost = item.totalCost.add(cheatedItem.totalCost);
                 if (item.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
                     item.grossMargin = BigDecimal.ZERO;
                 } else {
                     item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
-                item.profit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
-                        .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
-                        .add(cheatedItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCommissionAmount);
+                item.profit = item.netSalesAmount.subtract(item.netCost).subtract(item.totalAmountCommissionAmount);
             }
         }
+
+        for (SalesReport supplierCheatedItem : supplierCheatedOrderResultList) {
+            SalesReport item = map.get(getReportKeyOfPeopleEffect(supplierCheatedItem));
+            if (item == null) {
+                map.put(getReportKeyOfPeopleEffect(supplierCheatedItem), supplierCheatedItem);
+            } else {
+
+                item.buyNumber = item.buyNumber + supplierCheatedItem.buyNumber;
+                item.totalAmountCommissionAmount = item.totalAmountCommissionAmount.add(supplierCheatedItem.totalAmountCommissionAmount);
+                item.cheatedOrderAmount = (item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).add(supplierCheatedItem.totalAmount);
+                item.totalAmount = item.totalAmount.add(supplierCheatedItem.totalAmount);
+                item.totalCost = item.totalCost.add(supplierCheatedItem.totalCost);
+                item.netSalesAmount = item.netSalesAmount.add(supplierCheatedItem.totalAmount);
+                item.netCost = item.netCost.add(supplierCheatedItem.cheatedOrderCost);
+
+                item.cheatedProfit = supplierCheatedItem.cheatedProfit;
+                if (item.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
+                    item.grossMargin = BigDecimal.ZERO;
+                } else {
+                    item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                }
+                item.profit = item.netSalesAmount.subtract(item.netCost).subtract(item.totalAmountCommissionAmount);
+            }
+        }
+
+
         for (SalesReport refundItem : refundList) {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(refundItem));
             if (item != null) {
                 item.refundAmount = refundItem.refundAmount;
                 item.refundCost = refundItem.refundCost;
-                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
-                item.netCost = (item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(item.refundCost).subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).setScale(2);
+                item.netSalesAmount = item.netSalesAmount.subtract(item.refundAmount).setScale(2);
+                item.netCost = (item.netCost == null ? BigDecimal.ZERO : item.netCost).subtract(item.refundCost).setScale(2);
+
+                item.totalAmountCommissionAmount = item.totalAmountCommissionAmount.subtract(refundItem.refundCommissionAmount);
                 if (item.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
                     item.grossMargin = BigDecimal.ZERO;
                 } else {
                     item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
-                item.profit = item.netSalesAmount.subtract(item.netCost);
-
+                item.profit = item.netSalesAmount.subtract(item.netCost).subtract(item.totalAmountCommissionAmount);
             } else {
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
                 refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.refundCost);
@@ -1187,65 +1316,20 @@ public class SalesReport implements Comparable<SalesReport> {
                     refundItem.grossMargin = (refundItem.netSalesAmount.subtract(refundItem.netCost)).divide(refundItem.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
-                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost)
-//                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
-                        .add(refundItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundItem.refundCommissionAmount);
+//                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost)
+////                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
+//                        .add(refundItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundItem.refundCommissionAmount);
+                refundItem.profit = refundItem.netSalesAmount.subtract(refundItem.netCost).subtract(refundItem.refundCommissionAmount);
                 map.put(getReportKeyOfPeopleEffect(refundItem), refundItem);
             }
         }
+
         for (SalesReport offline : offlineGrossMarginList) {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(offline));
             if (item != null) {
                 item.offlineAmount = offline.offlineAmount;
             } else {
                 map.put(getReportKeyOfPeopleEffect(offline), offline);
-            }
-        }
-
-        for (SalesReport supplierCheatedItem : supplierCheatedOrderResultList) {
-            SalesReport item = map.get(getReportKeyOfPeopleEffect(supplierCheatedItem));
-            if (item != null) {
-                item.supplierCheatedOrderAmount = supplierCheatedItem.supplierCheatedOrderAmount;
-                item.cheatedProfit = supplierCheatedItem.cheatedProfit.setScale(0, RoundingMode.DOWN);
-                item.supplierCheatedOrderNum = supplierCheatedItem.supplierCheatedOrderNum;
-                item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.supplierCheatedOrderAmount == null ? BigDecimal.ZERO : item.supplierCheatedOrderAmount).setScale(2);
-                item.netCost = (item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(item.refundCost).subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).setScale(2);
-                if (item.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
-                    item.grossMargin = BigDecimal.ZERO;
-                } else {
-                    item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
-                }
-                item.cheatedOrderAmount = item.supplierCheatedOrderAmount == null ? BigDecimal.ZERO : item.supplierCheatedOrderAmount;
-
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).
-                        subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).
-                                add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).
-                                add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost
-                                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
-                                        .add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item
-                                                .refundCommissionAmount)).subtract(supplierCheatedItem
-                                .supplierCheatedOrderAmount == null ? BigDecimal.ZERO : supplierCheatedItem
-                                .supplierCheatedOrderAmount).add(item.cheatedProfit);
-
-            } else {
-                supplierCheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(supplierCheatedItem.supplierCheatedOrderAmount);
-                supplierCheatedItem.netCost = BigDecimal.ZERO;
-                if (supplierCheatedItem.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
-                    supplierCheatedItem.grossMargin = BigDecimal.ZERO;
-                } else {
-                    supplierCheatedItem.grossMargin = (supplierCheatedItem.netSalesAmount.subtract(supplierCheatedItem.netCost)).divide(supplierCheatedItem.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
-                }
-
-                supplierCheatedItem.cheatedOrderAmount = supplierCheatedItem.supplierCheatedOrderAmount == null ? BigDecimal.ZERO : supplierCheatedItem.supplierCheatedOrderAmount;
-                supplierCheatedItem.profit = BigDecimal.ZERO.subtract(supplierCheatedItem.refundAmount == null ? BigDecimal.ZERO : supplierCheatedItem.refundAmount)
-                        .add(supplierCheatedItem.refundCost == null ? BigDecimal.ZERO : supplierCheatedItem.refundCost)
-//                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
-                        .add(supplierCheatedItem.refundCommissionAmount == null ? BigDecimal.ZERO : supplierCheatedItem.refundCommissionAmount).subtract(supplierCheatedItem
-                                .supplierCheatedOrderAmount == null ? BigDecimal.ZERO :
-                                supplierCheatedItem.refundCommissionAmount).add(supplierCheatedItem.cheatedProfit);
-                map.put(getReportKeyOfPeopleEffect(supplierCheatedItem), supplierCheatedItem);
             }
         }
 
@@ -1390,8 +1474,6 @@ public class SalesReport implements Comparable<SalesReport> {
             cheatedOrderAmount = cheatedOrderAmount.add(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount);
         }
         if (netSalesAmount.compareTo(BigDecimal.ZERO) != 0) {
-            System.out.println("netSalesAmount = " + netSalesAmount);
-            System.out.println("netCost = " + netCost);
             grossMargin = totalAmount.subtract(totalCost).divide(totalAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
         return new SalesReport(totalConsumed.setScale(2, 4), totalAmount.setScale(2, 4), salesRefundAmount.setScale(2, 4), previousSalesRefundAmount.setScale(2, 4), consumedRefundAmount.setScale(2, 4), previousConsumedRefundAmount.setScale(2, 4), netSalesAmount.setScale(2, 4), grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4), cheatedOrderAmount.setScale(2, 4));

@@ -437,7 +437,7 @@ public class Goods2 extends Controller {
                 return models.sales.Goods.findUnDeletedById(goodsId);
             }
         });
-        int page = 0;
+        int page;
         if (StringUtils.isEmpty(currPage) || StringUtils.isEmpty(pageSize1)) {
             Collection<Shop> shops = goods.getShopList();
             page = shops.size();
