@@ -99,8 +99,6 @@ public class ECoupon extends Model {
     @Column(name = "other_reason")
     public String otherReason;
 
-    @Column(name="cheated_at")
-    public Date cheatedAt;
 
     /**
      * 冻结单张券号时的选项,

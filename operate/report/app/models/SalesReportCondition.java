@@ -3,11 +3,8 @@ package models;
 import com.uhuila.common.util.DateUtil;
 import models.order.CheatedOrderSource;
 import models.order.ECouponStatus;
-
 import models.supplier.Supplier;
-
 import operate.rbac.ContextedPermission;
-
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
@@ -756,10 +753,45 @@ public class SalesReportCondition implements Serializable {
     }
 
 
-    public String getFilterOfPeopleEffect() {
-        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and (r.order.status='PAID' or r.order.status='SENT' " +
+    public String getFilterRealOfPeopleEffect() {
+        StringBuilder condBuilder = new StringBuilder(" where r.goods.materialType = models.sales.MaterialType.REAL and r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and (r.order.status='PAID' or r.order.status='SENT' " +
                 "or r.order.status = 'PREPARED' or r.order.status='UPLOADED') and r.goods.isLottery=false");
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+
+        if (!hasSeeReportProfitRight) {
+            condBuilder.append(" and o.id =:salesId");
+            paramMap.put("salesId", salesId);
+        }
+        if (StringUtils.isNotBlank(userName)) {
+            condBuilder.append(" and o.userName like :shortName");
+            paramMap.put("shortName", "%" + userName + "%");
+        }
+        if (StringUtils.isNotBlank(jobNumber)) {
+            condBuilder.append(" and o.jobNumber= :jobNumber");
+            paramMap.put("jobNumber", jobNumber);
+        }
+
+        if (beginAt != null) {
+            condBuilder.append(" and r.order.createdAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and r.order.createdAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
+        }
+
+        return condBuilder.toString();
+
+    }
+
+    public String getFilterElecOfPeopleEffect() {
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and r.goods.materialType = models.sales.MaterialType.ELECTRONIC and r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and (r.order.status='PAID') and e.isCheatedOrder = 0 and r.goods.isLottery=false");
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+
         if (!hasSeeReportProfitRight) {
             condBuilder.append(" and o.id =:salesId");
             paramMap.put("salesId", salesId);
