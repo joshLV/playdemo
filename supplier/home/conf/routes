@@ -54,8 +54,10 @@ POST    /verify/verify                          SupplierVerifyECoupons.verify
 GET     /verify/verified-coupons                SupplierVerifyECoupons.showVerifiedCoupons
 
 #美团券验证
-GET      /meituan-coupon/verified               SupplierVerifyResalerECoupons.index
+GET      /resaler-coupon/verified               SupplierVerifyResalerECoupons.index
 POST     /meituan-coupon/verified               SupplierVerifyResalerECoupons.meituan
+POST     /dianping-coupon/verified              SupplierVerifyResalerECoupons.dianping
+POST     /nuomi-coupon/verified                 SupplierVerifyResalerECoupons.nuomi
 
 
 #二次验证类商品预约
