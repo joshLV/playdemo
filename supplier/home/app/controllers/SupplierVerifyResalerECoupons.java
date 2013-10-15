@@ -147,7 +147,6 @@ public class SupplierVerifyResalerECoupons extends Controller {
         JsonParser jsonParser = new JsonParser();
         JsonObject result = jsonParser.parse(body).getAsJsonObject();
         String errcode = "";
-        System.out.println(result);
         if (result.has("data")) {
             JsonArray dataResult = result.get("data").getAsJsonArray();
             for (JsonElement obj : dataResult) {
@@ -179,55 +178,57 @@ public class SupplierVerifyResalerECoupons extends Controller {
         Resaler resaler = Resaler.findApprovedByLoginName("dianping");
         SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("resaler=?", resaler).first();
         String cookie = supplierResalerShop.cookieValue;
-        System.out.println(cookie+"===");
+
         Map<String, String> headers = new HashMap<>();
-//        headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-//        headers.put("Accept-Encoding", "deflate,sdch");
-//        headers.put("Accept-Language", "zh-CN,zh;q=0.8");
-////        headers.put("Cache-Control", "max-age=0");
-//        headers.put("Connection", "keep-alive");
-//        headers.put("Content-Type", "application/x-www-form-urlencoded");
-//        headers.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36");
-//        headers.put("Host", "e.dianping.com");
-//        headers.put("Referer", "http://e.dianping.com/account/login");
-////        headers.put("X-Requested-With", "XMLHttpRequest");
-////        headers.put("X-Request", "JSON");
-//        headers.put("Cookie",cookie);
-
-
         headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-        headers.put("Accept-Encoding", "deflate,sdch");
+        headers.put("Accept-Encoding", "gzip,deflate,sdch");
         headers.put("Accept-Language", "zh-CN,zh;q=0.8");
-//        headers.put("Cache-Control", "max-age=0");
         headers.put("Connection", "keep-alive");
-        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         headers.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36");
         headers.put("Host", "e.dianping.com");
-        headers.put("Referer", "http://e.dianping.com/account/login");
-//        headers.put("X-Requested-With", "XMLHttpRequest");
-//        headers.put("X-Request", "JSON");
-        headers.put("Cookie",cookie);
-
+        headers.put("Referer", "http://e.dianping.com/account/login/");
+        headers.put("Cookie", cookie);
 
         Map<String, Object> params = new HashMap<>();
-//        Referer:http://e.dianping.com/tuangou/verify?t=1381729236893
-        params.put("serialNums", "3423423523");
-//        params.put("serialNums", StringUtils.join(couponIds,","));
+        params.put("serialNums", StringUtils.join(couponIds,","));
 
         params.put("receiptId", 0);
         params.put("t", "m" + System.currentTimeMillis());
-
-//        Logger.info("点评团项目ID：%s,对应门店ID：%s,对应一百券商品ID：%s,对应一百券门店ID：%s", partnerGoodsId, partnerShopId,
-//                supplierResalerProduct.goods.id.toString(), supplierResalerShop.shop.id);
-
+        SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("resaler = ? and supplier =? ", resaler,SupplierRbac.currentUser()).first();
         WS.HttpResponse response = WS.url("http://e.dianping.com/tuangou/ajax/batchverify").params(params).headers(headers).followRedirects(false).post();
-        List<Http.Header> headerList = response.getHeaders();
-        for (Http.Header header : headerList) {
-            System.out.println(header.name + ": " + header.value());
+        String body = response.getString();
+        JsonParser jsonParser = new JsonParser();
+        JsonObject jsonReponse = jsonParser.parse(body).getAsJsonObject();
+        Map<String, String> jsonMap = new HashMap<>();
+        jsonMap.put("shopId", supplierResalerShop.shop.id.toString());
+        jsonMap.put("goodsId", supplierResalerProduct.goods.id.toString());
+        if (jsonReponse.has("msg")) {
+            JsonArray dataResult = jsonReponse.get("msg").getAsJsonObject().get("serialNumList").getAsJsonArray();
+            for (JsonElement element : dataResult) {
+//               element= {"result":{"code":507,"msg":{"message":"验证失败：序列号错误，请重新输入！"}},"serialNum":"3423423523"}
+                JsonObject result = element.getAsJsonObject().get("result").getAsJsonObject();
+//                result = "code":507,"msg":{"message":"验证失败：序列号错误，请重新输入！"}}
+                //成功的情况
+                if (!jsonReponse.get("code").getAsString().equals("200")){
+                    String coupon = element.getAsJsonObject().get("serialNum").getAsString();
+                    OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon, OuterOrderPartner.DP);
+                    if (outerOrder == null) {
+                        outerOrder = new OuterOrder();
+                        outerOrder.resaler = resaler;
+                        outerOrder.status = OuterOrderStatus.ORDER_COPY;
+                        outerOrder.message=new Gson().toJson(jsonMap);
+                        outerOrder.partner = OuterOrderPartner.DP;
+                        outerOrder.orderId = coupon;
+                        outerOrder.createdAt = new Date();
+                        outerOrder.save();
+                    }
+                }
+            }
+            renderJSON(dataResult.toString());
         }
 
-        String body = response.getString();
-        System.out.println(body + "------");
     }
+
 
 }

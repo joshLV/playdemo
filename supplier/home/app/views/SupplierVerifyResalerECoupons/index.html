@@ -29,8 +29,7 @@
 #{/set}
 <div class="bd batch-verify">
     <h2>券验证</h2>
-
-    <div style="width:1440px;margin:0 auto;">
+    <div style="width:766px;margin:0 auto;float: left">
     #{if ("1".equals(currentUser?.supplier?.getProperty(models.supplier.Supplier.MEI_TUAN))) }
         <div style="width:374px;height:100%;border:1px solid black;float:left;">
             <form id="coupon-form" action="@{SupplierVerifyECoupons.verify()}" method="post">
@@ -73,7 +72,7 @@
                         </p>
                         <!--南京汤山百倍圣泉 ,东方明珠-->
                         #{if currentUser.supplier.id==422 || currentUser.supplier.id==704}
-                             #{set couponItemCount :4/}
+                            #{set couponItemCount :4/}
                         #{/if}
                         <!--pony蛋糕的商户 -->
                         #{if currentUser.supplier.id==657}
@@ -131,30 +130,30 @@
             </div>
         </div>
     #{/if}
-    #{if ("1".equals(currentUser?.supplier?.getProperty(models.supplier.Supplier.NUOMI))) }
-        <div style="width:374px;height:100%;border:1px solid black;float:left;margin-left:10px;">
-            <div class="field-sect">
-                <h2>【糯米】券验证</h2>
+    </div>
+#{if ("1".equals(currentUser?.supplier?.getProperty(models.supplier.Supplier.NUOMI))) }
+    <div style="width:374px;height:100%;border:1px solid black;float:left;margin-top: 20px">
+        <div class="field-sect">
+            <h2>【糯米】券验证</h2>
 
-                <div style="padding-top: 10px;font-size: 20px;">输入券号<span
-                        style="display: inline;color: grey">(请输入10位点评的券)</span>
-                </div>
+            <div style="padding-top: 10px;font-size: 20px;">输入券号<span
+                    style="display: inline;color: grey">(请输入10位糯米的券)</span>
+            </div>
 
-                <div class="field-group">
-                *{<label class="coupon-label" for="enter-coupon">输入券号</label>}*
-                    #{list items:0..couponItemCount, as:'index'}
-                        <input type="text" size="22" maxlength="14" name="coupon" id="enter-coupon"
-                               nm-coupon-index="${index}"
-                               class="nm-enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
-                        <span id="nm-verify-info-${index}" style="color: red;display: block"></span>
-                    #{/list}
-                    <a id="nm-verify-btn" class="btn batch-verify" href="javascript:void(0);"
-                       hidefocus="true">验证消费</a>
-                    <span id="nm-verify-msg" style="color: red;display: block"></span>
-                </div>
+            <div class="field-group">
+            *{<label class="coupon-label" for="enter-coupon">输入券号</label>}*
+                #{list items:0..couponItemCount, as:'index'}
+                    <input type="text" size="22" maxlength="14" name="coupon" id="enter-coupon"
+                           nm-coupon-index="${index}"
+                           class="nm-enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
+                    <span id="nm-verify-info-${index}" style="color: red;display: block"></span>
+                #{/list}
+                <a id="nm-verify-btn" class="btn batch-verify" href="javascript:void(0);"
+                   hidefocus="true">验证消费</a>
+                <span id="nm-verify-msg" style="color: red;display: block"></span>
             </div>
         </div>
-    #{/if}
     </div>
+#{/if}
 </div>
 
