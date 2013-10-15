@@ -1175,7 +1175,7 @@ public class SalesReport implements Comparable<SalesReport> {
 
 
         //取得退款的数据 ecoupon
-        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(e.originalPrice),e.status,sum(-r.commission)) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
+        sql = "select new models.SalesReport(o,sum(e.salePrice),sum(e.originalPrice),e.status,sum(r.commission)) from ECoupon e,OrderItems r,Supplier s,OperateUser o ";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
@@ -1242,7 +1242,6 @@ public class SalesReport implements Comparable<SalesReport> {
                 item.profit = item.netSalesAmount.subtract(item.netCost).subtract(item.totalAmountCommissionAmount);
             } else {
                 map.put(getReportKeyOfPeopleEffect(paidCouponItem), paidCouponItem);
-                System.out.println("paidCouponItem.totalCost = " + paidCouponItem.totalCost);
             }
         }
 
@@ -1298,14 +1297,12 @@ public class SalesReport implements Comparable<SalesReport> {
                 item.refundCost = refundItem.refundCost;
                 item.netSalesAmount = item.netSalesAmount.subtract(item.refundAmount).setScale(2);
                 item.netCost = (item.netCost == null ? BigDecimal.ZERO : item.netCost).subtract(item.refundCost).setScale(2);
-
                 item.totalAmountCommissionAmount = item.totalAmountCommissionAmount.subtract(refundItem.refundCommissionAmount);
                 if (item.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
                     item.grossMargin = BigDecimal.ZERO;
                 } else {
                     item.grossMargin = (item.netSalesAmount.subtract(item.netCost)).divide(item.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
-
                 item.profit = item.netSalesAmount.subtract(item.netCost).subtract(item.totalAmountCommissionAmount);
             } else {
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
@@ -1319,7 +1316,7 @@ public class SalesReport implements Comparable<SalesReport> {
 //                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost)
 ////                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
 //                        .add(refundItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundItem.refundCommissionAmount);
-                refundItem.profit = refundItem.netSalesAmount.subtract(refundItem.netCost).subtract(refundItem.refundCommissionAmount);
+                refundItem.profit = refundItem.netSalesAmount.subtract(refundItem.netCost).subtract(BigDecimal.ZERO.subtract(refundItem.refundCommissionAmount));
                 map.put(getReportKeyOfPeopleEffect(refundItem), refundItem);
             }
         }
