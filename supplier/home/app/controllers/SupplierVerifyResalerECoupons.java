@@ -195,7 +195,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
 
         params.put("receiptId", 0);
         params.put("t", "m" + System.currentTimeMillis());
-        SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("resaler = ? and supplier =? ", resaler,SupplierRbac.currentUser()).first();
+        SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("resaler = ? and supplier =? ", resaler,SupplierRbac.currentUser().supplier).first();
         WS.HttpResponse response = WS.url("http://e.dianping.com/tuangou/ajax/batchverify").params(params).headers(headers).followRedirects(false).post();
         String body = response.getString();
         JsonParser jsonParser = new JsonParser();
