@@ -75,11 +75,16 @@ public class ImportPartnerOrders extends Controller {
         if (orderFile == null) {
             errorInfo = "请先选择文件！";
             render("ImportPartnerOrders/index.html", errorInfo, partner);
+
+        }
+        //取得京东的文件名,文件名即为京东的商品编号
+        String fileName = orderFile.getName();
+        if (partner == OuterOrderPartner.JD) {
+            fileName = fileName.substring(0,fileName.indexOf("."));
         }
         List<LogisticImportData> logistics = new ArrayList<>();
         try {
             //准备转换器
-            Logger.info("partner==" + partner);
             InputStream inputXML = VirtualFile.fromRelativePath(
                     "app/views/ImportPartnerOrders/" + partner.toString().toLowerCase() + "Transfer.xml")
                     .inputstream();
@@ -89,13 +94,14 @@ public class ImportPartnerOrders extends Controller {
             beans.put("logistics", logistics);
 
             XLSReadStatus readStatus = mainReader.read(new FileInputStream(orderFile), beans);
+            System.out.println(readStatus.isStatusOK());
             if (!readStatus.isStatusOK()) {
-                errorInfo = "转换出错，请检查文件格式！并确保数据放在名为 Sheet1 的工作表中";
+                errorInfo = "转换出错，请检查文件格式！并确保至少有一个sheet的工作表中";
                 Logger.info(errorInfo);
                 render("ImportPartnerOrders/index.html", errorInfo, partner);
             }
         } catch (Exception e) {
-            errorInfo = "转换出现异常，请检查文件格式！并确保数据放在名为 Sheet1 的工作表中" + e.getMessage();
+            errorInfo = "转换出现异常，请检查文件格式！并确保至少有一个sheet的工作表中" + e.getMessage();
             e.printStackTrace();
             render("ImportPartnerOrders/index.html", errorInfo, partner);
         }
@@ -105,11 +111,11 @@ public class ImportPartnerOrders extends Controller {
         Set<String> unBindGoodsSet = new HashSet<>();
         List<String> diffOrderPriceList = new ArrayList<>();
         if (logistics.size() == 0) {
-            errorInfo = "未发现有效数据！并确保数据放在名为 Sheet1 的工作表中";
+            errorInfo = "未发现有效数据！并确保至少有一个sheet的工作表中";
             render("ImportPartnerOrders/index.html", errorInfo, partner);
         }
         processLogisticList(logistics, partner, existedOrderList,
-                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList, MANUAL_IMPORT_REAL_ORDER);
+                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList, MANUAL_IMPORT_REAL_ORDER, fileName);
         render("ImportPartnerOrders/index.html", partner, errorInfo, existedOrderList, notEnoughInventoryGoodsList,
                 importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
     }
@@ -210,7 +216,7 @@ public class ImportPartnerOrders extends Controller {
         Set<String> unBindGoodsSet = new HashSet<>();
         List<String> diffOrderPriceList = new ArrayList<>();
         processLogisticList(logisticImportDataList, OuterOrderPartner.TB, existedOrderList,
-                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList, TB_AUTO_IMPORT_REAL_ORDER);
+                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList, TB_AUTO_IMPORT_REAL_ORDER, "");
 
         OuterOrderPartner partner = OuterOrderPartner.TB;
         render("ImportPartnerOrders/index.html", partner, errorInfo, existedOrderList,
@@ -220,7 +226,7 @@ public class ImportPartnerOrders extends Controller {
     private static void processLogisticList(List<LogisticImportData> logistics, OuterOrderPartner partner,
                                             List<String> existedOrderList, Set<String> importSuccessOrderList,
                                             Set<String> unBindGoodsSet, List<String> diffOrderPriceList,
-                                            Boolean TBAutoImportRealOrder) {
+                                            Boolean TBAutoImportRealOrder, String fileName) {
         //58订单处理
         if (partner == OuterOrderPartner.WB) {
             for (LogisticImportData logistic : logistics) {
@@ -249,6 +255,9 @@ public class ImportPartnerOrders extends Controller {
             List<LogisticImportData> outGoodsNoList = new ArrayList<>();
             LogisticImportData newLogistic = null;
             for (LogisticImportData logistic : logistics) {
+                if (partner == OuterOrderPartner.JD) {
+                    logistic.outerGoodsNo = fileName;
+                }
                 Goods goods = null;
                 if (TBAutoImportRealOrder) {
                     goods = ResalerProduct.getGoodsByOuterGoodsNo(resaler, logistic.outerGoodsNo, partner);

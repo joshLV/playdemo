@@ -29,10 +29,13 @@ import java.util.*;
 @JobDefine(title = "商户合同预警检查", description = "10天内商户合同过期提醒")
 @On("0 0 8 * * ?")
 public class ExpiredContractNotice extends JobWithHistory {
-    public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.contract.email.receiver", "dev@uhuila.com");
+    public static String MAIL_RECEIVER = Play.configuration.getProperty("expired.contract.email.receiver", "dev@uhuila.com,hua.wang@seewi.com.cn");
 
     @Override
     public void doJobWithHistory() {
+        if (Play.runingInTestMode()) {
+            return;
+        }
         String sql = "select sc from SupplierContract sc where sc.status = :status and sc.expireAt >=:expireAtBegin and " +
                 " sc.expireAt <:expireAtEnd group by sc.supplierId order by sc.description,sc.expireAt ";
         Query query = Order.em().createQuery(sql);

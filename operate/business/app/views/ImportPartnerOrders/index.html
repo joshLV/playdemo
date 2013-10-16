@@ -21,7 +21,7 @@
 
     <div class="controls">
         <input type="file" name="orderFile">
-        <span class="help-block">注意：上传时，保证数据放在Sheet1.</span>
+        <span class="help-block">注意：上传时，保证数据放在第一个工作表上.</span>
         <span class="help-block" style="color: red;" id="err-info">
         ${errorInfo}
             #{if unBindGoodsSet}未映射关系的商品ID【${unBindGoodsSet.size()}】个：${unBindGoodsSet?.join(",")}<br>#{/if}
