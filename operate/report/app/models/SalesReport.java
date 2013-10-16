@@ -1231,7 +1231,7 @@ public class SalesReport implements Comparable<SalesReport> {
                 item.buyNumber = item.buyNumber + paidCouponItem.buyNumber;
                 item.totalAmount = item.totalAmount.add(paidCouponItem.totalAmount);
                 item.totalCost = item.totalCost.add(paidCouponItem.totalCost);
-                item.totalAmountCommissionAmount =  (item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(paidCouponItem.totalAmountCommissionAmount);
+                item.totalAmountCommissionAmount =  (item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(paidCouponItem.totalAmountCommissionAmount== null ? BigDecimal.ZERO : paidCouponItem.totalAmountCommissionAmount);
                 item.netSalesAmount = item.totalAmount;
                 item.netCost = item.totalCost;
                 if (item.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
@@ -1272,7 +1272,7 @@ public class SalesReport implements Comparable<SalesReport> {
             } else {
 
                 item.buyNumber = item.buyNumber + supplierCheatedItem.buyNumber;
-                item.totalAmountCommissionAmount =  (item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(supplierCheatedItem.totalAmountCommissionAmount);
+                item.totalAmountCommissionAmount =  (item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(supplierCheatedItem.totalAmountCommissionAmount == null ? BigDecimal.ZERO : supplierCheatedItem.totalAmountCommissionAmount);
                 item.cheatedOrderAmount = (item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).add(supplierCheatedItem.totalAmount);
                 item.totalAmount = item.totalAmount.add(supplierCheatedItem.totalAmount);
                 item.totalCost = item.totalCost.add(supplierCheatedItem.totalCost);
@@ -1297,7 +1297,7 @@ public class SalesReport implements Comparable<SalesReport> {
                 item.refundCost = refundItem.refundCost;
                 item.netSalesAmount = item.netSalesAmount.subtract(item.refundAmount).setScale(2);
                 item.netCost = (item.netCost == null ? BigDecimal.ZERO : item.netCost).subtract(item.refundCost).setScale(2);
-                item.totalAmountCommissionAmount = (item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).subtract(refundItem.refundCommissionAmount);
+                item.totalAmountCommissionAmount = (item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).subtract(refundItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundItem.refundCommissionAmount);
                 if (item.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
                     item.grossMargin = BigDecimal.ZERO;
                 } else {
