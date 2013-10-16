@@ -96,12 +96,12 @@ public class ImportPartnerOrders extends Controller {
             XLSReadStatus readStatus = mainReader.read(new FileInputStream(orderFile), beans);
             System.out.println(readStatus.isStatusOK());
             if (!readStatus.isStatusOK()) {
-                errorInfo = "转换出错，请检查文件格式！并确保至少有一个sheet的工作表中";
+                errorInfo = "转换出错，请检查文件格式！并确保放在第一个sheet";
                 Logger.info(errorInfo);
                 render("ImportPartnerOrders/index.html", errorInfo, partner);
             }
         } catch (Exception e) {
-            errorInfo = "转换出现异常，请检查文件格式！并确保至少有一个sheet的工作表中" + e.getMessage();
+            errorInfo = "转换出现异常，请检查文件格式！并确保放在第一个sheet" + e.getMessage();
             e.printStackTrace();
             render("ImportPartnerOrders/index.html", errorInfo, partner);
         }
@@ -111,7 +111,7 @@ public class ImportPartnerOrders extends Controller {
         Set<String> unBindGoodsSet = new HashSet<>();
         List<String> diffOrderPriceList = new ArrayList<>();
         if (logistics.size() == 0) {
-            errorInfo = "未发现有效数据！并确保至少有一个sheet的工作表中";
+            errorInfo = "未发现有效数据！并确保放在第一个sheet";
             render("ImportPartnerOrders/index.html", errorInfo, partner);
         }
         processLogisticList(logistics, partner, existedOrderList,
