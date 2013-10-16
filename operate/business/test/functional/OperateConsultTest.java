@@ -6,6 +6,7 @@ import models.operator.OperateUser;
 import models.sales.ConsultRecord;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
@@ -39,6 +40,7 @@ public class OperateConsultTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void consultExcelOutTest() {
         ConsultRecord consult = FactoryBoy.create(ConsultRecord.class);
         Http.Response response = GET("/consult_excel_out");
