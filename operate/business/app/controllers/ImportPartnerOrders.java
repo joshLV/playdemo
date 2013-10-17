@@ -254,6 +254,7 @@ public class ImportPartnerOrders extends Controller {
             Map<String, List<LogisticImportData>> outOrderMap = new HashMap<>();
             List<LogisticImportData> outGoodsNoList = new ArrayList<>();
             LogisticImportData newLogistic = null;
+            System.out.println(logistics.size()+"------");
             for (LogisticImportData logistic : logistics) {
                 if (partner == OuterOrderPartner.JD) {
                     logistic.outerGoodsNo = fileName;
@@ -272,16 +273,15 @@ public class ImportPartnerOrders extends Controller {
                     }
 
                     //未映射商品
-                    Logger.info("未映射商品NO=" + logistic.outerGoodsNo + " NOT Found!");
+                    Logger.info("未映射商品NO=" + logistic.outerGoodsNo);
                     unBindGoodsSet.add(logistic.outerGoodsNo);
                     continue;
                 }
                 newLogistic = logistic;
-
-                if (unBindGoodsSet.size() > 0) {
-                    Logger.info("该订单有未映射的商品，orderNO" + logistic.outerOrderNo);
-                    continue;
-                }
+//                if (unBindGoodsSet.size() > 0) {
+//                    Logger.info("该订单有未映射的商品，outerGoodsNo" + logistic.outerGoodsNo);
+//                    continue;
+//                }
 
                 if (outOrderMap.containsKey(logistic.outerOrderNo)) {
                     outGoodsNoList.add(newLogistic);

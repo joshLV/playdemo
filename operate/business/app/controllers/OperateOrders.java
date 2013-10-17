@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@With(OperateRbac.class)
+@With({OperateRbac.class,ExcelControllerHelper.class})
 @ActiveNavigation("order_index")
 public class OperateOrders extends Controller {
 
@@ -153,16 +153,17 @@ public class OperateOrders extends Controller {
     }
 
 
+    @ActiveNavigation("order_index")
     public static void orderExcelOut(OrdersCondition condition) {
         condition = getOrdersCondition(condition);
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        request.format = "xls";
-        renderArgs.put("__FILE_NAME__", "订单_" + System.currentTimeMillis() + ".xls");
         condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         condition.operatorId = OperateRbac.currentUser().id;
         List<Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
         String resalerId = params.get("condition.resalerId");
+        List<OrderItems> orderItems = new ArrayList<>();
+
         for (Order order : orderList) {
             OuterOrder outerOrder = OuterOrder.getOuterOrder(order);
             if (outerOrder != null) {
@@ -170,6 +171,7 @@ public class OperateOrders extends Controller {
             } else {
                 order.outerOrderNumber = "";
             }
+            orderItems.addAll(order.orderItems);
             if (StringUtils.isNotBlank(resalerId)) {
                 for (OrderItems orderItem : order.orderItems) {
                     if (orderItem.status == OrderStatus.RETURNING) {
@@ -188,6 +190,7 @@ public class OperateOrders extends Controller {
                 }
 
             }
+            order.orderItems=new ArrayList<>();
             if (order.isWebsiteOrder()) {
                 order.accountEmail = order.getUser().loginName;
             } else {
@@ -195,10 +198,13 @@ public class OperateOrders extends Controller {
             }
         }
 
+        request.format = "xls";
+        renderArgs.put("__EXCEL_FILE_NAME__", "订单_" + System.currentTimeMillis() + ".xls");
         if (StringUtils.isNotBlank(resalerId)) {
             render("OperateOrders/realOrderExcelOut.xls", orderList);
         }
-        render(orderList);
+        System.out.println(orderList.size()+">>>>");
+        render(orderList,orderItems);
 
     }
 

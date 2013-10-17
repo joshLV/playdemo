@@ -2,6 +2,7 @@ package controllers;
 
 import models.operator.OperateUser;
 import models.order.OrderItems;
+import models.order.OrderShippingInfo;
 import models.order.OrderStatus;
 import models.sales.OrderBatch;
 import models.supplier.Supplier;
@@ -21,7 +22,7 @@ import java.util.List;
  * Date: 13-3-13
  * Time: 上午11:14
  */
-@With(OperateRbac.class)
+@With({OperateRbac.class, ExcelControllerHelper.class})
 @ActiveNavigation("download_order_shipping_index")
 public class DownloadOrderShippingInfos extends Controller {
     public static int PAGE_SIZE = 10;
@@ -66,21 +67,36 @@ public class DownloadOrderShippingInfos extends Controller {
      */
     public static void exportOrderShipping(Long id, Long supplierId) {
         OperateUser operateUser = OperateRbac.currentUser();
-        List<OrderItems> orderItemsList = getPreparedItems(id, supplierId);
+        List<OrderItems> orderItems = getPreparedItems(id, supplierId);
         Supplier supplier = Supplier.findUnDeletedById(supplierId);
+        List<OrderItems> orderItemsList = new ArrayList<>();
+        for (OrderItems orderItem : orderItems) {
+            orderItem.orderShipAddress = orderItem.shippingInfo.address;
+            orderItem.orderShipPhone = orderItem.shippingInfo.phone;
+            orderItem.orderShipOuterOrderId = orderItem.shippingInfo.outerOrderId;
+            orderItem.orderShipZipCode = orderItem.shippingInfo.zipCode;
+            orderItem.orderShipRemarks = orderItem.shippingInfo.remarks;
+            orderItem.orderShipExpressInfo = orderItem.shippingInfo.expressInfo;
+            orderItem.orderShipReceiver = orderItem.shippingInfo.receiver;
+            orderItem.orderNumber = orderItem.order.orderNumber;
+            orderItem.orderShipPaidAt = orderItem.order.paidAt;
+            orderItem.goodsCode = orderItem.goods.code;
+            orderItemsList.add(orderItem);
+
+        }
         if (id == null) {
             OrderBatch orderBatch = new OrderBatch(supplier, operateUser.userName, Long.parseLong(String.valueOf(orderItemsList.size()))).save();
             id = orderBatch.id;
-
             //更新orderItems的状态为：代打包
-            for (OrderItems orderItems : orderItemsList) {
-                orderItems.status = OrderStatus.PREPARED;
-                orderItems.orderBatch = orderBatch;
-                orderItems.save();
+            for (OrderItems orderItem : orderItems) {
+                orderItem.status = OrderStatus.PREPARED;
+                orderItem.orderBatch = orderBatch;
+                orderItem.save();
             }
         }
+
         request.format = EXCEL;
-        renderArgs.put("__FILE_NAME__", "发货单_" + supplier.getName() + "_" + id + "." + EXCEL);
+        renderArgs.put("__EXCEL_FILE_NAME_", "发货单_" + supplier.getName() + "_" + id + "." + EXCEL);
         render(orderItemsList);
     }
 

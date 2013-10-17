@@ -170,6 +170,26 @@ public class OrderItems extends Model {
     @Column(name = "refund_price")
     public BigDecimal refundPrice;
 
+    @Transient
+    public String orderShipRemarks;
+    @Transient
+    public String orderShipExpressInfo;
+    @Transient
+    public String orderShipReceiver;
+    @Transient
+    public String orderShipPhone;
+    @Transient
+    public Date orderShipPaidAt;
+    @Transient
+    public String orderShipAddress;
+    @Transient
+    public String orderShipZipCode;
+    @Transient
+    public String orderShipOuterOrderId;
+    @Transient
+    public String goodsCode;
+    @Transient
+    public String orderNumber;
 
     /**
      * 佣金
