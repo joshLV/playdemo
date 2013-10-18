@@ -275,8 +275,8 @@ jQuery(function ($) {
             return false;
         }
         $('#nm-verify-info').text("");
-        if (eCouponSn.length != 10) {
-            $("#nm-verify-info").text("券号应为10位数字，请修正。");
+        if (eCouponSn.length != 12) {
+            $("#nm-verify-info").text("券号应为12位数字，请修正。");
             return false;
         }
         $("#nm-verify-btn").text("正在验证....").addClass("disabled");
@@ -286,11 +286,14 @@ jQuery(function ($) {
             data: {'couponId': eCouponSn},
             url: '/nuomi-coupon/verified',
             success: function (data) {
-                console.log(data)
-                if (data != null && data.isSucess) {
-                    $("#nm-verify-info").text(data.wrongCheckMsg);
-                    $("#nm-verify-btn").text("验证消费").removeClass("disabled");
-                }
+                if (data != null)
+                    if (data.isSucess=='true') {
+                        $("#nm-verify-info").text("【"+data.name+"】验证成功！");
+                        $("#nm-verify-btn").text("验证消费").removeClass("disabled");
+                    }else {
+                        $("#nm-verify-info").text(data.wrongCheckMsg);
+                        $("#nm-verify-btn").text("验证消费").removeClass("disabled");
+                    }
             },
             error: function () {
                 $("#nm-verify-msg").text("验证失败！");

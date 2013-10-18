@@ -203,6 +203,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("shopId", supplierResalerShop.shop.id.toString());
         jsonMap.put("goodsId", supplierResalerProduct.goods.id.toString());
+//        {"result":{"code":200,"msg":{"message":"7075 0352 11验证成功并消费！","receiptList":[{"addDate":null,"dealSMSName":"[仅售78元,原价158元］南京汤山圣泉温泉城:汤山圣泉温泉城旺季露天温泉票1张(上线时间:13年10月15日)","lastDate":"2013-10-18 17:02","mobileNo":null,"receiptId":0,"serialNum":"7075035211"}]}},"serialNum":"7075035211"}]
         if (jsonReponse.has("msg")) {
             JsonArray dataResult = jsonReponse.get("msg").getAsJsonObject().get("serialNumList").getAsJsonArray();
             for (JsonElement element : dataResult) {
@@ -210,7 +211,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
                 JsonObject result = element.getAsJsonObject().get("result").getAsJsonObject();
 //                result = "code":507,"msg":{"message":"验证失败：序列号错误，请重新输入！"}}
                 //成功的情况
-                if (!jsonReponse.get("code").getAsString().equals("200")) {
+                if (jsonReponse.get("code").getAsString().equals("200")) {
                     String coupon = element.getAsJsonObject().get("serialNum").getAsString();
                     OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon, OuterOrderPartner.DP);
                     if (outerOrder == null) {
@@ -247,9 +248,9 @@ public class SupplierVerifyResalerECoupons extends Controller {
         params.put("code", couponId);
         SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("resaler = ? and supplier =? ", resaler, SupplierRbac.currentUser().supplier).first();
         WS.HttpResponse response = WS.url("http://y.nuomi.com/service/sellerV1/newCheck/checkCode4Single").params(params).headers(headers).get();
-        List<Http.Header> headerList = response.getHeaders();
 
         String body = response.getString();
+//        body= "{\"dealStartTime\":\"2013-10-17\",\"optionName\":\"--\",\"isSucess\":\"true\",\"name\":\"汤山圣泉温泉城温泉票\",\"dealExpireTime\":\"2014-03-30\",\"password\":\"931392090042\"}";成功返回测试
         JsonParser jsonParser = new JsonParser();
         JsonObject jsonReponse = jsonParser.parse(body).getAsJsonObject();
         Map<String, String> jsonMap = new HashMap<>();
