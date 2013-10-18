@@ -142,12 +142,9 @@
 
             <div class="field-group">
             *{<label class="coupon-label" for="enter-coupon">输入券号</label>}*
-                #{list items:0..couponItemCount, as:'index'}
-                    <input type="text" size="22" maxlength="14" name="coupon" id="enter-coupon"
-                           nm-coupon-index="${index}"
+                    <input type="text" size="22" maxlength="12" name="couponId" id="enter-coupon"
                            class="nm-enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
-                    <span id="nm-verify-info-${index}" style="color: red;display: block"></span>
-                #{/list}
+                    <span id="nm-verify-info" style="color: red;display: block"></span>
                 <a id="nm-verify-btn" class="btn batch-verify" href="javascript:void(0);"
                    hidefocus="true">验证消费</a>
                 <span id="nm-verify-msg" style="color: red;display: block"></span>

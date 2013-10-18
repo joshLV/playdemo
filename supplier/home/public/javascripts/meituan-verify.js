@@ -260,6 +260,46 @@ jQuery(function ($) {
         }
 
     })
+
+    $("#nm-verify-btn").click(function () {
+        var _this = $(this);
+        if (_this.hasClass("disabled")) {
+            return false;
+        }
+        $('#nm-verify-msg').text("");
+
+        var ele = $(".nm-enter-coupon")
+        var eCouponSn = ele.val().replace(/ /g, '');
+        if (eCouponSn == '') {
+            $("#nm-verify-msg").text("请输入券号！");
+            return false;
+        }
+        $('#nm-verify-info').text("");
+        if (eCouponSn.length != 10) {
+            $("#nm-verify-info").text("券号应为10位数字，请修正。");
+            return false;
+        }
+        $("#nm-verify-btn").text("正在验证....").addClass("disabled");
+
+        $.ajax({
+            type: 'POST',
+            data: {'couponId': eCouponSn},
+            url: '/nuomi-coupon/verified',
+            success: function (data) {
+                console.log(data)
+                if (data != null && data.isSucess) {
+                    $("#nm-verify-info").text(data.wrongCheckMsg);
+                    $("#nm-verify-btn").text("验证消费").removeClass("disabled");
+                }
+            },
+            error: function () {
+                $("#nm-verify-msg").text("验证失败！");
+                $("#nm-verify-btn").text("验证消费").removeClass("disabled");
+            }
+
+        });
+
+    })
 })
 ;
 
