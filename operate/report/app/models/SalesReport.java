@@ -1134,7 +1134,7 @@ public class SalesReport implements Comparable<SalesReport> {
 
         //paidAt normal ecoupon (operateUser,totalAmount,buyNumber,totalCost,commission [netSalesAmount,netCost,grossMargin,profit])
         sql = "select new models.SalesReport(o,count(r)" +
-                ",sum(r.salePrice-r.rebateValue/r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(e.originalPrice)" +
                 ",sum(r.commission))" +
                 " from OrderItems r, ECoupon e ,Supplier s,OperateUser o";

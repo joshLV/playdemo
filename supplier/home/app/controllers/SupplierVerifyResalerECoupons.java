@@ -191,11 +191,11 @@ public class SupplierVerifyResalerECoupons extends Controller {
         headers.put("Cookie", cookie);
 
         Map<String, Object> params = new HashMap<>();
-        params.put("serialNums", StringUtils.join(couponIds,","));
+        params.put("serialNums", StringUtils.join(couponIds, ","));
 
         params.put("receiptId", 0);
         params.put("t", "m" + System.currentTimeMillis());
-        SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("resaler = ? and supplier =? ", resaler,SupplierRbac.currentUser().supplier).first();
+        SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("resaler = ? and supplier =? ", resaler, SupplierRbac.currentUser().supplier).first();
         WS.HttpResponse response = WS.url("http://e.dianping.com/tuangou/ajax/batchverify").params(params).headers(headers).followRedirects(false).post();
         String body = response.getString();
         JsonParser jsonParser = new JsonParser();
@@ -203,6 +203,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("shopId", supplierResalerShop.shop.id.toString());
         jsonMap.put("goodsId", supplierResalerProduct.goods.id.toString());
+//        {"result":{"code":200,"msg":{"message":"7075 0352 11验证成功并消费！","receiptList":[{"addDate":null,"dealSMSName":"[仅售78元,原价158元］南京汤山圣泉温泉城:汤山圣泉温泉城旺季露天温泉票1张(上线时间:13年10月15日)","lastDate":"2013-10-18 17:02","mobileNo":null,"receiptId":0,"serialNum":"7075035211"}]}},"serialNum":"7075035211"}]
         if (jsonReponse.has("msg")) {
             JsonArray dataResult = jsonReponse.get("msg").getAsJsonObject().get("serialNumList").getAsJsonArray();
             for (JsonElement element : dataResult) {
@@ -210,14 +211,14 @@ public class SupplierVerifyResalerECoupons extends Controller {
                 JsonObject result = element.getAsJsonObject().get("result").getAsJsonObject();
 //                result = "code":507,"msg":{"message":"验证失败：序列号错误，请重新输入！"}}
                 //成功的情况
-                if (!jsonReponse.get("code").getAsString().equals("200")){
+                if (jsonReponse.get("code").getAsString().equals("200")) {
                     String coupon = element.getAsJsonObject().get("serialNum").getAsString();
                     OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon, OuterOrderPartner.DP);
                     if (outerOrder == null) {
                         outerOrder = new OuterOrder();
                         outerOrder.resaler = resaler;
                         outerOrder.status = OuterOrderStatus.ORDER_COPY;
-                        outerOrder.message=new Gson().toJson(jsonMap);
+                        outerOrder.message = new Gson().toJson(jsonMap);
                         outerOrder.partner = OuterOrderPartner.DP;
                         outerOrder.orderId = coupon;
                         outerOrder.createdAt = new Date();
@@ -230,5 +231,46 @@ public class SupplierVerifyResalerECoupons extends Controller {
 
     }
 
+    public static void nuomi(String couponId) {
+        Resaler resaler = Resaler.findApprovedByLoginName("nuomi");
+        SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("resaler=?", resaler).first();
+        String cookie = supplierResalerShop.cookieValue;
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+        headers.put("Accept-Encoding", "deflate,sdch");
+        headers.put("Accept-Language", "zh-CN,zh;q=0.8");
+        headers.put("Connection", "keep-alive");
+        headers.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36");
+        headers.put("Host", "y.nuomi.com");
+        headers.put("Referer", "http://login.nuomi.com/account/login4CheckNew?origURL=http%3A%2F%2Fy.nuomi.com%2Fservice%2FindexV1");
+        headers.put("Cookie", cookie);
+        Map<String, Object> params = new HashMap<>();
+        params.put("code", couponId);
+        SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("resaler = ? and supplier =? ", resaler, SupplierRbac.currentUser().supplier).first();
+        WS.HttpResponse response = WS.url("http://y.nuomi.com/service/sellerV1/newCheck/checkCode4Single").params(params).headers(headers).get();
 
+        String body = response.getString();
+//        body= "{\"dealStartTime\":\"2013-10-17\",\"optionName\":\"--\",\"isSucess\":\"true\",\"name\":\"汤山圣泉温泉城温泉票\",\"dealExpireTime\":\"2014-03-30\",\"password\":\"931392090042\"}";成功返回测试
+        JsonParser jsonParser = new JsonParser();
+        JsonObject jsonReponse = jsonParser.parse(body).getAsJsonObject();
+        Map<String, String> jsonMap = new HashMap<>();
+        jsonMap.put("shopId", supplierResalerShop.shop.id.toString());
+        jsonMap.put("goodsId", supplierResalerProduct.goods.id.toString());
+        if (jsonReponse.get("isSucess").getAsBoolean()) {
+            OuterOrder outerOrder = OuterOrder.getOuterOrder(couponId, OuterOrderPartner.NM);
+            if (outerOrder == null) {
+                outerOrder = new OuterOrder();
+                outerOrder.resaler = resaler;
+                outerOrder.status = OuterOrderStatus.ORDER_COPY;
+                outerOrder.message = new Gson().toJson(jsonMap);
+                outerOrder.partner = OuterOrderPartner.NM;
+                outerOrder.orderId = couponId;
+                outerOrder.createdAt = new Date();
+                outerOrder.save();
+            }
+        }
+
+        renderJSON(jsonReponse.toString());
+
+    }
 }
