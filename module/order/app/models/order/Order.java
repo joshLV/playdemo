@@ -256,8 +256,6 @@ public class Order extends Model {
     public BigDecimal refundedAmount;
 
     @Transient
-    public String orderItemStatus;
-    @Transient
     public String returnedAt;
     /**
      * 记录是消费者还是分销商的帐号,导出报表用

@@ -190,7 +190,12 @@ public class OrderItems extends Model {
     public String goodsCode;
     @Transient
     public String orderNumber;
-
+    @Transient
+    public Date returnedAt;
+    @Transient
+    public String accountEmail;
+    @Transient
+    public String orderItemStatus;
     /**
      * 佣金
      */
