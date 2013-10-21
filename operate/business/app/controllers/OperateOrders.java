@@ -1,7 +1,6 @@
 package controllers;
 
 import models.consumer.User;
-import models.operator.OperateUser;
 import models.order.*;
 import models.resale.Resaler;
 import models.sales.Brand;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@With({OperateRbac.class,ExcelControllerHelper.class})
+@With(OperateRbac.class)
 @ActiveNavigation("order_index")
 public class OperateOrders extends Controller {
 
