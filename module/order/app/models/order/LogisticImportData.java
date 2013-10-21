@@ -453,24 +453,38 @@ public class LogisticImportData implements Cloneable {
     public List<LogisticImportData> processWubaLogistic() {
         String outerGoodsNOs = this.outerGoodsNo;
 
+
         String[] outerGoodsLines = outerGoodsNOs.split("\n");
         List<LogisticImportData> logisticImportDataList = new ArrayList<>();
-        for (String outerGoodsLine : outerGoodsLines) {
-            if (StringUtils.isBlank(outerGoodsLine)) {
-                continue;
-            }
-            outerGoodsLine = StringUtils.strip(outerGoodsLine);
-            Matcher matcher = wubaGoodsPartern.matcher(outerGoodsLine);
-            if (matcher.matches()) {
-                try {
-                    LogisticImportData data = (LogisticImportData) this.clone();
-                    data.outerGoodsNo = matcher.group(1);
-                    data.buyNumber = Long.parseLong(matcher.group(2));
-                    logisticImportDataList.add(data);
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
+        if (outerGoodsLines.length > 1) {
+            for (String outerGoodsLine : outerGoodsLines) {
+                if (StringUtils.isBlank(outerGoodsLine)) {
+                    continue;
+                }
+                outerGoodsLine = StringUtils.strip(outerGoodsLine);
+                Matcher matcher = wubaGoodsPartern.matcher(outerGoodsLine);
+                if (matcher.matches()) {
+                    try {
+                        LogisticImportData data = (LogisticImportData) this.clone();
+                        data.outerGoodsNo = matcher.group(1);
+                        data.buyNumber = Long.parseLong(matcher.group(2));
+                        logisticImportDataList.add(data);
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+        } else {
+            LogisticImportData data = null;
+            try {
+                data = (LogisticImportData) this.clone();
+                data.outerGoodsNo = this.outerGoodsNo;
+                data.buyNumber = this.buyNumber;
+                logisticImportDataList.add(data);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+
         }
 
         return logisticImportDataList;

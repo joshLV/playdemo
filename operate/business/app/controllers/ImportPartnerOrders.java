@@ -80,7 +80,7 @@ public class ImportPartnerOrders extends Controller {
         //取得京东的文件名,文件名即为京东的商品编号
         String fileName = orderFile.getName();
         if (partner == OuterOrderPartner.JD) {
-            fileName = fileName.substring(0,fileName.indexOf("."));
+            fileName = fileName.substring(0, fileName.indexOf("."));
         }
         List<LogisticImportData> logistics = new ArrayList<>();
         try {
@@ -350,6 +350,12 @@ public class ImportPartnerOrders extends Controller {
         BigDecimal orderAmount = logistic.salePrice;
         Resaler wubaResaler = Resaler.findApprovedByLoginName(Resaler.WUBA_LOGIN_NAME);
         List<LogisticImportData> wubaLogistics = logistic.processWubaLogistic();
+        if (wubaLogistics.size() == 0) {
+            Logger.info("未映射商品NO=" + logistic.outerGoodsNo + " NOT Found!");
+            unBindGoodsSet.add(logistic.outerGoodsNo);
+            outerOrder.delete();
+            return;
+        }
         Order ybqOrder = logistic.createYbqOrderByWB(partner);
         //save ybqOrder info
         if (ybqOrder == null) {
@@ -371,8 +377,6 @@ public class ImportPartnerOrders extends Controller {
             if (goods == null) {
                 //未映射商品
                 Logger.info("未映射商品NO=" + logistic.outerGoodsNo + " NOT Found!");
-                unBindGoodsSet.add(logistic.outerGoodsNo);
-                outerOrder.delete();
                 continue;
             }
             nowOrderAmount = nowOrderAmount.add(goods.salePrice.multiply(new BigDecimal(wubaGoodsInfo.buyNumber)));
