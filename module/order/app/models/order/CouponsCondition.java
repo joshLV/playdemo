@@ -10,11 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import play.Logger;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CouponsCondition implements Serializable {
 
@@ -32,6 +28,10 @@ public class CouponsCondition implements Serializable {
 
     public Date refundAtBegin;
     public Date refundAtEnd;
+
+    public Date cheatedAtBegin;
+    public Date cheatedAtEnd;
+
     public Long brandId = 0l;
     public ECouponStatus status;
     public ECouponStatus excludeStatus;
@@ -105,6 +105,17 @@ public class CouponsCondition implements Serializable {
         if (createdAtEnd != null) {
             sql.append(" and e.createdAt <= :createdAtEnd");
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
+        }
+
+        if (cheatedAtBegin != null) {
+            sql.append(" and e.cheatedAt >= :cheatedAtBegin");
+            paramMap.put("cheatedAtBegin", cheatedAtBegin);
+        }
+
+
+        if (cheatedAtEnd != null) {
+            sql.append(" and e.cheatedAt <= :cheatedAtEnd");
+            paramMap.put("cheatedAtEnd", DateUtil.getEndOfDay(cheatedAtEnd));
         }
 
         if (consumedAtBegin != null) {

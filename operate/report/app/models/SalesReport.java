@@ -1251,6 +1251,7 @@ public class SalesReport implements Comparable<SalesReport> {
             if (item == null) {
                 map.put(getReportKeyOfPeopleEffect(cheatedItem), cheatedItem);
             } else {
+
                 item.buyNumber = item.buyNumber + cheatedItem.buyNumber;
                 item.cheatedOrderAmount = cheatedItem.totalAmount;
                 item.totalAmount = item.totalAmount.add(cheatedItem.totalAmount);
@@ -1270,7 +1271,8 @@ public class SalesReport implements Comparable<SalesReport> {
             if (item == null) {
                 map.put(getReportKeyOfPeopleEffect(supplierCheatedItem), supplierCheatedItem);
             } else {
-
+                System.out.println("item.totalAmount = " + supplierCheatedItem.totalAmount);
+                System.out.println("supplierCheatedItem.cheatedOrderAmount = " + supplierCheatedItem.cheatedOrderAmount);
                 item.buyNumber = item.buyNumber + supplierCheatedItem.buyNumber;
                 item.totalAmountCommissionAmount =  (item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(supplierCheatedItem.totalAmountCommissionAmount == null ? BigDecimal.ZERO : supplierCheatedItem.totalAmountCommissionAmount);
                 item.cheatedOrderAmount = (item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).add(supplierCheatedItem.totalAmount);
