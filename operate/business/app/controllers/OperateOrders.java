@@ -1,6 +1,7 @@
 package controllers;
 
 import models.consumer.User;
+import models.operator.OperateUser;
 import models.order.*;
 import models.resale.Resaler;
 import models.sales.Brand;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@With(OperateRbac.class)
+@With({OperateRbac.class, ExcelControllerHelper.class})
 @ActiveNavigation("order_index")
 public class OperateOrders extends Controller {
 
@@ -141,7 +142,7 @@ public class OperateOrders extends Controller {
         OrderItems orderItem = updateShippingInfo.orderItems.get(0);
         orderItem.order.serviceRemarks = serviceRemarks;
         orderItem.order.servicePerson = OperateRbac.currentUser().userName;
-        if (orderItem.orderBatch !=null){
+        if (orderItem.orderBatch != null) {
             orderItem.orderBatch.changedFlag = true;
             orderItem.orderBatch.save();
         }
@@ -162,48 +163,73 @@ public class OperateOrders extends Controller {
         List<Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
         String resalerId = params.get("condition.resalerId");
         List<OrderItems> orderItems = new ArrayList<>();
-
         for (Order order : orderList) {
             OuterOrder outerOrder = OuterOrder.getOuterOrder(order);
-            if (outerOrder != null) {
-                order.outerOrderNumber = outerOrder.orderId;
-            } else {
-                order.outerOrderNumber = "";
-            }
-            orderItems.addAll(order.orderItems);
-            if (StringUtils.isNotBlank(resalerId)) {
-                for (OrderItems orderItem : order.orderItems) {
-                    if (orderItem.status == OrderStatus.RETURNING) {
-                        order.orderItemStatus = "退货中";
-                    } else if (orderItem.status == OrderStatus.RETURNED) {
-                        order.orderItemStatus = "已退货";
-                    } else if (orderItem.status == OrderStatus.PAID) {
-                        order.orderItemStatus = "已付款";
-                    } else if (orderItem.status == OrderStatus.SENT) {
-                        order.orderItemStatus = "已发货";
-                    } else if (orderItem.status == OrderStatus.PREPARED) {
-                        order.orderItemStatus = "待打包";
-                    } else if (orderItem.status == OrderStatus.UPLOADED) {
-                        order.orderItemStatus = "已上传";
+            for (OrderItems orderItem : order.orderItems) {
+                if (orderItem.status == OrderStatus.RETURNING) {
+                    orderItem.orderItemStatus = "退货中";
+                } else if (orderItem.status == OrderStatus.RETURNED) {
+                    orderItem.orderItemStatus = "已退货";
+                } else if (orderItem.status == OrderStatus.PAID) {
+                    orderItem.orderItemStatus = "已付款";
+                } else if (orderItem.status == OrderStatus.SENT) {
+                    orderItem.orderItemStatus = "已发货";
+                } else if (orderItem.status == OrderStatus.PREPARED) {
+                    orderItem.orderItemStatus = "待打包";
+                } else if (orderItem.status == OrderStatus.UPLOADED) {
+                    orderItem.orderItemStatus = "已上传";
+                } else if (orderItem.status == OrderStatus.CANCELED) {
+                    orderItem.orderItemStatus = "交易关闭";
+                } else {
+                    orderItem.orderItemStatus = "未付款";
+                }
+                if (outerOrder != null) {
+                    orderItem.orderShipOuterOrderId = outerOrder.orderId;
+                } else {
+                    orderItem.orderShipOuterOrderId = "";
+                }
+                orderItem.orderNumber = order.orderNumber;
+                if (order.isWebsiteOrder()) {
+                    orderItem.accountEmail = order.getUser().loginName;
+                } else {
+                    orderItem.accountEmail = order.getResaler().loginName + "-" + order.getResaler().userName;
+                }
+                orderItem.orderShipPaidAt = order.paidAt;
+                if (orderItem.shippingInfo != null) {
+                    orderItem.orderShipAddress = orderItem.shippingInfo.address;
+                    orderItem.orderShipPhone = orderItem.shippingInfo.phone;
+                    orderItem.orderShipOuterOrderId = orderItem.shippingInfo.outerOrderId;
+                    orderItem.orderShipZipCode = orderItem.shippingInfo.zipCode;
+                    orderItem.orderShipRemarks = orderItem.shippingInfo.remarks;
+                    orderItem.orderShipExpressInfo = orderItem.shippingInfo.expressInfo;
+                    orderItem.orderShipReceiver = orderItem.shippingInfo.receiver;
+                }
+                orderItem.orderNumber = orderItem.order.orderNumber;
+                orderItem.orderShipPaidAt = orderItem.order.paidAt;
+                orderItem.goodsCode = orderItem.goods.code;
+
+                //导入非分销的订单处理
+                if (StringUtils.isBlank(resalerId)) {
+                    orderItem.orderShipPhone = orderItem.getMaskedPhone();
+                    if (orderItem.getReturnEntry() != null) {
+                        orderItem.returnedAt = orderItem.getReturnEntry().returnedAt;
+                    } else {
+                        orderItem.returnedAt = null;
                     }
+                    orderItem.orderShipRemarks = order.remark;
                 }
 
             }
-            order.orderItems=new ArrayList<>();
-            if (order.isWebsiteOrder()) {
-                order.accountEmail = order.getUser().loginName;
-            } else {
-                order.accountEmail = order.getResaler().loginName + "-" + order.getResaler().userName;
-            }
+            orderItems.addAll(order.orderItems);
+
         }
 
         request.format = "xls";
         renderArgs.put("__EXCEL_FILE_NAME__", "订单_" + System.currentTimeMillis() + ".xls");
         if (StringUtils.isNotBlank(resalerId)) {
-            render("OperateOrders/realOrderExcelOut.xls", orderList);
+            render("OperateOrders/realOrderExcelOut.xls", orderItems);
         }
-        System.out.println(orderList.size()+">>>>");
-        render(orderList,orderItems);
+        render(orderItems);
 
     }
 
