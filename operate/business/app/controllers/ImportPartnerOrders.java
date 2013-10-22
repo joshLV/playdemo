@@ -254,7 +254,7 @@ public class ImportPartnerOrders extends Controller {
             Map<String, List<LogisticImportData>> outOrderMap = new HashMap<>();
             List<LogisticImportData> outGoodsNoList = new ArrayList<>();
             LogisticImportData newLogistic = null;
-            System.out.println(logistics.size()+"------");
+            System.out.println(logistics.size() + "------");
             for (LogisticImportData logistic : logistics) {
                 if (partner == OuterOrderPartner.JD) {
                     logistic.outerGoodsNo = fileName;
@@ -367,7 +367,7 @@ public class ImportPartnerOrders extends Controller {
         ybqOrder.paidAt = logistic.paidAt;
         ybqOrder.createdAt = new Date();
         ybqOrder.save();
-        importSuccessOrderList.add(logistic.outerOrderNo);
+
 
         OrderShippingInfo orderShipInfo = logistic.createOrderShipInfo();
         BigDecimal nowOrderAmount = BigDecimal.ZERO;
@@ -377,7 +377,11 @@ public class ImportPartnerOrders extends Controller {
             if (goods == null) {
                 //未映射商品
                 Logger.info("未映射商品NO=" + logistic.outerGoodsNo + " NOT Found!");
+                unBindGoodsSet.add(logistic.outerGoodsNo);
+                outerOrder.delete();
                 continue;
+            } else {
+                importSuccessOrderList.add(logistic.outerOrderNo);
             }
             nowOrderAmount = nowOrderAmount.add(goods.salePrice.multiply(new BigDecimal(wubaGoodsInfo.buyNumber)));
             //产生orderItem
@@ -386,7 +390,8 @@ public class ImportPartnerOrders extends Controller {
 
         //订单价格和商品单价*数量不一致的场合
         if (orderAmount.compareTo(nowOrderAmount) != 0) {
-            diffOrderPriceList.add(logistic.outerOrderNo);
+//            diffOrderPriceList.add(logistic.outerOrderNo);
+            Logger.info("订单价格和商品单价*数量不一致的,订单NO=" + logistic.outerOrderNo);
             ybqOrder.rebateValue = orderAmount.subtract(nowOrderAmount);
         }
 
