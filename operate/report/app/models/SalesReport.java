@@ -150,7 +150,8 @@ public class SalesReport implements Comparable<SalesReport> {
      * 本期消费，本期消费退款佣金成本
      */
     public BigDecimal consumedRefundCommissionAmount;
-
+    public BigDecimal consumedCommissionAmount;
+    public BigDecimal consumedProfit;
     /**
      * 本期之前消费，本期消费退款佣金成本
      */
@@ -263,15 +264,16 @@ public class SalesReport implements Comparable<SalesReport> {
     }
 
     //refund and consumed ecoupon
-    public SalesReport(OperateUser operateUser, BigDecimal amount, BigDecimal refundCost, ECouponStatus status, BigDecimal refundCommissionAmount) {
+    public SalesReport(OperateUser operateUser, BigDecimal amount, BigDecimal refundCost, ECouponStatus status, BigDecimal commissionAmount) {
         this.operateUser = operateUser;
         if (status == ECouponStatus.REFUND) {
             this.refundAmount = amount;
             this.refundCost = refundCost;
-            this.refundCommissionAmount = refundCommissionAmount;
+            this.refundCommissionAmount = commissionAmount;
         } else if (status == ECouponStatus.CONSUMED) {
             this.consumedAmount = amount;
             this.consumedCost = refundCost;
+            this.consumedCommissionAmount =commissionAmount;
         }
     }
 
@@ -1315,9 +1317,6 @@ public class SalesReport implements Comparable<SalesReport> {
                     refundItem.grossMargin = (refundItem.netSalesAmount.subtract(refundItem.netCost)).divide(refundItem.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
-//                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost)
-////                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount)
-//                        .add(refundItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundItem.refundCommissionAmount);
                 refundItem.profit = refundItem.netSalesAmount.subtract(refundItem.netCost).subtract(BigDecimal.ZERO.subtract(refundItem.refundCommissionAmount));
                 map.put(getReportKeyOfPeopleEffect(refundItem), refundItem);
             }
@@ -1338,6 +1337,8 @@ public class SalesReport implements Comparable<SalesReport> {
             if (item != null) {
                 item.consumedAmount = consumedItem.consumedAmount;
                 item.consumedCost = consumedItem.consumedCost;
+                item.consumedCommissionAmount=consumedItem.consumedCommissionAmount;
+                item.consumedProfit= consumedItem.consumedAmount.subtract(consumedItem.consumedCost).subtract(consumedItem.consumedCommissionAmount);
             } else {
                 map.put(getReportKeyOfPeopleEffect(consumedItem), consumedItem);
             }
