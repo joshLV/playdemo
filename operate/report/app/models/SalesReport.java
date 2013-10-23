@@ -1133,8 +1133,8 @@ public class SalesReport implements Comparable<SalesReport> {
         List<SalesReport> paidRealResultList = query.getResultList();
 
         //paidAt normal ecoupon (operateUser,totalAmount,buyNumber,totalCost,commission [netSalesAmount,netCost,grossMargin,profit])
-        sql = "select new models.SalesReport(o,count(r)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+        sql = "select new models.SalesReport(o,count(e)" +
+                ",sum(e.salePrice)" +
                 ",sum(e.originalPrice)" +
                 ",sum(r.commission))" +
                 " from OrderItems r, ECoupon e ,Supplier s,OperateUser o";
@@ -1150,7 +1150,7 @@ public class SalesReport implements Comparable<SalesReport> {
 
 
         //paidAt shihui cheated order (operateUser, totalAmount,  totalAmountCommissionAmount, buyNumber)
-        sql = "select new models.SalesReport(ou,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.commission),count(e)" +
+        sql = "select new models.SalesReport(ou,sum(e.salePrice-r.rebateValue/r.buyNumber),sum(r.commission),count(e)" +
                 ") " +
                 " from OrderItems r, ECoupon e ,Supplier s,OperateUser ou";
         query = JPA.em()
@@ -1162,7 +1162,7 @@ public class SalesReport implements Comparable<SalesReport> {
         List<SalesReport> cheatedShiHuiOrderResultList = query.getResultList();
 
         //paidAt supplier cheated order (operateUser,totalAmount,  totalCost,  totalAmountCommissionAmount,  buyNumber,cheatedProfit)
-        sql = "select new models.SalesReport(ou,sum(r.salePrice-r.rebateValue/r.buyNumber),sum((1-e.commissionRatio/100)*e.salePrice)," +
+        sql = "select new models.SalesReport(ou,sum(e.salePrice-r.rebateValue/r.buyNumber),sum((1-e.commissionRatio/100)*e.salePrice)," +
                 " sum(r.commission),count(e),sum(e.salePrice * (e.commissionRatio/100))) " +
                 " from OrderItems r, ECoupon e ,Supplier s,OperateUser ou";
         query = JPA.em()
