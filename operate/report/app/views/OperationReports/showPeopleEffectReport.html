@@ -143,10 +143,10 @@
         <th>姓名（销售专员）</th>
         #{layout_operate.sortField name:'售出数量', descField:condition?.desc, desc:'000000020',asc:'000000010'/}
         #{layout_operate.sortField name:'总销售额', descField:condition?.desc, desc:'020000000',asc:'010000000'/}
-        #{layout_operate.sortField name:'本期消费金额', descField:condition?.desc, desc:'002000000',asc:'001000000'/}
-        <th>本期消费成本</th>
-        <th>本期消费渠道佣金</th>
-        <th>本期消费利润</th>
+        #{layout_operate.sortField name:'消费金额', descField:condition?.desc, desc:'002000000',asc:'001000000'/}
+        <th>消费成本</th>
+        <th>消费渠道佣金</th>
+        <th>消费利润</th>
         #{layout_operate.sortField name:'退款金额', descField:condition?.desc, desc:'000200000',asc:'000100000'/}
         #{layout_operate.sortField name:'刷单金额', descField:condition?.desc, desc:'000020000',asc:'000010000'/}
         <th>刷单利润</th>
@@ -239,5 +239,4 @@
     商户刷单金额成本=(1-刷单比例)*刷单金额<br>
     退款金额=本期购买本期未消费退款金额+本期前购买本期未消费退款金额+本期消费本期消费退款+本期前消费本期消费退款<br>
     商户刷单利润=商户刷单金额*刷单比例<br>
-    本期消费利润 = 本期消费金额-本期消费成本-本期消费渠道佣金
 </div>

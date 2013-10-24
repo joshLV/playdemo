@@ -1223,6 +1223,7 @@ public class SalesReport implements Comparable<SalesReport> {
         //merge
         //paidAt normal real
         for (SalesReport paidItem : paidRealResultList) {
+            System.out.println(paidItem.totalAmount+">>>"+paidItem.operateUser.userName);
             map.put(getReportKeyOfPeopleEffect(paidItem), paidItem);
         }
 
