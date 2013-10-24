@@ -854,14 +854,14 @@ public class SalesReportCondition implements Serializable {
             if (beginAt != null) {
                 condBuilder.append(" and e.consumedAt>= :consumedAtBegin");
                 paramMap1.put("consumedAtBegin", beginAt);
-                condBuilder.append(" and e.createdAt>= :createdAtBegin");
-                paramMap1.put("createdAtBegin", beginAt);
+//                condBuilder.append(" and e.createdAt>= :createdAtBegin");
+//                paramMap1.put("createdAtBegin", beginAt);
             }
             if (endAt != null) {
                 condBuilder.append(" and e.consumedAt <= :consumedAtEnd");
                 paramMap1.put("consumedAtEnd", DateUtil.getEndOfDay(endAt));
-                condBuilder.append(" and e.createdAt <= :createdAtEnd");
-                paramMap1.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+//                condBuilder.append(" and e.createdAt <= :createdAtEnd");
+//                paramMap1.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
             }
 
         }
