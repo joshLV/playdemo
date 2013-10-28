@@ -28,30 +28,35 @@
 <script src="@{'/public/javascripts/meituan-verify.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <div class="bd batch-verify">
+%{ isMt= "1".equals(currentUser?.supplier?.getProperty(models.supplier.Supplier.MEI_TUAN))
+    maxlen = isMt==true?14:12;
+    }%
     <h2>券验证</h2>
+
     <div style="width:766px;margin:0 auto;float: left">
-    #{if ("1".equals(currentUser?.supplier?.getProperty(models.supplier.Supplier.MEI_TUAN))) }
+
         <div style="width:374px;height:100%;border:1px solid black;float:left;">
             <form id="coupon-form" action="@{SupplierVerifyECoupons.verify()}" method="post">
 
                 <div class="field-sect">
-                    <h2>【一百券，美团】券验证</h2>
+                    <h2>#{if isMt}【一百券，美团】券验证#{/if}#{else}【一百券】券验证 #{/else}</h2>
 
                     <p>一百券分店:
-                        #{if shop == null}
-                            <select name="shopId" id="shopId" style="width: 230px">
-                                #{list items:shopList, as:'shop'}
-                                    <option value="${shop?.id}">${shop?.name}</option>
-                                #{/list}
-                            </select>
-                        #{/if}
-                        #{else}
-                        ${shop?.name}
-                            <input type="hidden" name="shopId" id="shopId" value="${shop?.id}"/>
-                        #{/else}
+                    #{if shop == null}
+                        <select name="shopId" id="shopId" style="width: 230px">
+                            #{list items:shopList, as:'shop'}
+                                <option value="${shop?.id}">${shop?.name}</option>
+                            #{/list}
+                        </select>
+                    #{/if}
+                    #{else}
+                    ${shop?.name}
+                        <input type="hidden" name="shopId" id="shopId" value="${shop?.id}"/>
+                    #{/else}
                     </p>
                     <!--野生动物园 -->
-                    #{set couponItemCount :4/}
+                #{set couponItemCount :4/}
+                #{if isMt}
                     #{if currentUser.supplier.id ==664}
                         <p>美 团 项 目 :
                         ${resalerProductList?.get(0)?.partnerGoodsName}
@@ -87,18 +92,19 @@
                             </p>
                         #{/if}
                     #{/else}
-
-                    <div style="padding-top: 10px;font-size: 20px;">输入券号<span style="display: inline;color: grey">(请输入10位或12位券号)</span>
+                #{/if}
+                    <div style="padding-top: 10px;font-size: 20px;">
+                        输入券号<span style="display: inline;color: grey">(请输入10位#{if isMt}或12位#{/if}券号)</span>
                     </div>
 
                     <div class="field-group" style="text-align: left">
                     *{<label class="coupon-label" for="enter-coupon">输入券号</label>}*
-                        #{list items:0..couponItemCount, as:'index'}
-                            <input type="text" size="22" maxlength="14" name="coupon" id="enter-coupon"
-                                   coupon-index="${index}"
-                                   class="enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
-                            <span id="verify-info-${index}" style="color: red;display: block"></span>
-                        #{/list}
+                    #{list items:0..couponItemCount, as:'index'}
+                        <input type="text" size="22" maxlength="${maxlen}" name="coupon" id="enter-coupon"
+                               coupon-index="${index}"
+                               class="enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
+                        <span id="verify-info-${index}" style="color: red;display: block"></span>
+                    #{/list}
                         <a id="verify-btn" class="btn batch-verify" href="javascript:void(0);"
                            hidefocus="true">验证消费</a>
                         <span id="verify-msg" style="color: red;display: block"></span>
@@ -106,7 +112,6 @@
                 </div>
             </form>
         </div>
-    #{/if}
     #{if ("1".equals(currentUser?.supplier?.getProperty(models.supplier.Supplier.DIAN_PING))) }
         <div style="width:374px;height:100%;border:1px solid black;float:left;margin-left:10px;">
             <div class="field-sect">
@@ -118,7 +123,7 @@
                 <div class="field-group">
                 *{<label class="coupon-label" for="enter-coupon">输入券号</label>}*
                     #{list items:0..couponItemCount, as:'index'}
-                        <input type="text" size="22" maxlength="12" name="coupon" id="enter-coupon"
+                        <input type="text" size="22" maxlength="14" name="coupon" id="enter-coupon"
                                dp-coupon-index="${index}"
                                class="dp-enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
                         <span id="dp-verify-info-${index}" style="color: red;display: block"></span>
@@ -142,9 +147,9 @@
 
             <div class="field-group">
             *{<label class="coupon-label" for="enter-coupon">输入券号</label>}*
-                    <input type="text" size="22" maxlength="14" name="couponId" id="enter-coupon"
-                           class="nm-enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
-                    <span id="nm-verify-info" style="color: red;display: block"></span>
+                <input type="text" size="22" maxlength="14" name="couponId" id="enter-coupon"
+                       class="nm-enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
+                <span id="nm-verify-info" style="color: red;display: block"></span>
                 <a id="nm-verify-btn" class="btn batch-verify" href="javascript:void(0);"
                    hidefocus="true">验证消费</a>
                 <span id="nm-verify-msg" style="color: red;display: block"></span>
