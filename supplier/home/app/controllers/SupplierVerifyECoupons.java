@@ -81,7 +81,8 @@ public class SupplierVerifyECoupons extends Controller {
     public static void index() {
         Supplier supplier = SupplierRbac.currentUser().supplier;
 
-        if ("1".equals(supplier.getProperty(Supplier.MEI_TUAN)) || "1".equals(supplier.getProperty(Supplier.DIAN_PING))) {
+        if ("1".equals(supplier.getProperty(Supplier.MEI_TUAN)) || "1".equals(supplier.getProperty(Supplier.DIAN_PING))
+                || "1".equals(supplier.getProperty(Supplier.NUOMI))) {
             redirect("/resaler-coupon/verified");
         }
         Long supplierUserId = SupplierRbac.currentUser().id;
@@ -179,7 +180,7 @@ public class SupplierVerifyECoupons extends Controller {
             }
 
             needSmsECoupons.add(ecoupon);
-            return eCouponSn+":消费成功.";
+            return eCouponSn + ":消费成功.";
         }
         return "此券状态" + ecoupon.status + "非法！请联系客服";
     }
