@@ -1287,6 +1287,10 @@ public class ECoupon extends Model {
         }
         switch (coupon.freezedReason) {
             case ISSUPPLIERCHEATEDORDER:
+                //渠道验证券
+                if (!eCoupon.couponVerifyPartnerResaler()) {
+                   return;
+                }
                 eCoupon.isCheatedOrder = true;
                 eCoupon.cheatedOrderSource = CheatedOrderSource.SUPPLIER;
                 eCoupon.isFreeze = 0;
