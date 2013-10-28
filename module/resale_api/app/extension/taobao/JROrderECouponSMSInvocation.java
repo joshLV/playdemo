@@ -10,7 +10,7 @@ import util.extension.ExtensionResult;
 /**
  * 实现重定义精锐教育团购的订单券短信内容。
  */
-public class JRWuBaOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
+public class JROrderECouponSMSInvocation extends OrderECouponSMSInvocation {
     /**
      * 基于context的内容，生成短信内容，并通过context.setSmsContent()方法把短信内容传出.
      *
