@@ -273,7 +273,7 @@ public class SalesReport implements Comparable<SalesReport> {
         } else if (status == ECouponStatus.CONSUMED) {
             this.consumedAmount = amount;
             this.consumedCost = refundCost;
-            this.consumedCommissionAmount =commissionAmount;
+            this.consumedCommissionAmount = commissionAmount;
         }
     }
 
@@ -1223,7 +1223,7 @@ public class SalesReport implements Comparable<SalesReport> {
         //merge
         //paidAt normal real
         for (SalesReport paidItem : paidRealResultList) {
-            System.out.println(paidItem.totalAmount+">>>"+paidItem.operateUser.userName);
+            System.out.println(paidItem.totalAmount + ">>>" + paidItem.operateUser.userName);
             map.put(getReportKeyOfPeopleEffect(paidItem), paidItem);
         }
 
@@ -1234,7 +1234,7 @@ public class SalesReport implements Comparable<SalesReport> {
                 item.buyNumber = item.buyNumber + paidCouponItem.buyNumber;
                 item.totalAmount = item.totalAmount.add(paidCouponItem.totalAmount);
                 item.totalCost = item.totalCost.add(paidCouponItem.totalCost);
-                item.totalAmountCommissionAmount =  (item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(paidCouponItem.totalAmountCommissionAmount== null ? BigDecimal.ZERO : paidCouponItem.totalAmountCommissionAmount);
+                item.totalAmountCommissionAmount = (item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(paidCouponItem.totalAmountCommissionAmount == null ? BigDecimal.ZERO : paidCouponItem.totalAmountCommissionAmount);
                 item.netSalesAmount = item.totalAmount;
                 item.netCost = item.totalCost;
                 if (item.netSalesAmount.compareTo(BigDecimal.ZERO) == 0) {
@@ -1277,7 +1277,7 @@ public class SalesReport implements Comparable<SalesReport> {
                 System.out.println("item.totalAmount = " + supplierCheatedItem.totalAmount);
                 System.out.println("supplierCheatedItem.cheatedOrderAmount = " + supplierCheatedItem.cheatedOrderAmount);
                 item.buyNumber = item.buyNumber + supplierCheatedItem.buyNumber;
-                item.totalAmountCommissionAmount =  (item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(supplierCheatedItem.totalAmountCommissionAmount == null ? BigDecimal.ZERO : supplierCheatedItem.totalAmountCommissionAmount);
+                item.totalAmountCommissionAmount = (item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(supplierCheatedItem.totalAmountCommissionAmount == null ? BigDecimal.ZERO : supplierCheatedItem.totalAmountCommissionAmount);
                 item.cheatedOrderAmount = (item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).add(supplierCheatedItem.totalAmount);
                 item.totalAmount = item.totalAmount.add(supplierCheatedItem.totalAmount);
                 item.totalCost = item.totalCost.add(supplierCheatedItem.totalCost);
@@ -1318,7 +1318,7 @@ public class SalesReport implements Comparable<SalesReport> {
                     refundItem.grossMargin = (refundItem.netSalesAmount.subtract(refundItem.netCost)).divide(refundItem.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
-                refundItem.profit = refundItem.netSalesAmount.subtract(refundItem.netCost).subtract(BigDecimal.ZERO.subtract(refundItem.refundCommissionAmount));
+                refundItem.profit = refundItem.netSalesAmount.subtract(refundItem.netCost).subtract(BigDecimal.ZERO.subtract(refundItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundItem.refundCommissionAmount));
                 map.put(getReportKeyOfPeopleEffect(refundItem), refundItem);
             }
         }
@@ -1338,8 +1338,8 @@ public class SalesReport implements Comparable<SalesReport> {
             if (item != null) {
                 item.consumedAmount = consumedItem.consumedAmount;
                 item.consumedCost = consumedItem.consumedCost;
-                item.consumedCommissionAmount=consumedItem.consumedCommissionAmount;
-                item.consumedProfit= consumedItem.consumedAmount.subtract(consumedItem.consumedCost).subtract(consumedItem.consumedCommissionAmount);
+                item.consumedCommissionAmount = consumedItem.consumedCommissionAmount;
+                item.consumedProfit = consumedItem.consumedAmount.subtract(consumedItem.consumedCost).subtract(consumedItem.consumedCommissionAmount);
             } else {
                 map.put(getReportKeyOfPeopleEffect(consumedItem), consumedItem);
             }
