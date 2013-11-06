@@ -326,7 +326,7 @@
             <td>#{if orderItem.goods.materialType == models.sales.MaterialType.REAL && returnEntry == null}
                 #{if orderItem.status == models.order.OrderStatus.PAID ||
                 (orderItem.status == models.order.OrderStatus.PREPARED &&
-                orderItem.shippingInfo !=null && org.apache.commons.lang.StringUtils.isNotBlank(orderItem.shippingInfo.expressNumber))}
+                orderItem.shippingInfo !=null && org.apache.commons.lang.StringUtils.isBlank(orderItem.shippingInfo.expressNumber))}
                     <a
                             href="javascript:void(0);"
                             onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}','${orderItem.salePrice}','0')">退款</a>#{/if}
