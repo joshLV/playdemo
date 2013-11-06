@@ -822,7 +822,7 @@ public class OrderItems extends Model {
         order.save();
 
         orderItems.refundPrice = order.refundedAmount.add(consumedAmount.multiply(new BigDecimal(returnedCount))).add(refundPromotionAmount);
-        orderItems.returnCount += returnedCount;
+        orderItems.returnCount = returnedCount;
         orderItems.status = OrderStatus.RETURNED;
         orderItems.save();
 
