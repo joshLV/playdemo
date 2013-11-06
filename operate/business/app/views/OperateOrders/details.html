@@ -324,7 +324,9 @@
                 #{if returnEntry?.returnedAt}退货时间：${returnEntry?.returnedAt?.format('yyyy-MM-dd HH:mm:ss')}#{/if}
                 )</a>#{/if}</td>
             <td>#{if orderItem.goods.materialType == models.sales.MaterialType.REAL && returnEntry == null}
-                #{if orderItem.status == models.order.OrderStatus.PAID}
+                #{if orderItem.status == models.order.OrderStatus.PAID ||
+                (orderItem.status == models.order.OrderStatus.PREPARED &&
+                orderItem.shippingInfo !=null && org.apache.commons.lang.StringUtils.isNotBlank(orderItem.shippingInfo.expressNumber))}
                     <a
                             href="javascript:void(0);"
                             onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}','${orderItem.salePrice}','0')">退款</a>#{/if}
@@ -358,11 +360,12 @@
 <ul class="nav">
     <li class="active">
         <span><a href="#"> 收货信息</a>
-         #{if orderItems?.get(0)?.shippingInfo}
-        <button id="linkUpdateExpress_${orderItems?.get(0)?.shippingInfo?.id}" class="btn btn-info"
-           onclick="updateExpress('${orderItems?.get(0)?.shippingInfo?.id}','${shippingInfo?.expressCompany?.id}','${shippingInfo?.expressNumber}')
-                   ">修改收货信息</button>
-         #{/if}
+            #{if orderItems?.get(0)?.shippingInfo}
+                <button id="linkUpdateExpress_${orderItems?.get(0)?.shippingInfo?.id}" class="btn btn-info"
+                        onclick="updateExpress('${orderItems?.get(0)?.shippingInfo?.id}','${shippingInfo?.expressCompany?.id}','${shippingInfo?.expressNumber}')
+                                ">修改收货信息
+                </button>
+            #{/if}
             </span>
     </li>
 %{ outerOrder = models.order.OuterOrder.getOuterOrder(orders) }%
