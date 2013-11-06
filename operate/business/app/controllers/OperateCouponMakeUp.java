@@ -12,6 +12,7 @@ import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.cache.Cache;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
@@ -111,6 +112,54 @@ public class OperateCouponMakeUp extends Controller {
         renderText(successMessage.append("\n").append(failMessage));
     }
 
+    public static void payCommissionToSupplierOfReal(String orderItemIds) {
+        StringBuilder successMessage = new StringBuilder("成功");
+        if (StringUtils.isBlank(orderItemIds)) {
+            renderText("orderItemIds,多个orderItemIds请用半角逗号分割");
+            return;
+        }
+        String[] orderItemIdList = orderItemIds.trim().split(",");
+
+        for (String itemId : orderItemIdList) {
+            OrderItems orderItems =OrderItems.findById(Long.valueOf(itemId));
+            Account supplierAccount = orderItems.getSupplierAccount();
+
+
+            BigDecimal paidToSupplierPrice = orderItems.originalPrice;
+
+            for (int i = 0; i < orderItems.buyNumber; i++) {
+                // 给商户打钱
+                TradeBill consumeTrade = TradeUtil.consumeTrade(orderItems.order.operator)
+                        .toAccount(supplierAccount)
+                        .balancePaymentAmount(paidToSupplierPrice)
+                        .orderId(orderItems.order.getId())
+                        .make();
+                TradeUtil.success(consumeTrade, "11月5日实物未发货(补退款)" + orderItems.goods.shortName);
+
+                BigDecimal platformCommission = BigDecimal.ZERO;
+
+                if (orderItems.salePrice.compareTo(orderItems.resalerPrice) < 0) {
+                    // 如果成交价小于分销商成本价（这种情况只有在一百券网站上才会发生），
+                    // 那么一百券就没有佣金，平台的佣金也变为成交价减成本价
+                    platformCommission = orderItems.salePrice.subtract(orderItems.originalPrice);
+                } else {
+                    // 平台的佣金等于分销商成本价减成本价
+                    platformCommission = orderItems.resalerPrice.subtract(orderItems.originalPrice);
+                }
+
+                if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
+                    // 给优惠券平台佣金
+                    TradeBill platformCommissionTrade = TradeUtil.commissionTrade(orderItems.order.operator)
+                            .toAccount(AccountUtil.getPlatformCommissionAccount(orderItems.order.operator))
+                            .balancePaymentAmount(platformCommission)
+                            .orderId(orderItems.order.getId())
+                            .make();
+                    TradeUtil.success(platformCommissionTrade, orderItems.order.description);
+                }
+            }
+        }
+        renderText(successMessage);
+    }
     public static void payCommissionToSupplier(String couponIds) {
         StringBuilder successMessage = new StringBuilder("成功");
         StringBuilder failMessage = new StringBuilder("失败：\n");
