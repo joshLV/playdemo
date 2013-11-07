@@ -23,7 +23,7 @@ import java.util.List;
  * Date: 13-7-9
  * Time: 下午2:29
  */
-//@On("0 0 2 * * ?")  //每天凌晨四点执行
+@On("0 0 12 * * ?")  //每天凌晨四点执行
 @JobDefine(title = "更新过去账户结算金额", description = "更新过去账户结算金额")
 public class refreshPreviousClearAccount extends JobWithHistory {
     @Override
@@ -57,7 +57,7 @@ public class refreshPreviousClearAccount extends JobWithHistory {
 //                    "getClearAmount:" + clearedAccount.amount);
 //        }
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 1; i++) {
             Date fromDate = DateUtils.truncate(DateUtils.addDays(new Date(), -1 - i), Calendar.DATE);
             toDate = DateUtils.truncate(DateUtils.addDays(new Date(), -i), Calendar.DATE);
             for (Account account : accountList) {
