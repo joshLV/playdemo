@@ -10,12 +10,7 @@ import models.accounts.AccountType;
 import models.ktv.KtvTaobaoUtil;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
-import models.order.ExpressCompany;
-import models.order.Freight;
-import models.order.LogisticImportData;
-import models.order.OrderItems;
-import models.order.OrderStatus;
-import models.order.RealGoodsReturnEntry;
+import models.order.*;
 import models.resale.Resaler;
 import models.supplier.Supplier;
 import net.sf.jxls.reader.ReaderBuilder;
@@ -94,12 +89,13 @@ public class UploadOrderShippingInfos extends Controller {
         List<RealGoodsReturnEntry> returnEntryList = new ArrayList<>();
         for (LogisticImportData logistic : logistics) {
             RealGoodsReturnEntry returnEntry = RealGoodsReturnEntry.findHandling(logistic.orderNumber, logistic.goodsCode);
-            if (returnEntry != null && logistic.buyNumber != null && !logistic.buyNumber.equals(returnEntry.orderItems.buyNumber - returnEntry.returnedCount)) {
+            if (returnEntry.status == RealGoodsReturnStatus.RETURNING || returnEntry.status == RealGoodsReturnStatus.RETURNED) {
                 returnEntryList.add(returnEntry);
             }
         }
+
         if (returnEntryList.size() > 0) {
-            errorInfo = "上传失败！发货单中有" + returnEntryList.size() + "个退货单，请修改发货单并重新上传，根据列表中<strong>需发货数量</strong>更改发货单中对应订单商品的<strong>数量</strong>。";
+            errorInfo = "上传失败！发货单中有" + returnEntryList.size() + "个退货单，请确认发货数量或该商品是否已发货";
             render("UploadOrderShippingInfos/index.html", errorInfo, supplierList, returnEntryList);
         }
 
