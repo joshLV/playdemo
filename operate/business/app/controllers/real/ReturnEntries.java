@@ -175,10 +175,16 @@ public class ReturnEntries extends Controller {
             orderId = orderItems.order.id;
             switch (orderItems.status) {
                 case PAID:
-                    //todo 退款处理，有待测试
                     Logger.info("do PAID status");
-                    String result = OrderItems.handleRealGoodsRefund(orderItems, entry.returnedCount);
-
+                    String result = "";
+                    //付款或者待打包（未发货）的场合只要退款给分销平台
+                    if (orderItems.status == OrderStatus.PAID ||
+                            (orderItems.status == OrderStatus.PREPARED &&
+                                    orderItems.shippingInfo != null && StringUtils.isBlank(orderItems.shippingInfo.expressNumber))) {
+                        result = OrderItems.handleRealGoodsOfNoSendRefund(orderItems, entry.returnedCount);
+                    } else {
+                        result = OrderItems.handleRealGoodsRefund(orderItems, entry.returnedCount);
+                    }
                     if (!result.equals("")) {
                         renderJSON(result);
                     }

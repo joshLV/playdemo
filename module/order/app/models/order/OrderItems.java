@@ -686,6 +686,83 @@ public class OrderItems extends Model {
         return averagePriceMap;
     }
 
+    /*
+    实物退款处理. 按数量退款
+    *
+     * @param orderItems
+    */
+    public static String handleRealGoodsOfNoSendRefund(OrderItems orderItems, Long returnedCount) {
+        String returnFlg = "";
+
+        if (orderItems == null || orderItems.id == null || returnedCount == null || returnedCount <= 0L || returnedCount > orderItems.buyNumber) {
+            returnFlg = "{\"error\":\"no such orderItems\"}";
+            return returnFlg;
+        }
+        //todo 刷单的不可退款
+//        if (orderItems.isCheatedOrder) {
+//            returnFlg = "{\"error\":\"cheated order can't refund\"}";
+//            return returnFlg;
+//        }
+        //未付款和已取消的订单不能退款
+        if (orderItems.status == OrderStatus.CANCELED || orderItems.status == OrderStatus.UNPAID) {
+            returnFlg = "{\"error\":\"can not apply refund with this goods\"}";
+            return returnFlg;
+        }
+
+        //先计算已消费的金额
+        BigDecimal consumedAmount ;
+        Order order = orderItems.order;
+        if (order.isWebsiteOrder()) {
+            consumedAmount = orderItems.salePrice;
+        } else {
+            consumedAmount = orderItems.resalerPrice;
+        }
+
+        //最后我们来看看最终能退多少
+        BigDecimal refundPromotionAmount = BigDecimal.ZERO;
+
+        // 创建退款交易
+        Account account = orderItems.order.getBuyerAccount();
+        Logger.info("account=" + account.id + ", refundCashAmount=" + consumedAmount + ", " +
+                "refundPromotionAmount=" + refundPromotionAmount);
+
+        //给分销商打款成功标识
+        boolean toResalerAccountSuc = true;
+
+        //从平台收款账户打款给分销账户
+        for (int i = 0; i < returnedCount; i++) {
+            TradeBill tradeBill = TradeUtil.refundFromPlatFormIncomingTrade(order.operator)
+                    .toAccount(account)
+                    .balancePaymentAmount(consumedAmount)
+                    .promotionPaymentAmount(refundPromotionAmount)
+                    .orderId(orderItems.order.getId())
+                    .make();
+
+            if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
+                Logger.info("实物退款失败:从平台收款账户打款给分销账户toAccount=" + account.id + ",orderItem.id=" + orderItems.id);
+                toResalerAccountSuc = false;
+                break;
+            }
+        }
+        //如果给分销大款失败则回滚之前保存的数据
+        if (!toResalerAccountSuc) {
+            JPA.em().getTransaction().rollback();
+            returnFlg = "{\"error\":\"resaler account refund failed\"}";
+            return returnFlg;
+        }
+        // 更新已退款的活动金金额
+        order.refundedAmount = order.refundedAmount.add(consumedAmount.multiply(new BigDecimal(returnedCount))).add(refundPromotionAmount);
+        order.save();
+
+        orderItems.refundPrice = order.refundedAmount.add(consumedAmount.multiply(new BigDecimal(returnedCount))).add(refundPromotionAmount);
+        orderItems.returnCount = returnedCount;
+        orderItems.status = OrderStatus.RETURNED;
+        orderItems.save();
+
+        return returnFlg;
+
+    }
+
     /**
      * 实物退款处理. 按数量退款
      *

@@ -282,15 +282,15 @@
             <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>
             <td>
             ${orderItem.buyNumber}<br/>
-                #{if orderItem?.unusedECouponNumber > 0}
-                    <a href="javascript:sendOrderItemMessage(${orderItem?.id});">
-                        重发未使用券(${orderItem?.unusedECouponNumber}张)短信</a>
-                #{/if}
+            #{if orderItem?.unusedECouponNumber > 0}
+                <a href="javascript:sendOrderItemMessage(${orderItem?.id});">
+                    重发未使用券(${orderItem?.unusedECouponNumber}张)短信</a>
+            #{/if}
             </td>
             <td>
-                #{if hasViewEcouponSnPermission}
-                ${orderItem?.phone}
-                #{/if}
+            #{if hasViewEcouponSnPermission}
+            ${orderItem?.phone}
+            #{/if}
                     #{else}
             ${orderItem?.getMaskedPhone()}
             #{/else}
@@ -299,27 +299,34 @@
                 - ${orderItem.goods.expireAt?.format("yyyy-MM-dd")}
             </td>
             <td style="color:red">
-                #{if orderItem.rebateValue != null && orderItem.rebateValue?.compareTo(java.math.BigDecimal.ZERO) > 0}
-                    &nbsp;${orderItem.rebateValue?.formatCurrency('CNY')}
-                #{/if}
+            #{if orderItem.rebateValue != null && orderItem.rebateValue?.compareTo(java.math.BigDecimal.ZERO) > 0}
+                &nbsp;${orderItem.rebateValue?.formatCurrency('CNY')}
+            #{/if}
             </td>
             <td>${orderItem.amount?.formatCurrency('CNY')}</td>
         %{returnEntry = orderItem.getReturnEntry()}%
-            <td>&{'order.'+orderItem.status} #{if orderItem.returnStatus!=null}<a id="returnEntry_${orderItem.id}"
-                                                                                  href="#"
-                                                                                  rel="popover"
-                                                                                  data-html="true"
-                                                                                  data-content="退货数量: ${returnEntry?.returnedCount}件<br/>
+            <td>
+            #{if orderItem.status == models.order.OrderStatus.RETURNED && orderItem.shippingInfo !=null && org.apache.commons.lang.StringUtils.isBlank(orderItem.shippingInfo.expressNumber)}
+            已退款
+            #{/if}
+            #{else}
+                &{'order.'+orderItem.status}
+            #{/else}
+            #{if orderItem.returnStatus!=null}<a id="returnEntry_${orderItem.id}"
+                                                 href="#"
+                                                 rel="popover"
+                                                 data-html="true"
+                                                 data-content="退货数量: ${returnEntry?.returnedCount}件<br/>
                                                  退货原因: ${returnEntry?.reason}<br/>
                                                  制&nbsp;&nbsp;单&nbsp;&nbsp;人: ${returnEntry?.createdBy}<br/>
                                                  创建时间: ${returnEntry?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}<br/>
                                                  #{if returnEntry?.status==models.order.RealGoodsReturnStatus.RETURNED}
                                                  收&nbsp;&nbsp;货&nbsp;&nbsp;人: ${returnEntry?.returnedBy}<br/>
                                                  #{/if}"
-                                                                                  data-placement="bottom"
-                                                                                  data-original-title="退货单"
-                                                                                  data-trigger="hover"
-                                                                                  onmouseover="$('#returnEntry_${orderItem.id}').popover('show');"><br>
+                                                 data-placement="bottom"
+                                                 data-original-title="退货单"
+                                                 data-trigger="hover"
+                                                 onmouseover="$('#returnEntry_${orderItem.id}').popover('show');"><br>
                 (${returnEntry.returnedCount} 件 &{'entry.'+ orderItem.returnStatus}
                 #{if returnEntry?.returnedAt}退货时间：${returnEntry?.returnedAt?.format('yyyy-MM-dd HH:mm:ss')}#{/if}
                 )</a>#{/if}</td>
@@ -360,7 +367,7 @@
 <ul class="nav">
     <li class="active">
         <span><a href="#"> 收货信息</a>
-            #{if orderItems?.get(0)?.shippingInfo}
+            #{if orderItems?.get(0)?.shippingInfo && !(orderItem.status == models.order.OrderStatus.RETURNED && orderItem.shippingInfo !=null && org.apache.commons.lang.StringUtils.isBlank(orderItem.shippingInfo.expressNumber))}
                 <button id="linkUpdateExpress_${orderItems?.get(0)?.shippingInfo?.id}" class="btn btn-info"
                         onclick="updateExpress('${orderItems?.get(0)?.shippingInfo?.id}','${shippingInfo?.expressCompany?.id}','${shippingInfo?.expressNumber}')
                                 ">修改收货信息
