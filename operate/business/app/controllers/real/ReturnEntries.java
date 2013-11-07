@@ -173,18 +173,13 @@ public class ReturnEntries extends Controller {
             OrderItems orderItems = OrderItems.findById(entry.orderItems.id);
             Logger.info("orderItems.status=" + orderItems.status + ", id=" + entry.orderItems.id);
             orderId = orderItems.order.id;
+            String result = "";
             switch (orderItems.status) {
                 case PAID:
                     Logger.info("do PAID status");
-                    String result = "";
-                    //付款或者待打包（未发货）的场合只要退款给分销平台
-                    if (orderItems.status == OrderStatus.PAID ||
-                            (orderItems.status == OrderStatus.PREPARED &&
-                                    orderItems.shippingInfo != null && StringUtils.isBlank(orderItems.shippingInfo.expressNumber))) {
-                        result = OrderItems.handleRealGoodsOfNoSendRefund(orderItems, entry.returnedCount);
-                    } else {
-                        result = OrderItems.handleRealGoodsRefund(orderItems, entry.returnedCount);
-                    }
+                    //付款场合只要退款给分销平台
+                    result = OrderItems.handleRealGoodsOfNoSendRefund(orderItems, entry.returnedCount);
+
                     if (!result.equals("")) {
                         renderJSON(result);
                     }
@@ -194,6 +189,18 @@ public class ReturnEntries extends Controller {
                     entry.status = RealGoodsReturnStatus.RETURNED;
                     break;
                 case PREPARED:
+                    //待打包（未发货）的场合只要退款给分销平台
+                    if (orderItems.shippingInfo != null && StringUtils.isBlank(orderItems.shippingInfo.expressNumber)) {
+                        OrderItems.handleRealGoodsOfNoSendRefund(orderItems, entry.returnedCount);
+                        entry.returnedAt = new Date();
+                        entry.returnedBy = OperateRbac.currentUser().userName;
+                        entry.status = RealGoodsReturnStatus.RETURNED;
+                    } else {
+                        entry.status = RealGoodsReturnStatus.RETURNING;
+                        entry.orderItems.status = OrderStatus.RETURNING;
+                        entry.orderItems.save();
+                    }
+                    break;
                 case UPLOADED:
                 case SENT:
                     entry.status = RealGoodsReturnStatus.RETURNING;
