@@ -88,14 +88,14 @@ public class SupplierUploadOrderShippingInfos extends Controller {
         List<RealGoodsReturnEntry> returnEntryList = new ArrayList<>();
         for (LogisticImportData logistic : logistics) {
             RealGoodsReturnEntry returnEntry = RealGoodsReturnEntry.findHandling(logistic.orderNumber, logistic.goodsCode);
-            if (returnEntry.status == RealGoodsReturnStatus.RETURNING || returnEntry.status == RealGoodsReturnStatus.RETURNED) {
+            if (returnEntry != null && (returnEntry.status == RealGoodsReturnStatus.RETURNING || returnEntry.status == RealGoodsReturnStatus.RETURNED)) {
                 returnEntryList.add(returnEntry);
             }
         }
 
         if (returnEntryList.size() > 0) {
             msgInfo = "上传失败！发货单中有" + returnEntryList.size() + "个退货单，请确认发货数量或该商品是否已发货";
-            render("UploadOrderShippingInfos/index.html", msgInfo, returnEntryList);
+            render("SupplierUploadOrderShippingInfos/index.html", msgInfo, returnEntryList);
         }
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
         for (LogisticImportData logistic : logistics) {

@@ -27,7 +27,6 @@ public class JROrderECouponSMSInvocation extends OrderECouponSMSInvocation {
                 .append(context.couponInfo)
                 .append("精锐咨询400-094-7770");
         context.setSmsContent(sb.toString());
-        context.setSmsContent(sb.toString());
         return ExtensionResult.SUCCESS;
     }
 
