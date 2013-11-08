@@ -120,8 +120,8 @@ public class RealGoodsReturnEntry extends Model {
      * @return 退货单数量
      */
     public static long countHandling(Long supplierId) {
-        Long count = count("status=? and orderItems.goods.supplierId=?", RealGoodsReturnStatus.RETURNING, supplierId);
-        return count == null ? 0L : count;
+        Long count = count("(status=? or status = ?) and orderItems.goods.supplierId=?", RealGoodsReturnStatus.RETURNING, RealGoodsReturnStatus.RETURNED, supplierId);
+        return count;
     }
 
     /**
@@ -130,7 +130,8 @@ public class RealGoodsReturnEntry extends Model {
      * @return 退货单数量
      */
     public static RealGoodsReturnEntry findHandling(String orderNumber, String goodsCode) {
-        return find("status=? and orderItems.order.orderNumber=? and orderItems.goods.code=?", RealGoodsReturnStatus.RETURNING, orderNumber, goodsCode).first();
+        return find("(status=? or status = ?) and orderItems.order.orderNumber=? and orderItems.goods.code=?",
+                RealGoodsReturnStatus.RETURNING, RealGoodsReturnStatus.RETURNED, orderNumber, goodsCode).first();
     }
 
     /**
