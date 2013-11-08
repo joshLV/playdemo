@@ -89,7 +89,8 @@ public class UploadOrderShippingInfos extends Controller {
         List<RealGoodsReturnEntry> returnEntryList = new ArrayList<>();
         for (LogisticImportData logistic : logistics) {
             RealGoodsReturnEntry returnEntry = RealGoodsReturnEntry.findHandling(logistic.orderNumber, logistic.goodsCode);
-            if (returnEntry.status == RealGoodsReturnStatus.RETURNING || returnEntry.status == RealGoodsReturnStatus.RETURNED) {
+//            if (returnEntry != null && logistic.buyNumber != null && !logistic.buyNumber.equals(returnEntry.orderItems.buyNumber - returnEntry.returnedCount)) {
+            if (returnEntry != null && (returnEntry.status == RealGoodsReturnStatus.RETURNING || returnEntry.status == RealGoodsReturnStatus.RETURNED)) {
                 returnEntryList.add(returnEntry);
             }
         }
