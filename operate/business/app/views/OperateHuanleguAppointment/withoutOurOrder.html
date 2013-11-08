@@ -40,7 +40,9 @@
                     <div class="controls">
                         <select name="goods.id">
                         ##{list items:goodsList, as:'g'}
+                            #{if g.id == 4010 }
                             <option value="${g.id}" #{if goods?.id == g.id} selected="selected" #{/if}>${g.shortName}</option>
+                            #{/if}
                         #{/list}
                         </select>
                     </div>
