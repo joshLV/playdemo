@@ -95,7 +95,7 @@ public class SupplierUploadOrderShippingInfos extends Controller {
 
         if (returnEntryList.size() > 0) {
             msgInfo = "上传失败！发货单中有" + returnEntryList.size() + "个退货单，请确认发货数量或该商品是否已发货";
-            render("SupplierUploadOrderShippingInfos/index.html", msgInfo, returnEntryList);
+            render("SupplierUploadOrderShippingInfos/index.html", msgInfo);
         }
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
         for (LogisticImportData logistic : logistics) {
