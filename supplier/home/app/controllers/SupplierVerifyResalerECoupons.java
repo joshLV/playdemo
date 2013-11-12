@@ -127,6 +127,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
         }
         params.put("dealid", partnerGoodsId);
         params.put("bizloginid", partnerShopId);
+        params.put("from", "batchVerify");
 
         Logger.info("美团项目ID：%s,对应门店ID：%s,对应一百券商品ID：%s,对应一百券门店ID：%s", partnerGoodsId, partnerShopId,
                 supplierResalerProduct.goods.id.toString(), supplierResalerShop.shop.id);
