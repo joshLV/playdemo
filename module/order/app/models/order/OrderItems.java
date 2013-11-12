@@ -754,7 +754,7 @@ public class OrderItems extends Model {
         order.refundedAmount = order.refundedAmount.add(consumedAmount.multiply(new BigDecimal(returnedCount))).add(refundPromotionAmount);
         order.save();
 
-        orderItems.refundPrice = order.refundedAmount.add(consumedAmount.multiply(new BigDecimal(returnedCount))).add(refundPromotionAmount);
+        orderItems.refundPrice = consumedAmount.multiply(new BigDecimal(returnedCount));
         orderItems.returnCount = returnedCount;
         orderItems.status = OrderStatus.RETURNED;
         orderItems.save();
@@ -898,7 +898,7 @@ public class OrderItems extends Model {
         order.refundedAmount = order.refundedAmount.add(consumedAmount.multiply(new BigDecimal(returnedCount))).add(refundPromotionAmount);
         order.save();
 
-        orderItems.refundPrice = order.refundedAmount.add(consumedAmount.multiply(new BigDecimal(returnedCount))).add(refundPromotionAmount);
+        orderItems.refundPrice = consumedAmount.multiply(new BigDecimal(returnedCount));
         orderItems.returnCount = returnedCount;
         orderItems.status = OrderStatus.RETURNED;
         orderItems.save();

@@ -47,11 +47,10 @@ public class SupplierDownloadOrderShippingInfos extends Controller {
      */
     private static List<OrderItems> getPreparedItems(Long orderBatchId) {
 //        StringBuilder sql = new StringBuilder("goods.supplierId=? and goods.sku is not null ");
-        StringBuilder sql = new StringBuilder("goods.materialType ='REAL' and goods.supplierId=? and (status <> ? or status <> ?) ");
+        StringBuilder sql = new StringBuilder("goods.materialType ='REAL' and goods.supplierId=? and status =? ");
         List<Object> params = new ArrayList();
         params.add(SupplierRbac.currentUser().supplier.id);
-        params.add(OrderStatus.RETURNED);
-        params.add(OrderStatus.RETURNING);
+        params.add(OrderStatus.PAID);
         if (orderBatchId == null) {
             sql.append(" and orderBatch is null ");
         } else {
