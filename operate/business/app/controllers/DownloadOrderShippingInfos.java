@@ -53,7 +53,7 @@ public class DownloadOrderShippingInfos extends Controller {
         StringBuilder sql = new StringBuilder("goods.supplierId=? and goods.sku is not null and status = ? ");
         List<Object> params = new ArrayList<>();
         params.add(supplierId);
-        params.add(OrderStatus.PAID);
+        params.add(OrderStatus.PREPARED);
         if (orderBatchId == null) {
             sql.append(" and orderBatch is null");
         } else {
