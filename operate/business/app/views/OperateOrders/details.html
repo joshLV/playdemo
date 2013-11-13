@@ -156,7 +156,7 @@
                     $("#note_entry_returnedCount").html("");
                 }
                 if ($("#refundType_1").attr("checked")) {
-                    if ($("#entry_partialRefundPrice").val() == '') {
+                    if ($("#entry_partialRefundPrice").val() == '' || $("#entry_partialRefundPrice").val() <=0) {
                         $("#entry_partialRefundPrice_err").html("请输入部分退货金额!").addClass("error");
                         result = false;
                     }
