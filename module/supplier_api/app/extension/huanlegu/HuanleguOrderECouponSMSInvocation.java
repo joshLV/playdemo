@@ -17,7 +17,7 @@ import util.extension.ExtensionResult;
  */
 public class HuanleguOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
     //淘宝、京东、58、一号店、一百券
-    public static String[] PARTNER_UIDS = Play.configuration.getProperty("auto_partners_uids", "13,10,14,7,22").split(",");
+    public static String[] PARTNER_UIDS = Play.configuration.getProperty("auto_partners_uids", "13,34,10,14,7,22").split(",");
 
     /**
      * 基于context的内容，生成短信内容，并通过context.setSmsContent()方法把短信内容传出.
