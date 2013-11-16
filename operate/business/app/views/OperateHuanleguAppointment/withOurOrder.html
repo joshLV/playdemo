@@ -48,7 +48,7 @@
                                     <tr>
                                         <td>${coupon.getMaskedEcouponSn()}</td>
                                         <td>${coupon.orderItems.phone}</td>
-                                        <td><span style="color:{{ 'green' if coupon.status == 'UNCONSUMED' else 'red'  }}">&{'coupon.' + coupon.status}</span></td>
+                                        <td><span style="color:${ coupon.status == 'UNCONSUMED' ? 'green':'red' }">&{'coupon.' + coupon.status}</span></td>
                                         <td>${coupon.createdAt.format()}</td>
                                     </tr>
                                 #{/list}
