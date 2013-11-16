@@ -54,7 +54,7 @@ public class OperateHuanleguAppointment extends Controller {
         render();
     }
 
-    public static void appointmentWithOurOrder(String couponStr, String mobile, Date appointmentDate, String action) {
+    public static void appointmentWithOurOrder(String couponStr, String mobile, Date appointmentDate, String action, int count) {
         if (StringUtils.isBlank(couponStr)) {
             String err = "请填写券号";
             render("OperateHuanleguAppointment/withOurOrder.html", err, couponStr, mobile, appointmentDate);
@@ -78,12 +78,15 @@ public class OperateHuanleguAppointment extends Controller {
 
         List<ECoupon> couponList = ECoupon.find("byOrder", coupon.order).fetch();
 
-        //一次最多取5个
+        if (count <= 0 || count >5 ) {
+            count = 5;
+        }
+        //一次最多取count个
         List<ECoupon> tobeUsedCouponList = new ArrayList<>();
         for (ECoupon c : couponList) {
             if (c.status == ECouponStatus.UNCONSUMED) {
                 tobeUsedCouponList.add(c);
-                if (tobeUsedCouponList.size() >= 5) {
+                if (tobeUsedCouponList.size() >= count ) {
                     break;
                 }
             }
