@@ -35,7 +35,7 @@
                     <label class="control-label" for="inputCoupon">一百券券号</label>
                     <div class="controls">
                         <input type="text" id="inputCoupon" name="couponStr" value="${couponStr}">
-                        <div class="btn btn-primary" id="query" data-action="query">查询</div>
+                        <div class="btn btn-primary" id="query" data-action="query">查询</div> (可以是已使用的)
                         #{if couponList}
                             <table class="table" style="width:auto">
                                 <tr>
@@ -48,7 +48,7 @@
                                     <tr>
                                         <td>${coupon.getMaskedEcouponSn()}</td>
                                         <td>${coupon.orderItems.phone}</td>
-                                        <td>&{'coupon.' + coupon.status}</td>
+                                        <td><span style="color:{{ 'green' if coupon.status == 'UNCONSUMED' else 'red'  }}">&{'coupon.' + coupon.status}</span></td>
                                         <td>${coupon.createdAt.format()}</td>
                                     </tr>
                                 #{/list}

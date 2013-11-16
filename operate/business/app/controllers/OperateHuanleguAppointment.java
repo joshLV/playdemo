@@ -65,9 +65,6 @@ public class OperateHuanleguAppointment extends Controller {
         if (coupon == null) {
             String err = "券号不存在";
             render("OperateHuanleguAppointment/withOurOrder.html", err, couponStr, mobile, appointmentDate);
-        } else if (coupon.status != ECouponStatus.UNCONSUMED) {
-            String err = "券号不是未消费状态";
-            render("OperateHuanleguAppointment/withOurOrder.html", err, couponStr, mobile, appointmentDate);
         }
 
         Supplier supplier = Supplier.findByDomainName(HuanleguUtil.SUPPLIER_DOMAIN_NAME);
