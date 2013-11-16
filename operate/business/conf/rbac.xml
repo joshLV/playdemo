@@ -16,7 +16,7 @@
     <role key="purchaser" text="采购人员"/>
 
     <permission key="GOODS_NEW" text="商品添加" roles="editor"/>
-    <permission key="GOODS" text="商品管理" roles="editor,customservice"/>
+    <permission key="GOODS" text="商品管理" roles="editor,customservice,sales"/>
     <permission key="SKU" text="SKU管理" roles="editor,customservice"/>
     <permission key="SKU_NEW" text="货品添加" roles="editor"/>
     <permission key="INVENTORY" text="库存管理" roles="inventory_manager"/>

@@ -70,10 +70,11 @@ public class KtvPriceSchedules extends Controller {
     public static void tableShow(Long shopId, KtvRoomType roomType, Long productId) {
 
         Long supplierId = SupplierRbac.currentUser().supplier.id;
-        StringBuilder sql = new StringBuilder("select distinct(s) from KtvPriceSchedule s join s.shopSchedules ss " +
-                "where s.product.supplier.id = :supplierId ");
+        StringBuilder sql = new StringBuilder("select distinct(s) from KtvPriceSchedule s join s.shopSchedules ss join s.dateRanges dr " +
+                "where s.product.supplier.id = :supplierId and dr.startDay >=:startDay");
         Map<String, Object> params = new HashMap<>();
         params.put("supplierId", supplierId);
+        params.put("startDay", DateUtils.truncate(new Date(),Calendar.DATE));
         if (shopId != null) {
             sql.append(" and ss.shop.id = :shopId");
             params.put("shopId", shopId);
