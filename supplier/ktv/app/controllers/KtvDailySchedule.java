@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.supplier.SupplierInjector;
 import models.ktv.*;
+import models.order.ECoupon;
+import models.order.ECouponPartner;
 import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -87,7 +89,7 @@ public class KtvDailySchedule extends Controller {
                         oldValue = new ArrayList<>();
                     }
                     String shopName = target.shop.name;
-                    oldValue.add( shopName + ":" + target.orderItem.phone);
+                    oldValue.add(shopName + ":" + target.orderItem.phone);
                     return oldValue;
                 }
             };
@@ -136,4 +138,26 @@ public class KtvDailySchedule extends Controller {
         renderJSON(gson.toJson(result));
     }
 
+    public static void coupon(String phone) {
+        if (StringUtils.isBlank(phone)) {
+            render();
+        }
+
+        StringBuilder sql=new StringBuilder("select e from ECoupon e where e.goods.supplierId =:supplierId and e.partner=:partner" +
+                " and (e.orderItems.phone =:phone or e.order.id in (select o.ybqOrder.id from OuterOrder o where o.orderId = :orderId)) order by e.id desc");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("supplierId",SupplierRbac.currentUser().supplier.id);
+        params.put("partner",ECouponPartner.TB);
+        params.put("phone",phone);
+        params.put("orderId",phone);
+        Query query = JPA.em().createQuery(sql.toString());
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        List<ECoupon> coupons = query.getResultList();
+//        List<ECoupon> coupons = ECoupon.find("orderItems.phone =? and partner=? and goods.supplierId = ? order by id desc ",
+//                phone, ECouponPartner.TB,SupplierRbac.currentUser().supplier.id).fetch();
+        render("KtvDailySchedule/coupon.html",coupons);
+
+    }
 }

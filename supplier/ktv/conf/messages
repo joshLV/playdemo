@@ -25,3 +25,5 @@ promotion.promotionType=促销类型
 promotion.roomTypes=适用包厢
 promotion.startTime=开始时间
 validation.maxSize=促销名称不能超过5个汉字
+coupon.CONSUMED=已消费
+coupon.UNCONSUMED=未消费
