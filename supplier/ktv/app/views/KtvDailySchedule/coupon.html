@@ -1,0 +1,37 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'每日预订' /}
+#{set menu:"ktv_schedule_coupon" /}
+#{set 'moreStyles'}
+    <style>
+        td {
+            padding: 10px;
+        }
+    </style>
+#{/set}
+<div class="body">
+#{form @KtvDailySchedule.coupon() , method:'POST'}
+    <div class="field-group" style="padding-left: 0px">
+        请输入手机或外部订单号<input name="phone" size="30px">
+        <button class="btn" type="submit">查询</button>
+        #{if coupons?.size() ==0}
+            <span style="color: red;display: inline"><br>没查到对应的券号！</span>
+        #{/if}
+        <table cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <th>手机</th>
+                <th>券号</th>
+                <th>状态</th>
+                <th>创建时间</th>
+            </tr>
+            #{list items:coupons, as:'coupon'}
+                <tr>
+                    <td>${coupon.orderItems.phone}</td>
+                    <td>${coupon.eCouponSn}</td>
+                    <td>&{'coupon.'+coupon.status}</td>
+                    <td>${coupon.createdAt.format('yyyy-mm-dd HH:mm:ss')}</td>
+                </tr>
+            #{/list}
+        </table>
+    </div>
+#{/form}
+</div>

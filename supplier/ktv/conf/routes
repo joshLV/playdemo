@@ -11,6 +11,7 @@ POST    /ktv/taobao-product/publish                    KtvTaobaoProducts.publish
 POST    /ktv/taobao-product/sync-sku                   KtvTaobaoProducts.syncSku
 DELETE  /ktv/taobao-product/{id}                       KtvTaobaoProducts.delete
 
+
 POST    /ktv/taobao/img-upload/{resalerId}             KtvTaobaoImgUpload.upload
 
 #ktv 价格设置
@@ -29,6 +30,8 @@ DELETE  /ktv/price-schedule/{id}                         KtvPriceSchedules.delet
 GET     /ktv/daily-schedule                         KtvDailySchedule.showDailySchedule
 #GET     /ktv/daily-schedule                         KtvDailySchedule.index
 POST    /ktv/roominfo/json-search                  KtvDailySchedule.jsonRoom
+GET     /ktv/coupon                                KtvDailySchedule.coupon
+POST    /ktv/coupon                                KtvDailySchedule.coupon
 
 
 #ktv 促销活动
