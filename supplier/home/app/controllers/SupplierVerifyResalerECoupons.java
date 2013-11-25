@@ -215,7 +215,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
                 JsonObject result = element.getAsJsonObject().get("result").getAsJsonObject();
 //                result = "code":507,"msg":{"message":"验证失败：序列号错误，请重新输入！"}}
                 //成功的情况
-                if (jsonReponse.get("code").getAsString().equals("200")) {
+                if (result.get("code").getAsString().equals("200")) {
                     String coupon = element.getAsJsonObject().get("serialNum").getAsString();
                     OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon, OuterOrderPartner.DP);
                     if (outerOrder == null) {
