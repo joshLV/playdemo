@@ -123,7 +123,7 @@
                 <div class="field-group">
                 *{<label class="coupon-label" for="enter-coupon">输入券号</label>}*
                     #{list items:0..couponItemCount, as:'index'}
-                        <input type="text" size="22" maxlength="14" name="coupon" id="enter-coupon"
+                        <input type="text" size="22" maxlength="12" name="coupon" id="enter-coupon"
                                dp-coupon-index="${index}"
                                class="dp-enter-coupon" type="text" placeholder="请输入序列号" style="margin-bottom: 5px"/>
                         <span id="dp-verify-info-${index}" style="color: red;display: block"></span>

@@ -197,6 +197,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
 
         params.put("receiptId", 0);
         params.put("t", "m" + System.currentTimeMillis());
+        Logger.info("点评券号：%s", StringUtils.join(couponIds, ","));
         SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("resaler = ? and supplier =? ", resaler, SupplierRbac.currentUser().supplier).first();
         WS.HttpResponse response = WS.url("http://e.dianping.com/tuangou/ajax/batchverify").params(params).headers(headers).followRedirects(false).post();
         String body = response.getString();
@@ -205,6 +206,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("shopId", supplierResalerShop.shop.id.toString());
         jsonMap.put("goodsId", supplierResalerProduct.goods.id.toString());
+        Logger.info("点评验证返回json信息：%s", body);
 //        {"result":{"code":200,"msg":{"message":"7075 0352 11验证成功并消费！","receiptList":[{"addDate":null,"dealSMSName":"[仅售78元,原价158元］南京汤山圣泉温泉城:汤山圣泉温泉城旺季露天温泉票1张(上线时间:13年10月15日)","lastDate":"2013-10-18 17:02","mobileNo":null,"receiptId":0,"serialNum":"7075035211"}]}},"serialNum":"7075035211"}]
         if (jsonReponse.has("msg")) {
             JsonArray dataResult = jsonReponse.get("msg").getAsJsonObject().get("serialNumList").getAsJsonArray();
