@@ -24,10 +24,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: yan
@@ -119,10 +116,12 @@ public class SupplierVerifyResalerECoupons extends Controller {
 
         headers.put("Cookie", cookie);
         Map<String, Object> params = new HashMap<>();
+        List<String> mtCoupons = new ArrayList<>();
         for (int i = 0; i < couponIds.size(); i++) {
             if (couponIds.get(i).length() != 12) {
                 continue;
             }
+            mtCoupons.add(couponIds.get(i));
             params.put("enter-code[" + i + "]", couponIds.get(i));
         }
         params.put("dealid", partnerGoodsId);
@@ -130,8 +129,8 @@ public class SupplierVerifyResalerECoupons extends Controller {
         params.put("from", "batchVerify");
         params.put("isAjax", true);
 
-        Logger.info("美团项目ID：%s,对应门店ID：%s,对应一百券商品ID：%s,对应一百券门店ID：%s", partnerGoodsId, partnerShopId,
-                supplierResalerProduct.goods.id.toString(), supplierResalerShop.shop.id);
+        Logger.info("美团项目ID：%s,对应门店ID：%s,对应一百券商品ID：%s,对应一百券门店ID：%s,券号：%s", partnerGoodsId, partnerShopId,
+                supplierResalerProduct.goods.id.toString(), supplierResalerShop.shop.id, StringUtils.join(mtCoupons, ","));
 
         WS.HttpResponse response = WS.url("http://e.meituan.com/coupon/batchconsume").params(params).headers(headers).followRedirects(false).post();
         List<Http.Header> headerList = response.getHeaders();
@@ -140,6 +139,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
         }
 
         String body = response.getString();
+        Logger.info("美团验证返回json信息：%s", body);
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("partnerGoodsId", partnerGoodsId);
         jsonMap.put("partnerShopId", partnerShopId);
@@ -253,8 +253,11 @@ public class SupplierVerifyResalerECoupons extends Controller {
         SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("resaler = ? and supplier =? ", resaler, SupplierRbac.currentUser().supplier).first();
         WS.HttpResponse response = WS.url("http://y.nuomi.com/service/sellerV1/newCheck/checkCode4Single").params(params).headers(headers).get();
 
+        Logger.info("糯米券号:%s",couponId);
+
         String body = response.getString();
 //        body= "{\"dealStartTime\":\"2013-10-17\",\"optionName\":\"--\",\"isSucess\":\"true\",\"name\":\"汤山圣泉温泉城温泉票\",\"dealExpireTime\":\"2014-03-30\",\"password\":\"931392090042\"}";成功返回测试
+        Logger.info("糯米验证返回json信息：%s", body);
         JsonParser jsonParser = new JsonParser();
         JsonObject jsonReponse = jsonParser.parse(body).getAsJsonObject();
         Map<String, String> jsonMap = new HashMap<>();
