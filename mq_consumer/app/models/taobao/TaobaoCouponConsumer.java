@@ -134,7 +134,12 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             mobile = jsonObject.get("mobile").getAsString(); //买家手机号
             num = jsonObject.get("num").getAsLong();//购买的数量
             sellerNick = jsonObject.get("seller_nick").getAsString();//淘宝卖家用户名（旺旺号）
-            outerIid = jsonObject.get("outer_iid").getAsLong();//商家发布商品时填写的外部商品ID
+            outerIid = 0L;
+            if (jsonObject.has("outer_iid")) {
+                outerIid = jsonObject.get("outer_iid").getAsLong();//商家发布商品时填写的外部商品ID
+            }else if (jsonObject.has("sub_outer_iid")) {
+                outerIid = jsonObject.get("sub_outer_iid").getAsLong();//商家发布商品时填写的外部商品ID
+            }
 //            taobaoOrderId = jsonObject.get("order_id").getAsLong();//淘宝的订单号
         } catch (Exception e) {
             Logger.error(e, "taobao coupon request failed: invalid params");
