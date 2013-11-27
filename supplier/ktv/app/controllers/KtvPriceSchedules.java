@@ -74,7 +74,7 @@ public class KtvPriceSchedules extends Controller {
                 "where s.product.supplier.id = :supplierId and dr.startDay >=:startDay");
         Map<String, Object> params = new HashMap<>();
         params.put("supplierId", supplierId);
-        params.put("startDay", DateUtils.truncate(new Date(),Calendar.DATE));
+        params.put("startDay", DateUtils.truncate(DateUtils.addMonths(new Date(), -1), Calendar.DATE));
         if (shopId != null) {
             sql.append(" and ss.shop.id = :shopId");
             params.put("shopId", shopId);
