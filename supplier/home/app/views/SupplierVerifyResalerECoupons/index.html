@@ -67,7 +67,6 @@
                         </p>
                     #{/if}
                     #{else}
-                        #{set couponItemCount :0/}
                         <p>美 团 项 目:
                             <select name="partnerGoodsId" id="partnerGoodsId" style="width: 230px">
                                 #{list items:resalerProductList, as:'resalerGoods'}
@@ -75,13 +74,8 @@
                                 #{/list}
                             </select>
                         </p>
-                        <!--南京汤山百倍圣泉 ,东方明珠-->
-                        #{if currentUser.supplier.id==422 || currentUser.supplier.id==704}
-                            #{set couponItemCount :4/}
-                        #{/if}
                         <!--pony蛋糕的商户 -->
                         #{if currentUser.supplier.id==657}
-                            #{set couponItemCount :4/}
                             <p>美 团 分 店:
                                 <select name="partnerShopId" id="partnerShopId" style="width: 230px">
                                     <option value=''>全部门店</option>
