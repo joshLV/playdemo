@@ -72,35 +72,28 @@ public class ReturnEntries extends Controller {
         Supplier supplier = Supplier.findById(orderItems.goods.supplierId);
         //只有视惠发货的才有入库
         if (supplier.equals(Supplier.getShihui())) {
-            entry.stockInCount = stockInCount;
-            entry.status = RealGoodsReturnStatus.RETURNED;
-            entry.returnedAt = new Date();
-            entry.returnedBy = OperateRbac.currentUser().userName;
-            entry.save();
-            //2、产生入库单.
-            InventoryStock inventoryStock = new InventoryStock();
-            inventoryStock.supplier = Supplier.getShihui();
-            inventoryStock.actionType = StockActionType.RETURN;
-            inventoryStock.createdBy = OperateRbac.currentUser().userName;
-            inventoryStock.storekeeper = OperateRbac.currentUser().userName;
-            inventoryStock.create();
-            InventoryStockItem stockItem = new InventoryStockItem(inventoryStock);
-            //Todo: stock -> item  1:n  orderitems --> takeoutitem 1:n   used by  for (TakeoutItem i : entry.orderItems.takeOutItems) {}
-//        GoodsHistory goodsHistory =GoodsHistory.findById(entry.orderItems.goodsHistoryId);
-//        Goods temporalGoods = Goods.findById(goodsHistory.goodsId);
-//        stockItem.sku = temporalGoods.sku;
-//        stockItem.changeCount = entry.returnedCount * temporalGoods.skuCount;
-//        stockItem.remainCount = stockItem.changeCount;
-            stockItem.sku = entry.orderItems.takeOutItems.get(0).sku;
-//            stockItem.changeCount = entry.orderItems.takeOutItems.get(0).count;
+            doInstock(entry, stockInCount);
+//            entry.stockInCount = stockInCount;
+//            entry.status = RealGoodsReturnStatus.RETURNED;
+//            entry.returnedAt = new Date();
+//            entry.returnedBy = OperateRbac.currentUser().userName;
+//            entry.save();
+//            //2、产生入库单.
+//            InventoryStock inventoryStock = new InventoryStock();
+//            inventoryStock.supplier = Supplier.getShihui();
+//            inventoryStock.actionType = StockActionType.RETURN;
+//            inventoryStock.createdBy = OperateRbac.currentUser().userName;
+//            inventoryStock.storekeeper = OperateRbac.currentUser().userName;
+//            inventoryStock.create();
+//            InventoryStockItem stockItem = new InventoryStockItem(inventoryStock);
+//            stockItem.sku = entry.orderItems.takeOutItems.get(0).sku;
+//            stockItem.changeCount = stockInCount;
 //            stockItem.remainCount = stockItem.changeCount;
-            stockItem.changeCount = stockInCount;
-            stockItem.remainCount = stockItem.changeCount;
-
-            stockItem.effectiveAt = entry.orderItems.goods.effectiveAt;
-            stockItem.expireAt = entry.orderItems.goods.expireAt;
-            stockItem.price = entry.orderItems.goods.originalPrice;
-            stockItem.create();
+//
+//            stockItem.effectiveAt = entry.orderItems.goods.effectiveAt;
+//            stockItem.expireAt = entry.orderItems.goods.expireAt;
+//            stockItem.price = entry.orderItems.goods.originalPrice;
+//            stockItem.create();
             //3、退款
             //按数量退款
             if (entry.partialRefundPrice == null && entry.returnedCount > 0) {
@@ -184,9 +177,12 @@ public class ReturnEntries extends Controller {
                         renderJSON(result);
                     }
 
-                    entry.returnedAt = new Date();
-                    entry.returnedBy = OperateRbac.currentUser().userName;
-                    entry.status = RealGoodsReturnStatus.RETURNED;
+                    Supplier supplier = Supplier.findById(orderItems.goods.supplierId);
+                    //只有视惠发货的才有入库
+                    if (supplier.equals(Supplier.getShihui())) {
+                        doInstock(entry,entry.returnedCount);
+                    }
+
                     break;
                 case PREPARED:
                     //待打包（未发货）的场合只要退款给分销平台
@@ -214,6 +210,34 @@ public class ReturnEntries extends Controller {
         entry.create();
 
         renderJSON(orderId);
+    }
+
+    /**
+     * 视惠退款场合入库
+     * @param entry
+     */
+    private static void doInstock(RealGoodsReturnEntry entry,Long stockInCount) {
+        entry.stockInCount = stockInCount;
+        entry.status = RealGoodsReturnStatus.RETURNED;
+        entry.returnedAt = new Date();
+        entry.returnedBy = OperateRbac.currentUser().userName;
+        entry.save();
+        //2、产生入库单.
+        InventoryStock inventoryStock = new InventoryStock();
+        inventoryStock.supplier = Supplier.getShihui();
+        inventoryStock.actionType = StockActionType.RETURN;
+        inventoryStock.createdBy = OperateRbac.currentUser().userName;
+        inventoryStock.storekeeper = OperateRbac.currentUser().userName;
+        inventoryStock.create();
+        InventoryStockItem stockItem = new InventoryStockItem(inventoryStock);
+        stockItem.sku = entry.orderItems.takeOutItems.get(0).sku;
+        stockItem.changeCount = entry.returnedCount;
+        stockItem.remainCount = stockItem.changeCount;
+
+        stockItem.effectiveAt = entry.orderItems.goods.effectiveAt;
+        stockItem.expireAt = entry.orderItems.goods.expireAt;
+        stockItem.price = entry.orderItems.goods.originalPrice;
+        stockItem.create();
     }
 
     private static int getPage() {

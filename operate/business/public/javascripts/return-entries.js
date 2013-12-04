@@ -45,14 +45,14 @@ $(function () {
     });
     $("#confirm").click(function () {
         var result = true;
-        var reason = $("#unreceivedReason").val().trim();
-
-        if (reason == "") {
-            $("#note_unreceivedReason").addClass("error");
-            $("#note_unreceivedReason").html("请输入未收到货原因!");
-            $("#unreceivedReason").focus();
-            result = false;
-        }
+//        var reason = $("#unreceivedReason").val().trim();
+//
+//        if (reason == "") {
+//            $("#note_unreceivedReason").addClass("error");
+//            $("#note_unreceivedReason").html("请输入未收到货原因!");
+//            $("#unreceivedReason").focus();
+//            result = false;
+//        }
         if (result) {
             $("#reasonForm").submit();
         }
