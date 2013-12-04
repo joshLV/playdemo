@@ -15,6 +15,7 @@ import operate.rbac.annotations.ActiveNavigation;
 import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
+import play.Play;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -180,7 +181,7 @@ public class ReturnEntries extends Controller {
                     Supplier supplier = Supplier.findById(orderItems.goods.supplierId);
                     //只有视惠发货的才有入库
                     if (supplier.equals(Supplier.getShihui())) {
-                        doInstock(entry,entry.returnedCount);
+                        doInstock(entry, entry.returnedCount);
                     }
 
                     break;
@@ -214,9 +215,10 @@ public class ReturnEntries extends Controller {
 
     /**
      * 视惠退款场合入库
+     *
      * @param entry
      */
-    private static void doInstock(RealGoodsReturnEntry entry,Long stockInCount) {
+    private static void doInstock(RealGoodsReturnEntry entry, Long stockInCount) {
         entry.stockInCount = stockInCount;
         entry.status = RealGoodsReturnStatus.RETURNED;
         entry.returnedAt = new Date();
@@ -230,8 +232,10 @@ public class ReturnEntries extends Controller {
         inventoryStock.storekeeper = OperateRbac.currentUser().userName;
         inventoryStock.create();
         InventoryStockItem stockItem = new InventoryStockItem(inventoryStock);
-        stockItem.sku = entry.orderItems.takeOutItems.get(0).sku;
-        stockItem.changeCount = entry.returnedCount;
+        if (entry.orderItems.takeOutItems.size() > 0) {
+            stockItem.sku = entry.orderItems.takeOutItems.get(0).sku;
+        }
+        stockItem.changeCount = stockInCount;
         stockItem.remainCount = stockItem.changeCount;
 
         stockItem.effectiveAt = entry.orderItems.goods.effectiveAt;
