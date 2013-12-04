@@ -178,7 +178,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
 
     public static void dianping(List<String> couponIds) {
         Resaler resaler = Resaler.findApprovedByLoginName("dianping");
-        SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("resaler=?", resaler).first();
+        SupplierResalerShop supplierResalerShop = SupplierResalerShop.find("resaler=? and supplier=?", resaler,SupplierRbac.currentUser().supplier).first();
         String cookie = supplierResalerShop.cookieValue;
 
         Map<String, String> headers = new HashMap<>();
@@ -201,13 +201,13 @@ public class SupplierVerifyResalerECoupons extends Controller {
         SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("resaler = ? and supplier =? ", resaler, SupplierRbac.currentUser().supplier).first();
         WS.HttpResponse response = WS.url("http://e.dianping.com/tuangou/ajax/batchverify").params(params).headers(headers).followRedirects(false).post();
         String body = response.getString();
+//        body = "{\"code\":200,\"msg\":{\"serialNumList\":[{\"result\":{\"code\":200,\"msg\":{\"message\":\"7075 0352 13验证成功并消费！\",\"receiptList\":[{\"addDate\":null,\"dealSMSName\":\"[仅售598元,原价1182元］南京汤山圣泉温泉城:汤山圣泉温泉城旺季露天温泉票1张(上线时间:13年10月15日)\",\"lastDate\":\"2013-10-18 17:02\",\"mobileNo\":null,\"receiptId\":0,\"serialNum\":\"7075035213\"}]}},\"serialNum\":\"7075035213\"}]}}";
         JsonParser jsonParser = new JsonParser();
         JsonObject jsonReponse = jsonParser.parse(body).getAsJsonObject();
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("shopId", supplierResalerShop.shop.id.toString());
         jsonMap.put("goodsId", supplierResalerProduct.goods.id.toString());
         Logger.info("点评验证返回json信息：%s", body);
-//        {"result":{"code":200,"msg":{"message":"7075 0352 11验证成功并消费！","receiptList":[{"addDate":null,"dealSMSName":"[仅售78元,原价158元］南京汤山圣泉温泉城:汤山圣泉温泉城旺季露天温泉票1张(上线时间:13年10月15日)","lastDate":"2013-10-18 17:02","mobileNo":null,"receiptId":0,"serialNum":"7075035211"}]}},"serialNum":"7075035211"}]
         if (jsonReponse.has("msg")) {
             JsonArray dataResult = jsonReponse.get("msg").getAsJsonObject().get("serialNumList").getAsJsonArray();
             for (JsonElement element : dataResult) {
@@ -216,6 +216,20 @@ public class SupplierVerifyResalerECoupons extends Controller {
 //                result = "code":507,"msg":{"message":"验证失败：序列号错误，请重新输入！"}}
                 //成功的情况
                 if (result.get("code").getAsString().equals("200")) {
+                    //区分验证的是哪个商品，产生对应我们的订单信息
+                    if (result.has("msg") && result.get("msg").getAsJsonObject().has("receiptList")) {
+                        JsonArray receiptArray = result.get("msg").getAsJsonObject().get("receiptList").getAsJsonArray();
+                        for (JsonElement receiptE : receiptArray) {
+                            String dealSMSName = receiptE.getAsJsonObject().get("dealSMSName").getAsString();
+                            //苏浙汇598套餐
+                            if (dealSMSName.indexOf("[仅售598元,原价1182元]") > 0) {
+                                jsonMap.put("goodsId", "3982");
+                                //苏浙汇902套餐
+                            } else if (dealSMSName.indexOf("[仅售902元,原价1455元]") > 0) {
+                                jsonMap.put("goodsId", "3981");
+                            }
+                        }
+                    }
                     String coupon = element.getAsJsonObject().get("serialNum").getAsString();
                     OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon, OuterOrderPartner.DP);
                     if (outerOrder == null) {
@@ -253,7 +267,7 @@ public class SupplierVerifyResalerECoupons extends Controller {
         SupplierResalerProduct supplierResalerProduct = SupplierResalerProduct.find("resaler = ? and supplier =? ", resaler, SupplierRbac.currentUser().supplier).first();
         WS.HttpResponse response = WS.url("http://y.nuomi.com/service/sellerV1/newCheck/checkCode4Single").params(params).headers(headers).get();
 
-        Logger.info("糯米券号:%s",couponId);
+        Logger.info("糯米券号:%s", couponId);
 
         String body = response.getString();
 //        body= "{\"dealStartTime\":\"2013-10-17\",\"optionName\":\"--\",\"isSucess\":\"true\",\"name\":\"汤山圣泉温泉城温泉票\",\"dealExpireTime\":\"2014-03-30\",\"password\":\"931392090042\"}";成功返回测试

@@ -49,6 +49,7 @@ public class RealGoodsReturnEntryCondition implements Serializable {
      * 申请时间结束时间.
      */
     public Date createdAtEnd;
+    public String createdBy;
     /**
      * 退货时间起始时间.
      */
@@ -77,7 +78,10 @@ public class RealGoodsReturnEntryCondition implements Serializable {
             sqlCond.append(" and r.status=:status");
             paramsMap.put("status", status);
         }
-
+        if (StringUtils.isNotBlank(createdBy)) {
+            sqlCond.append(" and r.createdBy=:createdBy");
+            paramsMap.put("createdBy", createdBy);
+        }
         if (StringUtils.isNotBlank(orderNumber)) {
             sqlCond.append(" and r.orderItems.order.orderNumber=:orderNumber");
             paramsMap.put("orderNumber", orderNumber);
