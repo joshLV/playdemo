@@ -19,6 +19,8 @@
         <input type="text" name="condition.orderNumber" value="${condition?.orderNumber}" class="input-medium"/>
         商品名称
         <input type="text" name="condition.goodsName" value="${condition?.goodsName}" class="input-medium"/>
+        申请人
+        <input type="text" name="condition.createdBy" value="${condition?.createdBy}" class="input-medium"/>
         退货状态
     #{select 'condition.status', class:'input-small', value:condition.status}
         #{option ""}不限#{/option}
