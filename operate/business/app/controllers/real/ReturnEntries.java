@@ -73,7 +73,7 @@ public class ReturnEntries extends Controller {
         Supplier supplier = Supplier.findById(orderItems.goods.supplierId);
         //只有视惠发货的才有入库
         if (supplier.equals(Supplier.getShihui())) {
-            doInstock(orderItems, entry, stockInCount);
+            doInstock(orderItems, entry);
 //            entry.stockInCount = stockInCount;
 //            entry.status = RealGoodsReturnStatus.RETURNED;
 //            entry.returnedAt = new Date();
@@ -181,7 +181,7 @@ public class ReturnEntries extends Controller {
 
                     //只有视惠发货的才有入库
                     if (supplier.equals(Supplier.getShihui())) {
-                        doInstock(orderItems, entry, entry.returnedCount);
+                        doInstock(orderItems, entry);
                     }
 
                     break;
@@ -194,7 +194,7 @@ public class ReturnEntries extends Controller {
                         entry.status = RealGoodsReturnStatus.RETURNED;
                         //只有视惠发货的才有入库
                         if (supplier.equals(Supplier.getShihui())) {
-                            doInstock(orderItems, entry, entry.returnedCount);
+                            doInstock(orderItems, entry);
                         }
                     } else {
                         entry.status = RealGoodsReturnStatus.RETURNING;
@@ -222,17 +222,21 @@ public class ReturnEntries extends Controller {
      *
      * @param entry
      */
-    private static void doInstock(OrderItems orderItems, RealGoodsReturnEntry entry, Long stockInCount) {
+    private static void doInstock(OrderItems orderItems, RealGoodsReturnEntry entry) {
         if (orderItems.orderBatch ==null){
+            entry.status = RealGoodsReturnStatus.RETURNED;
+            entry.returnedAt = new Date();
+            entry.returnedBy = OperateRbac.currentUser().userName;
+            entry.save();
             return;
         }
-
         InventoryStockItem preStockItem = InventoryStockItem.find("stock = ?",orderItems.orderBatch.stock).first();
         entry.stockInCount = preStockItem.changeCount;
         entry.status = RealGoodsReturnStatus.RETURNED;
         entry.returnedAt = new Date();
         entry.returnedBy = OperateRbac.currentUser().userName;
         entry.save();
+
         //2、产生入库单.
         InventoryStock inventoryStock = new InventoryStock();
         inventoryStock.supplier = Supplier.getShihui();
