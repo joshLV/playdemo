@@ -1341,6 +1341,7 @@ public class SalesReport implements Comparable<SalesReport> {
                 item.consumedCommissionAmount = consumedItem.consumedCommissionAmount;
                 item.consumedProfit = consumedItem.consumedAmount.subtract(consumedItem.consumedCost).subtract(consumedItem.consumedCommissionAmount);
             } else {
+                consumedItem.consumedProfit = consumedItem.consumedAmount.subtract(consumedItem.consumedCost).subtract(consumedItem.consumedCommissionAmount);
                 map.put(getReportKeyOfPeopleEffect(consumedItem), consumedItem);
             }
 
