@@ -73,7 +73,7 @@ public class ReturnEntries extends Controller {
         Supplier supplier = Supplier.findById(orderItems.goods.supplierId);
         //只有视惠发货的才有入库
         if (supplier.equals(Supplier.getShihui())) {
-            doInstock(entry, stockInCount);
+            doInstock(orderItems, entry, stockInCount);
 //            entry.stockInCount = stockInCount;
 //            entry.status = RealGoodsReturnStatus.RETURNED;
 //            entry.returnedAt = new Date();
@@ -167,6 +167,7 @@ public class ReturnEntries extends Controller {
             OrderItems orderItems = OrderItems.findById(entry.orderItems.id);
             Logger.info("orderItems.status=" + orderItems.status + ", id=" + entry.orderItems.id);
             orderId = orderItems.order.id;
+            Supplier supplier = Supplier.findById(orderItems.goods.supplierId);
             String result = "";
             switch (orderItems.status) {
                 case PAID:
@@ -178,10 +179,9 @@ public class ReturnEntries extends Controller {
                         renderJSON(result);
                     }
 
-                    Supplier supplier = Supplier.findById(orderItems.goods.supplierId);
                     //只有视惠发货的才有入库
                     if (supplier.equals(Supplier.getShihui())) {
-                        doInstock(entry, entry.returnedCount);
+                        doInstock(orderItems, entry, entry.returnedCount);
                     }
 
                     break;
@@ -192,6 +192,10 @@ public class ReturnEntries extends Controller {
                         entry.returnedAt = new Date();
                         entry.returnedBy = OperateRbac.currentUser().userName;
                         entry.status = RealGoodsReturnStatus.RETURNED;
+                        //只有视惠发货的才有入库
+                        if (supplier.equals(Supplier.getShihui())) {
+                            doInstock(orderItems, entry, entry.returnedCount);
+                        }
                     } else {
                         entry.status = RealGoodsReturnStatus.RETURNING;
                         entry.orderItems.status = OrderStatus.RETURNING;
@@ -218,8 +222,13 @@ public class ReturnEntries extends Controller {
      *
      * @param entry
      */
-    private static void doInstock(RealGoodsReturnEntry entry, Long stockInCount) {
-        entry.stockInCount = stockInCount;
+    private static void doInstock(OrderItems orderItems, RealGoodsReturnEntry entry, Long stockInCount) {
+        if (orderItems.orderBatch ==null){
+            return;
+        }
+
+        InventoryStockItem preStockItem = InventoryStockItem.find("stock = ?",orderItems.orderBatch.stock).first();
+        entry.stockInCount = preStockItem.changeCount;
         entry.status = RealGoodsReturnStatus.RETURNED;
         entry.returnedAt = new Date();
         entry.returnedBy = OperateRbac.currentUser().userName;
@@ -235,12 +244,12 @@ public class ReturnEntries extends Controller {
         if (entry.orderItems.takeOutItems.size() > 0) {
             stockItem.sku = entry.orderItems.takeOutItems.get(0).sku;
         }
-        stockItem.changeCount = stockInCount;
+        stockItem.changeCount = -(preStockItem.changeCount);
         stockItem.remainCount = stockItem.changeCount;
 
         stockItem.effectiveAt = entry.orderItems.goods.effectiveAt;
         stockItem.expireAt = entry.orderItems.goods.expireAt;
-        stockItem.price = entry.orderItems.goods.originalPrice;
+        stockItem.price = preStockItem.price;
         stockItem.create();
     }
 
