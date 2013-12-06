@@ -30,10 +30,11 @@ public class MeituanCouponJob extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
         Logger.info("start meituan coupon job");
-        List<OuterOrder> outerOrders = OuterOrder.find("(partner = ? or partner = ? or partner = ?) and  status = ?",
+        List<OuterOrder> outerOrders = OuterOrder.find("(partner = ? or partner = ? or partner = ? or resaler=?) and  status = ?",
                 OuterOrderPartner.MT,
                 OuterOrderPartner.DP,
                 OuterOrderPartner.NM,
+                Resaler.findApprovedByLoginName("wowotuan"),
                 OuterOrderStatus.ORDER_COPY).fetch();
         for (OuterOrder outerOrder : outerOrders) {
             Logger.info("outerOrder orderId = %s", outerOrder.orderId);
@@ -47,7 +48,7 @@ public class MeituanCouponJob extends JobWithHistory {
             outerOrder.ybqOrder = order;
             outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
             outerOrder.save();
-            Logger.info("create maituan order successfully, orderId = %s", order.id);
+            Logger.info("create partner order successfully, orderId = %s", order.id);
         }
     }
 
