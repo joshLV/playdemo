@@ -2195,6 +2195,8 @@ public class Goods extends Model {
             if (salePrice != null) {
                 goods.salePrice = new BigDecimal(salePrice.substring(0, salePrice.length() - 4));
             }
+            Goods g =Goods.findUnDeletedById(goods.id);
+            goods.status = g.status;
             goods.areaNames = (String) doc.getFieldValue(SOLR_GOODS_AREAS);
             goods.imagePath = (String) doc.getFieldValue(SOLR_GOODS_IMAGEPATH);
             goods.imageSmallPath = (String) doc.getFieldValue(SOLR_GOODS_IMAGESMALLPATH);
