@@ -182,6 +182,11 @@ public class ReturnEntries extends Controller {
                     //只有视惠发货的才有入库
                     if (supplier.equals(Supplier.getShihui())) {
                         doInstock(orderItems, entry);
+                    } else {
+                        entry.status = RealGoodsReturnStatus.RETURNED;
+                        entry.returnedAt = new Date();
+                        entry.returnedBy = OperateRbac.currentUser().userName;
+                        entry.save();
                     }
 
                     break;
@@ -230,7 +235,7 @@ public class ReturnEntries extends Controller {
             entry.save();
             return;
         }
-        InventoryStockItem preStockItem = InventoryStockItem.find("stock = ?",orderItems.orderBatch.stock).first();
+        InventoryStockItem preStockItem = InventoryStockItem.find("stock = ? and sku=?",orderItems.orderBatch.stock,orderItems.goods.sku).first();
         entry.stockInCount = preStockItem.changeCount;
         entry.status = RealGoodsReturnStatus.RETURNED;
         entry.returnedAt = new Date();
