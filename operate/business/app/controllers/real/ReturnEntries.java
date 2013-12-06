@@ -179,14 +179,13 @@ public class ReturnEntries extends Controller {
                         renderJSON(result);
                     }
 
+                    entry.status = RealGoodsReturnStatus.RETURNED;
+                    entry.returnedAt = new Date();
+                    entry.returnedBy = OperateRbac.currentUser().userName;
+                    entry.save();
                     //只有视惠发货的才有入库
                     if (supplier.equals(Supplier.getShihui())) {
                         doInstock(orderItems, entry);
-                    } else {
-                        entry.status = RealGoodsReturnStatus.RETURNED;
-                        entry.returnedAt = new Date();
-                        entry.returnedBy = OperateRbac.currentUser().userName;
-                        entry.save();
                     }
 
                     break;
@@ -229,13 +228,13 @@ public class ReturnEntries extends Controller {
      */
     private static void doInstock(OrderItems orderItems, RealGoodsReturnEntry entry) {
         if (orderItems.orderBatch ==null){
-            entry.status = RealGoodsReturnStatus.RETURNED;
-            entry.returnedAt = new Date();
-            entry.returnedBy = OperateRbac.currentUser().userName;
-            entry.save();
             return;
         }
         InventoryStockItem preStockItem = InventoryStockItem.find("stock = ? and sku=?",orderItems.orderBatch.stock,orderItems.goods.sku).first();
+        if (preStockItem==null){
+            return;
+
+        }
         entry.stockInCount = preStockItem.changeCount;
         entry.status = RealGoodsReturnStatus.RETURNED;
         entry.returnedAt = new Date();
