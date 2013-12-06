@@ -190,6 +190,7 @@
                 <div class="bd">
                     <ul class="goods clearfix">
                         #{paginate.list items:goodsPage,as:'aGoods'}
+                            #{if aGoods.status == models.sales.GoodsStatus.ONSALE}
                             <li
                                 #{if aGoods_index%3 == 1}class="first"#{/if}>
                                 <div class="inner">
@@ -214,6 +215,7 @@
                                     </div>
                                 </div>
                             </li>
+                            #{/if}
                         #{/paginate.list}
                     </ul>
                     #{paginate.controls items:goodsPage /}
