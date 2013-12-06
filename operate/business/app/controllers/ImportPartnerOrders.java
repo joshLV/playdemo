@@ -254,7 +254,6 @@ public class ImportPartnerOrders extends Controller {
             Map<String, List<LogisticImportData>> outOrderMap = new HashMap<>();
             List<LogisticImportData> outGoodsNoList = new ArrayList<>();
             LogisticImportData newLogistic = null;
-            System.out.println(logistics.size() + "------");
             for (LogisticImportData logistic : logistics) {
                 if (partner == OuterOrderPartner.JD) {
                     logistic.outerGoodsNo = fileName;
