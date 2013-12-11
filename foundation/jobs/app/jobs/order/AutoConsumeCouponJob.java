@@ -5,6 +5,7 @@ import models.jobs.JobWithHistory;
 import models.jobs.annotation.JobDefine;
 import models.order.ECoupon;
 import models.order.ECouponCreateType;
+import models.order.ECouponPartner;
 import play.Logger;
 import play.jobs.Every;
 import util.extension.ExtensionResult;
@@ -22,9 +23,9 @@ public class AutoConsumeCouponJob extends JobWithHistory {
     @Override
     public void doJobWithHistory() {
         //2天内，5分钟前
-        List<ECoupon> couponList = ECoupon.find("createdAt > ? and createdAt < ? and createType = ? and autoConsumed = ? order by id desc",
+        List<ECoupon> couponList = ECoupon.find("createdAt > ? and createdAt < ? and createType = ? and autoConsumed = ? and partner != ? order by id desc",
                 new Date(System.currentTimeMillis() - 20*24*60*60*1000), new Date(System.currentTimeMillis() - 5*60*1000),
-                ECouponCreateType.IMPORT, DeletedStatus.UN_DELETED).fetch(20);
+                ECouponCreateType.IMPORT, DeletedStatus.UN_DELETED, ECouponPartner.WB).fetch(20);
         for(ECoupon coupon : couponList) {
             Logger.info("AutoConsumeCouponJob.verify eCouponSN=%s", coupon.eCouponSn);
             ExtensionResult result = coupon.verifyAndCheckOnPartnerResaler();
