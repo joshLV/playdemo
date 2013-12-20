@@ -79,6 +79,7 @@ public class TaobaoProducts extends Controller {
         addRequest.setAuctionPoint(auctionPoint);
         addRequest.setLocationState(locationState);
         addRequest.setLocationCity(locationCity);
+        addRequest.setLocalityLifeChooseLogis("0");
         addRequest.setCid(cid);//分类类别：餐饮
         if (StringUtils.isNotBlank(inputIds)) {
             //其他
