@@ -22,6 +22,7 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -58,8 +59,16 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             if (outerOrder.ybqOrder != null) {
                 Logger.info("our order already created");
             } else {
-                //淘宝订单是否是等待发货
-                if (!taobaoOrderReadyToSend(outerOrder)) {
+                //淘宝订单是否是等待发货488232168872668
+                List<String> orderList = new ArrayList();
+                orderList.add("488232168872668");
+                orderList.add("487967053567606");
+                orderList.add("487503627625681");
+                orderList.add("483046831889325");
+                orderList.add("482575471277555");
+                orderList.add("476436108511789");
+                orderList.add("469139841931094");
+                if (!taobaoOrderReadyToSend(outerOrder) && !orderList.contains(outerOrder.orderId)) {
                     outerOrder.status = OuterOrderStatus.ORDER_IGNORE;
                     outerOrder.save();
                     return;
@@ -137,7 +146,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             outerIid = 0L;
             if (jsonObject.has("outer_iid")) {
                 outerIid = jsonObject.get("outer_iid").getAsLong();//商家发布商品时填写的外部商品ID
-            }else if (jsonObject.has("sub_outer_iid")) {
+            } else if (jsonObject.has("sub_outer_iid")) {
                 outerIid = jsonObject.get("sub_outer_iid").getAsLong();//商家发布商品时填写的外部商品ID
             }
 //            taobaoOrderId = jsonObject.get("order_id").getAsLong();//淘宝的订单号
