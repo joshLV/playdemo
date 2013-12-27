@@ -235,7 +235,7 @@ public class ReturnEntries extends Controller {
             return;
 
         }
-        entry.stockInCount = preStockItem.changeCount;
+        entry.stockInCount = entry.returnedCount * orderItems.goods.skuCount;
         entry.status = RealGoodsReturnStatus.RETURNED;
         entry.returnedAt = new Date();
         entry.returnedBy = OperateRbac.currentUser().userName;
@@ -252,8 +252,8 @@ public class ReturnEntries extends Controller {
         if (entry.orderItems.takeOutItems.size() > 0) {
             stockItem.sku = entry.orderItems.takeOutItems.get(0).sku;
         }
-        stockItem.changeCount = -(preStockItem.changeCount);
-        stockItem.remainCount = stockItem.changeCount;
+        stockItem.changeCount = entry.stockInCount;
+        stockItem.remainCount = entry.stockInCount;
 
         stockItem.effectiveAt = entry.orderItems.goods.effectiveAt;
         stockItem.expireAt = entry.orderItems.goods.expireAt;
