@@ -18,7 +18,7 @@ public class KtvOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
     public ExtensionResult execute(OrderECouponSMSContext context) {
         StringBuilder sb = new StringBuilder();
         sb.append(context.getGoods().getSupplier().otherName)
-                .append("：")
+                .append(":")
                 .append(context.getGoods().title)
                 .append(context.couponInfo)
                 .append(",客服4006865151");

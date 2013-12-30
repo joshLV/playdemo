@@ -29,7 +29,7 @@ public class SecondaryVerificationECouponSMSInvocation extends OrderECouponSMSIn
                 .append(",")
                 .append(context.couponInfo)
                 .append(context.notes)
-                .append("一百券客服4006865151");
+                .append("客服4006865151");
         context.setSmsContent(sb.toString());
         return ExtensionResult.SUCCESS;
     }

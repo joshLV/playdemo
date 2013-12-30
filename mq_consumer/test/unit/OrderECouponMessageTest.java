@@ -39,7 +39,7 @@ import java.util.List;
  * Time: 下午3:51
  */
 public class OrderECouponMessageTest extends UnitTest {
-    SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
+    SimpleDateFormat dateFormat = new SimpleDateFormat("M月d日");
 
     Order order;
     List<ECoupon> couponList;
@@ -92,7 +92,7 @@ public class OrderECouponMessageTest extends UnitTest {
     @Test
     public void 无密码单张券发送短信() {
         createNoPasswordCoupons(2);
-        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",截止" + dateFormat.format(couponList.get(0).expireAt) + "一百券客服4006865151",
+        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",至" + dateFormat.format(couponList.get(0).expireAt) + "有效," + "客服4006865151",
                 OrderECouponMessage.getOrderSMSMessage(couponList.get(0)).getSmsContent());
     }
 
@@ -101,7 +101,7 @@ public class OrderECouponMessageTest extends UnitTest {
         createNoPasswordCoupons(2);
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
         Logger.info(smsMessages[0].getSmsContent());
-        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",券号" + couponList.get(1).eCouponSn + "[共2张],截止" + dateFormat.format(couponList.get(0).expireAt) + "一百券客服4006865151",
+        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",券号" + couponList.get(1).eCouponSn + "[共2张],至" + dateFormat.format(couponList.get(0).expireAt) + "有效,客服4006865151",
                 smsMessages[0].getSmsContent());
     }
 
@@ -136,8 +136,8 @@ public class OrderECouponMessageTest extends UnitTest {
     public void 有密码单张券发送短信() {
         createWithPasswordCoupons(2);
         assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + "密码"
-                + couponList.get(0).eCouponPassword + ",截止" +
-                dateFormat.format(couponList.get(1).expireAt) + "一百券客服4006865151",
+                + couponList.get(0).eCouponPassword + ",至" +
+                dateFormat.format(couponList.get(1).expireAt) + "有效," + "客服4006865151",
                 OrderECouponMessage.getOrderSMSMessage(couponList.get(0)).getSmsContent());
     }
 
@@ -148,8 +148,8 @@ public class OrderECouponMessageTest extends UnitTest {
         Logger.info(smsMessages[0].getSmsContent());
         assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + "密码"
                 + couponList.get(0).eCouponPassword + ",券号" + couponList.get(1).eCouponSn + "密码" +
-                couponList.get(1).eCouponPassword + "[共2张],截止" +
-                dateFormat.format(couponList.get(1).expireAt) + "一百券客服4006865151",
+                couponList.get(1).eCouponPassword + "[共2张],至" +
+                dateFormat.format(couponList.get(1).expireAt) + "有效,客服4006865151",
                 smsMessages[0].getSmsContent());
     }
 
@@ -163,7 +163,7 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append(couponList.get(0).goods.title)
                 .append("由58合作商家【一百券】提供,一百券号").append(couponList.get(0).eCouponSn)
                 .append(",有效期至").append(dateFormat.format(couponList.get(0).expireAt))
-                .append("58客服4007895858");
+                .append(",58客服4007895858");
         assertEquals(sb.toString(), OrderECouponMessage.getOrderSMSMessage(couponList.get(0)).getSmsContent());
     }
 
@@ -187,7 +187,7 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append("密码").append(couponList.get(1).eCouponPassword)
                 .append("[共2张]")
                 .append(",有效期至").append(dateFormat.format(couponList.get(1).expireAt))
-                .append("58客服4007895858");
+                .append(",58客服4007895858");
         assertEquals(sb.toString(), smsMessages[0].getSmsContent());
     }
 
@@ -196,12 +196,12 @@ public class OrderECouponMessageTest extends UnitTest {
         createKtvOneCoupons(1);
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
         StringBuilder sb = new StringBuilder();
-        sb.append("【" + couponList.get(0).goods.getSupplier().otherName + "】")
+        sb.append(couponList.get(0).goods.getSupplier().otherName + ":")
                 .append(couponList.get(0).goods.title)
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
                 .append("," + couponList.get(0).appointmentRemark)
-                .append("一百券客服4006865151");
+                .append(",客服4006865151");
         assertEquals(sb.toString(), smsMessages[0].getSmsContent());
     }
 
@@ -210,7 +210,7 @@ public class OrderECouponMessageTest extends UnitTest {
         createKtvMoreCoupons(2);
         StringBuilder sb = new StringBuilder();
         OrderECouponSMSContext[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
-        sb.append("【" + couponList.get(0).goods.getSupplier().otherName + "】")
+        sb.append(couponList.get(0).goods.getSupplier().otherName + ":")
                 .append(couponList.get(0).goods.title)
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
@@ -218,8 +218,8 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append(",券号").append(couponList.get(1).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(1).appointmentDate))
                 .append("," + couponList.get(1).appointmentRemark)
-                .append("[共2张]")
-                .append("一百券客服4006865151");
+                .append("[共2张],")
+                .append("客服4006865151");
         assertEquals(sb.toString(), smsMessages[0].getSmsContent());
 
     }
@@ -237,8 +237,8 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append(StringUtils.isNotEmpty(couponList.get(0).goods.title) ? couponList.get(0).goods.title : couponList.get(0).goods.shortName)
                 .append(",")
                 .append("券号").append(couponList.get(0).eCouponSn)
-                .append(",此产品需预约,预约电话见商品详情,")
-                .append("一百券客服4006865151");
+                .append(",需预约,")
+                .append("客服4006865151");
         assertEquals(sb.toString(), smsMessages[0].getSmsContent());
     }
 
@@ -260,7 +260,7 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append("券号").append(couponList.get(0).eCouponSn)
                 .append(",预约日期:").append(dateFormat.format(couponList.get(0).appointmentDate))
                 .append("," + couponList.get(0).appointmentRemark).append(",")
-                .append("一百券客服4006865151");
+                .append("客服4006865151");
         assertEquals(sb.toString(), smsMessages[0].getSmsContent());
     }
 
