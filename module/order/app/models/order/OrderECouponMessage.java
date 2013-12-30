@@ -28,6 +28,7 @@ public class OrderECouponMessage extends QueueIDMessage implements Serializable 
     private static final long serialVersionUID = 793732320988395L;
 
     public static final String MQ_KEY = Play.mode.isProd() ? "order.v2.sms" : "order.v2.sms_dev";
+    public static final String SMS_EXPIRE_FORMAT = "M月d日";
 
     // 默认的生成券短信格式.
     private static DefaultAction<OrderECouponSMSContext> defaultSmsAction = new DefaultAction<OrderECouponSMSContext>() {
@@ -36,11 +37,12 @@ public class OrderECouponMessage extends QueueIDMessage implements Serializable 
             if (ctx.getSmsContent() == null) {
                 StringBuilder sb = new StringBuilder();
                 Goods goods = ctx.getGoods();
-                sb.append(StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName)
+                sb.append((StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName).replaceFirst("^尊享","")
+                        .replaceFirst("^享","").replaceFirst("^享受",""))
                         .append(ctx.couponInfo)
                         .append(ctx.notes)
-                        .append("截止").append(ctx.expiredDate)
-                        .append("一百券客服4006865151");
+                        .append("至").append(ctx.expiredDate).append("有效,")
+                        .append("客服4006865151");
                 ctx.setSmsContent(sb.toString());
             }
             return ExtensionResult.SUCCESS;
@@ -189,7 +191,7 @@ public class OrderECouponMessage extends QueueIDMessage implements Serializable 
     private static OrderECouponSMSContext getSMSContent(OrderItems orderItems, List<ECoupon> eCoupons) {
         List<String> ecouponSNs = new ArrayList<>();
         ECoupon lastECoupon = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(SMS_EXPIRE_FORMAT);
         boolean appointmentSuccess = false;
         for (ECoupon e : eCoupons) {
             if (StringUtils.isNotBlank(e.eCouponPassword)) {
@@ -223,7 +225,7 @@ public class OrderECouponMessage extends QueueIDMessage implements Serializable 
         String note = ",";
         if (orderItems.goods.isOrder || (orderItems.goods.isSecondaryVerificationGoods() && !appointmentSuccess)) {
             // 需要预约的产品
-            note += "此产品需预约,预约电话见商品详情,";
+            note += "需预约,";
         }
 
         String expiredDate = dateFormat.format(lastECoupon.expireAt);

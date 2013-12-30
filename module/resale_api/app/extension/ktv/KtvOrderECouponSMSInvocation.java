@@ -17,12 +17,11 @@ public class KtvOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
     @Override
     public ExtensionResult execute(OrderECouponSMSContext context) {
         StringBuilder sb = new StringBuilder();
-        sb.append("【")
-                .append(context.getGoods().getSupplier().otherName)
-                .append("】")
+        sb.append(context.getGoods().getSupplier().otherName)
+                .append("：")
                 .append(context.getGoods().title)
                 .append(context.couponInfo)
-                .append("一百券客服4006865151");
+                .append(",客服4006865151");
         context.setSmsContent(sb.toString());
         return ExtensionResult.SUCCESS;
     }
