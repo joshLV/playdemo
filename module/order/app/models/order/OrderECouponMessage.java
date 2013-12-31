@@ -38,7 +38,7 @@ public class OrderECouponMessage extends QueueIDMessage implements Serializable 
                 StringBuilder sb = new StringBuilder();
                 Goods goods = ctx.getGoods();
                 sb.append((StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName).replaceFirst("^尊享","")
-                        .replaceFirst("^享","").replaceFirst("^享受",""))
+                        .replaceFirst("^享受","").replaceFirst("^享",""))
                         .append(ctx.couponInfo)
                         .append(ctx.notes)
                         .append("至").append(ctx.expiredDate).append("有效,")
