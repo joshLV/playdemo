@@ -962,8 +962,8 @@ public class Order extends Model {
                     if (isKtvSupplier && roomOrderInfo != null) {
                         eCoupon.appointmentDate = roomOrderInfo.scheduledDay;
                         eCoupon.appointmentRemark = KtvTaobaoSku.humanTimeRange(roomOrderInfo.scheduledTime,
-                                                roomOrderInfo.scheduledTime + roomOrderInfo.product.duration) +
-                                                roomOrderInfo.roomType.getName() + eCoupon.salePrice + "元," ;
+                                                roomOrderInfo.scheduledTime + roomOrderInfo.product.duration) + "," +
+                                                roomOrderInfo.roomType.getName() + eCoupon.salePrice + "元" ;
                         eCoupon.effectiveAt = new Date();
                         eCoupon.expireAt = DateUtils.addDays(DateUtils.ceiling(roomOrderInfo.scheduledDay, Calendar.DATE), 10);
                         eCoupon.save();
