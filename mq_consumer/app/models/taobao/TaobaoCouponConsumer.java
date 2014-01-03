@@ -59,16 +59,8 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             if (outerOrder.ybqOrder != null) {
                 Logger.info("our order already created");
             } else {
-                //淘宝订单是否是等待发货488232168872668
-                List<String> orderList = new ArrayList();
-                orderList.add("488232168872668");
-                orderList.add("487967053567606");
-                orderList.add("487503627625681");
-                orderList.add("483046831889325");
-                orderList.add("482575471277555");
-                orderList.add("476436108511789");
-                orderList.add("469139841931094");
-                if (!taobaoOrderReadyToSend(outerOrder) && !orderList.contains(outerOrder.orderId)) {
+                //淘宝订单是否是等待发货
+                if (!taobaoOrderReadyToSend(outerOrder)) {
                     outerOrder.status = OuterOrderStatus.ORDER_IGNORE;
                     outerOrder.save();
                     return;
