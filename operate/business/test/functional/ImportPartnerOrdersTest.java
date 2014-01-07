@@ -35,6 +35,7 @@ import java.util.Set;
  * Date: 13-3-12
  * Time: 上午10:05
  */
+@Ignore
 public class ImportPartnerOrdersTest extends FunctionalTest {
     ResalerProduct resalerProduct;
     ResalerProduct resalerProduct1;
