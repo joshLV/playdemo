@@ -14,7 +14,8 @@ public enum OuterOrderPartner {
     SINA("SINA", "新浪", "sina"),   //新浪卡券
     DP("DIANPING", "点评", "dianping"),  //点评
     NM("NUOMI", "糯米", "nuomu"),  //糯米
-    MT("MEITUAN", "美团", "meituan");  //美团
+    MT("MEITUAN", "美团", "meituan"),  //美团
+    TM("TM", "天猫", "shihuibendishenghuo"); //天猫
 
 
     private String code;// 代号
