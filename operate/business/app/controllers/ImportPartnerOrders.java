@@ -318,7 +318,8 @@ public class ImportPartnerOrders extends Controller {
                     outerOrder = toNewOuterOrder(outerOrderNo, partner, logisticList);
                 }
 
-                createYbqOrder(outerOrderNo, logisticList, outerOrder, partner, importSuccessOrderList, unBindGoodsSet, TBAutoImportRealOrder);
+                createYbqOrder(outerOrderNo, logisticList, outerOrder, partner, importSuccessOrderList, unBindGoodsSet,
+                        resaler,TBAutoImportRealOrder);
             }
 
         }
@@ -414,15 +415,11 @@ public class ImportPartnerOrders extends Controller {
      */
 
     private static void createYbqOrder(String outerOrderNo, List<LogisticImportData> logisticList, OuterOrder outerOrder, OuterOrderPartner partner,
-                                       Set<String> importSuccessOrderList, Set<String> unBindGoodsSet,
+                                       Set<String> importSuccessOrderList, Set<String> unBindGoodsSet,Resaler resaler,
                                        Boolean TBAutoImportRealOrder) {
-        Resaler resaler = Resaler.findOneByLoginName(partner.partnerLoginName());
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
             return;
-        }
-        if (resaler.id==34L){
-            partner = OuterOrderPartner.TB;
         }
 
         Order ybqOrder = Order.createResaleOrder(resaler).save();
