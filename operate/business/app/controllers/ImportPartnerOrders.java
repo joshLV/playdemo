@@ -121,9 +121,13 @@ public class ImportPartnerOrders extends Controller {
     }
 
 
-    public static void autoCreateTaobaoRealOrder() {
+    public static void autoCreateTaobaoRealOrder(Long resalerId) {
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
-
+        System.out.println(resalerId);
+        if ("34".equals(resalerId)) {
+            resaler = Resaler.findById(resalerId);
+        }
+        System.out.println(resaler);
         TaobaoClient taobaoClient = new DefaultTaobaoClient(KtvTaobaoUtil.URL, resaler.taobaoCouponAppKey,
                 resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
         //找到淘宝的token
@@ -255,6 +259,10 @@ public class ImportPartnerOrders extends Controller {
             List<LogisticImportData> outGoodsNoList = new ArrayList<>();
             LogisticImportData newLogistic = null;
             for (LogisticImportData logistic : logistics) {
+                if (partner == OuterOrderPartner.TB) {
+                    OuterOrder outerOrder = OuterOrder.getOuterOrder(logistic.outerOrderNo, partner);
+                    resaler = outerOrder.resaler;
+                }
                 if (partner == OuterOrderPartner.JD) {
                     logistic.outerGoodsNo = fileName;
                 }
