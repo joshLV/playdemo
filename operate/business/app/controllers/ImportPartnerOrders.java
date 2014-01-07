@@ -421,6 +421,9 @@ public class ImportPartnerOrders extends Controller {
             Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
             return;
         }
+        if (resaler.id==34L){
+            partner = OuterOrderPartner.TB;
+        }
 
         Order ybqOrder = Order.createResaleOrder(resaler).save();
         if (ybqOrder == null) {
