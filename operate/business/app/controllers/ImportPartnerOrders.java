@@ -253,16 +253,13 @@ public class ImportPartnerOrders extends Controller {
             }
         } else {
             Resaler resaler = Resaler.findOneByLoginName(partner.partnerLoginName());
+            if (resaler.id == 34L) {
+                partner = OuterOrderPartner.TB;
+            }
             Map<String, List<LogisticImportData>> outOrderMap = new HashMap<>();
             List<LogisticImportData> outGoodsNoList = new ArrayList<>();
             LogisticImportData newLogistic = null;
             for (LogisticImportData logistic : logistics) {
-                if (partner == OuterOrderPartner.TB) {
-                    OuterOrder outerOrder = OuterOrder.getOuterOrder(logistic.outerOrderNo, partner);
-                    if (outerOrder !=null){
-                        resaler = outerOrder.resaler;
-                    }
-                }
                 if (partner == OuterOrderPartner.JD) {
                     logistic.outerGoodsNo = fileName;
                 }
