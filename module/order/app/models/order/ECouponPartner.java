@@ -15,5 +15,7 @@ public enum ECouponPartner {
     MT,//美团
     DP,//点评
     NM,//糯米
+    LS,//拉手
+    WW,//窝窝
     SINA     //新浪微博
 }

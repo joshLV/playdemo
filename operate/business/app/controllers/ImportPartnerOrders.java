@@ -115,7 +115,7 @@ public class ImportPartnerOrders extends Controller {
             render("ImportPartnerOrders/index.html", errorInfo, partner);
         }
         processLogisticList(logistics, partner, existedOrderList,
-                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList, MANUAL_IMPORT_REAL_ORDER, fileName);
+                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList, MANUAL_IMPORT_REAL_ORDER, fileName, null);
         render("ImportPartnerOrders/index.html", partner, errorInfo, existedOrderList, notEnoughInventoryGoodsList,
                 importSuccessOrderList, unBindGoodsSet, diffOrderPriceList);
     }
@@ -218,7 +218,7 @@ public class ImportPartnerOrders extends Controller {
         Set<String> unBindGoodsSet = new HashSet<>();
         List<String> diffOrderPriceList = new ArrayList<>();
         processLogisticList(logisticImportDataList, OuterOrderPartner.TB, existedOrderList,
-                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList, TB_AUTO_IMPORT_REAL_ORDER, "");
+                importSuccessOrderList, unBindGoodsSet, diffOrderPriceList, TB_AUTO_IMPORT_REAL_ORDER, "", resaler);
 
         OuterOrderPartner partner = OuterOrderPartner.TB;
         render("ImportPartnerOrders/index.html", partner, errorInfo, existedOrderList,
@@ -228,7 +228,7 @@ public class ImportPartnerOrders extends Controller {
     private static void processLogisticList(List<LogisticImportData> logistics, OuterOrderPartner partner,
                                             List<String> existedOrderList, Set<String> importSuccessOrderList,
                                             Set<String> unBindGoodsSet, List<String> diffOrderPriceList,
-                                            Boolean TBAutoImportRealOrder, String fileName) {
+                                            Boolean TBAutoImportRealOrder, String fileName, Resaler resaler) {
         //58订单处理
         if (partner == OuterOrderPartner.WB) {
             for (LogisticImportData logistic : logistics) {
@@ -252,10 +252,13 @@ public class ImportPartnerOrders extends Controller {
                 createWubaYbqOrder(logistic, partner, outerOrder, importSuccessOrderList, diffOrderPriceList, unBindGoodsSet);
             }
         } else {
-            Resaler resaler = Resaler.findOneByLoginName(partner.partnerLoginName());
-            if (resaler.id == 34L) {
+            if (resaler == null) {
+                resaler = Resaler.findApprovedByLoginName(partner.partnerLoginName());
+            }
+            if (resaler != null && resaler.id == 34L) {
                 partner = OuterOrderPartner.TB;
             }
+
             Map<String, List<LogisticImportData>> outOrderMap = new HashMap<>();
             List<LogisticImportData> outGoodsNoList = new ArrayList<>();
             LogisticImportData newLogistic = null;
@@ -319,7 +322,7 @@ public class ImportPartnerOrders extends Controller {
                 }
 
                 createYbqOrder(outerOrderNo, logisticList, outerOrder, partner, importSuccessOrderList, unBindGoodsSet,
-                        resaler,TBAutoImportRealOrder);
+                        resaler, TBAutoImportRealOrder);
             }
 
         }
@@ -415,7 +418,7 @@ public class ImportPartnerOrders extends Controller {
      */
 
     private static void createYbqOrder(String outerOrderNo, List<LogisticImportData> logisticList, OuterOrder outerOrder, OuterOrderPartner partner,
-                                       Set<String> importSuccessOrderList, Set<String> unBindGoodsSet,Resaler resaler,
+                                       Set<String> importSuccessOrderList, Set<String> unBindGoodsSet, Resaler resaler,
                                        Boolean TBAutoImportRealOrder) {
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());

@@ -46,11 +46,15 @@
 </div>
 #{/form}
 <span>查看模板：</span>
-#{list items:models.order.OuterOrderPartner.values(), as:'partner'}
-    #{if partner != models.order.OuterOrderPartner.DD}
-    <a href="@{ImportPartnerOrders.download(partner)}">${partner.partnerName()}</a>
-    #{/if}
-#{/list}
+<a href="@{ImportPartnerOrders.download('JD')}">京东</a>
+<a href="@{ImportPartnerOrders.download('TB')}">淘宝</a>
+<a href="@{ImportPartnerOrders.download('YHD')}">一号店</a>
+<a href="@{ImportPartnerOrders.download('WB')}">58团</a>
+*{#{list items:models.order.OuterOrderPartner.values(), as:'partner'}}*
+    *{#{if partner != models.order.OuterOrderPartner.DD}}*
+    *{<a href="@{ImportPartnerOrders.download(partner)}">${partner.partnerName()}</a>}*
+    *{#{/if}}*
+*{#{/list}}*
 
 
 <legend>自动导入</legend>

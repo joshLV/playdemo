@@ -6,16 +6,18 @@ package models.order;
  */
 public enum OuterOrderPartner {
     DD("DD", "当当", "dangdang"),     // 当当
-    BD("BD", "百度", "baidu"),     // 百度
     YHD("YHD", "一号店", "yihaodian"),    // 一号店
     JD("JD", "京东", "jingdong"),     // 京东
     WB("WB", "58", "wuba"),     // 58
     TB("TB", "淘宝", "taobao"),     // 淘宝电子凭证
+    TM("TM", "天猫", "shihuibendishenghuo"), //天猫
     SINA("SINA", "新浪", "sina"),   //新浪卡券
     DP("DIANPING", "点评", "dianping"),  //点评
     NM("NUOMI", "糯米", "nuomu"),  //糯米
     MT("MEITUAN", "美团", "meituan"),  //美团
-    TM("TM", "天猫", "shihuibendishenghuo"); //天猫
+    WW("WOWO", "窝窝团", "wowotuan"),  //窝窝团
+    LS("LASHOU", "拉手", "nanjinglashou"),  //
+    BD("BD", "百度", "baidu");     // 百度
 
 
     private String code;// 代号
