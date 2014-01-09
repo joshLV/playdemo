@@ -12,6 +12,9 @@ import models.ktv.KtvProductGoods;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.operator.OperateUser;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerLevel;
 import models.sales.Brand;
@@ -72,6 +75,13 @@ public class OperateGoods extends Controller {
      */
     @ActiveNavigation("goods_index")
     public static void index(models.sales.GoodsCondition condition) {
+        List<OuterOrder> outerOrders = OuterOrder.find("(partner = ? or partner = ? or partner = ? or resaler=? or resaler=? ) and  status = ?",
+                OuterOrderPartner.MT,
+                OuterOrderPartner.DP,
+                OuterOrderPartner.NM,
+                Resaler.findApprovedByLoginName("nanjinglashou"),
+                Resaler.findApprovedByLoginName("wowotuan"),
+                OuterOrderStatus.ORDER_COPY).fetch();
         Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         int pageNumber = getPage();
         if (condition == null) {
