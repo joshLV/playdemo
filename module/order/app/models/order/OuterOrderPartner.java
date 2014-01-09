@@ -15,7 +15,6 @@ public enum OuterOrderPartner {
     DP("DIANPING", "点评", "dianping"),  //点评
     NM("NUOMI", "糯米", "nuomu"),  //糯米
     MT("MEITUAN", "美团", "meituan"),  //美团
-    WW("WOWO", "窝窝团", "wowotuan"),  //窝窝团
     LS("LASHOU", "拉手", "nanjinglashou"),  //
     BD("BD", "百度", "baidu");     // 百度
 
