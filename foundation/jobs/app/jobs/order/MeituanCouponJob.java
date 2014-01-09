@@ -102,6 +102,9 @@ public class MeituanCouponJob extends JobWithHistory {
         if ("NM".equals(partner)) {
             return ECouponPartner.NM;
         }
+        if ("LS".equals(partner)) {
+            return ECouponPartner.LS;
+        }
         return null;
     }
 
