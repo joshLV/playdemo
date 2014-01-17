@@ -101,7 +101,9 @@ public class UploadOrderShippingInfos extends Controller {
         }
 
         List<LogisticImportData> successTaobaoLogistics = new ArrayList<>();
+        List<LogisticImportData> successTMLogistics = new ArrayList<>();
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+        Resaler tmResaler = Resaler.findApprovedByLoginName(Resaler.TMALL_LOGIN_NAME);
 
         for (LogisticImportData logistic : logistics) {
             if (StringUtils.isBlank(logistic.expressCompany) || StringUtils.isBlank(logistic.expressNumber)) {
@@ -146,6 +148,10 @@ public class UploadOrderShippingInfos extends Controller {
                         && orderItem.order.operator.id.equals(resaler.operator.getId())) {
                     successTaobaoLogistics.add(logistic);
                 }
+                if (tmResaler != null && orderItem.order.userId.equals(tmResaler.getId())
+                        && orderItem.order.operator.id.equals(tmResaler.operator.getId())) {
+                    successTMLogistics.add(logistic);
+                }
             }
 
             if (existedUploadOrders.size() == 0) {
@@ -166,28 +172,56 @@ public class UploadOrderShippingInfos extends Controller {
         //淘宝自动发货
         List<String> successSendOnTaobao = new ArrayList<>();
         List<String> failSendOnTaobao = new ArrayList<>();
+        if (successTaobaoLogistics.size()>0){
+            TaobaoClient taobaoClient = new DefaultTaobaoClient(KtvTaobaoUtil.URL, resaler.taobaoCouponAppKey,
+                    resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
+            //找到淘宝的token
+            OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(KtvTaobaoUtil.URL, resaler.taobaoCouponAppKey,
-                resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
-        //找到淘宝的token
-        OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
-        for (LogisticImportData logisticImportData : successTaobaoLogistics) {
-            LogisticsOfflineSendRequest request = new LogisticsOfflineSendRequest();
-            request.setTid(Long.parseLong(logisticImportData.getOuterOrderNo()));
-            request.setOutSid(logisticImportData.getExpressNumber());
-            request.setCompanyCode(logisticImportData.getExpressCompany().trim());
-            try {
-                LogisticsOfflineSendResponse response = taobaoClient.execute(request, token.accessToken);
-                if (response.isSuccess()) {
-                    successSendOnTaobao.add(logisticImportData.getOuterOrderNo());
-                } else {
-                    Logger.error("淘宝确认收货失败 %s %s", response.getSubCode(), response.getSubMsg());
-                    failSendOnTaobao.add(logisticImportData.getOuterOrderNo());
+            for (LogisticImportData logisticImportData : successTaobaoLogistics) {
+                LogisticsOfflineSendRequest request = new LogisticsOfflineSendRequest();
+                request.setTid(Long.parseLong(logisticImportData.getOuterOrderNo()));
+                request.setOutSid(logisticImportData.getExpressNumber());
+                request.setCompanyCode(logisticImportData.getExpressCompany().trim());
+                try {
+                    LogisticsOfflineSendResponse response = taobaoClient.execute(request, token.accessToken);
+                    if (response.isSuccess()) {
+                        successSendOnTaobao.add(logisticImportData.getOuterOrderNo());
+                    } else {
+                        Logger.error("淘宝确认收货失败 %s %s", response.getSubCode(), response.getSubMsg());
+                        failSendOnTaobao.add(logisticImportData.getOuterOrderNo());
+                    }
+                } catch (ApiException e) {
+                    Logger.error(e, "淘宝确认收货失败");
                 }
-            } catch (ApiException e) {
-                Logger.error(e, "淘宝确认收货失败");
             }
         }
+
+        if (successTMLogistics.size()>0){
+            TaobaoClient taobaoClient = new DefaultTaobaoClient(KtvTaobaoUtil.URL, tmResaler.taobaoCouponAppKey,
+                    tmResaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
+            //找到淘宝的token
+            OAuthToken token = OAuthToken.getOAuthToken(tmResaler.id, AccountType.RESALER, WebSite.TAOBAO);
+
+            for (LogisticImportData logisticImportData : successTMLogistics) {
+                LogisticsOfflineSendRequest request = new LogisticsOfflineSendRequest();
+                request.setTid(Long.parseLong(logisticImportData.getOuterOrderNo()));
+                request.setOutSid(logisticImportData.getExpressNumber());
+                request.setCompanyCode(logisticImportData.getExpressCompany().trim());
+                try {
+                    LogisticsOfflineSendResponse response = taobaoClient.execute(request, token.accessToken);
+                    if (response.isSuccess()) {
+                        successSendOnTaobao.add(logisticImportData.getOuterOrderNo());
+                    } else {
+                        Logger.error("淘宝确认收货失败 %s %s", response.getSubCode(), response.getSubMsg());
+                        failSendOnTaobao.add(logisticImportData.getOuterOrderNo());
+                    }
+                } catch (ApiException e) {
+                    Logger.error(e, "淘宝确认收货失败");
+                }
+            }
+        }
+
         renderArgs.put("successSendOnTaobao", successSendOnTaobao);
         renderArgs.put("failSendOnTaobao", failSendOnTaobao);
 

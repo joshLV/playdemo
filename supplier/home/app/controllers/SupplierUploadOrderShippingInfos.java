@@ -85,6 +85,7 @@ public class SupplierUploadOrderShippingInfos extends Controller {
         List<String> emptyExpressInofs = new ArrayList<>();
         List<String> existedUploadOrders = new ArrayList<>();
         List<LogisticImportData> successTaobaoLogistics = new ArrayList<>();
+        List<LogisticImportData> successTMLogistics = new ArrayList<>();
         List<RealGoodsReturnEntry> returnEntryList = new ArrayList<>();
         for (LogisticImportData logistic : logistics) {
             RealGoodsReturnEntry returnEntry = RealGoodsReturnEntry.findHandling(logistic.orderNumber, logistic.goodsCode);
@@ -98,6 +99,7 @@ public class SupplierUploadOrderShippingInfos extends Controller {
             render("SupplierUploadOrderShippingInfos/index.html", msgInfo,returnEntryList);
         }
         Resaler resaler = Resaler.findApprovedByLoginName(Resaler.TAOBAO_LOGIN_NAME);
+        Resaler tmResaler = Resaler.findApprovedByLoginName(Resaler.TMALL_LOGIN_NAME);
         for (LogisticImportData logistic : logistics) {
             if (StringUtils.isBlank(logistic.expressCompany) || StringUtils.isBlank(logistic.expressNumber)) {
                 emptyExpressInofs.add(logistic.orderNumber);
@@ -133,6 +135,10 @@ public class SupplierUploadOrderShippingInfos extends Controller {
                     && orderItems.order.operator.id.equals(resaler.operator.getId())) {
                 successTaobaoLogistics.add(logistic);
             }
+            if (tmResaler != null && orderItems.order.userId.equals(tmResaler.getId())
+                    && orderItems.order.operator.id.equals(tmResaler.operator.getId())) {
+                successTMLogistics.add(logistic);
+            }
         }
         JPA.em().flush();
 
@@ -148,27 +154,56 @@ public class SupplierUploadOrderShippingInfos extends Controller {
         List<String> successSendOnTaobao = new ArrayList<>();
         List<String> failSendOnTaobao = new ArrayList<>();
 
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(KtvTaobaoUtil.URL, resaler.taobaoCouponAppKey,
-                resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
-        //找到淘宝的token
-        OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
-        for (LogisticImportData logisticImportData : successTaobaoLogistics) {
-            LogisticsOfflineSendRequest request = new LogisticsOfflineSendRequest();
-            request.setTid(Long.parseLong(logisticImportData.getOuterOrderNo()));
-            request.setOutSid(logisticImportData.getExpressNumber());
-            request.setCompanyCode(logisticImportData.getExpressCompany().trim());
-            try {
-                LogisticsOfflineSendResponse response = taobaoClient.execute(request, token.accessToken);
-                if (response.isSuccess()) {
-                    successSendOnTaobao.add(logisticImportData.getOuterOrderNo());
-                } else {
-                    Logger.error("淘宝确认收货失败 %s %s", response.getSubCode(), response.getSubMsg());
-                    failSendOnTaobao.add(logisticImportData.getOuterOrderNo());
+        if (successTaobaoLogistics.size()>0){
+            TaobaoClient taobaoClient = new DefaultTaobaoClient(KtvTaobaoUtil.URL, resaler.taobaoCouponAppKey,
+                    resaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
+            //找到淘宝的token
+            OAuthToken token = OAuthToken.getOAuthToken(resaler.id, AccountType.RESALER, WebSite.TAOBAO);
+
+            for (LogisticImportData logisticImportData : successTaobaoLogistics) {
+                LogisticsOfflineSendRequest request = new LogisticsOfflineSendRequest();
+                request.setTid(Long.parseLong(logisticImportData.getOuterOrderNo()));
+                request.setOutSid(logisticImportData.getExpressNumber());
+                request.setCompanyCode(logisticImportData.getExpressCompany().trim());
+                try {
+                    LogisticsOfflineSendResponse response = taobaoClient.execute(request, token.accessToken);
+                    if (response.isSuccess()) {
+                        successSendOnTaobao.add(logisticImportData.getOuterOrderNo());
+                    } else {
+                        Logger.error("淘宝确认收货失败 %s %s", response.getSubCode(), response.getSubMsg());
+                        failSendOnTaobao.add(logisticImportData.getOuterOrderNo());
+                    }
+                } catch (ApiException e) {
+                    Logger.error(e, "淘宝确认收货失败");
                 }
-            } catch (ApiException e) {
-                Logger.error(e, "淘宝确认收货失败");
             }
         }
+        //天猫自动发货
+        if (successTMLogistics.size()>0){
+            TaobaoClient taobaoClient = new DefaultTaobaoClient(KtvTaobaoUtil.URL, tmResaler.taobaoCouponAppKey,
+                    tmResaler.taobaoCouponAppSecretKey, Constants.FORMAT_JSON, 15000, 15000);
+            //找到淘宝的token
+            OAuthToken token = OAuthToken.getOAuthToken(tmResaler.id, AccountType.RESALER, WebSite.TAOBAO);
+
+            for (LogisticImportData logisticImportData : successTMLogistics) {
+                LogisticsOfflineSendRequest request = new LogisticsOfflineSendRequest();
+                request.setTid(Long.parseLong(logisticImportData.getOuterOrderNo()));
+                request.setOutSid(logisticImportData.getExpressNumber());
+                request.setCompanyCode(logisticImportData.getExpressCompany().trim());
+                try {
+                    LogisticsOfflineSendResponse response = taobaoClient.execute(request, token.accessToken);
+                    if (response.isSuccess()) {
+                        successSendOnTaobao.add(logisticImportData.getOuterOrderNo());
+                    } else {
+                        Logger.error("淘宝确认收货失败 %s %s", response.getSubCode(), response.getSubMsg());
+                        failSendOnTaobao.add(logisticImportData.getOuterOrderNo());
+                    }
+                } catch (ApiException e) {
+                    Logger.error(e, "淘宝确认收货失败");
+                }
+            }
+        }
+
         renderArgs.put("successSendOnTaobao", successSendOnTaobao);
         renderArgs.put("failSendOnTaobao", failSendOnTaobao);
         render("SupplierUploadOrderShippingInfos/index.html", expressList);
